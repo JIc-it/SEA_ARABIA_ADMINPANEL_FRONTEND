@@ -1,0 +1,100 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
+
+.search_button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.status_dropdown {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.actions_menu {
+  display: flex;
+  justify-content: center;
+  margin: 20px 20px;
+}
+
+.action_menu .proceed_button {
+  border-radius: 60px;
+}
+
+.action_buttons {
+  display: flex;
+  margin: 10p;
+  height: 40px;
+  gap: 20px;
+}
+
+.page-wrapper {
+  background: #ddecee;
+}
+
+.page-body {
+  background: #ddecee;
+}
+
+.pgrogress_bar {
+  display: flex;
+}
+
+.progress_card {
+  align-items: center;
+  border-radius: 10px 10px 0px 0px;
+  height: 130px;
+  background-color: #f3f9ff;
+  border: 0px;
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1650px;
+  }
+}
+
+.breadcrumbs {
+  display: flex;
+}
+
+.content_header {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #eaebf0;
+}
+
+.add_service_button {
+  border-radius: 6px;
+}
+
+.service_user {
+  display: flex;
+  align-items: self-end;
+}
+
+.button_cancel {
+  border-radius: 6px;
+  width: 120px;
+  height: 50px;
+}
+
+.button_continue {
+  border-radius: 6px;
+  color: white;
+  width: 120px;
+  height: 50px;
+}
+
+.action_buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 20px;
+}

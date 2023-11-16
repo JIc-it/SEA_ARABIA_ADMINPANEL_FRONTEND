@@ -1,0 +1,97 @@
+.search_button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  border-radius: 0px 10px 10px 0px;
+  font-size: 14px;
+}
+
+.search_button:hover {
+  border: 1px solid transparent;
+  background-color: "#006875";
+  outline: none;
+  color: white;
+}
+.status_dropdown {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.status_dropdown select {
+  width: 160px;
+  padding: 6px;
+  color: white;
+  background-color: #5a9cd9;
+  border-radius: 6px;
+}
+
+.status_dropdown select option {
+  background-color: rgb(255, 255, 255);
+  color: black;
+  padding: 20px;
+}
+
+.actions_menu {
+  display: flex;
+  justify-content: space-between;
+  padding-right: 18px;
+}
+
+.action_buttons {
+  display: flex;
+  margin: 6px;
+  height: 40px;
+  gap: 20px;
+  justify-content: end;
+  align-items: baseline;
+}
+
+.vendor_button {
+  background-color: rgb(0, 104, 117);
+}
+
+.page-wrapper {
+  background-color: #ddecee;
+}
+
+.page-body {
+  background: #ddecee;
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1650px;
+  }
+}
+
+.count_card_heading {
+  color: #6e7070;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 125% */
+  font-size: 16px;
+  padding-bottom: 8px;
+}
+
+.input-icon button {
+  padding: 12px;
+  color: white;
+  font-size: 12px;
+}
+
+.input-icon input {
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.action_menu_left {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}

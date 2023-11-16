@@ -1,0 +1,4 @@
+.location_input:active {
+  outline: none;
+  border: 2px solid red;
+}

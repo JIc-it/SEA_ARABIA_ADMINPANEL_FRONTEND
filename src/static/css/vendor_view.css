@@ -1,0 +1,254 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:300,400,700,600);
+
+.search_button {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+}
+
+.status_dropdown {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+
+.actions_menu {
+  display: flex;
+  justify-content: center;
+  margin: 20px 20px;
+}
+
+.action_menu .proceed_button {
+  border-radius: 60px;
+}
+
+.action_buttons {
+  display: flex;
+  margin: 10p;
+  height: 40px;
+  gap: 20px;
+}
+
+.page-wrapper {
+  background: #ddecee;
+}
+
+.page-body {
+  background: #ddecee;
+}
+
+.pgrogress_bar {
+  display: flex;
+}
+
+.progress_card {
+  align-items: center;
+  border-radius: 10px 10px 0px 0px;
+  height: 130px;
+  background-color: #f3f9ff;
+  border: 0px;
+}
+
+@media (min-width: 1400px) {
+  .container,
+  .container-lg,
+  .container-md,
+  .container-sm,
+  .container-xl,
+  .container-xxl {
+    max-width: 1650px;
+  }
+}
+
+/* progress bar css start  */
+#steps {
+  width: 505px;
+  margin: 50px auto;
+}
+
+.step {
+  width: 50px;
+  height: 50px;
+  background-color: #ccd7e1;
+  display: inline-block;
+  border: 4px solid;
+  border-color: transparent;
+  border-radius: 50%;
+
+  color: rgb(172, 163, 163);
+  font-weight: 600;
+  text-align: center;
+  line-height: 35px;
+}
+
+.state_one {
+  background-color: #187af7;
+}
+
+.step:first-child {
+  line-height: 40px;
+}
+
+.step:nth-child(n + 2) {
+  margin: 0 0 0 100px;
+  transform: translate(0, -4px);
+}
+
+.step:nth-child(n + 2):before {
+  width: 75px;
+  height: 3px;
+  display: block;
+  background-color: #87a4c2;
+  transform: translate(-95px, 21px);
+  content: "";
+}
+
+.step:after {
+  width: 150px;
+  display: block;
+  transform: translate(-55px, 3px);
+
+  color: hsl(227, 75%, 42%);
+  content: attr(data-desc);
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.step:first-child:after {
+  transform: translate(-55px, -1px);
+}
+
+.step:after.active {
+  color: hsl(227, 75%, 42%);
+}
+
+.step.active:before {
+  background: rgb(19, 105, 216);
+}
+
+.step.active:after {
+  color: hsl(206, 72%, 68%);
+}
+
+.step.done {
+  background-color: hsl(120, 42%, 54%);
+  border-color: hsl(120, 42%, 54%);
+
+  color: white;
+}
+
+.step.done:before {
+  background-color: hsl(120, 42%, 54%);
+}
+
+/* progress bar css start  */
+
+.breadcrumbs {
+  display: flex;
+}
+
+.back_button {
+  display: flex;
+  align-items: normal;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.content_section {
+  display: flex;
+  border: 10px;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+/* left side content  */
+.personal_details {
+  height: 550px;
+  border-radius: 10px;
+}
+
+.left_header {
+  border-radius: 2px;
+  background: radial-gradient(
+    1436.15% 56.58% at 10.92% 35.35%,
+    #168d9c 0%,
+    #006875 100%
+  );
+  height: 100px;
+  font-size: 17px;
+}
+
+.card_content {
+  color: white;
+  font-weight: 600;
+  text-align: center;
+  padding-top: 20px;
+  margin: 0px;
+}
+
+.card_header_contents {
+  display: flex;
+  justify-content: center;
+}
+
+.personal_details_header {
+  padding: 10px 30px;
+  margin: 20px 0px 0px 0px;
+  font-size: 18px;
+}
+
+.vendor_info {
+  font-size: 16px;
+  display: flex;
+  padding: 0px 30px 0px 30px;
+  justify-content: space-between;
+}
+
+.heading_name {
+  color: #68727d;
+}
+
+.call_vendor_button {
+  background-color: #0a77ff;
+  width: 200px;
+  color: white;
+  font-weight: 700;
+  border-radius: 6px;
+  height: 45px;
+}
+
+.mail_vendor_button {
+  width: 200px;
+  border-radius: 6px;
+  height: 45px;
+  font-weight: 700;
+}
+
+.bottom_button {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 30px;
+}
+
+/* left side content end  */
+
+/* right side content  */
+.active_tab {
+  border-bottom: 2px solid #006875;
+  color: #006875;
+}
+
+.details_tab {
+  font-weight: 700;
+}
+
+.home_contents {
+  padding-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+/* right side content end */
