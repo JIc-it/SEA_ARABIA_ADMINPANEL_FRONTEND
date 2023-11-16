@@ -51,10 +51,9 @@ const AddVendorInfo = () => {
                                 </div>
                                 <div className="col-11">
                                   <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     placeholder="Phone Number"
-                                    value=""
                                   />
                                 </div>
                               </div>
@@ -81,7 +80,6 @@ const AddVendorInfo = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="Location"
-                                value=""
                               />
                             </div>
                           </div>
@@ -105,7 +103,6 @@ const AddVendorInfo = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="ID Number"
-                                value=""
                               />
                             </div>
                           </div>
@@ -151,7 +148,6 @@ const AddVendorInfo = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="Company Address"
-                                value=""
                               />
                             </div>
                           </div>
@@ -178,7 +174,6 @@ const AddVendorInfo = () => {
                                 type="text"
                                 className="form-control"
                                 placeholder="Company Website"
-                                value=""
                               />
                             </div>
                           </div>
@@ -322,7 +317,6 @@ const AddVendorInfo = () => {
             <Link
               className="btn button_continue"
               style={{ backgroundColor: "#006875" }}
-              // onClick={() => dispatch(increment())}
               to={"/onboard"}
             >
               Continue
