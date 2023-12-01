@@ -18,8 +18,8 @@ function HeaderTiles(props) {
                   className="bg-primary text-white avatar"
                   style={{
                     borderRadius: "8px",
-                    width: "60px",
-                    height: "60px",
+                    width: "50px",
+                    height: "50px",
                     background:
                       "linear-gradient(135deg, #5C4AF2 0%, #988DF5 100%)",
                   }}
@@ -89,8 +89,8 @@ function HeaderTiles(props) {
                     border: "1px solid rgba(255, 255, 255, 0.30)",
                     background:
                       "linear-gradient(135deg, #187AF7 0%, #559AF4 100%)",
-                    width: "60px",
-                    height: "60px",
+                    width: "50px",
+                    height: "50px",
                   }}
                 >
                   <svg
@@ -147,8 +147,8 @@ function HeaderTiles(props) {
                     border: "1px solid rgba(255, 255, 255, 0.30)",
                     background:
                       "linear-gradient(135deg, #13B370 0%, #3ACE90 100%)",
-                    width: "60px",
-                    height: "60px",
+                    width: "50px",
+                    height: "50px",
                   }}
                 >
                   <svg
@@ -213,8 +213,8 @@ function HeaderTiles(props) {
                     border: "1px solid rgba(255, 255, 255, 0.30)",
                     background:
                       "linear-gradient(135deg, #DC5B32 0%, #FF8E6A 100%)",
-                    width: "60px",
-                    height: "60px",
+                    width: "50px",
+                    height: "50px",
                   }}
                 >
                   <svg

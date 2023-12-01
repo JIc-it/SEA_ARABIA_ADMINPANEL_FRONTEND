@@ -1,7 +1,68 @@
 import { Offcanvas } from "react-bootstrap";
 import "../../static/css/AddNewLead.css";
 import { colors } from "@mui/material";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { useState } from "react";
+import { createVenderLead } from "../../services/leadMangement";
+import { toast } from "react-toastify";
+
 function AddNewLead({ show, close }) {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const validationSchema = Yup.object({
+    name: Yup.string()
+      .required("Name is required")
+      .max(20, "Name must be at most 20 characters"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    mobile: Yup.string().required("Mobile is required"),
+    location: Yup.string().required("Location is required"),
+  });
+
+  const formik = useFormik({
+    initialValues: {
+      name: "",
+      email: "",
+      mobile: "",
+      location: "",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      setIsLoading(true);
+
+      if (!isLoading) {
+        try {
+          const data = {
+            first_name: values.name,
+            last_name: "",
+            role: "Vendor",
+            email: values.email,
+            mobile: `+965 ${values.mobile}`,
+            location: values.location,
+          };
+
+          const adminData = await createVenderLead(data);
+
+          if (adminData) {
+            setIsLoading(false);
+            window.location.reload();
+          } else {
+            console.error("Error while creating Admin:", adminData.error);
+            setIsLoading(false);
+          }
+          setIsLoading(false);
+        } catch (err) {
+          console.log(err);
+          err.response.data.email && toast.error(err.response.data.email[0]);
+          err.response.data.mobile && toast.error(err.response.data.mobile[0]);
+          setIsLoading(false);
+        }
+      }
+    },
+  });
+
   return (
     <Offcanvas
       show={show}
@@ -15,26 +76,48 @@ function AddNewLead({ show, close }) {
       >
         <Offcanvas.Title>New Vendor Lead</Offcanvas.Title>
       </Offcanvas.Header>
-      <form action="">
-        <div style={{ margin: "20px" }}>
+      <form onSubmit={formik.handleSubmit} style={{ padding: "1rem" }}>
+        <div>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "500" }}
           >
             Name <span style={{ color: "red" }}>*</span>
           </label>
-          <input type="text" placeholder="Name" className="form-control" />
+          <input
+            type="text"
+            placeholder="Name"
+            className="form-control"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.name && formik.errors.name ? (
+            <div className="error">{formik.errors.name}</div>
+          ) : null}
         </div>
-        <div style={{ margin: "20px" }}>
+        <div>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "500" }}
           >
             Email <span style={{ color: "red" }}>*</span>
           </label>
-          <input type="email" className="form-control" placeholder="Email" />
+          <input
+            type="email"
+            name="email"
+            className="form-control"
+            placeholder="Email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.email && formik.errors.email ? (
+            <div className="error">{formik.errors.email}</div>
+          ) : null}
         </div>
-        <div style={{ margin: "20px" }}>
+        <div>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "500" }}
@@ -55,11 +138,24 @@ function AddNewLead({ show, close }) {
                 type="number"
                 placeholder="Phone Number"
                 className="form-control"
+                name="mobile"
+                value={formik.values.mobile}
+                onChange={(e) => {
+                  const inputValue = e.target.value;
+                  if (inputValue.length <= 10) {
+                    const sanitizedValue = inputValue.replace(/\D/g, ""); // Remove non-digit characters
+                    formik.handleChange("mobile")(sanitizedValue); // Update the formik field
+                  }
+                }}
+                onBlur={formik.handleBlur}
               />
             </div>
           </div>
+          {formik.touched.mobile && formik.errors.mobile ? (
+            <div className="error">{formik.errors.mobile}</div>
+          ) : null}
         </div>
-        <div style={{ margin: "20px" }}>
+        <div>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "500" }}
@@ -70,17 +166,16 @@ function AddNewLead({ show, close }) {
             <input
               className="form-control"
               type="text"
-              name=""
               id=""
-              style={{
-                border: "none",
-
-                height: "40px",
-                padding: "10px",
-              }}
+              name="location"
               placeholder="Location"
+              value={formik.values.location}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
             />
-
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -105,40 +200,19 @@ function AddNewLead({ show, close }) {
             </svg>
           </div>
         </div>
-
-        <div
+        <button
+          className="btn btn-success"
+          type="submit"
           style={{
-            display: "flex",
-            flexDirection: "row",
-            height: "511px",
-            justifyContent: "center",
-            alignItems: "end",
+            flex: 1,
+            backgroundColor: "#006875",
+            width: "92%",
+            position: "absolute",
+            bottom: "1rem",
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              margin: "10px",
-              marginLeft: "13px",
-              marginRight: "10px",
-              width: "100%",
-              padding: "5px",
-            }}
-          >
-            <button
-              className="btn btn-success"
-              style={{
-                flex: 1,
-                margin: "0 5px",
-                width: "calc(50% - 5px)",
-                backgroundColor: "#006875",
-              }}
-            >
-              Add
-            </button>
-          </div>
-        </div>
+          Add
+        </button>
       </form>
     </Offcanvas>
   );
