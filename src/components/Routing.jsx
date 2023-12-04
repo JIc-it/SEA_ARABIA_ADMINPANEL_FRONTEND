@@ -22,6 +22,7 @@ import SalesRepresentatives from "../pages/Users/SalesRepresentatives";
 import Admin from "../pages/Users/Admin";
 import Review from "../pages/Review";
 import AddOnServices from "../pages/AddOnServices";
+import DiscountView from "./Discounts/DiscountView";
 
 function AllRouting() {
   return (
@@ -44,6 +45,7 @@ function AllRouting() {
       {/* ///////////////services/////////////////////// */}
       <Route path="/payments" element={<Payments />} />
       <Route path="/discounts-offers" element={<DiscountOffer />} />
+      <Route path="/discounts-offers/:view" element={<DiscountView />} />
 
       {/* //////////////////////////////////////////////////// */}
       <Route path="/analytics" element={<Analytics />} />
