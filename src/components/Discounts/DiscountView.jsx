@@ -7,8 +7,7 @@ export default function DiscountView() {
   return (
 
     <>
-      <script src="./dist/js/demo-theme.min.js"></script>
-      <div className="page" style={{ height: "100vh", width: "100%" }}>
+      <div className="page" style={{ backgroundColor:"#DDECEE" }}>
         <Breadcrumb style={{ marginLeft: "5px" }}>
           <Breadcrumb.Item href="#">Discount / Offer
             <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -20,11 +19,12 @@ export default function DiscountView() {
         </Breadcrumb>
 
         <div className='d-flex justify-content-between mt-5 ms-3'>
-          <div className=''>
-            <svg onClick={()=>navigate(-1)} style={{cursor:"pointer"}} width={24} height={24} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div style={{cursor:"pointer"}} onClick={()=>navigate(-1)}>
+            <svg  width={20} height={20} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-            </svg> &nbsp;<span style={{fontWeight:"500"}}>Back</span></div>
-          <button className='btn m-2' style={{ backgroundColor: "#2684FC", color: "white" }}>Edit Discount &nbsp;
+            </svg> &nbsp;<span style={{fontWeight:"500"}}>Back</span>
+            </div>
+          <button onClick={()=>navigate("/discounts-offers/edit/12345")} className='btn m-2' style={{ backgroundColor: "#2684FC", color: "white" }}>Edit Discount &nbsp;
             <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
               <path d="M5 15L15 5M15 5H7.5M15 5V12.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
@@ -94,12 +94,12 @@ export default function DiscountView() {
               </div>
             </div>
 
-            <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%",borderRadius:"5px",marginBottom:"5%" }}>
-          <p style={{ fontWeight: "500",fontSize: "16px"  }}>Discount Details</p>
-          <div className='d-flex'>
-            <div className='w-50'>
-              <div>
-                <p style={{ color: "#68727D",fontSize:"16px" }}>Requirements</p>
+            <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%",borderRadius:"5px",marginBottom:"2%" }}>
+            <p style={{ fontWeight: "500", fontSize: "16px" }}>Requirements</p>
+                        <div className='d-flex'>
+                            <div className='w-50'>
+                                <div>
+                                    <p style={{ color: "#68727D", fontSize: "16px" }}>Purchase Requirements</p>
                 <p style={{ fontWeight: "500", fontSize: "18px" }}>No Minimum Requirements</p>
               </div>
             </div>

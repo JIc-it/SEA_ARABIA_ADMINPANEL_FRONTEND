@@ -23,6 +23,8 @@ import Admin from "../pages/Users/Admin";
 import Review from "../pages/Review";
 import AddOnServices from "../pages/AddOnServices";
 import DiscountView from "./Discounts/DiscountView";
+import DiscountEdit from "./Discounts/DiscountEdit";
+import DiscountAddNew from "./Discounts/DiscountAddNew";
 
 function AllRouting() {
   return (
@@ -45,7 +47,9 @@ function AllRouting() {
       {/* ///////////////services/////////////////////// */}
       <Route path="/payments" element={<Payments />} />
       <Route path="/discounts-offers" element={<DiscountOffer />} />
-      <Route path="/discounts-offers/:view" element={<DiscountView />} />
+      <Route path="/discounts-offers/add" element={<DiscountAddNew />} />
+      <Route path="/discounts-offers/:id" element={<DiscountView />} />
+      <Route path="/discounts-offers/edit/:id" element={<DiscountEdit />} />
 
       {/* //////////////////////////////////////////////////// */}
       <Route path="/analytics" element={<Analytics />} />

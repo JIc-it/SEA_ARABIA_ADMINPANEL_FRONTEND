@@ -70,3 +70,15 @@ font-style: normal;
 font-weight: 400;
 line-height: 20px; /* 142.857% */
 }
+.discount-input{
+  width:90%;
+  height:30px;
+  border-radius:5px;
+  border:1px solid lightgray;
+  outline: none;
+}
+
+.discount-input:focus{
+  border:none;
+  box-shadow: 0 0 0 3px rgb(112, 112, 241)
+}

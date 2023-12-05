@@ -1,9 +1,11 @@
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png"
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 function DiscountListing() {
+  const navigate=useNavigate();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("New Lead");
 
@@ -109,7 +111,7 @@ function DiscountListing() {
             </svg>
           </button>
           <button
-            onClick={handleOpenOffcanvas}
+            onClick={()=>navigate("/discounts-offers/add")}
             className="btn btn-info vendor_button"
             style={{ borderRadius: "6px" }}
             type="button"
