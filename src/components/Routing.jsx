@@ -25,6 +25,7 @@ import AddOnServices from "../pages/AddOnServices";
 import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
 import DiscountAddNew from "./Discounts/DiscountAddNew";
+import CustomerView from "./Customers/CustomerView";
 
 function AllRouting() {
   return (
@@ -55,6 +56,7 @@ function AllRouting() {
       <Route path="/analytics" element={<Analytics />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
+      <Route path="/customers/:id" element={<CustomerView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
       <Route path="/admin" element={<Admin />} />

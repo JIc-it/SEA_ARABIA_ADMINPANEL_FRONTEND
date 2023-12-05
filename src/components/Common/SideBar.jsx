@@ -726,7 +726,7 @@ function SideBar() {
               <div className="dropdown-menu">
                 <div className="dropdown-menu-columns">
                   <div className="dropdown-menu-column">
-                    <button
+                    <a
                       className="dropdown-item"
                       href="customers"
                       style={{ color: "#006875;" }}
@@ -744,7 +744,7 @@ function SideBar() {
                         />
                       </svg>
                       &nbsp; Customers
-                    </button>
+                    </a>
                     <a className="dropdown-item" href="user-vendor">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
