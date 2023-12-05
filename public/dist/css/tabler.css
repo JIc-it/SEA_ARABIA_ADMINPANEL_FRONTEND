@@ -132,7 +132,7 @@
   --tblr-dark-border-subtle: #929dab;
   --tblr-white-rgb: 255, 255, 255;
   --tblr-black-rgb: 0, 0, 0;
-  --tblr-font-sans-serif:    -apple-system, BlinkMacSystemFont, San Francisco, Segoe UI, Roboto, Helvetica Neue, sans-serif;
+  --tblr-font-sans-serif:  'Roboto';
   --tblr-font-monospace:  Menlo, Monaco, Consolas, Liberation Mono, Courier New, monospace;
   --tblr-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
   --tblr-body-font-family: var(--tblr-font-sans-serif);
@@ -254,7 +254,7 @@
 
 body {
   margin: 0;
-  font-family: var(--tblr-body-font-family);
+  font-family: Roboto;
   font-size: var(--tblr-body-font-size);
   font-weight: var(--tblr-body-font-weight);
   line-height: var(--tblr-body-line-height);
@@ -404,7 +404,7 @@ pre,
 code,
 kbd,
 samp {
-  font-family: var(--tblr-font-monospace);
+  font-family: Roboto;
   font-size: 1em;
 }
 
@@ -2706,7 +2706,7 @@ progress {
   display: block;
   width: 100%;
   padding: 0.5625rem 0.75rem;
-  font-family: var(--tblr-font-sans-serif);
+  font-family: Roboto;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -2910,7 +2910,7 @@ textarea.form-control-lg {
   display: block;
   width: 100%;
   padding: 0.5625rem 2.25rem 0.5625rem 0.75rem;
-  font-family: var(--tblr-font-sans-serif);
+  font-family: Roboto;
   font-size: 0.875rem;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -3601,7 +3601,7 @@ textarea.form-control-lg {
   --tblr-btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--tblr-btn-focus-shadow-rgb), .5);
   display: inline-block;
   padding: var(--tblr-btn-padding-y) var(--tblr-btn-padding-x);
-  font-family: var(--tblr-btn-font-family);
+  font-family: 'Roboto';
   font-size: var(--tblr-btn-font-size);
   font-weight: var(--tblr-btn-font-weight);
   line-height: var(--tblr-btn-line-height);
@@ -6691,7 +6691,7 @@ body[data-bs-theme=dark] .navbar[data-bs-theme=light] {
   z-index: var(--tblr-tooltip-zindex);
   display: block;
   margin: var(--tblr-tooltip-margin);
-  font-family: var(--tblr-font-sans-serif);
+  font-family:'Roboto';
   font-style: normal;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -6801,7 +6801,7 @@ body[data-bs-theme=dark] .navbar[data-bs-theme=light] {
   z-index: var(--tblr-popover-zindex);
   display: block;
   max-width: var(--tblr-popover-max-width);
-  font-family: var(--tblr-font-sans-serif);
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -10357,7 +10357,7 @@ body[data-bs-theme=dark] .navbar[data-bs-theme=light] {
 }
 
 .font-monospace {
-  font-family: var(--tblr-font-monospace) !important;
+  font-family: 'Roboto' !important;
 }
 
 .fs-1 {

@@ -13,9 +13,9 @@ export const createVenderLead = (data) => {
     });
 };
 
-export const getVendorList = () => {
+export const getVendorList = (search, status) => {
   return axiosInstance
-    .get(getVendorListUrl)
+    .get(getVendorListUrl, { params: { search: search, status: status } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

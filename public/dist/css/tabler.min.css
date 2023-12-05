@@ -254,7 +254,7 @@ body[data-bs-theme=dark] [data-bs-theme=light] {
 
 body {
   margin: 0;
-  font-family: var(--tblr-body-font-family);
+  font-family: 'Roboto';
   font-size: var(--tblr-body-font-size);
   font-weight: var(--tblr-body-font-weight);
   line-height: var(--tblr-body-line-height);
@@ -426,7 +426,7 @@ code,
 kbd,
 pre,
 samp {
-  font-family: var(--tblr-font-monospace);
+  font-family: 'Roboto';
   font-size: 1em
 }
 
@@ -3164,7 +3164,7 @@ progress {
   display: block;
   width: 100%;
   padding: .5625rem .75rem;
-  font-family: var(--tblr-font-sans-serif);
+  font-family: 'Roboto';
   font-size: .875rem;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -3399,7 +3399,7 @@ textarea.form-control-lg {
   display: block;
   width: 100%;
   padding: .5625rem 2.25rem .5625rem .75rem;
-  font-family: var(--tblr-font-sans-serif);
+  font-family: 'Roboto';
   font-size: .875rem;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -4205,7 +4205,7 @@ textarea.form-control.is-invalid {
   --tblr-btn-focus-box-shadow: 0 0 0 0.25rem rgba(var(--tblr-btn-focus-shadow-rgb), .5);
   display: inline-block;
   padding: var(--tblr-btn-padding-y) var(--tblr-btn-padding-x);
-  font-family: var(--tblr-btn-font-family);
+  font-family: 'Roboto';
   font-size: var(--tblr-btn-font-size);
   font-weight: var(--tblr-btn-font-weight);
   line-height: var(--tblr-btn-line-height);
@@ -7603,7 +7603,7 @@ body[data-bs-theme=dark] [data-bs-theme=light] .btn-close {
   z-index: var(--tblr-tooltip-zindex);
   display: block;
   margin: var(--tblr-tooltip-margin);
-  font-family: var(--tblr-font-sans-serif);
+  font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -7724,7 +7724,7 @@ body[data-bs-theme=dark] [data-bs-theme=light] .btn-close {
   z-index: var(--tblr-popover-zindex);
   display: block;
   max-width: var(--tblr-popover-max-width);
-  font-family: var(--tblr-font-sans-serif);
+  font-family:'Roboto';
   font-style: normal;
   font-weight: 400;
   line-height: 1.4285714286;
@@ -11511,7 +11511,7 @@ body[data-bs-theme=dark] [data-bs-theme=light] .btn-close {
 }
 
 .font-monospace {
-  font-family: var(--tblr-font-monospace) !important
+  font-family: 'Roboto' !important
 }
 
 .fs-1 {

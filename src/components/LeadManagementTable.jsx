@@ -6,7 +6,12 @@ import { formatDate } from "../helpers";
 
 function Table() {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("New Lead");
+  const [selectedValue, setSelectedValue] = useState("");
+  const [search, setSearch] = useState("");
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
 
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -17,21 +22,61 @@ function Table() {
   };
   const [listVendor, setListVendor] = useState([]);
 
-  useEffect(() => {
-    getVendorList()
+  const getVendorListData = async () => {
+    getVendorList(search, selectedValue)
       .then((data) => {
+        setListPageUrl({ next: data.next, previous: data.previous });
         setListVendor(data?.results);
       })
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, []);
+  };
+
+  useEffect(() => {
+    getVendorListData();
+  }, [selectedValue]);
+
+  const handleExportData = () => {
+    if (listVendor) {
+      const header = [
+        "NAME",
+        "EMAIL",
+        "PHONE",
+        "LOCATION",
+        "CREATED ON",
+        "CREATED BY",
+        "STATUS",
+      ];
+      const csvData = listVendor.map((elem) => {
+        let formatedDate = formatDate(elem.created_at);
+        return [
+          elem.first_name,
+          elem.email,
+          elem.mobile,
+          elem.location,
+          elem.state?.state,
+          formatedDate,
+          "",
+          `${elem.status ? elem.status : "New Lead"} `,
+        ];
+      });
+
+      const csvContent = [header, ...csvData]
+        .map((row) => row.join(","))
+        .join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Vendor-List.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  };
 
   return (
     <div>
-      {showOffcanvas && (
-        <AddNewLead show={showOffcanvas} close={handleCloseOffcanvas} />
-      )}
       <div className="col-12 actions_menu my-2">
         <div className="action_menu_left col-8">
           <div>
@@ -60,11 +105,15 @@ function Table() {
                   type="text"
                   className="form-control"
                   placeholder="Input search term"
+                  onChange={(e) => {
+                    setSearch(e.target.value);
+                  }}
                 />
                 <button
                   type="button"
                   className="btn search_button"
                   style={{ background: "#006875" }}
+                  onClick={getVendorListData}
                 >
                   Search
                 </button>
@@ -79,13 +128,14 @@ function Table() {
               value={selectedValue}
               onChange={handleSelectChange}
             >
-              <option value="New Lead">All</option>
+              <option value="">All</option>
               <option value="New Lead">New Lead</option>
               <option value="Initial Contact">Initial Contact</option>
               <option value="Site Visit">Site Visit</option>
               <option value="Proposal">Proposal</option>
               <option value="Negotations">Negotations</option>
               <option value="MOU/Charter">MOU/Charter</option>
+              <option value="Onboard">Onboard</option>
             </select>
           </div>
         </div>
@@ -119,7 +169,11 @@ function Table() {
             </svg>
           </button>
 
-          <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+          <button
+            className="btn btn-outline"
+            style={{ borderRadius: "6px" }}
+            onClick={handleExportData}
+          >
             Export &nbsp;
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -152,156 +206,28 @@ function Table() {
               <tr>
                 <th className="w-1">
                   <span>Name</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Email</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   {" "}
                   <span>Phone</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Location</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Created On</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Created By</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Status</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Action</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
               </tr>
             </thead>
@@ -338,14 +264,15 @@ function Table() {
                         </td>
                         <td>
                           <span
-                            className="badge bg-blue text-blue-fg"
+                            className="badge  text-blue-fg"
                             style={{
                               width: "100px",
-                              padding: "5px",
-                              backgroundColor: "#5a9cd9",
+                              padding: "5px 9px",
+                              borderRadius: "4px",
+                              backgroundColor: "#5A9CD9",
                             }}
                           >
-                            New Lead
+                            {`${item.status ? item.status : "New Lead"} `}
                           </span>
                         </td>
                         <td
@@ -358,7 +285,17 @@ function Table() {
                           <Link
                             to={"/onboard"}
                             className="btn btn-sm btn-info"
-                            style={{ padding: "5px", borderRadius: "4px" }}
+                            style={{
+                              padding: "5px",
+                              borderRadius: "4px",
+                              borderRadius:
+                                "var(--roundness-round-inside, 6px)",
+                              background: "#187AF7",
+
+                              /* Shadow/XSM */
+                              boxSShadow:
+                                "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                            }}
                           >
                             Onboard &nbsp;
                             <svg
@@ -469,6 +406,9 @@ function Table() {
           </ul>
         </div>
       </div>
+      {showOffcanvas && (
+        <AddNewLead show={showOffcanvas} close={handleCloseOffcanvas} />
+      )}
     </div>
   );
 }

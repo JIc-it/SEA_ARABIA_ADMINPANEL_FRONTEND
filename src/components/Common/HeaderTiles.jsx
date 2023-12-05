@@ -188,7 +188,7 @@ function HeaderTiles(props) {
               </div>
               <div className="col">
                 <div className="font-weight-medium count_card_heading">
-                  Vendor Leads
+                  Onboarded Vendors
                 </div>
                 <div
                   className="text-secondary"
@@ -242,7 +242,7 @@ function HeaderTiles(props) {
               </div>
               <div className="col">
                 <div className="font-weight-medium count_card_heading">
-                  Customer Leads
+                  Rejected Leads
                 </div>
                 <div
                   className="text-secondary"

@@ -6,3 +6,6 @@ export function formatDate(date) {
 
   return formatted_date;
 }
+
+export const passwordRegex =
+  /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;

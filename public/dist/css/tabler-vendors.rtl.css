@@ -1205,7 +1205,7 @@ image, text, .jvm-zoomin, .jvm-zoomout {
 .jvm-tooltip {
   border-radius: 3px;
   background-color: #5c5cff;
-  font-family: sans-serif, Verdana;
+  font-family: Roboto;
   font-size: smaller;
   box-shadow: -1px 2px 12px rgba(0, 0, 0, 0.2);
   padding: 3px 5px;
@@ -1397,7 +1397,7 @@ body {
 .tox-tinymce {
   border: var(--tblr-border-width) var(--tblr-border-style) var(--tblr-border-color) !important;
   border-radius: 4px !important;
-  font-family: var(--tblr-font-sans-serif) !important;
+  font-family:Roboto !important;
 }
 
 .tox-toolbar__group {

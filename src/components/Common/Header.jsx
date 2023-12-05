@@ -1,4 +1,9 @@
+import { useNavigate } from "react-router";
+import { logoutRequest } from "../../services/authHandle";
+import { toast } from "react-toastify";
+
 function Header() {
+  const navigate = useNavigate();
   return (
     <header className="navbar navbar-expand-md d-none d-lg-flex d-print-none">
       <div className="container-xl" style={{ marginRight: "15px" }}>
@@ -149,7 +154,17 @@ function Header() {
               <a href="./settings.html" className="dropdown-item">
                 Settings
               </a>
-              <a href="./sign-in.html" className="dropdown-item">
+              <a
+                className="dropdown-item"
+                onClick={async () => {
+                  const logoutData = await logoutRequest();
+                  if (logoutData) {
+                    navigate(`/`);
+                  } else {
+                    toast.error("Logout Failed.");
+                  }
+                }}
+              >
                 Logout
               </a>
             </div>
