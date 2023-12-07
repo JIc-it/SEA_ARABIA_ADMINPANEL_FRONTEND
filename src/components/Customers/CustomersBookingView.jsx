@@ -10,7 +10,7 @@ export default function CustomersBookingView() {
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const navigate = useNavigate()
     return (
-        <div className="page-wrapper">
+        <div className="page">
             <div className="page-body">
                 <div className="container-xl">
 

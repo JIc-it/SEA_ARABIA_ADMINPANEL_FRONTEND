@@ -28,6 +28,7 @@ import CustomerView from "./Customers/CustomerView";
 import CustomerEdit from "./Customers/CustomerEdit";
 import CustomersBookingView from "./Customers/CustomersBookingView";
 import AddOnServiceList from "./AddOnService/AddOnServiceList";
+import UserVendorView from "./UserVendor/UserVendorView";
 
 function AllRouting() {
   return (
@@ -62,6 +63,7 @@ function AllRouting() {
       <Route path="/customers-edit/:id" element={<CustomerEdit />} />
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
+      <Route path="/user-vendor/:id" element={<UserVendorView />} />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
       <Route path="/admin" element={<Admin />} />
       {/* ///////////////User/////////////////////// */}

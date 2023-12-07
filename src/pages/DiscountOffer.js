@@ -3,17 +3,16 @@ import SideBar from "../components/Common/SideBar";
 import Footer from "../components/Common/Footer";
 import DiscountListing from '../components/Discounts/DiscountListing';
 import DiscountHeaders from '../components/Discounts/Discount_Header';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const DiscountOffer = () => {
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <div>
-      <script src="./dist/js/demo-theme.min.js"></script>
       <div className="page" style={{ height: "100vh" }}>
-        {/* Sidebar  */}
-        <SideBar />
-        {/* <!-- Navbar --> */}
-        {/* <Header /> */}
-        <div className="page-wrapper">
+        <div className={!isMobileView?"page-wrapper":"wrapper_mobile"}>
           <div className="page-body vendor-management-container-main">
             <div className="container-xl">
               <div className="row row-deck row-cards">
