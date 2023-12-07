@@ -334,17 +334,17 @@ function SideBar() {
               <button href="#" className="dropdown-item">
                 Status
               </button>
-              <a href="./profile.html" className="dropdown-item">
+              <a href="/profile.html" className="dropdown-item">
                 Profile
               </a>
               <button href="#" className="dropdown-item">
                 Feedback
               </button>
               <div className="dropdown-divider"></div>
-              <a href="./settings.html" className="dropdown-item">
+              <a href="/settings.html" className="dropdown-item">
                 Settings
               </a>
-              <a href="./sign-in.html" className="dropdown-item">
+              <a href="/sign-in.html" className="dropdown-item">
                 Logout
               </a>
             </div>
@@ -353,7 +353,7 @@ function SideBar() {
         <div className="collapse navbar-collapse" id="sidebar-menu">
           <ul className="navbar-nav pt-lg-3 " style={{ gap: "30px" }}>
             <li className="nav-item">
-              <a className="nav-link" href="./dashboard">
+              <a className="nav-link" href="/dashboard">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -403,7 +403,7 @@ function SideBar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="./booking">
+              <a className="nav-link" href="/booking">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -429,7 +429,7 @@ function SideBar() {
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
-                href="./refunds"
+                href="/refunds"
                 data-bs-toggle="dropdown"
                 data-bs-auto-close="false"
                 role="button"
@@ -461,7 +461,7 @@ function SideBar() {
                   <div className="dropdown-menu-column">
                     <a
                       className="dropdown-item"
-                      href="./refunds-request"
+                      href="/refunds-request"
                       style={{ color: "#006875;" }}
                     >
                       <svg
@@ -478,7 +478,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Requests{" "}
                     </a>
-                    <a className="dropdown-item" href="./refunds-history">
+                    <a className="dropdown-item" href="/refunds-history">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -501,7 +501,7 @@ function SideBar() {
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
-                href="./services"
+                href="/services"
                 data-bs-toggle="dropdown"
                 data-bs-auto-close="false"
                 role="button"
@@ -534,7 +534,7 @@ function SideBar() {
                   <div className="dropdown-menu-column">
                     <a
                       className="dropdown-item"
-                      href="./manage-services"
+                      href="/manage-services"
                       style={{ color: "#006875;" }}
                     >
                       <svg
@@ -551,7 +551,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Manage Services
                     </a>
-                    <a className="dropdown-item" href="./cruises">
+                    <a className="dropdown-item" href="/cruises">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -566,7 +566,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Cruises
                     </a>
-                    <a className="dropdown-item" href="./trips">
+                    <a className="dropdown-item" href="/trips">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -596,7 +596,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Activities
                     </a>
-                    <a className="dropdown-item" href="./events">
+                    <a className="dropdown-item" href="/events">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -617,7 +617,7 @@ function SideBar() {
             </li>
 
             <li className="nav-item">
-              <a className="nav-link" href="./payments">
+              <a className="nav-link" href="/payments">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -642,7 +642,7 @@ function SideBar() {
             </li>
 
             <li className="nav-item">
-              <a className="nav-link" href="./discounts-offers">
+              <a className="nav-link" href="/discounts-offers">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -669,7 +669,7 @@ function SideBar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="./analytics">
+              <a className="nav-link" href="/analytics">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -695,7 +695,7 @@ function SideBar() {
             <li className="nav-item dropdown">
               <a
                 className="nav-link dropdown-toggle"
-                href="./"
+                href="/"
                 data-bs-toggle="dropdown"
                 data-bs-auto-close="false"
                 role="button"
@@ -728,7 +728,7 @@ function SideBar() {
                   <div className="dropdown-menu-column">
                     <a
                       className="dropdown-item"
-                      href="customers"
+                      href="/customers"
                       style={{ color: "#006875;" }}
                     >
                       <svg
@@ -745,7 +745,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Customers
                     </a>
-                    <a className="dropdown-item" href="user-vendor">
+                    <a className="dropdown-item" href="/user-vendor">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -775,7 +775,7 @@ function SideBar() {
                       </svg>
                       &nbsp; Sales Representatives
                     </a>
-                    <a className="dropdown-item" href="admin">
+                    <a className="dropdown-item" href="/admin">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="22"
@@ -795,7 +795,7 @@ function SideBar() {
               </div>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="./review">
+              <a className="nav-link" href="/review">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -819,7 +819,7 @@ function SideBar() {
               </a>
             </li>
             <li className="nav-item">
-              <a className="nav-link" href="./add-on-services">
+              <a className="nav-link" href="/add-on-services">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"

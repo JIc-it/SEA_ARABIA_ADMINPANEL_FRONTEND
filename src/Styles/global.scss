@@ -108,5 +108,12 @@ text-transform: capitalize;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 30vh; /* Optionally, set the height to the full viewport height */
+ 
+}
+
+.bottom_button_mobile {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 5px 15px;
 }
