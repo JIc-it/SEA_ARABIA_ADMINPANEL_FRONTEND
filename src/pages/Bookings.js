@@ -1,7 +1,8 @@
 import React from "react";
+import BookinList from "../components/Booking/BookinList";
 
 const Bookings = () => {
-  return <div>booking</div>;
+  return <BookinList />;
 };
 
 export default Bookings;

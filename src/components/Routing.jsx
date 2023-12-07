@@ -34,7 +34,7 @@ function AllRouting() {
       <Route path="/dashboard" element={<DashBoard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
       <Route path="/booking" element={<Bookings />} />
-      <Route path="/onboard" element={<OnBoard />} />
+      <Route path="/onboard/:id" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
       <Route path="/refunds-request" element={<RefundsRequest />} />
       <Route path="/refunds-history" element={<RefundHistory />} />
@@ -63,7 +63,7 @@ function AllRouting() {
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServices />} />
-      <Route path="/add-vendor-details" element={<AddVendorInfo />} />
+      <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
     </Routes>
   );
 }

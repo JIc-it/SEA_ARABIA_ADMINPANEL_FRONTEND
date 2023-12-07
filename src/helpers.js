@@ -9,3 +9,11 @@ export function formatDate(date) {
 
 export const passwordRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+
+export const removeBaseUrlFromPath = (originalString) => {
+  var modifiedString = originalString.replace(
+    "https://seaarabia.jicitsolution.com/",
+    ""
+  );
+  return modifiedString;
+};

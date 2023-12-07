@@ -7,7 +7,7 @@ import { decrement, increment } from "../../state/counter/counterSlice";
 
 Modal.setAppElement("#root");
 
-export default function ModalPop(props) {
+export default function ModalPop({ setIsAllowProceed, isAllowProceed }) {
   const [isOpen, setIsOpen] = useState(false);
   const [buttonState, setButtonState] = useState(true);
 
@@ -97,7 +97,14 @@ export default function ModalPop(props) {
           width: "120px",
         }}
         onClick={() => {
-          setIsOpen(true);
+          console.log(count);
+          if (isAllowProceed && count >= 1) {
+            setIsOpen(true);
+            setIsAllowProceed(false);
+          }
+          if ( count === 0) {
+            setIsOpen(true);
+          }
         }}
         type="button"
       >
@@ -145,6 +152,7 @@ export default function ModalPop(props) {
               onClick={handleConfirm}
               className="btn btn-info"
               style={proceedStyle}
+              type="submit"
             >
               Confirm
             </button>

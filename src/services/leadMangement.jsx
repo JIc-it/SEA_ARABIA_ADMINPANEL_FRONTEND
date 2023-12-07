@@ -2,6 +2,8 @@ import axiosInstance from "./authHandle";
 
 const vendorLeadUrl = "/account/vendor-create";
 const getVendorListUrl = "/account/vendor-list";
+const getVendorStatusUrl = "/company/orderstatus-list";
+const getVendorServiceUrl='/company/servicetag-list'
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -16,6 +18,26 @@ export const createVenderLead = (data) => {
 export const getVendorList = (search, status) => {
   return axiosInstance
     .get(getVendorListUrl, { params: { search: search, status: status } })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getVendorStatus = () => {
+  return axiosInstance
+    .get(getVendorStatusUrl)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getVendorServiceTag = () => {
+  return axiosInstance
+    .get(getVendorServiceUrl)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -7,7 +7,7 @@ import { useState } from "react";
 import { createVenderLead } from "../../services/leadMangement";
 import { toast } from "react-toastify";
 
-function AddNewLead({ show, close }) {
+function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const validationSchema = Yup.object({
@@ -47,7 +47,10 @@ function AddNewLead({ show, close }) {
 
           if (adminData) {
             setIsLoading(false);
-            window.location.reload();
+            // window.location.reload();
+            setIsRefetch(!isRefetch);
+            toast.success("Vendor Added Successfully.");
+            close();
           } else {
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);

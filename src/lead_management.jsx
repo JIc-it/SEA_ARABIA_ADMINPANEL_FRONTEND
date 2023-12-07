@@ -7,10 +7,10 @@ import Footer from "./components/Common/Footer";
 function LeadManagement() {
   return (
     <div>
-      <script src="./dist/js/demo-theme.min.js"></script>
+      {/* <script src="./dist/js/demo-theme.min.js"></script> */}
       <div className="page" style={{ height: "100vh" }}>
         {/* Sidebar  */}
-        <SideBar />
+        {/* <SideBar /> */}
         {/* <!-- Navbar --> */}
         {/* <Header /> */}
         <div className="page-wrapper">

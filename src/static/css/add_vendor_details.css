@@ -31,6 +31,7 @@
 
 .page-wrapper {
   background: #ddecee;
+  margin-left: 15rem;
 }
 
 .page-body {
@@ -68,7 +69,7 @@
   display: flex;
   justify-content: space-between;
   padding-bottom: 20px;
-  border-bottom: 1px solid #eaebf0;
+  /* border-bottom: 1px solid #eaebf0; */
 }
 
 .add_service_button {

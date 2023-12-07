@@ -1,18 +1,22 @@
 import { Link } from "react-router-dom";
 import AddNewLead from "./Modal/AddNewLead";
 import { useEffect, useState } from "react";
-import { getVendorList } from "../services/leadMangement";
-import { formatDate } from "../helpers";
+import { getVendorList, getVendorStatus } from "../services/leadMangement";
+import { formatDate, removeBaseUrlFromPath } from "../helpers";
+import { getListDataInPagination } from "../services/commonServices";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function Table() {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
+  const [statusList, setStatusList] = useState([]);
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
-
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
@@ -23,19 +27,35 @@ function Table() {
   const [listVendor, setListVendor] = useState([]);
 
   const getVendorListData = async () => {
+    setIsLoading(true);
     getVendorList(search, selectedValue)
       .then((data) => {
+        setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
         setListVendor(data?.results);
       })
       .catch((error) => {
+        setIsLoading(false);
         console.error("Error fetching  data:", error);
       });
   };
 
   useEffect(() => {
+    setIsLoading(true);
+    getVendorStatus()
+      .then((data) => {
+        setIsLoading(false);
+        setStatusList(data.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
+
+  useEffect(() => {
     getVendorListData();
-  }, [selectedValue]);
+  }, [selectedValue, isRefetch]);
 
   const handleExportData = () => {
     if (listVendor) {
@@ -57,8 +77,8 @@ function Table() {
           elem.location,
           elem.state?.state,
           formatedDate,
-          "",
-          `${elem.status ? elem.status : "New Lead"} `,
+          elem.created_by,
+          `${elem.status ? elem.status : "-"} `,
         ];
       });
 
@@ -73,6 +93,27 @@ function Table() {
       a.click();
       window.URL.revokeObjectURL(url);
     }
+  };
+
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setListVendor(data?.results);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
   };
 
   return (
@@ -129,13 +170,15 @@ function Table() {
               onChange={handleSelectChange}
             >
               <option value="">All</option>
-              <option value="New Lead">New Lead</option>
-              <option value="Initial Contact">Initial Contact</option>
-              <option value="Site Visit">Site Visit</option>
-              <option value="Proposal">Proposal</option>
-              <option value="Negotations">Negotations</option>
-              <option value="MOU/Charter">MOU/Charter</option>
-              <option value="Onboard">Onboard</option>
+              {statusList &&
+                statusList.length > 0 &&
+                statusList.map((item, i) => {
+                  return (
+                    <option value={item.name} key={`statusList-${i}`}>
+                      {item.name}
+                    </option>
+                  );
+                })}
             </select>
           </div>
         </div>
@@ -232,96 +275,116 @@ function Table() {
               </tr>
             </thead>
             <tbody>
-              {listVendor && listVendor.length > 0 ? (
+              {!isLoading ? (
                 <>
-                  {listVendor.map((item, index) => {
-                    let formatedDate = formatDate(item.created_at);
-                    return (
-                      <tr>
-                        <td>
-                          <span className="text-secondary">
-                            {item.first_name}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">{item.email}</span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">{item.mobile}</span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {item.location}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">{formatedDate}</span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {item.location}
-                          </span>
-                        </td>
-                        <td>
-                          <span
-                            className="badge  text-blue-fg"
-                            style={{
-                              width: "100px",
-                              padding: "5px 9px",
-                              borderRadius: "4px",
-                              backgroundColor: "#5A9CD9",
-                            }}
-                          >
-                            {`${item.status ? item.status : "New Lead"} `}
-                          </span>
-                        </td>
-                        <td
-                          style={{
-                            display: "flex",
-                            gap: "10px",
-                            alignItems: "baseline",
-                          }}
-                        >
-                          <Link
-                            to={"/onboard"}
-                            className="btn btn-sm btn-info"
-                            style={{
-                              padding: "5px",
-                              borderRadius: "4px",
-                              borderRadius:
-                                "var(--roundness-round-inside, 6px)",
-                              background: "#187AF7",
-
-                              /* Shadow/XSM */
-                              boxSShadow:
-                                "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                            }}
-                          >
-                            Onboard &nbsp;
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
+                  {listVendor && listVendor.length > 0 ? (
+                    <>
+                      {listVendor.map((item, index) => {
+                        let formatedDate = formatDate(item.created_at);
+                        return (
+                          <tr>
+                            <td>
+                              <span className="text-secondary">
+                                {item.first_name}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.email}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.mobile}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.location}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {formatedDate}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.created_by}
+                              </span>
+                            </td>
+                            <td>
+                              {item.status ? (
+                                <span
+                                  className="badge  text-blue-fg"
+                                  style={{
+                                    width: "100px",
+                                    padding: "7px 9px 5px 9px ",
+                                    borderRadius: "4px",
+                                    backgroundColor: "#5A9CD9",
+                                  }}
+                                >
+                                  {`${item.status ? item.status : "New Lead"} `}
+                                </span>
+                              ) : (
+                                "-"
+                              )}
+                            </td>
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "10px",
+                                alignItems: "baseline",
+                              }}
                             >
-                              <path
-                                d="M4 12L12 4M12 4H6M12 4V10"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <Link
+                                to={`/onboard/${item.id}`}
+                                className="btn btn-sm btn-info"
+                                style={{
+                                  padding: "5px",
+                                  borderRadius: "4px",
+                                  borderRadius:
+                                    "var(--roundness-round-inside, 6px)",
+                                  background: "#187AF7",
+
+                                  /* Shadow/XSM */
+                                  boxSShadow:
+                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                                }}
+                              >
+                                Onboard &nbsp;
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Link>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <tr>
+                      <td className="error">No Records Found</td>
+                    </tr>
+                  )}
                 </>
               ) : (
                 <tr>
-                  <td className="error">No Records Found</td>
+                  <td colSpan={"8"} align="center">
+                    <CircularProgress />
+                  </td>
                 </tr>
               )}
             </tbody>
@@ -333,12 +396,14 @@ function Table() {
             <span>16</span> entries
           </p> */}
           <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
+            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
               <a
                 className="page-link"
                 href="#"
                 tabIndex="-1"
-                aria-disabled="true"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -358,33 +423,15 @@ function Table() {
                 prev
               </a>
             </li>
-            {/* <li className="page-item active">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item ">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                4
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                5
-              </a>
-            </li> */}
-            <li className="page-item">
-              <a className="page-link" href="#">
+
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
                 next
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -407,7 +454,12 @@ function Table() {
         </div>
       </div>
       {showOffcanvas && (
-        <AddNewLead show={showOffcanvas} close={handleCloseOffcanvas} />
+        <AddNewLead
+          show={showOffcanvas}
+          close={handleCloseOffcanvas}
+          isRefetch={isRefetch}
+          setIsRefetch={setIsRefetch}
+        />
       )}
     </div>
   );
