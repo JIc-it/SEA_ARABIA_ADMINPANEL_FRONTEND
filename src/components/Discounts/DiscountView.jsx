@@ -3,6 +3,7 @@ import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 
 export default function DiscountView() {
+
   const navigate=useNavigate()
   return (
 
@@ -38,25 +39,25 @@ export default function DiscountView() {
             <div className='w-50'>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Campaign Name</p>
-                <p style={{ fontWeight: "500", fontSize: "18px" }}>Summer Season Offer</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>Summer Season Offer</p>
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Discount Type</p>
-                <p style={{ fontWeight: "500", fontSize: "18px" }}>Percentage</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>Percentage</p>
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Redemption Type</p>
-                <p style={{ fontWeight: "500", fontSize: "18px" }}>Unlimited</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>Unlimited</p>
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Expiration</p>
-                <p style={{ fontWeight: "500", fontSize: "18px" }}>No Expiry</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>No Expiry</p>
               </div>
             </div>
             <div className='w-50'>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Discount Code</p>
-                <p style={{ fontWeight: "500", fontSize: "18px",color:"#006875" }}>SEAARABIA20 &nbsp;
+                <p style={{ fontWeight: "700", fontSize: "14px",color:"#006875" }}>SEAARABIA20 &nbsp;
                   <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="0 0 26 26" fill="none">
                     <path d="M6.5 11.916C6.5 8.85189 6.5 7.31982 7.4519 6.36792C8.40381 5.41602 9.93587 5.41602 13 5.41602H16.25C19.3141 5.41602 20.8462 5.41602 21.7981 6.36792C22.75 7.31982 22.75 8.85189 22.75 11.916V17.3327C22.75 20.3968 22.75 21.9289 21.7981 22.8808C20.8462 23.8327 19.3141 23.8327 16.25 23.8327H13C9.93587 23.8327 8.40381 23.8327 7.4519 22.8808C6.5 21.9289 6.5 20.3968 6.5 17.3327V11.916Z" stroke="#68727D" strokeWidth={2} />
                     <path d="M6.5 20.5827C4.70507 20.5827 3.25 19.1276 3.25 17.3327V10.8327C3.25 6.74718 3.25 4.70442 4.5192 3.43522C5.78841 2.16602 7.83116 2.16602 11.9167 2.16602H16.25C18.0449 2.16602 19.5 3.62109 19.5 5.41602" stroke="#68727D" strokeWidth={2} />
@@ -66,15 +67,15 @@ export default function DiscountView() {
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Specify Percentage</p>
-                <p style={{ fontWeight: "500", fontSize: "18px"}}>20 %</p>
+                <p style={{ fontWeight: "700", fontSize: "14px"}}>20 %</p>
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Usage</p>
-                <p style={{ fontWeight: "500", fontSize: "18px"}}>2 / Unlimited</p>
+                <p style={{ fontWeight: "700", fontSize: "14px"}}>2 / Unlimited</p>
               </div>
               <div>
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Validity Period</p>
-                <p style={{ fontWeight: "500", fontSize: "18px"}}>No Expiry</p>
+                <p style={{ fontWeight: "700", fontSize: "14px"}}>No Expiry</p>
               </div>
             </div>
           </div>
@@ -85,11 +86,11 @@ export default function DiscountView() {
               <p style={{ color: "#68727D", fontSize: "16px" }}>Services/Vendors</p>
              
               <div style={{border:"1px solid #EAEBF0",borderRadius:"6px",padding:"10px"}}>
-              <p style={{ fontWeight: "500", fontSize: "18px" }}>Spectre Company</p>
+              <p style={{ fontWeight: "700", fontSize: "14px" }}>Spectre Company</p>
                 <p className='typography-dicount-view'>( 1 of 1 Services Selected )</p>
               </div>
               <div style={{border:"1px solid #EAEBF0",borderRadius:"6px",padding:"10px",marginTop:"10px"}}>
-              <p style={{ fontWeight: "500", fontSize: "18px" }}>Salma international</p>
+              <p style={{ fontWeight: "700", fontSize: "14px" }}>Salma international</p>
                 <p className='typography-dicount-view'>( 1 of 3 Services Selected )</p>
               </div>
             </div>
@@ -100,13 +101,13 @@ export default function DiscountView() {
                             <div className='w-50'>
                                 <div>
                                     <p style={{ color: "#68727D", fontSize: "16px" }}>Purchase Requirements</p>
-                <p style={{ fontWeight: "500", fontSize: "18px" }}>No Minimum Requirements</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>No Minimum Requirements</p>
               </div>
             </div>
             <div className='w-50'>
               
                 <p style={{ color: "#68727D",fontSize:"16px" }}>Minimum Purchase Amount</p>
-                <p style={{ fontWeight: "500", fontSize: "18px"}}>No Minimum Requirements</p>
+                <p style={{ fontWeight: "700", fontSize: "14px"}}>No Minimum Requirements</p>
               </div>
             </div>
           </div>

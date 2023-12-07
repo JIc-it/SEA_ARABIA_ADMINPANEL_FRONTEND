@@ -26,6 +26,8 @@ import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
 import DiscountAddNew from "./Discounts/DiscountAddNew";
 import CustomerView from "./Customers/CustomerView";
+import CustomerEdit from "./Customers/CustomerEdit";
+import CustomersBookingView from "./Customers/CustomersBookingView";
 
 function AllRouting() {
   return (
@@ -57,6 +59,8 @@ function AllRouting() {
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
       <Route path="/customers/:id" element={<CustomerView />} />
+      <Route path="/customers-edit/:id" element={<CustomerEdit />} />
+      <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
       <Route path="/admin" element={<Admin />} />
