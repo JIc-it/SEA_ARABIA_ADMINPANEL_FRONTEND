@@ -16,9 +16,11 @@ import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { passwordRegex } from "../helpers";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { loginResetPassword } from "../services/authHandle";
 
 const ResetLoginPassword = () => {
+  const userID = useParams()?.id;
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const formik = useFormik({
@@ -46,20 +48,27 @@ const ResetLoginPassword = () => {
         .oneOf([Yup.ref("newPassword")], "Passwords must match"),
     }),
     onSubmit: async (values, helpers) => {
-      navigate(`/`);
-      //   try {
-      //     setIsLoading(true);
-      //     const response = await axios.post(`${baseUrl}/account/reset-passwordnew/`, {
-      //       user_id:' auth.userID',
-      //       new_password: values.newPassword,
-      //     });
-      //     toast.success("Password updated successfully. ");
-      //   } catch (err) {
-      //     console.log(err);
-      //     helpers.setStatus({ success: false });
-      //     helpers.setErrors({ submit: err.message });
-      //     helpers.setSubmitting(false);
-      //   }
+      if (!isLoading) {
+        setIsLoading(true);
+
+        loginResetPassword({
+          user_id: userID,
+          new_password: values.newPassword,
+        })
+          .then((data) => {
+            navigate(`/`);
+            // setIsLoading(false);
+            toast.success("Password reset successful.");
+          })
+          .catch((error) => {
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: error.response.data?.detail }); // Set the error message in formik
+            helpers.setSubmitting(false);
+            console.error("Error fetching lead data:", error);
+          });
+
+        setIsLoading(false);
+      }
     },
   });
   return (

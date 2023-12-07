@@ -1,12 +1,7 @@
 import React from "react";
-import "../static/css/site_visit.css";
-import DropZone from "./Common/DropZone";
-function CommonAddDetails({
-  title,
-  isAllowProceed,
-  setIsAllowProceed,
-  formik,
-}) {
+import DropZone from "../Common/DropZone";
+
+function NegotiationForm({ title, isAllowProceed, setIsAllowProceed, formik }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -28,15 +23,15 @@ function CommonAddDetails({
                           type="text"
                           className="form-control"
                           placeholder="Title"
-                          name="proposalTitle"
-                          value={formik.values.proposalTitle || ""}
+                          name="negotiationTitle"
+                          value={formik.values.negotiationTitle || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
-                        {formik.touched.proposalTitle &&
-                        formik.errors.proposalTitle ? (
+                        {formik.touched.negotiationTitle &&
+                        formik.errors.negotiationTitle ? (
                           <div className="error">
-                            {formik.errors.proposalTitle}
+                            {formik.errors.negotiationTitle}
                           </div>
                         ) : null}
                       </div>
@@ -49,20 +44,20 @@ function CommonAddDetails({
                         Notes
                       </label>
                       <textarea
-                        name="proposalNote"
-                        value={formik.values.proposalNote || ""}
+                        name="negotiationNote"
+                        value={formik.values.negotiationNote || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        id="proposalNote"
+                        id="negotiationNote"
                         cols="10"
                         rows="10"
                         placeholder="Notes"
                         className="form-control"
                       ></textarea>
-                      {formik.touched.proposalNote &&
-                      formik.errors.proposalNote ? (
+                      {formik.touched.negotiationNote &&
+                      formik.errors.negotiationNote ? (
                         <div className="error">
-                          {formik.errors.proposalNote}
+                          {formik.errors.negotiationNote}
                         </div>
                       ) : null}
                     </div>
@@ -80,17 +75,17 @@ function CommonAddDetails({
                         </label>
                         <input
                           type="date"
-                          name="proposalDate"
-                          value={formik.values.proposalDate || ""}
+                          name="negotiationDate"
+                          value={formik.values.negotiationDate || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                          id="proposalDate"
+                          id="negotiationDate"
                           className="form-control"
                         />
-                        {formik.touched.proposalDate &&
-                        formik.errors.proposalDate ? (
+                        {formik.touched.negotiationDate &&
+                        formik.errors.negotiationDate ? (
                           <div className="error">
-                            {formik.errors.proposalDate}
+                            {formik.errors.negotiationDate}
                           </div>
                         ) : null}
                       </div>
@@ -101,17 +96,17 @@ function CommonAddDetails({
                         </label>
                         <input
                           type="time"
-                          name="proposalTime"
-                          value={formik.values.proposalTime || ""}
+                          name="negotiationTime"
+                          value={formik.values.negotiationTime || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                          id="proposalDate"
+                          id="negotiationTime"
                           className="form-control"
                         />
-                        {formik.touched.proposalTime &&
-                        formik.errors.proposalTime ? (
+                        {formik.touched.negotiationTime &&
+                        formik.errors.negotiationTime ? (
                           <div className="error">
-                            {formik.errors.proposalTime}
+                            {formik.errors.negotiationTime}
                           </div>
                         ) : null}
                       </div>
@@ -127,4 +122,4 @@ function CommonAddDetails({
   );
 }
 
-export default CommonAddDetails;
+export default NegotiationForm;

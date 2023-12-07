@@ -13,42 +13,11 @@ import { OnboardContext } from "../../Context/OnboardContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { decrement, increment } from "../../state/counter/counterSlice";
+import NegotiationForm from "../Vendor_tabs/NegotiationForm";
+import CharterForm from "../Vendor_tabs/CharterForm";
 Modal.setAppElement("#root");
 
 function ProgressBar() {
-  const count = useSelector((state) => state.counter.value);
-  const { vendorId, isAllowProceed, setIsAllowProceed } =
-    useContext(OnboardContext);
-  console.log(vendorId);
-
-  const initialValueForSiteVisit = {
-    title: "",
-    files: [],
-  };
-
-  const validationSchemaForSiteVisit = Yup.object({
-    title: Yup.string().required("Title is required"),
-    files: Yup.array().required("Please upload at least one file"),
-    // Add validation for other fields here
-    // ...
-  });
-  // useEffect(() => {
-  //   setIsAllowProceed(true);
-  // }, []);
-  console.log(count);
-  const formik = useFormik({
-    initialValues: count === 2 || (count === 0 && initialValueForSiteVisit),
-    validationSchema: validationSchemaForSiteVisit,
-    onSubmit: (values) => {
-      // Handle form submission here
-      setIsAllowProceed(true);
-      console.log(values);
-    },
-  });
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [buttonState, setButtonState] = useState(true);
-
   const customStyles = {
     content: {
       top: "50%",
@@ -96,6 +65,137 @@ function ProgressBar() {
     width: "150px",
     fontWeight: 500,
   };
+  const [isOpen, setIsOpen] = useState(false);
+  const [buttonState, setButtonState] = useState(true);
+  const count = useSelector((state) => state.counter.value);
+  const { vendorId, isAllowProceed, setIsAllowProceed } =
+    useContext(OnboardContext);
+  // console.log(vendorId);
+  // const [validationSchema, setValidationSchema] = useState();
+
+  const initialValueForSiteVisit = {
+    title: "",
+    files: [],
+    note: "",
+    siteVisitTime: "",
+    siteVisitDate: "",
+    legalLiscence: false,
+    businessLiscence: false,
+    saftyQualification: false,
+    machineRunning: false,
+    insurance: false,
+    commitment: false,
+    ////////proposal/////////
+    // proposalTitle: "",
+    // // files: [],
+    // proposalNote: "",
+    // proposalTime: "",
+    // proposalDate: "",
+  };
+
+  const initialValueForProposals = {
+    proposalTitle: "",
+    files: [],
+    proposalNote: "",
+    proposalTime: "",
+    proposalDate: "",
+  };
+
+  const initialValueForNegotiation = {
+    negotiationTitle: "",
+    files: [],
+    negotiationNote: "",
+    negotiationTime: "",
+    negotiationDate: "",
+  };
+
+  const initialValueForCharter = {
+    charterTitle: "",
+    files: [],
+    charterNote: "",
+    charterTime: "",
+    charterDate: "",
+  };
+
+  const validationSchemaForSiteVisit = Yup.object({
+    title: Yup.string().required("Title is required"),
+    files: Yup.array().required("Please upload at least one file"),
+    note: Yup.string().required("Note is required"),
+    siteVisitTime: Yup.string().required("Time is required"),
+    siteVisitDate: Yup.string().required("Date is required"),
+    legalLiscence: Yup.boolean().oneOf([true], "Legal License is required"),
+    businessLiscence: Yup.boolean().oneOf(
+      [true],
+      "Business License is required"
+    ),
+    saftyQualification: Yup.boolean().oneOf(
+      [true],
+      "Safty Qualification is required"
+    ),
+    machineRunning: Yup.boolean().oneOf([true], "Machine Running is required"),
+    insurance: Yup.boolean().oneOf([true], "Insurance is required"),
+    commitment: Yup.boolean().oneOf([true], "Commitment is required"),
+  });
+
+  const validationSchemaForProposal = Yup.object({
+    proposalTitle: Yup.string().required("Title is required"),
+    files: Yup.array().required("Please upload at least one file"),
+    proposalNote: Yup.string().required("Note is required"),
+    proposalTime: Yup.string().required("Time is required"),
+    proposalDate: Yup.string().required("Date is required"),
+  });
+
+  const validationSchemaForNegotiation = Yup.object({
+    negotiationTitle: Yup.string().required("Title is required"),
+    files: Yup.array().required("Please upload at least one file"),
+    negotiationNote: Yup.string().required("Note is required"),
+    negotiationTime: Yup.string().required("Time is required"),
+    negotiationDate: Yup.string().required("Date is required"),
+  });
+
+  const validationSchemaForCharter = Yup.object({
+    charterTitle: Yup.string().required("Title is required"),
+    files: Yup.array().required("Please upload at least one file"),
+    charterNote: Yup.string().required("Note is required"),
+    charterTime: Yup.string().required("Time is required"),
+    charterDate: Yup.string().required("Date is required"),
+  });
+
+  const formik = useFormik({
+    initialValues:
+      count === 0
+        ? initialValueForSiteVisit
+        : count === 1
+        ? initialValueForSiteVisit
+        : count === 2
+        ? initialValueForSiteVisit
+        : count === 3
+        ? initialValueForProposals
+        : count === 4
+        ? initialValueForNegotiation
+        : count === 5
+        ? initialValueForCharter
+        : initialValueForProposals,
+    validationSchema:
+      count === 0
+        ? validationSchemaForSiteVisit
+        : count === 1
+        ? validationSchemaForSiteVisit
+        : count === 2
+        ? validationSchemaForSiteVisit
+        : count === 3
+        ? validationSchemaForProposal
+        : count === 4
+        ? validationSchemaForNegotiation
+        : count === 5
+        ? validationSchemaForCharter
+        : validationSchemaForProposal,
+    onSubmit: (values) => {
+      // Handle form submission here
+      setIsAllowProceed(true);
+      console.log(values);
+    },
+  });
 
   const handleConfirm = () => {
     setIsOpen(false);
@@ -104,7 +204,7 @@ function ProgressBar() {
   };
 
   const dispatch = useDispatch();
-
+  console.log(count);
   return (
     <div>
       <div className="col-12">
@@ -133,7 +233,7 @@ function ProgressBar() {
       </div>
       <div className="back_button col-2">
         <a
-          href="/"
+          href="/vendor-management"
           style={{ display: "flex", gap: "10px", textDecoration: "none" }}
         >
           <svg
@@ -197,9 +297,20 @@ function ProgressBar() {
               formik={formik}
             />
           )}
-          {count === 3 && <CommonAddDetails title="Add Proposal" />}
-          {count === 4 && <CommonAddDetails title="Add Negotation" />}
-          {count === 5 && <CommonAddDetails title="Add MOU / Charter" />}
+          {count === 3 && (
+            <CommonAddDetails
+              title="Add Proposal"
+              isAllowProceed={isAllowProceed}
+              setIsAllowProceed={setIsAllowProceed}
+              formik={formik}
+            />
+          )}
+          {count === 4 && (
+            <NegotiationForm title="Add Negotation" formik={formik} />
+          )}
+          {count === 5 && (
+            <CharterForm title="Add MOU / Charter" formik={formik} />
+          )}
           {count === 6 && <GoLive />}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           <div className="col-12 actions_menu">

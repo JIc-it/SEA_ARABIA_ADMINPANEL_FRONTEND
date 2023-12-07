@@ -1,12 +1,8 @@
 import React from "react";
-import "../static/css/site_visit.css";
-import DropZone from "./Common/DropZone";
-function CommonAddDetails({
-  title,
-  isAllowProceed,
-  setIsAllowProceed,
-  formik,
-}) {
+import DropZone from "../Common/DropZone";
+// import "../static/css/site_visit.css";
+
+function CharterForm({ title, isAllowProceed, setIsAllowProceed, formik }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -28,15 +24,15 @@ function CommonAddDetails({
                           type="text"
                           className="form-control"
                           placeholder="Title"
-                          name="proposalTitle"
-                          value={formik.values.proposalTitle || ""}
+                          name="charterTitle"
+                          value={formik.values.charterTitle || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
-                        {formik.touched.proposalTitle &&
-                        formik.errors.proposalTitle ? (
+                        {formik.touched.charterTitle &&
+                        formik.errors.charterTitle ? (
                           <div className="error">
-                            {formik.errors.proposalTitle}
+                            {formik.errors.charterTitle}
                           </div>
                         ) : null}
                       </div>
@@ -49,20 +45,20 @@ function CommonAddDetails({
                         Notes
                       </label>
                       <textarea
-                        name="proposalNote"
-                        value={formik.values.proposalNote || ""}
+                        name="charterNote"
+                        value={formik.values.charterNote || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        id="proposalNote"
+                        id="charterNote"
                         cols="10"
                         rows="10"
                         placeholder="Notes"
                         className="form-control"
                       ></textarea>
-                      {formik.touched.proposalNote &&
-                      formik.errors.proposalNote ? (
+                      {formik.touched.charterNote &&
+                      formik.errors.charterNote ? (
                         <div className="error">
-                          {formik.errors.proposalNote}
+                          {formik.errors.charterNote}
                         </div>
                       ) : null}
                     </div>
@@ -80,17 +76,17 @@ function CommonAddDetails({
                         </label>
                         <input
                           type="date"
-                          name="proposalDate"
-                          value={formik.values.proposalDate || ""}
+                          name="charterDate"
+                          value={formik.values.charterDate || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                          id="proposalDate"
+                          id="charterDate"
                           className="form-control"
                         />
-                        {formik.touched.proposalDate &&
-                        formik.errors.proposalDate ? (
+                        {formik.touched.charterDate &&
+                        formik.errors.charterDate ? (
                           <div className="error">
-                            {formik.errors.proposalDate}
+                            {formik.errors.charterDate}
                           </div>
                         ) : null}
                       </div>
@@ -101,17 +97,17 @@ function CommonAddDetails({
                         </label>
                         <input
                           type="time"
-                          name="proposalTime"
-                          value={formik.values.proposalTime || ""}
+                          name="charterTime"
+                          value={formik.values.charterTime || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                          id="proposalDate"
+                          id="charterTime"
                           className="form-control"
                         />
-                        {formik.touched.proposalTime &&
-                        formik.errors.proposalTime ? (
+                        {formik.touched.charterTime &&
+                        formik.errors.charterTime ? (
                           <div className="error">
-                            {formik.errors.proposalTime}
+                            {formik.errors.charterTime}
                           </div>
                         ) : null}
                       </div>
@@ -127,4 +123,4 @@ function CommonAddDetails({
   );
 }
 
-export default CommonAddDetails;
+export default CharterForm;

@@ -47,11 +47,8 @@ const DropZone = ({ formik }) => {
             <p style={{ fontSize: "13px" }}>Upload Document (Max 50Mb) </p>
           </div>
         </div>
-
       </section>
-      {formik.values &&
-        formik.values.touched &&
-        formik.values.touched.files &&
+      {formik?.values?.touched?.files &&
         formik.errors &&
         formik.errors.files && (
           <div style={{ color: "red", marginTop: "5px" }}>

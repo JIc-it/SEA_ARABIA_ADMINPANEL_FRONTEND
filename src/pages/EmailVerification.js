@@ -6,6 +6,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import LoginImageContainer from "../components/LoginImageContainer";
 import CopyWrite from "../components/CopyWrite";
 import { useNavigate } from "react-router";
+import { getOTPFromEmail } from "../services/authHandle";
 
 const EmailVerification = () => {
   const navigate = useNavigate();
@@ -23,33 +24,29 @@ const EmailVerification = () => {
     }),
     onSubmit: async (values, helpers) => {
       try {
-        navigate(`/verification`);
-        //   setIsLoading(true);
-        //   auth.setEmailForForgetPassword(values.emailVerification);
-        //   const handleResetPassword = async () => {
-        //     try {
-        //       const response = await axios.post(`${baseUrl}/account/request-otp/`, {
-        //         email: values.emailVerification,
-        //       });
-        //       toast.success(response.data.detail);
-        //       console.log("test userid", response.data.user_id);
-        //       auth.setUserID(response.data.user_id);
-        //       router.push("/auth/verification-code");
-        //     } catch (error) {
-        //       console.log(error);
-        //     } finally {
-        //       setIsLoading(false); // Reset loading state when the request is complete
-        //     }
-        //   };
-        //   handleResetPassword();
+        setIsLoading(true);
+        getOTPFromEmail(values.emailVerification)
+          .then((data) => {
+            navigate(`/verification/${values.emailVerification}/${data.user_id}`);
+            setIsLoading(false);
+          })
+          .catch((error) => {
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: error.response.data?.detail }); // Set the error message in formik
+            helpers.setSubmitting(false);
+            console.error("Error fetching lead data:", error);
+          });
+
+        setIsLoading(false);
       } catch (err) {
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        // helpers.setErrors({ submit: err.message });
         helpers.setSubmitting(false);
         setIsLoading(false); // Reset loading state on error
       }
     },
   });
+  console.log(formik.errors.submit);
   return (
     <div className="contaier-fluid" style={{ overflowX: "hidden" }}>
       <div className="row">

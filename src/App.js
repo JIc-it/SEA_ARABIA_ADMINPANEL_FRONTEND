@@ -28,8 +28,8 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/email-verification" element={<EmailVerification />} />
-          <Route path="/verification" element={<VerificationCode />} />
-          <Route path="/resetpassword" element={<ResetLoginPassword />} />
+          <Route path="/verification/:id/:userId" element={<VerificationCode />} />
+          <Route path="/resetpassword/:id" element={<ResetLoginPassword />} />
           <Route path="/*" element={<MainPage />} />
         </Routes>
       </div>

@@ -3,7 +3,7 @@ import axiosInstance from "./authHandle";
 const vendorLeadUrl = "/account/vendor-create";
 const getVendorListUrl = "/account/vendor-list";
 const getVendorStatusUrl = "/company/orderstatus-list";
-const getVendorServiceUrl='/company/servicetag-list'
+const getVendorServiceUrl='/main/category-list'
 
 export const createVenderLead = (data) => {
   return axiosInstance

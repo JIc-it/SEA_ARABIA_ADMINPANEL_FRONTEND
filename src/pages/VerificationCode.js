@@ -19,9 +19,15 @@ import CopyWrite from "../components/CopyWrite";
 import { passwordRegex } from "../helpers";
 import LoginImageContainer from "../components/LoginImageContainer";
 import CircularProgress from "@mui/material/CircularProgress";
-import { useNavigate } from "react-router";
+import { useNavigate, useParams } from "react-router";
+import { getOTPFromEmail, verifyOTP } from "../services/authHandle";
+import { toast } from "react-toastify";
 
 const VerificationCode = () => {
+  const params = useParams();
+  const verificationEmail = params?.id;
+  const userID = params?.userId;
+
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const formik = useFormik({
@@ -35,37 +41,33 @@ const VerificationCode = () => {
         .required("Verification Code is required."),
     }),
     onSubmit: async (values, helpers) => {
-      setIsLoading(true);
-      navigate(`/resetpassword`);
-      // try {
-      //   const response = await axios.post(`${baseUrl}/account/verify-otp/`, {
-      //     // user_id: '',
-      //     // otp: values.verificationCode,
-      //   });
-      //   if (response.data) {
-      //     setIsLoading(false);
-      //   } else {
-      //     setIsLoading(false);
-      //   }
-      // } catch (err) {
-      //   setIsLoading(false);
-      //   console.log(err);
-      //   helpers.setStatus({ success: false });
-      //   helpers.setErrors({ submit: err.response.data.detail });
-      //   helpers.setSubmitting(false);
-      // }
+      if (!isLoading) {
+        setIsLoading(true);
+
+        verifyOTP({ otp: values.verificationCode, user_id: userID })
+          .then((data) => {
+            navigate(`/resetpassword/${userID}`);
+            // setIsLoading(false);
+          })
+          .catch((error) => {
+            helpers.setStatus({ success: false });
+            helpers.setErrors({ submit: error.response.data?.detail }); // Set the error message in formik
+            helpers.setSubmitting(false);
+            console.error("Error fetching lead data:", error);
+          });
+
+        setIsLoading(false);
+      }
     },
   });
 
   const handleResendEmail = async () => {
-    //   try {
-    //     const response = await axios.post(`${baseUrl}/account/request-otp/`, {
-    //       email: '',
-    //     });
-    //     toast.success(response.data.detail);
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
+    getOTPFromEmail(verificationEmail)
+      .then((data) => {})
+      .catch((error) => {
+        toast.error(error.response.data?.detail);
+        console.error("Error fetching lead data:", error);
+      });
   };
 
   // useEffect(() => {
@@ -154,14 +156,16 @@ const VerificationCode = () => {
                 <Stack spacing={1} sx={{ mb: 1 }}>
                   <h6 style={{ fontSize: "14px", fontWeight: "400" }}>
                     {" "}
-                    The verification code has been sent to
-                    <span style={{ color: "#2176FF" }}></span>
+                    The verification code has been sent to {""}
+                    <span style={{ color: "#2176FF" }}>
+                      {verificationEmail}
+                    </span>
                   </h6>
                 </Stack>
                 <Stack spacing={1} sx={{ mb: 2 }}>
                   <div style={{ display: "flex" }}>
                     <Link
-                      href="/auth/email-verification"
+                      href="/email-verification"
                       underline="hover"
                       variant="subtitle2"
                     >

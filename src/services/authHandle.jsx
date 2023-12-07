@@ -5,6 +5,9 @@ const REFRESH_URL = "api/token/refresh/";
 const VERIFY_URL = "api/token/verify/";
 const GENERATE_URL = "api/token/";
 const LOGOUT_URL = "api/token/blacklist/";
+const getOTPFromEmailUrl = "account/request-otp/";
+const verifyOTPUrl = "/account/verify-otp/";
+const resetPasswordUrl = "/account/reset-passwordnew/";
 // const permissionURL = 'account/custom_permission/retrieve';
 
 const axiosInstance = axios.create({
@@ -114,6 +117,16 @@ export const logoutRequest = (data) => {
     });
 };
 
+export const getOTPFromEmail = (email) => {
+  return axiosInstance
+    .post(getOTPFromEmailUrl, { email: email })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while logout:", error);
+      throw error;
+    });
+};
+
 // export const getModulePermission = (id) => {
 //     return axiosInstance
 //         .get(`${permissionURL}/${id}/`)
@@ -123,3 +136,23 @@ export const logoutRequest = (data) => {
 //             throw error;
 //         });
 // };
+
+export const verifyOTP = (data) => {
+  return axiosInstance
+    .post(verifyOTPUrl, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while logout:", error);
+      throw error;
+    });
+};
+
+export const loginResetPassword = (data) => {
+  return axiosInstance
+    .post(resetPasswordUrl, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while logout:", error);
+      throw error;
+    });
+};

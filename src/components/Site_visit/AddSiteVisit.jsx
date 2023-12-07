@@ -24,9 +24,9 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                       </label>
                       <input
                         type="text"
-                        name="title"
                         className="form-control"
                         placeholder="Title"
+                        name="title"
                         value={formik.values.title || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
@@ -37,12 +37,9 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                     </div>
                     <div className="col-lg-12">
                       <DropZone formik={formik} />
-                      {/* {formikProps.touched.files &&
-                        formikProps.errors.files && (
-                          <div style={{ color: "red", marginTop: "5px" }}>
-                            {formikProps.errors.files}
-                          </div>
-                        )} */}
+                      {formik.touched.files && formik.errors.files ? (
+                        <div className="error">{formik.errors.files}</div>
+                      ) : null}
                     </div>
                   </div>
                   <div className="summary">
@@ -50,16 +47,19 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                       Notes
                     </label>
                     <textarea
-                      name=""
+                      name="note"
                       id=""
                       cols="10"
                       rows="10"
                       placeholder="Notes"
                       className="form-control"
+                      value={formik.values.note || ""}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     ></textarea>
-                     {formik.touched.title && formik.errors.title ? (
-                        <div className="error">{formik.errors.title}</div>
-                      ) : null}
+                    {formik.touched.note && formik.errors.note ? (
+                      <div className="error">{formik.errors.note}</div>
+                    ) : null}
                   </div>
                   <div
                     className="col-lg-12"
@@ -75,10 +75,19 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                       </label>
                       <input
                         type="date"
-                        name=""
                         id=""
                         className="form-control"
+                        name="siteVisitDate"
+                        value={formik.values.siteVisitDate || ""}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
+                      {formik.touched.siteVisitDate &&
+                      formik.errors.siteVisitDate ? (
+                        <div className="error">
+                          {formik.errors.siteVisitDate}
+                        </div>
+                      ) : null}
                     </div>
 
                     <div style={{ width: "48%" }}>
@@ -87,10 +96,19 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                       </label>
                       <input
                         type="time"
-                        name=""
+                        name="siteVisitTime"
+                        value={formik.values.siteVisitTime || ""}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         id=""
                         className="form-control"
                       />
+                      {formik.touched.siteVisitTime &&
+                      formik.errors.siteVisitTime ? (
+                        <div className="error">
+                          {formik.errors.siteVisitTime}
+                        </div>
+                      ) : null}
                     </div>
                   </div>
 
@@ -156,12 +174,21 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="legalLiscence"
+                              id="legalLiscence"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.legalLiscence}
                             />
                           </div>
                         </div>
+                        {formik.touched.legalLiscence &&
+                        formik.errors.legalLiscence ? (
+                          <div className="error">
+                            {formik.errors.legalLiscence}
+                          </div>
+                        ) : null}
                         <div className="qualification_1">
                           <div className="svg_box">
                             <svg
@@ -224,12 +251,21 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="saftyQualification"
+                              id="saftyQualification"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.saftyQualification}
                             />
                           </div>
                         </div>
+                        {formik.touched.saftyQualification &&
+                        formik.errors.saftyQualification ? (
+                          <div className="error">
+                            {formik.errors.saftyQualification}
+                          </div>
+                        ) : null}
                         <div className="qualification_1">
                           <div className="svg_box">
                             <svg
@@ -268,12 +304,18 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="insurance"
+                              id="insurance"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.insurance}
                             />
                           </div>
                         </div>
+                        {formik.touched.insurance && formik.errors.insurance ? (
+                          <div className="error">{formik.errors.insurance}</div>
+                        ) : null}
                       </div>
                       <div className="qualification_row">
                         <div className="qualification_1">
@@ -320,12 +362,21 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="businessLiscence"
+                              id="businessLiscence"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.businessLiscence}
                             />
                           </div>
                         </div>
+                        {formik.touched.businessLiscence &&
+                        formik.errors.businessLiscence ? (
+                          <div className="error">
+                            {formik.errors.businessLiscence}
+                          </div>
+                        ) : null}
                         <div className="qualification_1">
                           <div className="svg_box">
                             <svg
@@ -361,12 +412,21 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="machineRunning"
+                              id="machineRunning"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.machineRunning}
                             />
                           </div>
                         </div>
+                        {formik.touched.machineRunning &&
+                        formik.errors.machineRunning ? (
+                          <div className="error">
+                            {formik.errors.machineRunning}
+                          </div>
+                        ) : null}
                         <div className="qualification_1">
                           <div className="svg_box">
                             <svg
@@ -421,12 +481,21 @@ function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
                           <div className="qualification_checkbox">
                             <input
                               type="checkbox"
-                              name=""
-                              id=""
+                              name="commitment"
+                              id="commitment"
                               className="form-check-input"
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.commitment}
                             />
                           </div>
                         </div>
+                        {formik.touched.commitment &&
+                        formik.errors.commitment ? (
+                          <div className="error">
+                            {formik.errors.commitment}
+                          </div>
+                        ) : null}
                       </div>
                     </div>
                   </div>
