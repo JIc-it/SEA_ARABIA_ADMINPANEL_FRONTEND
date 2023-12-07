@@ -21,13 +21,13 @@ import UserVendors from "../pages/Users/UserVendors";
 import SalesRepresentatives from "../pages/Users/SalesRepresentatives";
 import Admin from "../pages/Users/Admin";
 import Review from "../pages/Review";
-import AddOnServices from "../pages/AddOnServices";
 import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
 import DiscountAddNew from "./Discounts/DiscountAddNew";
 import CustomerView from "./Customers/CustomerView";
 import CustomerEdit from "./Customers/CustomerEdit";
 import CustomersBookingView from "./Customers/CustomersBookingView";
+import AddOnServiceList from "./AddOnService/AddOnServiceList";
 
 function AllRouting() {
   return (
@@ -66,7 +66,7 @@ function AllRouting() {
       <Route path="/admin" element={<Admin />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
-      <Route path="/add-on-services" element={<AddOnServices />} />
+      <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
     </Routes>
   );
