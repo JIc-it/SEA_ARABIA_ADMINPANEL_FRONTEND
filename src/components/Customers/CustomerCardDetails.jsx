@@ -13,7 +13,7 @@ function CustomerCardDetails() {
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details")
   return (
-    <div className={isMobileView ? "d-flex flex-wrap" : "d-flex justify-content-between"}>
+    <div className={isMobileView ? "d-flex flex-column" : "d-flex justify-content-between"}>
       <div className={isMobileView ? "col-12 my-2" : "col-5 my-2"}>
         <div className="card personal_details">
           <div className="card-body">
@@ -98,7 +98,7 @@ function CustomerCardDetails() {
 
             <div className="bottom_button">
               <a className="call_vendor_button btn ">
-                Call Vendor &nbsp;
+                Call Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
@@ -123,7 +123,7 @@ function CustomerCardDetails() {
                 </svg>
               </a>
               <a className="mail_vendor_button btn btn-outline">
-                Mail Vendor &nbsp;
+                Mail Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
