@@ -13,7 +13,7 @@ import CustomerCardDetails from './CustomerCardDetails';
         <div className="col-12">
         <div className="row row-cards">
           <div className="breadcrumbs">
-            <p>Customers</p>
+            <p>Users</p>
             <span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"

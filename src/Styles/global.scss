@@ -82,3 +82,31 @@ line-height: 20px; /* 142.857% */
   border:none;
   box-shadow: 0 0 0 3px rgb(112, 112, 241)
 }
+
+.booking-confirmed{
+color: #08A747;
+font-family: Roboto;
+font-size: 20px;
+font-style: normal;
+font-weight: 600;
+line-height: 32px; /* 160% */
+letter-spacing: -0.2px;
+text-transform: capitalize;
+}
+
+.call_customer_button {
+  background-color: #fff;
+  width: 200px;
+  color: black;
+  font-weight: 700;
+  border-radius: 6px;
+  height: 45px;
+}
+
+.centered-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 30vh; /* Optionally, set the height to the full viewport height */
+}
