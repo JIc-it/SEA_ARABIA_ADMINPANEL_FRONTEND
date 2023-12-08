@@ -1,6 +1,9 @@
 @import "vendormanagement.scss";
 @import "common.scss";
 
+body{
+  background-color: #DDECEE;
+}
 .switch {
   position: relative;
   display: inline-block;
@@ -137,3 +140,31 @@ text-transform: capitalize;
   height: 50vh;
   overflow: scroll;
 }
+
+.left_header_new {
+  border-radius: 2px;
+  background: radial-gradient(
+    1436.15% 56.58% at 10.92% 35.35%,
+    #168d9c 0%,
+    #006875 100%
+  );
+  height: 110px;
+  font-size: 17px;
+}
+
+.call_vendor_button_customer{
+  background-color: black;
+  width: 200px;
+  color: white;
+  font-weight: 700;
+  border-radius: 6px;
+  height: 45px;
+}
+.call_customer_button_customer:hover{
+  background-color: white;
+  color: black;
+}
+.hover-background:hover{
+  opacity: 0.6;
+}
+

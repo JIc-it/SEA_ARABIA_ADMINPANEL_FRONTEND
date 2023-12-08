@@ -1,6 +1,6 @@
 import { Offcanvas } from "react-bootstrap";
 import DropZone from "../Common/DropZone";
-function AddSiteVisitModal({ show, close }) {
+function AddSiteVisitModal({ show, close,title }) {
   return (
     <Offcanvas
       show={show}
@@ -12,7 +12,7 @@ function AddSiteVisitModal({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Site Visit </Offcanvas.Title>
+        <Offcanvas.Title>Add {title} </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="">
         <div style={{ margin: "20px" }}>

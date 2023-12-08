@@ -6,6 +6,7 @@ import { useState } from "react";
 import Avatars from "../../assets/images/Avatar.png"
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import AddSiteVisitModal from "../Modal/AddSiteVisitModal";
 
 function UserVendorCardDetails() {
     const navigate = useNavigate()
@@ -13,6 +14,11 @@ function UserVendorCardDetails() {
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const [active, setActive] = useState("Services")
     const [isToggled, setToggled] = useState(true);
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
+
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
     const handleToggle = () => {
         setToggled(!isToggled);
@@ -21,10 +27,10 @@ function UserVendorCardDetails() {
     return (
         <div className={isMobileView ? "d-flex flex-column" : "d-flex justify-content-between"} style={{ height: "100vh" }}>
             <div className={isMobileView ? "col-12 my-2" : "col-5 my-2"}>
-                <div className="card personal_details">
-                    <div className="card-body">
+                <div className="card personal_details" style={{height:"fit-content"}}>
+                    <div className="card-body" >
 
-                        <div className="left_header">
+                        <div className="left_header_new">
                             <div>
                                 <p className="card_content">Achille Lauro</p>
                             </div>
@@ -137,10 +143,15 @@ function UserVendorCardDetails() {
                                 </div>
                             </div>
                         </div>
+                        <button className="btn  mt-2 px-4 py-2 mt-4 mb-2" style={{ backgroundColor: "#187AF7", color: "white",width:"100%" }}>Bookings &nbsp;
+                            <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                            </svg>
+                                </button>
 
                         <div className="bottom_button">
                             <a className="call_vendor_button btn ">
-                                Call Customer &nbsp;
+                                Call Vendor &nbsp;
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="20"
@@ -165,7 +176,7 @@ function UserVendorCardDetails() {
                                 </svg>
                             </a>
                             <a className="mail_vendor_button btn btn-outline">
-                                Mail Customer &nbsp;
+                                Mail Vendor &nbsp;
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     width="20"
@@ -186,22 +197,22 @@ function UserVendorCardDetails() {
                 </div>
             </div>
             <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>
-                <div className="card personal_details">
+                <div className="card personal_details" style={{height:"fit-content"}}>
                     <div className="card-body">
                         <div>
-                            <Button style={{ color: active === "Services" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Services")}>Services</Button>
-                            <Button style={{ color: active === "Vendor Details" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Vendor Details")}>Vendor Details</Button>
-                            <Button style={{ color: active === "Site Visits" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Site Visits")}>Site Visits</Button>
-                            <Button style={{ color: active === "Proposals" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Proposals")}>Proposals</Button>
-                            <Button style={{ color: active === "Negotiations" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Negotiations")}>Negotiations</Button>
-                            <Button style={{ color: active === "MOU / Charter" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("MOU / Charter")}>MOU / Charter</Button>
-                            <Button style={{ color: active === "Miscellaneous" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Miscellaneous")}>Miscellaneous</Button>
+                            <Button style={{ color: active === "Services" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Services" ? "2px solid #006875" : "", }} onClick={() => setActive("Services")}>Services</Button>
+                            <Button style={{ color: active === "Vendor Details" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Vendor Details" ? "2px solid #006875" : "",  }} onClick={() => setActive("Vendor Details")}>Vendor Details</Button>
+                            <Button style={{ color: active === "Site Visits" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Site Visits" ? "2px solid #006875" : "",  }} onClick={() => setActive("Site Visits")}>Site Visits</Button>
+                            <Button style={{ color: active === "Proposals" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Proposals" ? "2px solid #006875" : "",  }} onClick={() => setActive("Proposals")}>Proposals</Button>
+                            <Button style={{ color: active === "Negotiations" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Negotiations" ? "2px solid #006875" : "",  }} onClick={() => setActive("Negotiations")}>Negotiations</Button>
+                            <Button style={{ color: active === "MOU / Charter" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "MOU / Charter" ? "2px solid #006875" : "",  }} onClick={() => setActive("MOU / Charter")}>MOU / Charter</Button>
+                            <Button style={{ color: active === "Miscellaneous" ? "#006875" : "black", textTransform: "capitalize",borderBottom:active === "Miscellaneous" ? "2px solid #006875" : "",  }} onClick={() => setActive("Miscellaneous")}>Miscellaneous</Button>
 
                         </div>
 
                         {active === "Services" &&
                             <>
-                                <button onClick={() => navigate("/customers-edit/12345")} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Service &nbsp;
+                                <button onClick={() => navigate("/user-vendor/add-service/")} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Service &nbsp;
                                     <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
                                         <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
@@ -239,7 +250,7 @@ function UserVendorCardDetails() {
                                                         }}
                                                     >
                                                         <Link
-                                                            to={"/customers/booking/12345"}
+                                                            to={""}
                                                             className="btn btn-sm btn-dark"
                                                             style={{ padding: "2px 10px", borderRadius: "4px" }}
                                                         >
@@ -270,8 +281,8 @@ function UserVendorCardDetails() {
                             </>
                         }
 
-                        {active === "Vendor Details" && <div className="overflow-scroll-container">
-                            <button onClick={() => navigate("/customers-edit/12345")} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Edit Details &nbsp;
+                        {active === "Vendor Details" && <div>
+                            <button onClick={() => navigate("/user-vendor/edit/12345")} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Edit Details &nbsp;
                                 <svg xmlns="http://www.w3.org/2000/svg" width={15} height={15} viewBox="0 0 21 20" fill="none">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M3.2085 18.333C3.2085 17.9878 3.48832 17.708 3.8335 17.708H17.1668C17.512 17.708 17.7918 17.9878 17.7918 18.333C17.7918 18.6782 17.512 18.958 17.1668 18.958H3.8335C3.48832 18.958 3.2085 18.6782 3.2085 18.333Z" fill="white" />
                                     <path d="M9.31094 13.1837C9.52306 13.0183 9.71547 12.8259 10.1002 12.4411L15.0308 7.51054C14.3597 7.23124 13.5649 6.77246 12.8133 6.02078C12.0615 5.26898 11.6027 4.47405 11.3234 3.80293L6.39271 8.73359L6.39269 8.73361C6.00794 9.11837 5.81554 9.31076 5.65009 9.52288C5.45492 9.77311 5.28759 10.0439 5.15106 10.3303C5.03532 10.5732 4.94928 10.8313 4.7772 11.3475L3.8698 14.0698C3.78511 14.3238 3.85123 14.6039 4.04058 14.7932C4.22993 14.9826 4.51002 15.0487 4.76406 14.964L7.48628 14.0566C8.00251 13.8845 8.26063 13.7985 8.50348 13.6828C8.78996 13.5462 9.06071 13.3789 9.31094 13.1837Z" fill="white" />
@@ -385,88 +396,376 @@ function UserVendorCardDetails() {
                             </div>
                         </div>}
 
-                        {active === "Incident Log" && <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
-                            <div className="table-responsive" >
-                                <table className="table" >
-                                    <thead>
-                                        <tr>
-                                            <th>Ticket ID</th>
-                                            <th>Type</th>
-                                            <th>Date</th>
-                                            <th>Status</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td className="text-dark">#SS56DG2355D</td>
-                                            <td className="text-dark">Cancellation</td>
-                                            <td className="text-dark">08 OCT,2023</td>
-                                            <td>
-                                                <svg width={80} height={30} viewBox="0 0 87 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <g filter="url(#filter0_d_759_15542)">
-                                                        <path d="M2.5 10.6C2.5 7.23969 2.5 5.55953 3.15396 4.27606C3.7292 3.14708 4.64708 2.2292 5.77606 1.65396C7.05953 1 8.73969 1 12.1 1H74.9C78.2603 1 79.9405 1 81.2239 1.65396C82.3529 2.2292 83.2708 3.14708 83.846 4.27606C84.5 5.55953 84.5 7.23969 84.5 10.6V23.4C84.5 26.7603 84.5 28.4405 83.846 29.7239C83.2708 30.8529 82.3529 31.7708 81.2239 32.346C79.9405 33 78.2603 33 74.9 33H12.1C8.73969 33 7.05953 33 5.77606 32.346C4.64708 31.7708 3.7292 30.8529 3.15396 29.7239C2.5 28.4405 2.5 26.7603 2.5 23.4V10.6Z" fill="#FFBC3A" />
-                                                        <path d="M23.0627 18.4657H20.5958V17.1705H23.0627C23.4922 17.1705 23.8394 17.1011 24.1041 16.9622C24.3688 16.8233 24.5619 16.6324 24.6833 16.3894C24.8092 16.1421 24.8721 15.86 24.8721 15.5433C24.8721 15.2439 24.8092 14.964 24.6833 14.7036C24.5619 14.439 24.3688 14.2263 24.1041 14.0658C23.8394 13.9052 23.4922 13.825 23.0627 13.825H21.097V22H19.4633V12.5232H23.0627C23.796 12.5232 24.4187 12.6534 24.9307 12.9137C25.447 13.1697 25.8397 13.5256 26.1088 13.9812C26.3778 14.4324 26.5123 14.9488 26.5123 15.5303C26.5123 16.1421 26.3778 16.6671 26.1088 17.1054C25.8397 17.5436 25.447 17.8799 24.9307 18.1143C24.4187 18.3486 23.796 18.4657 23.0627 18.4657ZM30.9342 22.1302C30.4135 22.1302 29.9426 22.0456 29.5217 21.8763C29.1052 21.7028 28.7494 21.4619 28.4543 21.1539C28.1636 20.8458 27.9401 20.4835 27.7839 20.0669C27.6277 19.6503 27.5496 19.2012 27.5496 18.7196V18.4592C27.5496 17.9081 27.6299 17.4091 27.7904 16.9622C27.951 16.5153 28.1744 16.1334 28.4608 15.8167C28.7472 15.4956 29.0857 15.2504 29.4762 15.0812C29.8667 14.9119 30.2898 14.8273 30.7454 14.8273C31.2487 14.8273 31.6892 14.9119 32.0667 15.0812C32.4442 15.2504 32.7566 15.489 33.004 15.7971C33.2556 16.1009 33.4422 16.4632 33.5637 16.8841C33.6895 17.305 33.7525 17.7693 33.7525 18.277V18.9474H28.3111V17.8214H32.2034V17.6977C32.1947 17.4156 32.1383 17.151 32.0341 16.9036C31.9343 16.6563 31.7803 16.4567 31.572 16.3048C31.3637 16.1529 31.086 16.077 30.7389 16.077C30.4785 16.077 30.2464 16.1334 30.0425 16.2462C29.8428 16.3547 29.6758 16.5131 29.5413 16.7214C29.4068 16.9297 29.3026 17.1813 29.2289 17.4764C29.1594 17.7671 29.1247 18.0947 29.1247 18.4592V18.7196C29.1247 19.0277 29.1659 19.314 29.2484 19.5787C29.3352 19.8391 29.461 20.0669 29.6259 20.2622C29.7908 20.4574 29.9904 20.6115 30.2247 20.7243C30.459 20.8328 30.7259 20.887 31.0253 20.887C31.4028 20.887 31.7391 20.8111 32.0341 20.6592C32.3292 20.5073 32.5852 20.2925 32.8022 20.0148L33.6288 20.8154C33.4769 21.0367 33.2795 21.2493 33.0365 21.4533C32.7935 21.6529 32.4963 21.8156 32.1448 21.9414C31.7977 22.0673 31.3941 22.1302 30.9342 22.1302ZM36.6317 16.461V22H35.0631V14.9575H36.5406L36.6317 16.461ZM36.3518 18.2184L35.8441 18.2119C35.8485 17.7129 35.9179 17.2551 36.0524 16.8385C36.1913 16.422 36.3822 16.064 36.6252 15.7646C36.8725 15.4652 37.1676 15.2352 37.5104 15.0746C37.8532 14.9098 38.235 14.8273 38.6559 14.8273C38.9944 14.8273 39.3003 14.875 39.5737 14.9705C39.8514 15.0616 40.0879 15.2113 40.2831 15.4196C40.4827 15.6279 40.6346 15.8991 40.7388 16.2332C40.8429 16.563 40.895 16.9687 40.895 17.4504V22H39.3198V17.4438C39.3198 17.1054 39.2699 16.8385 39.1701 16.6433C39.0747 16.4437 38.9337 16.3026 38.7471 16.2202C38.5648 16.1334 38.337 16.09 38.0636 16.09C37.7946 16.09 37.5538 16.1464 37.3412 16.2592C37.1286 16.3721 36.9485 16.5261 36.8009 16.7214C36.6577 16.9166 36.5471 17.1423 36.469 17.3983C36.3909 17.6543 36.3518 17.9277 36.3518 18.2184ZM46.8919 20.542V12.0025H48.4671V22H47.0416L46.8919 20.542ZM42.3097 18.5569V18.4202C42.3097 17.8864 42.3727 17.4005 42.4985 16.9622C42.6243 16.5196 42.8066 16.1399 43.0452 15.8232C43.2839 15.5021 43.5746 15.2569 43.9174 15.0877C44.2602 14.9141 44.6464 14.8273 45.076 14.8273C45.5012 14.8273 45.8744 14.9098 46.1955 15.0746C46.5166 15.2395 46.79 15.476 47.0156 15.7841C47.2412 16.0878 47.4213 16.4523 47.5558 16.8776C47.6903 17.2985 47.7858 17.7671 47.8422 18.2835V18.7196C47.7858 19.2229 47.6903 19.6829 47.5558 20.0994C47.4213 20.516 47.2412 20.8761 47.0156 21.1799C46.79 21.4836 46.5144 21.718 46.189 21.8828C45.8679 22.0477 45.4925 22.1302 45.063 22.1302C44.6377 22.1302 44.2537 22.0412 43.9109 21.8633C43.5725 21.6854 43.2839 21.4359 43.0452 21.1148C42.8066 20.7937 42.6243 20.4162 42.4985 19.9823C42.3727 19.544 42.3097 19.0689 42.3097 18.5569ZM43.8784 18.4202V18.5569C43.8784 18.878 43.9066 19.1774 43.963 19.4551C44.0237 19.7328 44.117 19.9779 44.2429 20.1906C44.3687 20.3988 44.5314 20.5637 44.731 20.6852C44.935 20.8024 45.178 20.861 45.46 20.861C45.8158 20.861 46.1087 20.7829 46.3387 20.6266C46.5687 20.4704 46.7487 20.26 46.8789 19.9953C47.0134 19.7263 47.1046 19.4269 47.1523 19.0971V17.919C47.1263 17.663 47.072 17.4243 46.9896 17.203C46.9115 16.9817 46.8052 16.7886 46.6706 16.6237C46.5361 16.4545 46.3691 16.3243 46.1695 16.2332C45.9742 16.1378 45.742 16.09 45.473 16.09C45.1866 16.09 44.9436 16.1508 44.744 16.2723C44.5444 16.3938 44.3795 16.5608 44.2494 16.7734C44.1235 16.9861 44.0302 17.2334 43.9695 17.5154C43.9087 17.7975 43.8784 18.0991 43.8784 18.4202ZM51.8865 14.9575V22H50.3114V14.9575H51.8865ZM50.2073 13.109C50.2073 12.8703 50.2854 12.6729 50.4416 12.5167C50.6021 12.3561 50.8234 12.2759 51.1055 12.2759C51.3832 12.2759 51.6023 12.3561 51.7629 12.5167C51.9234 12.6729 52.0037 12.8703 52.0037 13.109C52.0037 13.3433 51.9234 13.5386 51.7629 13.6948C51.6023 13.851 51.3832 13.9291 51.1055 13.9291C50.8234 13.9291 50.6021 13.851 50.4416 13.6948C50.2854 13.5386 50.2073 13.3433 50.2073 13.109ZM55.2605 16.461V22H53.6918V14.9575H55.1693L55.2605 16.461ZM54.9806 18.2184L54.4729 18.2119C54.4772 17.7129 54.5467 17.2551 54.6812 16.8385C54.82 16.422 55.011 16.064 55.254 15.7646C55.5013 15.4652 55.7964 15.2352 56.1392 15.0746C56.4819 14.9098 56.8638 14.8273 57.2847 14.8273C57.6232 14.8273 57.9291 14.875 58.2024 14.9705C58.4801 15.0616 58.7166 15.2113 58.9119 15.4196C59.1115 15.6279 59.2634 15.8991 59.3675 16.2332C59.4717 16.563 59.5237 16.9687 59.5237 17.4504V22H57.9486V17.4438C57.9486 17.1054 57.8987 16.8385 57.7989 16.6433C57.7034 16.4437 57.5624 16.3026 57.3758 16.2202C57.1936 16.1334 56.9658 16.09 56.6924 16.09C56.4234 16.09 56.1825 16.1464 55.9699 16.2592C55.7573 16.3721 55.5772 16.5261 55.4297 16.7214C55.2865 16.9166 55.1758 17.1423 55.0977 17.3983C55.0196 17.6543 54.9806 17.9277 54.9806 18.2184ZM65.7355 14.9575H67.1609V21.8047C67.1609 22.4383 67.0264 22.9763 66.7574 23.4189C66.4883 23.8615 66.113 24.1978 65.6313 24.4278C65.1497 24.6621 64.5921 24.7793 63.9586 24.7793C63.6895 24.7793 63.3901 24.7402 63.0604 24.6621C62.7349 24.584 62.4182 24.4582 62.1101 24.2846C61.8063 24.1154 61.5525 23.8919 61.3486 23.6142L62.084 22.6899C62.3357 22.9893 62.6134 23.2085 62.9172 23.3473C63.2209 23.4862 63.5398 23.5556 63.874 23.5556C64.2341 23.5556 64.54 23.4883 64.7917 23.3538C65.0477 23.2237 65.2451 23.0306 65.384 22.7745C65.5229 22.5185 65.5923 22.2061 65.5923 21.8373V16.5521L65.7355 14.9575ZM60.9515 18.5569V18.4202C60.9515 17.8864 61.0166 17.4005 61.1468 16.9622C61.277 16.5196 61.4635 16.1399 61.7065 15.8232C61.9495 15.5021 62.2446 15.2569 62.5917 15.0877C62.9389 14.9141 63.3316 14.8273 63.7698 14.8273C64.2254 14.8273 64.6138 14.9098 64.9349 15.0746C65.2603 15.2395 65.5315 15.476 65.7485 15.7841C65.9655 16.0878 66.1347 16.4523 66.2562 16.8776C66.382 17.2985 66.4753 17.7671 66.5361 18.2835V18.7196C66.4796 19.2229 66.3842 19.6829 66.2497 20.0994C66.1152 20.516 65.9372 20.8761 65.7159 21.1799C65.4946 21.4836 65.2213 21.718 64.8958 21.8828C64.5747 22.0477 64.1951 22.1302 63.7568 22.1302C63.3272 22.1302 62.9389 22.0412 62.5917 21.8633C62.2489 21.6854 61.9539 21.4359 61.7065 21.1148C61.4635 20.7937 61.277 20.4162 61.1468 19.9823C61.0166 19.544 60.9515 19.0689 60.9515 18.5569ZM62.5201 18.4202V18.5569C62.5201 18.878 62.5505 19.1774 62.6113 19.4551C62.6763 19.7328 62.774 19.9779 62.9042 20.1906C63.0387 20.3988 63.2079 20.5637 63.4118 20.6852C63.6201 20.8024 63.8653 20.861 64.1473 20.861C64.5162 20.861 64.8177 20.7829 65.0521 20.6266C65.2907 20.4704 65.473 20.26 65.5988 19.9953C65.729 19.7263 65.8201 19.4269 65.8722 19.0971V17.919C65.8461 17.663 65.7919 17.4243 65.7094 17.203C65.6313 16.9817 65.525 16.7886 65.3905 16.6237C65.256 16.4545 65.0868 16.3243 64.8828 16.2332C64.6789 16.1378 64.4381 16.09 64.1603 16.09C63.8783 16.09 63.6331 16.1508 63.4249 16.2723C63.2166 16.3938 63.0452 16.5608 62.9107 16.7734C62.7805 16.9861 62.6829 17.2334 62.6178 17.5154C62.5527 17.7975 62.5201 18.0991 62.5201 18.4202Z" fill="white" />
-                                                    </g>
-                                                    <defs>
-                                                        <filter id="filter0_d_759_15542" x="0.5" y={0} width={86} height={36} filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-                                                            <feFlood floodOpacity={0} result="BackgroundImageFix" />
-                                                            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha" />
-                                                            <feOffset dy={1} />
-                                                            <feGaussianBlur stdDeviation={1} />
-                                                            <feComposite in2="hardAlpha" operator="out" />
-                                                            <feColorMatrix type="matrix" values="0 0 0 0 0.0627451 0 0 0 0 0.0941176 0 0 0 0 0.156863 0 0 0 0.04 0" />
-                                                            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_759_15542" />
-                                                            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_759_15542" result="shape" />
-                                                        </filter>
-                                                    </defs>
-                                                </svg>
+                        {active === "Site Visits" && 
+                       <div>
+                         <button onClick={()=>handleOpenOffcanvas()} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Site Visit &nbsp;
+                         <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                        <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                    </svg>
 
-                                            </td>
-                                            <td
-                                                style={{
-                                                    display: "flex",
-                                                    gap: "10px",
-                                                    alignItems: "baseline",
-                                                }}
-                                            >
-                                                <Link
-                                                    to={"/customers/12345"}
-                                                    className="btn btn-sm btn-info"
-                                                    style={{ padding: "2px 10px", borderRadius: "4px" }}
-                                                >
-                                                    View &nbsp;
-                                                    <svg
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="10"
-                                                        height="10"
-                                                        viewBox="0 0 16 16"
-                                                        fill="none"
+                            </button>
+                            <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
+                                    <div className="table-responsive" >
+                                        <table className="table" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="d-flex text-dark">
+                                                        <p className="mx-2">Site Visit 1</p>
+                                                    </td>
+                                                    <td className="text-dark">18 JAN 2021</td>
+                                                    <td className="text-dark">10:00 AM</td>
+                                                   
+                                                    <td
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "10px",
+                                                            alignItems: "baseline",
+                                                        }}
                                                     >
-                                                        <path
-                                                            d="M4 12L12 4M12 4H6M12 4V10"
-                                                            stroke="white"
-                                                            strokeWidth="1.5"
-                                                            strokeLinecap="round"
-                                                            strokeLinejoin="round"
-                                                        />
-                                                    </svg>
-                                                </Link>
-                                            </td>
+                                                        <Link
+                                                            to={""}
+                                                            className="btn btn-sm btn-dark"
+                                                            style={{ padding: "2px 10px", borderRadius: "4px" }}
+                                                        >
+                                                            View &nbsp;
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 16 16"
+                                                                fill="none"
+                                                            >
+                                                                <path
+                                                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                                                    stroke="white"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
 
-                                            <td>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 20 20" fill="none">
-                                                    <path d="M5.83333 9.99967C5.83333 10.9201 5.08714 11.6663 4.16667 11.6663C3.24619 11.6663 2.5 10.9201 2.5 9.99967C2.5 9.0792 3.24619 8.33301 4.16667 8.33301C5.08714 8.33301 5.83333 9.0792 5.83333 9.99967Z" fill="#2E3030" />
-                                                    <path d="M11.6667 9.99967C11.6667 10.9201 10.9205 11.6663 10 11.6663C9.07952 11.6663 8.33333 10.9201 8.33333 9.99967C8.33333 9.0792 9.07952 8.33301 10 8.33301C10.9205 8.33301 11.6667 9.0792 11.6667 9.99967Z" fill="#2E3030" />
-                                                    <path d="M17.5 9.99967C17.5 10.9201 16.7538 11.6663 15.8333 11.6663C14.9129 11.6663 14.1667 10.9201 14.1667 9.99967C14.1667 9.0792 14.9129 8.33301 15.8333 8.33301C16.7538 8.33301 17.5 9.0792 17.5 9.99967Z" fill="#2E3030" />
-                                                </svg>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                                </div>
+                                {showOffcanvas && (
+                                    <AddSiteVisitModal
+                                    title={active}
+                                        show={showOffcanvas}
+                                        close={handleCloseOffcanvas}
+                                       
+                                    />
+                                )}
+                        </div>
+                        }
+                        {active === "Proposals" && 
+                       <div>
+                         <button onClick={()=>handleOpenOffcanvas()} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Proposal &nbsp;
+                         <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                        <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                    </svg>
 
-                        </div>}
+                            </button>
+                            <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
+                                    <div className="table-responsive" >
+                                        <table className="table" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="d-flex text-dark">
+                                                        <p className="mx-2">Proposal 1</p>
+                                                    </td>
+                                                    <td className="text-dark">18 JAN 2021</td>
+                                                    <td className="text-dark">10:00 AM</td>
+                                                   
+                                                    <td
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "10px",
+                                                            alignItems: "baseline",
+                                                        }}
+                                                    >
+                                                        <Link
+                                                            to={""}
+                                                            className="btn btn-sm btn-dark"
+                                                            style={{ padding: "2px 10px", borderRadius: "4px" }}
+                                                        >
+                                                            View &nbsp;
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 16 16"
+                                                                fill="none"
+                                                            >
+                                                                <path
+                                                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                                                    stroke="white"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                {showOffcanvas && (
+                                    <AddSiteVisitModal
+                                    title={active}
+                                        show={showOffcanvas}
+                                        close={handleCloseOffcanvas}
+                                       
+                                    />
+                                )}
+                        </div>
+                        }
+                        {active === "Negotiations" && 
+                       <div>
+                         <button onClick={()=>handleOpenOffcanvas()} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Negotiation &nbsp;
+                         <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                        <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                    </svg>
+
+                            </button>
+                            <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
+                                    <div className="table-responsive" >
+                                        <table className="table" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="d-flex text-dark">
+                                                        <p className="mx-2">Negotiation 1</p>
+                                                    </td>
+                                                    <td className="text-dark">18 JAN 2021</td>
+                                                    <td className="text-dark">10:00 AM</td>
+                                                   
+                                                    <td
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "10px",
+                                                            alignItems: "baseline",
+                                                        }}
+                                                    >
+                                                        <Link
+                                                            to={""}
+                                                            className="btn btn-sm btn-dark"
+                                                            style={{ padding: "2px 10px", borderRadius: "4px" }}
+                                                        >
+                                                            View &nbsp;
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 16 16"
+                                                                fill="none"
+                                                            >
+                                                                <path
+                                                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                                                    stroke="white"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                {showOffcanvas && (
+                                    <AddSiteVisitModal
+                                    title={active}
+                                        show={showOffcanvas}
+                                        close={handleCloseOffcanvas}
+                                       
+                                    />
+                                )}
+                        </div>
+                        }
+                        {active === "MOU / Charter" && 
+                       <div>
+                         <button onClick={()=>handleOpenOffcanvas()} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add MOU / Charter&nbsp;
+                         <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                        <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                    </svg>
+
+                            </button>
+                            <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
+                                    <div className="table-responsive" >
+                                        <table className="table" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Date</th>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="d-flex text-dark">
+                                                        <p className="mx-2">Charter</p>
+                                                    </td>
+                                                    <td className="text-dark">18 JAN 2021</td>
+                                                    <td className="text-dark">10:00 AM</td>
+                                                   
+                                                    <td
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "10px",
+                                                            alignItems: "baseline",
+                                                        }}
+                                                    >
+                                                        <Link
+                                                            to={""}
+                                                            className="btn btn-sm btn-dark"
+                                                            style={{ padding: "2px 10px", borderRadius: "4px" }}
+                                                        >
+                                                            View &nbsp;
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 16 16"
+                                                                fill="none"
+                                                            >
+                                                                <path
+                                                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                                                    stroke="white"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                {showOffcanvas && (
+                                    <AddSiteVisitModal
+                                    title={active}
+                                        show={showOffcanvas}
+                                        close={handleCloseOffcanvas}
+                                       
+                                    />
+                                )}
+                        </div>
+                        }
+                        {active === "Miscellaneous" && 
+                       <div>
+                         <button onClick={()=>handleOpenOffcanvas()} className="btn  mt-2 px-4 py-2" style={{ backgroundColor: "#187AF7", color: "white" }}>Add Attach./ Note &nbsp;
+                         <svg width={15} height={15} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M10 3L10 17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                        <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+                                    </svg>
+
+                            </button>
+                            <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">
+                                    <div className="table-responsive" >
+                                        <table className="table" >
+                                            <thead>
+                                                <tr>
+                                                    <th>Title</th>
+                                                    <th>Type</th>
+                                                    <th>Time</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td className="d-flex text-dark">
+                                                        <p className="mx-2">SV01</p>
+                                                    </td>
+                                                    <td className="text-dark">Document</td>
+                                                    <td className="text-dark">10:00 AM</td>
+                                                   
+                                                    <td
+                                                        style={{
+                                                            display: "flex",
+                                                            gap: "10px",
+                                                            alignItems: "baseline",
+                                                        }}
+                                                    >
+                                                        <Link
+                                                            to={""}
+                                                            className="btn btn-sm btn-dark"
+                                                            style={{ padding: "2px 10px", borderRadius: "4px" }}
+                                                        >
+                                                            View &nbsp;
+                                                            <svg
+                                                                xmlns="http://www.w3.org/2000/svg"
+                                                                width="10"
+                                                                height="10"
+                                                                viewBox="0 0 16 16"
+                                                                fill="none"
+                                                            >
+                                                                <path
+                                                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                                                    stroke="white"
+                                                                    strokeWidth="1.5"
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                />
+                                                            </svg>
+                                                        </Link>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                                {showOffcanvas && (
+                                    <AddSiteVisitModal
+                                    title={active}
+                                        show={showOffcanvas}
+                                        close={handleCloseOffcanvas}
+                                       
+                                    />
+                                )}
+                        </div>
+                        }
                     </div>
                 </div>
             </div>
