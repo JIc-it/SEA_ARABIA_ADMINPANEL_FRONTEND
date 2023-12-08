@@ -31,6 +31,8 @@ import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
 import ServiceList from "./Service/ServiceList";
 import ServiceView from "./Service/ServiceView";
+import UserVendorEdit from "../components/UserVendor/UserVendorEdit"
+import UserVendorAddService from "../components/UserVendor/UserVendorAddService"
 
 function AllRouting() {
   return (
