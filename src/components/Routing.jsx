@@ -29,8 +29,8 @@ import CustomerEdit from "./Customers/CustomerEdit";
 import CustomersBookingView from "./Customers/CustomersBookingView";
 import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
-import UserVendorEdit from "./UserVendor/UserVendorEdit";
-import UserVendorAddService from "./UserVendor/UserVendorAddService";
+import ServiceList from "./Service/ServiceList";
+import ServiceView from "./Service/ServiceView";
 
 function AllRouting() {
   return (
@@ -74,6 +74,8 @@ function AllRouting() {
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
+      <Route path="/service" element={<ServiceList />} />
+      <Route path="/service-view" element={<ServiceView />} />
     </Routes>
   );
 }
