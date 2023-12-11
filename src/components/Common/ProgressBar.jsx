@@ -78,7 +78,7 @@ function ProgressBar() {
   const count = useSelector((state) => state.counter.value);
   const { vendorId, isAllowProceed, setIsAllowProceed } =
     useContext(OnboardContext);
-
+const [userdata,setUserData]=useState([])
   // console.log(vendorId);
   // const [validationSchema, setValidationSchema] = useState();
 

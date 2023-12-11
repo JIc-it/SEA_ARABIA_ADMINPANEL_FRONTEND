@@ -41,6 +41,7 @@ const AddVendorInfo = ({ formik }) => {
         console.error("Error fetching  data:", error);
       });
   }, []);
+  console.log(idTypeList,serviceTagList,"idlist");
 
   // const validationSchema = Yup.object().shape({
   //   fullName: Yup.string().required("Full Name is required"),

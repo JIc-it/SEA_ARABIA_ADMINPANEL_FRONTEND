@@ -1,11 +1,39 @@
+import { useContext, useEffect, useState } from "react";
+import {
+  getIndivitualVendorDetail,
+  getUserIdType,
+  getVendorListById,
+  getVendorServiceTag,
+} from "../../services/leadMangement";
+import { OnboardContext } from "../../Context/OnboardContext";
+
+
+
+
 function VendorDetailsCard() {
+  const { vendorId, isAllowProceed, setIsAllowProceed } =
+  useContext(OnboardContext);
+  const [userdata,setUser]=useState([])
+
+  useEffect(()=>{
+    getVendorListById(vendorId)
+    .then((data) => {
+      console.log(data);
+     setUser(data)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+  },[vendorId])
+  
+  console.log(userdata,"user");
   return (
     <div className="col-4">
       <div className="card personal_details">
         <div className="card-body">
           <div className="left_header">
             <div>
-              <p className="card_content">Achille Lauro</p>
+              <p className="card_content" style={{textTransform:"capitalize"}}>{userdata?.first_name}</p>
             </div>
             <div className="card_header_contents">
               <p className="card_content">
@@ -44,7 +72,7 @@ function VendorDetailsCard() {
                     fill="white"
                   />
                 </svg>{" "}
-                &nbsp; Vendor <span>| &nbsp;</span>
+                &nbsp; {userdata?.role} <span>| &nbsp;</span>
               </p>
               <p className="card_content">
                 <svg
@@ -61,7 +89,7 @@ function VendorDetailsCard() {
                     fill="white"
                   />
                 </svg>{" "}
-                &nbsp; Kuwait
+                &nbsp; {userdata?.location}
               </p>
             </div>
           </div>
@@ -70,11 +98,11 @@ function VendorDetailsCard() {
             <div className="col-12">
               <div className="vendor_info">
                 <p className="heading_name">Email</p>
-                <p>achille@gmail.com</p>
+                <p>{userdata?.email}</p>
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Phone</p>
-                <p>+9087654321</p>
+                <p>{userdata?.mobile}</p>
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Id Number</p>

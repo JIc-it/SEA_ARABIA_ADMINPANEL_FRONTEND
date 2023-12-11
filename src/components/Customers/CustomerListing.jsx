@@ -1,7 +1,8 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import filterIcon from "../../static/img/Filter.png"
+import { getCustomerist } from '../../services/CustomerHandle'
 
 export default function CustomerListing() {
     const navigate=useNavigate()
@@ -10,6 +11,20 @@ export default function CustomerListing() {
     const handleToggle = () => {
       setToggled(!isToggled);
     }
+const [listDiscount,setListDiscount]=useState([])
+
+useEffect(() => {
+  getCustomerist()
+    .then((data) => {
+      console.log(data);
+      setListDiscount(data.results);
+    })
+    .catch((error) => {
+      console.error("Error fetching distributor data:", error);
+    });
+}, []);
+
+
   return (
     <div style={{height:"100vh"}}>
     <div className="col-12 actions_menu my-2 px-3">
@@ -259,22 +274,22 @@ export default function CustomerListing() {
               </tr>
             </thead>
             <tbody>
-              {/* {listDiscount && listDiscount.length > 0 ? ( */}
+              {listDiscount && listDiscount.length > 0 ? (
                 <>
-                  {/* {listDiscount.map((item, index) => { */}
-                    {/* let formatedDate = item.created_at;
-                    return ( */}
+                  {listDiscount.map((item, index) => {
+                    let formatedDate = item.created_at;
+                    return ( 
                       <tr>
                         <td>
                           <span className="text-secondary">
-                            Alex
+                            {item.first_name}
                           </span>
                         </td>
                         <td>
-                          <span className="text-secondary">example@example.com</span>
+                          <span className="text-secondary">{item.email}</span>
                         </td>
                         <td>
-                          <span className="text-secondary">+919876543210</span>
+                          <span className="text-secondary">{item.mobile}</span>
                         </td>
                         <td>
                           <span className="text-secondary">
@@ -326,14 +341,14 @@ export default function CustomerListing() {
                         </td>
                 
                       </tr>
-                    {/* ); */}
-                  {/* })} */}
+                     );
+                  })} 
                 </>
-              {/* ) : (
+               ) : (
                 <tr>
                   <td className="error">No Records Found</td>
                 </tr>
-              )} */}
+              )} 
             </tbody>
           </table>
         </div>
