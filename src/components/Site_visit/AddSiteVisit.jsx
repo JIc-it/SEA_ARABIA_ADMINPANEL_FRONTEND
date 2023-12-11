@@ -4,7 +4,7 @@ import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-function AddSiteVisit({ isAllowProceed, setIsAllowProceed, formik }) {
+function AddSiteVisit({  formik }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">

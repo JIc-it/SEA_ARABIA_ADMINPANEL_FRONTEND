@@ -3,7 +3,10 @@ import axiosInstance from "./authHandle";
 const vendorLeadUrl = "/account/vendor-create";
 const getVendorListUrl = "/account/vendor-list";
 const getVendorStatusUrl = "/company/orderstatus-list";
-const getVendorServiceUrl='/main/category-list'
+const getVendorServiceUrl = "/main/category-list";
+const getIndivitualVendorListUrl = "/account/vendor-list-details";
+const getIndivitualVendorUrl = "/account/vendor-details";
+const idTypeUrl = "/account/userid-type";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -38,6 +41,36 @@ export const getVendorStatus = () => {
 export const getVendorServiceTag = () => {
   return axiosInstance
     .get(getVendorServiceUrl)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getVendorListById = (id) => {
+  return axiosInstance
+    .get(`${getIndivitualVendorListUrl}/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getIndivitualVendorDetail = (id) => {
+  return axiosInstance
+    .get(`${getIndivitualVendorUrl}/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getUserIdType = () => {
+  return axiosInstance
+    .get(`${idTypeUrl}`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

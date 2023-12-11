@@ -1,12 +1,7 @@
 import React from "react";
 import "../static/css/site_visit.css";
 import DropZone from "./Common/DropZone";
-function CommonAddDetails({
-  title,
-  isAllowProceed,
-  setIsAllowProceed,
-  formik,
-}) {
+function CommonAddDetails({ title, formik }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">

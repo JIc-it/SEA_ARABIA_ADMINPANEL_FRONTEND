@@ -96,16 +96,16 @@ export default function ModalPop({ setIsAllowProceed, isAllowProceed }) {
           borderRadius: "6px",
           width: "120px",
         }}
-        onClick={() => {
-          console.log(count);
-          if (isAllowProceed && count >= 1) {
-            setIsOpen(true);
-            setIsAllowProceed(false);
-          }
-          if ( count === 0) {
-            setIsOpen(true);
-          }
-        }}
+        // onClick={() => {
+        //   console.log(count);
+        //   if (isAllowProceed && count >= 1) {
+        //     setIsOpen(true);
+        //     setIsAllowProceed(false);
+        //   }
+        //   if ( count === 0) {
+        //     setIsOpen(true);
+        //   }
+        // }}
         type="button"
       >
         Proceed

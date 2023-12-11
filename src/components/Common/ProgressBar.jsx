@@ -15,6 +15,13 @@ import * as Yup from "yup";
 import { decrement, increment } from "../../state/counter/counterSlice";
 import NegotiationForm from "../Vendor_tabs/NegotiationForm";
 import CharterForm from "../Vendor_tabs/CharterForm";
+import AddVendorInfo from "../Initial_contact/AddVendorForm";
+import {
+  getIndivitualVendorDetail,
+  getUserIdType,
+  getVendorListById,
+  getVendorServiceTag,
+} from "../../services/leadMangement";
 Modal.setAppElement("#root");
 
 function ProgressBar() {
@@ -65,13 +72,79 @@ function ProgressBar() {
     width: "150px",
     fontWeight: 500,
   };
+  const [serviceTagList, setServiceTagList] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [buttonState, setButtonState] = useState(true);
   const count = useSelector((state) => state.counter.value);
   const { vendorId, isAllowProceed, setIsAllowProceed } =
     useContext(OnboardContext);
+
   // console.log(vendorId);
   // const [validationSchema, setValidationSchema] = useState();
+
+  var initialValueForInitialContact = {
+    fullName: "",
+    phone: "",
+    email: "",
+    location: "",
+    idType: "",
+    idNumber: "",
+    companyName: "",
+    companyAddress: "",
+    companyRegistrationNumber: "",
+    companyWebsite: "",
+    defineServices: [],
+    thirdPartyService: false,
+  };
+
+  useEffect(() => {
+    // getVendorListById(vendorId)
+    //   .then((data) => {
+    //     console.log(data);
+
+    //   })
+    //   .catch((error) => {
+    //     console.error("Error fetching  data:", error);
+    //   });
+
+    getVendorListById(vendorId)
+      .then((data) => {
+        console.log(data);
+        formik.setFieldValue("fullName", data.first_name);
+        formik.setFieldValue("email", data.email);
+        formik.setFieldValue("phone", data.mobile);
+        formik.setFieldValue("location", data.location);
+        formik.setFieldValue("idType", data?.useridentificationdata?.id_type);
+        formik.setFieldValue(
+          "idNumber",
+          data?.useridentificationdata?.id_number
+        );
+        formik.setFieldValue("companyName", data?.company_company_user?.name);
+        formik.setFieldValue(
+          "companyAddress",
+          data?.company_company_user?.address
+        );
+        formik.setFieldValue(
+          "companyRegistrationNumber",
+          data?.company_company_user?.registration_number
+        );
+        formik.setFieldValue(
+          "companyWebsite",
+          data?.company_company_user?.website
+        );
+        formik.setFieldValue(
+          "defineServices",
+          data?.company_company_user?.service_summary
+        );
+        formik.setFieldValue(
+          "thirdPartyService",
+          data?.company_company_user?.third_party_ownership
+        );
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
   const initialValueForSiteVisit = {
     title: "",
@@ -116,6 +189,28 @@ function ProgressBar() {
     charterTime: "",
     charterDate: "",
   };
+
+  const validationSchemaForInitialContact = Yup.object().shape({
+    fullName: Yup.string().required("Full Name is required"),
+    phone: Yup.string().required("Phone is required"),
+    email: Yup.string()
+      .email("Invalid email address")
+      .required("Email is required"),
+    location: Yup.string().required("Location is required"),
+    idType: Yup.string().required("ID Type is required"),
+    idNumber: Yup.string().required("ID Number is required"),
+    companyName: Yup.string().required("Company Name is required"),
+    companyAddress: Yup.string().required("Company Address is required"),
+    companyRegistrationNumber: Yup.string().required(
+      "Company Registration Number is required"
+    ),
+    companyWebsite: Yup.string()
+      .url("Invalid URL")
+      .required("Company Website is required"),
+    defineServices: Yup.array()
+      .min(1, "At least one service must be selected") // Adjust the minimum number of selected services as needed
+      .required("Define Services is required"),
+  });
 
   const validationSchemaForSiteVisit = Yup.object({
     title: Yup.string().required("Title is required"),
@@ -166,7 +261,7 @@ function ProgressBar() {
       count === 0
         ? initialValueForSiteVisit
         : count === 1
-        ? initialValueForSiteVisit
+        ? initialValueForInitialContact
         : count === 2
         ? initialValueForSiteVisit
         : count === 3
@@ -180,7 +275,7 @@ function ProgressBar() {
       count === 0
         ? validationSchemaForSiteVisit
         : count === 1
-        ? validationSchemaForSiteVisit
+        ? validationSchemaForInitialContact
         : count === 2
         ? validationSchemaForSiteVisit
         : count === 3
@@ -190,17 +285,85 @@ function ProgressBar() {
         : count === 5
         ? validationSchemaForCharter
         : validationSchemaForProposal,
-    onSubmit: (values) => {
+    onSubmit: async (values) => {
+      setIsOpen(true);
       // Handle form submission here
-      setIsAllowProceed(true);
+      // setIsAllowProceed(true);
       console.log(values);
+
+      // Example: Submit API request based on count
+      // switch (count) {
+      //   case 0:
+      //   case 1:
+      //   case 2:
+      //     // API logic for Site Visit
+      //     try {
+      //       const response = await submitSiteVisit(values);
+      //       console.log("API response:", response);
+      //       // Handle success or error
+      //     } catch (error) {
+      //       console.error("API error:", error);
+      //       // Handle error
+      //     }
+      //     break;
+
+      //   case 3:
+      //     // API logic for Proposal
+      //     try {
+      //       const response = await submitProposal(values);
+      //       console.log("API response:", response);
+      //       // Handle success or error
+      //     } catch (error) {
+      //       console.error("API error:", error);
+      //       // Handle error
+      //     }
+      //     break;
+
+      //   case 4:
+      //     // API logic for Negotiation
+      //     try {
+      //       const response = await submitNegotiation(values);
+      //       console.log("API response:", response);
+      //       // Handle success or error
+      //     } catch (error) {
+      //       console.error("API error:", error);
+      //       // Handle error
+      //     }
+      //     break;
+
+      //   case 5:
+      //     // API logic for Charter
+      //     try {
+      //       const response = await submitCharter(values);
+      //       console.log("API response:", response);
+      //       // Handle success or error
+      //     } catch (error) {
+      //       console.error("API error:", error);
+      //       // Handle error
+      //     }
+      //     break;
+
+      //   default:
+      //     break;
+      // }
     },
   });
+  console.log(formik);
+  useEffect(() => {
+    getVendorServiceTag()
+      .then((data) => {
+        setServiceTagList(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
   const handleConfirm = () => {
     setIsOpen(false);
     buttonState ? dispatch(increment()) : dispatch(decrement());
     setButtonState(true);
+    // setIsAllowProceed(false);
   };
 
   const dispatch = useDispatch();
@@ -264,7 +427,7 @@ function ProgressBar() {
       </div>
       <form onSubmit={formik.handleSubmit}>
         <div
-          className="card col-lg-12 header-content"
+          className="card header-content"
           style={{
             borderRadius: "10px",
             backgroundColor: "#E9F2FA",
@@ -289,21 +452,10 @@ function ProgressBar() {
               </div>
             </div>
           </div>
-          {count === 1 && <AddVendorDetails />}
-          {count === 2 && (
-            <AddSiteVisit
-              isAllowProceed={isAllowProceed}
-              setIsAllowProceed={setIsAllowProceed}
-              formik={formik}
-            />
-          )}
+          {count === 1 && <AddVendorInfo formik={formik} />}
+          {count === 2 && <AddSiteVisit formik={formik} />}
           {count === 3 && (
-            <CommonAddDetails
-              title="Add Proposal"
-              isAllowProceed={isAllowProceed}
-              setIsAllowProceed={setIsAllowProceed}
-              formik={formik}
-            />
+            <CommonAddDetails title="Add Proposal" formik={formik} />
           )}
           {count === 4 && (
             <NegotiationForm title="Add Negotation" formik={formik} />
@@ -313,102 +465,104 @@ function ProgressBar() {
           )}
           {count === 6 && <GoLive />}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
-          <div className="col-12 actions_menu">
-            <div style={{ display: "flex", gap: "20px" }}>
-              {count >= 1 && (
+          {count != 6 && (
+            <div className="col-12 actions_menu">
+              <div style={{ display: "flex", gap: "20px" }}>
+                {count >= 1 && (
+                  <button
+                    className="btn"
+                    style={{
+                      backgroundColor: "#FFF",
+                      color: "black",
+                      borderRadius: "6px",
+                      width: "120px",
+                    }}
+                    onClick={() => {
+                      setIsOpen(true);
+                      setButtonState(false);
+                    }}
+                  >
+                    Revert
+                  </button>
+                )}
                 <button
                   className="btn"
+                  type="submit"
                   style={{
-                    backgroundColor: "#FFF",
-                    color: "black",
+                    backgroundColor: "#006875",
+                    color: "white",
                     borderRadius: "6px",
                     width: "120px",
                   }}
                   onClick={() => {
-                    setIsOpen(true);
-                    setButtonState(false);
+                    // console.log(count, isAllowProceed);
+                    // if (isAllowProceed && count >= 1) {
+                    //   setIsOpen(true);
+                    //   setIsAllowProceed(false);
+                    // }
+                    // if (count === 0) {
+                    count === 0 && setIsOpen(true);
+                    // }
                   }}
                 >
-                  Revert
+                  Proceed
                 </button>
-              )}
-              <button
-                className="btn"
-                type="submit"
-                style={{
-                  backgroundColor: "#006875",
-                  color: "white",
-                  borderRadius: "6px",
-                  width: "120px",
-                }}
-                onClick={() => {
-                  console.log(count, isAllowProceed);
-                  if (isAllowProceed && count >= 1) {
-                    setIsOpen(true);
-                    setIsAllowProceed(false);
-                  }
-                  if (count === 0) {
-                    setIsOpen(true);
-                  }
-                }}
-              >
-                Proceed
-              </button>
-              <Modal
-                isOpen={isOpen}
-                onRequestClose={() => setIsOpen(false)}
-                style={customStyles}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="32"
-                  height="32"
-                  viewBox="0 0 32 32"
-                  fill="none"
+                <Modal
+                  isOpen={isOpen}
+                  onRequestClose={() => setIsOpen(false)}
+                  style={customStyles}
                 >
-                  <path
-                    d="M16.0003 21.3477V14.681M16.0003 10.681V10.6677M29.3337 16.0013C29.3337 23.3651 23.3641 29.3346 16.0003 29.3346C8.63653 29.3346 2.66699 23.3651 2.66699 16.0013C2.66699 8.63751 8.63653 2.66797 16.0003 2.66797C23.3641 2.66797 29.3337 8.63751 29.3337 16.0013Z"
-                    stroke="#252525"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-                <div style={{ marginTop: "5px" }}>
-                  <div style={{ display: "flex", flexDirection: "column" }}>
-                    <p style={paraHeaderStyle}>Confirm The Action</p>
-                    <p style={paragraphStyle}>
-                      {buttonState
-                        ? "Are you sure you want to proceed"
-                        : "Are you sure want to revert"}
-                    </p>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                  >
+                    <path
+                      d="M16.0003 21.3477V14.681M16.0003 10.681V10.6677M29.3337 16.0013C29.3337 23.3651 23.3641 29.3346 16.0003 29.3346C8.63653 29.3346 2.66699 23.3651 2.66699 16.0013C2.66699 8.63751 8.63653 2.66797 16.0003 2.66797C23.3641 2.66797 29.3337 8.63751 29.3337 16.0013Z"
+                      stroke="#252525"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                  <div style={{ marginTop: "5px" }}>
+                    <div style={{ display: "flex", flexDirection: "column" }}>
+                      <p style={paraHeaderStyle}>Confirm The Action</p>
+                      <p style={paragraphStyle}>
+                        {buttonState
+                          ? "Are you sure you want to proceed"
+                          : "Are you sure want to revert"}
+                      </p>
+                    </div>
+                    <div style={buttonDiv}>
+                      <button
+                        onClick={() => {
+                          setIsOpen(false);
+                        }}
+                        className="btn btn-outline"
+                        style={cancelStyle}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        onClick={handleConfirm}
+                        className="btn btn-info"
+                        style={proceedStyle}
+                        type="submit"
+                      >
+                        Confirm
+                      </button>
+                    </div>
                   </div>
-                  <div style={buttonDiv}>
-                    <button
-                      onClick={() => {
-                        setIsOpen(false);
-                      }}
-                      className="btn btn-outline"
-                      style={cancelStyle}
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      onClick={handleConfirm}
-                      className="btn btn-info"
-                      style={proceedStyle}
-                      type="submit"
-                    >
-                      Confirm
-                    </button>
-                  </div>
-                </div>
-              </Modal>
-            </div>
-            {/* <ModalPop
+                </Modal>
+              </div>
+              {/* <ModalPop
               isAllowProceed={isAllowProceed}
               setIsAllowProceed={setIsAllowProceed}
             /> */}
-          </div>
+            </div>
+          )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
         </div>
       </form>

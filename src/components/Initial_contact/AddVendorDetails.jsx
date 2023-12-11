@@ -8,9 +8,9 @@ function AddVendorDetails() {
   const { vendorId, isAllowProceed, setIsAllowProceed } =
     useContext(OnboardContext);
   console.log(vendorId);
-  useEffect(() => {
-    setIsAllowProceed(true);
-  }, []);
+  // useEffect(() => {
+  //   setIsAllowProceed(true);
+  // }, []);
   return (
     <>
       <div className="card col-11 add_details">
