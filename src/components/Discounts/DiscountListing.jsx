@@ -2,9 +2,13 @@ import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png"
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 
 function DiscountListing() {
+  const theme = useTheme();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate=useNavigate();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("New Lead");
@@ -43,7 +47,7 @@ function DiscountListing() {
           <div>
             <form action="" method="post" autocomplete="off">
              <div style={{display:"flex"}}>
-             <div className="input-icon">
+             <div className="input-icon" style={{width:isMobileView?"50%":""}}>
                 <span className="input-icon-addon">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -77,7 +81,7 @@ function DiscountListing() {
                 </button>
               </div>
               <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}}>
-              <img src={filterIcon} alt="filter" width={25}/>
+              <img src={filterIcon} alt="filter" width={isMobileView?15:20}/>
                 </button>
              </div>
             </form>
@@ -327,7 +331,7 @@ function DiscountListing() {
                       <input type="checkbox" checked={isToggled} value={isToggled} onChange={handleToggle}/>
                       <span class="slider round"></span>
                     </label>
-                    <div>{isToggled?"Active":"Inactive"}</div>
+                    <div>{isToggled?"ACTIVE":"INACTIVE"}</div>
                    </div>
                     
                   </td>
