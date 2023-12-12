@@ -1,7 +1,7 @@
 import AddNegotationsModal from "../Modal/AddNegotationsModal";
 import { useState } from "react";
 
-function Negotations() {
+function Negotations({negotiations}) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -63,6 +63,16 @@ function Negotations() {
               </tr>
             </thead>
             <tbody>
+             {negotiations.length>0 ?
+              negotiations.map((data,index)=>
+              <tr key={data.id}>
+              <td>{data.title}</td>
+              <td>{new Date(data.datetime).toLocaleDateString("es-CL")}</td>
+              <td>{new Date(data.datetime).toLocaleTimeString()}</td>
+              <td><button className="btn btn-dark px-3 py-1">view</button></td>
+            </tr>
+              )
+             :
               <tr>
                 <td colspan="4">
                   <div>
@@ -86,7 +96,7 @@ function Negotations() {
                     </div>
                   </div>
                 </td>
-              </tr>
+              </tr>}
             </tbody>
           </table>
         </div>

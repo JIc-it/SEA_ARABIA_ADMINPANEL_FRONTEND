@@ -4,7 +4,7 @@ import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-function AddSiteVisit({  formik }) {
+function AddSiteVisit({  formik,qualification }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -116,80 +116,93 @@ function AddSiteVisit({  formik }) {
                     <h4>Qualifications</h4>
                     <div className="qualification_list">
                       <div className="qualification_row">
-                        <div className="qualification_1">
-                          <div className="svg_box">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="28"
-                              height="28"
-                              viewBox="0 0 28 28"
-                              fill="none"
-                            >
-                              <circle
-                                cx="10.5003"
-                                cy="10.4993"
-                                r="2.33333"
-                                stroke="#6E7070"
-                                stroke-width="2"
-                              />
-                              <path
-                                d="M15.1663 17.4993C15.1663 18.788 15.1663 19.8327 10.4997 19.8327C5.83301 19.8327 5.83301 18.788 5.83301 17.4993C5.83301 16.2107 7.92235 15.166 10.4997 15.166C13.077 15.166 15.1663 16.2107 15.1663 17.4993Z"
-                                stroke="#6E7070"
-                                stroke-width="2"
-                              />
-                              <path
-                                d="M2.33301 13.9993C2.33301 9.59957 2.33301 7.39969 3.69984 6.03285C5.06668 4.66602 7.26657 4.66602 11.6663 4.66602H16.333C20.7328 4.66602 22.9327 4.66602 24.2995 6.03285C25.6663 7.39969 25.6663 9.59957 25.6663 13.9993C25.6663 18.3991 25.6663 20.599 24.2995 21.9658C22.9327 23.3327 20.7328 23.3327 16.333 23.3327H11.6663C7.26657 23.3327 5.06668 23.3327 3.69984 21.9658C2.33301 20.599 2.33301 18.3991 2.33301 13.9993Z"
-                                stroke="#6E7070"
-                                stroke-width="2"
-                              />
-                              <path
-                                d="M22.167 14H17.5003"
-                                stroke="#6E7070"
-                                stroke-width="2"
-                                stroke-linecap="round"
-                              />
-                              <path
-                                d="M22.167 10.5H16.3337"
-                                stroke="#6E7070"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                              />
-                              <path
-                                d="M22.167 17.5H18.667"
-                                stroke="#6E7070"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="quanlification_heading">
-                              Legal License
-                            </p>
-                            <p className="qualification_content">
-                              Lorem Ipsum is simply dummy text of the printing
-                              and typesetting industry. Lorem Ipsum has been.
-                            </p>
-                          </div>
-                          <div className="qualification_checkbox">
-                            <input
-                              type="checkbox"
-                              name="legalLiscence"
-                              id="legalLiscence"
-                              className="form-check-input"
-                              onChange={formik.handleChange}
-                              onBlur={formik.handleBlur}
-                              checked={formik.values.legalLiscence}
+                       {qualification.map((data)=>
+                        <div className="qualification_1" style={{width:"50%"}}>
+                        <div className="svg_box">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="28"
+                            height="28"
+                            viewBox="0 0 28 28"
+                            fill="none"
+                          >
+                            <circle
+                              cx="10.5003"
+                              cy="10.4993"
+                              r="2.33333"
+                              stroke="#6E7070"
+                              stroke-width="2"
                             />
-                          </div>
+                            <path
+                              d="M15.1663 17.4993C15.1663 18.788 15.1663 19.8327 10.4997 19.8327C5.83301 19.8327 5.83301 18.788 5.83301 17.4993C5.83301 16.2107 7.92235 15.166 10.4997 15.166C13.077 15.166 15.1663 16.2107 15.1663 17.4993Z"
+                              stroke="#6E7070"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M2.33301 13.9993C2.33301 9.59957 2.33301 7.39969 3.69984 6.03285C5.06668 4.66602 7.26657 4.66602 11.6663 4.66602H16.333C20.7328 4.66602 22.9327 4.66602 24.2995 6.03285C25.6663 7.39969 25.6663 9.59957 25.6663 13.9993C25.6663 18.3991 25.6663 20.599 24.2995 21.9658C22.9327 23.3327 20.7328 23.3327 16.333 23.3327H11.6663C7.26657 23.3327 5.06668 23.3327 3.69984 21.9658C2.33301 20.599 2.33301 18.3991 2.33301 13.9993Z"
+                              stroke="#6E7070"
+                              stroke-width="2"
+                            />
+                            <path
+                              d="M22.167 14H17.5003"
+                              stroke="#6E7070"
+                              stroke-width="2"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M22.167 10.5H16.3337"
+                              stroke="#6E7070"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                            />
+                            <path
+                              d="M22.167 17.5H18.667"
+                              stroke="#6E7070"
+                              stroke-width="1.5"
+                              stroke-linecap="round"
+                            />
+                          </svg>
                         </div>
+                        <div>
+                          <p className="quanlification_heading">
+                            {data.name}
+                          </p>
+                          <p className="qualification_content">
+                            {data.short_description}
+                          </p>
+                        </div>
+                        <div className="qualification_checkbox">
+                        <input
+                                  type="checkbox"
+                                  name="qualification"
+                                  id={`qualification_${data.id}`}
+                                  className="form-check-input"
+                                  onChange={(e) => {
+                                    const isChecked = e.target.checked;
+                                    formik.setFieldValue(
+                                      "qualification",
+                                      isChecked
+                                        ? [...formik.values.qualification, data.id]
+                                        : formik.values.qualification.filter(
+                                            (id) => id !== data.id
+                                          )
+                                    );
+                                  }}
+                                  onBlur={formik.handleBlur}
+                                  checked={formik.values.qualification.includes(
+                                    data.id
+                                  )}
+                                />
+                        </div>
+                      </div>
+                       )}
                         {formik.touched.legalLiscence &&
                         formik.errors.legalLiscence ? (
                           <div className="error">
                             {formik.errors.legalLiscence}
                           </div>
                         ) : null}
-                        <div className="qualification_1">
+                        {/* <div className="qualification_1">
                           <div className="svg_box">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
@@ -315,9 +328,9 @@ function AddSiteVisit({  formik }) {
                         </div>
                         {formik.touched.insurance && formik.errors.insurance ? (
                           <div className="error">{formik.errors.insurance}</div>
-                        ) : null}
+                        ) : null} */}
                       </div>
-                      <div className="qualification_row">
+                      {/* <div className="qualification_row">
                         <div className="qualification_1">
                           <div className="svg_box">
                             <svg
@@ -496,7 +509,7 @@ function AddSiteVisit({  formik }) {
                             {formik.errors.commitment}
                           </div>
                         ) : null}
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   {/* </form> */}

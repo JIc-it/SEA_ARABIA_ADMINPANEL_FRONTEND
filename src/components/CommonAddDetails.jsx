@@ -61,7 +61,7 @@ function CommonAddDetails({ title, formik }) {
                         </div>
                       ) : null}
                     </div>
-                    <div
+                    {/* <div
                       className="col-lg-12"
                       style={{
                         display: "flex",
@@ -110,7 +110,7 @@ function CommonAddDetails({ title, formik }) {
                           </div>
                         ) : null}
                       </div>
-                    </div>
+                    </div> */}
                   </form>
                 </div>
               </div>

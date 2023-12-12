@@ -19,8 +19,12 @@ import AddVendorInfo from "../Initial_contact/AddVendorForm";
 import {
   getIndivitualVendorDetail,
   getUserIdType,
-  getVendorListById,
+  getVendorListById,UpdateVendorListById,
   getVendorServiceTag,
+  submitSiteVisit,siteVisitQualification,
+  submitProposal,
+  submitNegotiation,
+  submitCharter,goLive
 } from "../../services/leadMangement";
 Modal.setAppElement("#root");
 
@@ -79,6 +83,7 @@ function ProgressBar() {
   const { vendorId, isAllowProceed, setIsAllowProceed } =
     useContext(OnboardContext);
 const [userdata,setUserData]=useState([])
+const [qualificationlist,setQualificationList]=useState([])
   // console.log(vendorId);
   // const [validationSchema, setValidationSchema] = useState();
 
@@ -110,7 +115,9 @@ const [userdata,setUserData]=useState([])
     getVendorListById(vendorId)
       .then((data) => {
         console.log(data);
+        setUserData(data)
         formik.setFieldValue("fullName", data.first_name);
+        formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
         formik.setFieldValue("location", data.location);
@@ -144,50 +151,41 @@ const [userdata,setUserData]=useState([])
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, []);
 
-  const initialValueForSiteVisit = {
-    title: "",
-    files: [],
-    note: "",
-    siteVisitTime: "",
-    siteVisitDate: "",
-    legalLiscence: false,
-    businessLiscence: false,
-    saftyQualification: false,
-    machineRunning: false,
-    insurance: false,
-    commitment: false,
-    ////////proposal/////////
-    // proposalTitle: "",
-    // // files: [],
-    // proposalNote: "",
-    // proposalTime: "",
-    // proposalDate: "",
-  };
 
+      siteVisitQualification().then((data)=>setQualificationList(data.results)).catch((error)=>{
+        console.error("Error on Fetching list Qualification",error)
+      })
+    getVendorListById(vendorId)
+  }, [vendorId]);
+
+  const qualificationSchema = Yup.object().shape({
+    id: Yup.string().required(),
+  });
+  
+  
   const initialValueForProposals = {
     proposalTitle: "",
     files: [],
     proposalNote: "",
-    proposalTime: "",
-    proposalDate: "",
+    // proposalTime: "",
+    // proposalDate: "",
   };
 
   const initialValueForNegotiation = {
     negotiationTitle: "",
     files: [],
     negotiationNote: "",
-    negotiationTime: "",
-    negotiationDate: "",
+    // negotiationTime: "",
+    // negotiationDate: "",
   };
 
   const initialValueForCharter = {
     charterTitle: "",
     files: [],
     charterNote: "",
-    charterTime: "",
-    charterDate: "",
+    // charterTime: "",
+    // charterDate: "",
   };
 
   const validationSchemaForInitialContact = Yup.object().shape({
@@ -212,48 +210,47 @@ const [userdata,setUserData]=useState([])
       .required("Define Services is required"),
   });
 
+
+  const initialValueForSiteVisit = {
+    title: "",
+    files: [],
+    note: "",
+    siteVisitTime: "",
+    siteVisitDate: "",
+    qualification: qualificationlist,
+  };
+
   const validationSchemaForSiteVisit = Yup.object({
     title: Yup.string().required("Title is required"),
     files: Yup.array().required("Please upload at least one file"),
     note: Yup.string().required("Note is required"),
     siteVisitTime: Yup.string().required("Time is required"),
     siteVisitDate: Yup.string().required("Date is required"),
-    legalLiscence: Yup.boolean().oneOf([true], "Legal License is required"),
-    businessLiscence: Yup.boolean().oneOf(
-      [true],
-      "Business License is required"
-    ),
-    saftyQualification: Yup.boolean().oneOf(
-      [true],
-      "Safty Qualification is required"
-    ),
-    machineRunning: Yup.boolean().oneOf([true], "Machine Running is required"),
-    insurance: Yup.boolean().oneOf([true], "Insurance is required"),
-    commitment: Yup.boolean().oneOf([true], "Commitment is required"),
+    qualification:Yup.array().required("All Qualification")
   });
 
   const validationSchemaForProposal = Yup.object({
     proposalTitle: Yup.string().required("Title is required"),
     files: Yup.array().required("Please upload at least one file"),
     proposalNote: Yup.string().required("Note is required"),
-    proposalTime: Yup.string().required("Time is required"),
-    proposalDate: Yup.string().required("Date is required"),
+    // proposalTime: Yup.string().required("Time is required"),
+    // proposalDate: Yup.string().required("Date is required"),
   });
 
   const validationSchemaForNegotiation = Yup.object({
     negotiationTitle: Yup.string().required("Title is required"),
     files: Yup.array().required("Please upload at least one file"),
     negotiationNote: Yup.string().required("Note is required"),
-    negotiationTime: Yup.string().required("Time is required"),
-    negotiationDate: Yup.string().required("Date is required"),
+    // negotiationTime: Yup.string().required("Time is required"),
+    // negotiationDate: Yup.string().required("Date is required"),
   });
 
   const validationSchemaForCharter = Yup.object({
     charterTitle: Yup.string().required("Title is required"),
     files: Yup.array().required("Please upload at least one file"),
     charterNote: Yup.string().required("Note is required"),
-    charterTime: Yup.string().required("Time is required"),
-    charterDate: Yup.string().required("Date is required"),
+    // charterTime: Yup.string().required("Time is required"),
+    // charterDate: Yup.string().required("Date is required"),
   });
 
   const formik = useFormik({
@@ -291,64 +288,127 @@ const [userdata,setUserData]=useState([])
       // setIsAllowProceed(true);
       console.log(values);
 
-      // Example: Submit API request based on count
-      // switch (count) {
-      //   case 0:
-      //   case 1:
-      //   case 2:
-      //     // API logic for Site Visit
-      //     try {
-      //       const response = await submitSiteVisit(values);
-      //       console.log("API response:", response);
-      //       // Handle success or error
-      //     } catch (error) {
-      //       console.error("API error:", error);
-      //       // Handle error
-      //     }
-      //     break;
+      //Example: Submit API request based on count
+      switch (count) {
+        case 0:
+        case 1:
+          try {
+            const definesevices=values.defineServices.map((datas)=>datas.id)
+            const passdata={
+              email: values.email,
+              mobile: values.phone,
+              first_name:values.fullName,
+              last_name: values.last_name,
+              location:values.location,
+              useridentificationdata: {
+                id_type: values.idType,
+                id_number: values.idNumber
+              },
+              company_company_user: {
+                service_summary: definesevices,
+                name: values.companyName,
+                registration_number: values.companyRegistrationNumber,
+                address: values.companyAddress,
+                website: values.companyWebsite,
+                third_party_ownership: values.thirdPartyService
+              }
+            }
+            console.log(passdata,"check");
+            const response = await UpdateVendorListById(userdata.id,passdata);
+            console.log("Update API response :", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+          break;
+        case 2:
+          // API logic for Site Visit
+          try {
+            const formdata=new FormData();
+            formdata.append('company',userdata?.company_company_user?.id);
+            formdata.append('title',values.title);
+            formdata.append('attachment',values.files[0]);
+            formdata.append('note',values.note);
+            formdata.append('date',values.siteVisitDate);
+            formdata.append('time',values.siteVisitTime);
+            formdata.append('qualifications',values.qualification);
+            console.log(formdata.getAll("qualifications"));
+            const response = await submitSiteVisit(formdata);
+            console.log("API response:", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+          break;
 
-      //   case 3:
-      //     // API logic for Proposal
-      //     try {
-      //       const response = await submitProposal(values);
-      //       console.log("API response:", response);
-      //       // Handle success or error
-      //     } catch (error) {
-      //       console.error("API error:", error);
-      //       // Handle error
-      //     }
-      //     break;
+        case 3:
+          // API logic for Proposal
+          try {
+            const formdata=new FormData();
+            formdata.append('company',userdata?.company_company_user?.id);
+            formdata.append('title',values.proposalTitle);
+            formdata.append('attachment',values.files[0]);
+            formdata.append('note',values.proposalNote);
+            const response = await submitProposal(formdata);
+            console.log("API response:", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+          break;
 
-      //   case 4:
-      //     // API logic for Negotiation
-      //     try {
-      //       const response = await submitNegotiation(values);
-      //       console.log("API response:", response);
-      //       // Handle success or error
-      //     } catch (error) {
-      //       console.error("API error:", error);
-      //       // Handle error
-      //     }
-      //     break;
+        case 4:
+          // API logic for Negotiation
+          try {
+            const formdata=new FormData();
+            formdata.append('company',userdata?.company_company_user?.id);
+            formdata.append('title',values.negotiationTitle);
+            formdata.append('attachment',values.files[0]);
+            formdata.append('note',values.negotiationNote);
+            const response = await submitNegotiation(formdata);
+            console.log("API response:", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+          break;
 
-      //   case 5:
-      //     // API logic for Charter
-      //     try {
-      //       const response = await submitCharter(values);
-      //       console.log("API response:", response);
-      //       // Handle success or error
-      //     } catch (error) {
-      //       console.error("API error:", error);
-      //       // Handle error
-      //     }
-      //     break;
-
-      //   default:
-      //     break;
-      // }
+        case 5:
+          // API logic for Charter
+          try {
+            const formdata=new FormData();
+            formdata.append('company',userdata?.company_company_user?.id);
+            formdata.append('title',values.charterTitle);
+            formdata.append('attachment',values.files[0]);
+            formdata.append('note',values.charterNote);
+            const response = await submitCharter(formdata);
+            console.log("API response:", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+          break;
+        case 6:
+          try {
+            const response = await goLive(userdata?.company_company_user?.id);
+            console.log("API response:", response);
+            // Handle success or error
+          } catch (error) {
+            console.error("API error:", error);
+            // Handle error
+          }
+        default:
+          break;
+      }
     },
   });
-  console.log(formik);
+
+ 
   useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
@@ -367,7 +427,6 @@ const [userdata,setUserData]=useState([])
   };
 
   const dispatch = useDispatch();
-  console.log(count);
   return (
     <div>
       <div className="col-12">
@@ -390,7 +449,7 @@ const [userdata,setUserData]=useState([])
                 />
               </svg>
             </span>
-            <p>Achille Lauro</p>
+            <p>{userdata?.first_name}</p>
           </div>
         </div>
       </div>
@@ -453,7 +512,7 @@ const [userdata,setUserData]=useState([])
             </div>
           </div>
           {count === 1 && <AddVendorInfo formik={formik} />}
-          {count === 2 && <AddSiteVisit formik={formik} />}
+          {count === 2 && <AddSiteVisit formik={formik} qualification={qualificationlist}/>}
           {count === 3 && (
             <CommonAddDetails title="Add Proposal" formik={formik} />
           )}

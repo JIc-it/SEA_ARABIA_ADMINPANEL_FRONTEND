@@ -1,6 +1,6 @@
 import AddMouModal from "../Modal/AddMouModal";
 import { useState } from "react";
-function MOU() {
+function MOU({mou}) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -58,6 +58,16 @@ function MOU() {
               </tr>
             </thead>
             <tbody>
+             {mou.length>0 ?
+              mou.map((data,index)=>
+              <tr key={data.id}>
+              <td>{data.title}</td>
+              <td>{new Date(data.datetime).toLocaleDateString("es-CL")}</td>
+              <td>{new Date(data.datetime).toLocaleTimeString()}</td>
+              <td><button className="btn btn-dark px-3 py-1">view</button></td>
+            </tr>
+              )
+             :
               <tr>
                 <td colspan="4">
                   <div>
@@ -81,7 +91,7 @@ function MOU() {
                     </div>
                   </div>
                 </td>
-              </tr>
+              </tr>}
             </tbody>
           </table>
         </div>
