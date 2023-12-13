@@ -544,7 +544,7 @@ function ProgressBar() {
           {count === 6 && <GoLive userData={userdata} />}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           {count != 6 && (
-            <div className="col-12 actions_menu">
+            <div className="col-12 actions_menu my-4">
               <div style={{ display: "flex", gap: "20px" }}>
                 {/* {count >= 1 && (
                   <button
@@ -573,14 +573,9 @@ function ProgressBar() {
                     width: "120px",
                   }}
                   onClick={() => {
-                    // console.log(count, isAllowProceed);
-                    // if (isAllowProceed && count >= 1) {
-                    //   setIsOpen(true);
-                    //   setIsAllowProceed(false);
-                    // }
-                    // if (count === 0) {
+                  
                     count === 0 && setIsOpen(true);
-                    // }
+            
                   }}
                 >
                   Proceed
@@ -635,10 +630,7 @@ function ProgressBar() {
                   </div>
                 </Modal>
               </div>
-              {/* <ModalPop
-              isAllowProceed={isAllowProceed}
-              setIsAllowProceed={setIsAllowProceed}
-            /> */}
+         
             </div>
           )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}

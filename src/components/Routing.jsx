@@ -41,7 +41,7 @@ function AllRouting() {
       <Route path="/dashboard" element={<DashBoard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
       <Route path="/booking" element={<Bookings />} />
-      <Route path="/onboard/:id" element={<OnBoard />} />
+      <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
       <Route path="/refunds-request" element={<RefundsRequest />} />
       <Route path="/refunds-history" element={<RefundHistory />} />

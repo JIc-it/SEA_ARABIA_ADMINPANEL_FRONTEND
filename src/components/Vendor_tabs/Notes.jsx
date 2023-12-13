@@ -1,18 +1,38 @@
+import { OnboardContext } from "../../Context/OnboardContext";
+import { getMiscellaneousList } from "../../services/leadMangement";
 import AddOthersModal from "../Modal/AddOthersModal";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 export default function Notes() {
+  const { vendorId, companyID } = useContext(OnboardContext);
+  const [isRefetch, setIsRefetch] = useState(false);
+  console.log(companyID);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+
+  const [miscellaneousList, setMiscellaneousList] = useState();
+
+  useEffect(() => {
+    getMiscellaneousList(companyID)
+      .then((data) => {})
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, [isRefetch]);
 
   return (
     <div class="tab-content note">
       <div class="tab-pane active show" id="tabs-home-7">
         <div>
           <div style={{ paddingBottom: "20px" }}>
-            <AddOthersModal show={showOffcanvas} close={handleCloseOffcanvas} />
+            <AddOthersModal
+              show={showOffcanvas}
+              close={handleCloseOffcanvas}
+              isRefetch={isRefetch}
+              setIsRefetch={setIsRefetch}
+            />
             <button
               onClick={handleOpenOffcanvas}
               class="btn"
@@ -25,7 +45,7 @@ export default function Notes() {
                 width: "215px",
               }}
             >
-              Add Attach. / Note &nbsp;
+              Add Attachment &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -66,10 +86,10 @@ export default function Notes() {
                   <div>
                     <div class="home_contents">
                       <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                        No Site Visits Found
+                        No Attachment / Note Found
                       </p>
                       <p style={{ fontSize: "14px", color: "#68727D" }}>
-                        Record site visits here
+                        Add Your Attachment / Note here
                       </p>
                     </div>
                   </div>

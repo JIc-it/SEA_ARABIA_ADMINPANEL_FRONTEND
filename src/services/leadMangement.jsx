@@ -18,6 +18,9 @@ const createMOU = "company/mou-create/";
 const getMOUs = "company/mou-list";
 const goLives = "company/onboard-vendor/";
 const updateVendorDetails = "account/vendor-add-details";
+const miscellaneousListUrl = "company/miscellaneous-list";
+const miscellaneousAddUrl = "company/miscellaneous-create/";
+const miscellaneousTypeList = "company/miscellaneoustype-list";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -214,6 +217,36 @@ export const getMOU = () => {
 export const goLive = (id) => {
   return axiosInstance
     .put(`${goLives}${id}`, { status: "True" })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getMiscellaneousList = (companyID) => {
+  return axiosInstance
+    .get(miscellaneousListUrl, { id: companyID })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const addMiscellaneousAttachment = (data) => {
+  return axiosInstance
+    .post(miscellaneousAddUrl, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getMiscellaneousTypeList = () => {
+  return axiosInstance
+    .get(miscellaneousTypeList)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -9,13 +9,12 @@ import { OnboardContext } from "../Context/OnboardContext";
 function OnBoard() {
   const params = useParams();
   const vendorId = params.id;
-  const [isAllowProceed, setIsAllowProceed] = useState(true);
-  // console.log(vendorId, "vendorid");`
+  const companyID = params.companyID;
+
+
 
   return (
-    <OnboardContext.Provider
-      value={{ vendorId, setIsAllowProceed, isAllowProceed }}
-    >
+    <OnboardContext.Provider value={{ vendorId, companyID }}>
       <div className="page-wrapper">
         <div className="page-body">
           <div className="container-xl">

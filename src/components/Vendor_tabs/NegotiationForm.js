@@ -1,7 +1,7 @@
 import React from "react";
 import DropZone from "../Common/DropZone";
 
-function NegotiationForm({ title, isAllowProceed, setIsAllowProceed, formik }) {
+function NegotiationForm({ title, formik }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">

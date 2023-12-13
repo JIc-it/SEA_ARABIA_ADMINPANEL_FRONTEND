@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch, useSelector } from "react-redux";
 import AddNewLead from "./Modal/AddNewLead";
 import { useEffect, useState } from "react";
 import { getVendorList, getVendorStatus } from "../services/leadMangement";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
-import { setCounter } from "../state/counter/counterSlice";
 
 function Table() {
   const dispatch = useDispatch();
@@ -341,7 +340,7 @@ function Table() {
                               }}
                             >
                               <Link
-                                to={`/onboard/${item.id}`}
+                                to={`/onboard/${item.id}/${item.company_id}`}
                                 // onClick={()=>{
                                 //   dispatch(setCounter(0));
                                 // }}
