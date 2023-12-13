@@ -63,10 +63,10 @@ const Login = () => {
       password: Yup.string()
         .max(50)
         .required("Password is required")
-        .matches(
-          passwordRegex,
-          "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-        ),
+        // .matches(
+        //   passwordRegex,
+        //   "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        // ),
     }),
     onSubmit: async (values, helpers) => {
       try {

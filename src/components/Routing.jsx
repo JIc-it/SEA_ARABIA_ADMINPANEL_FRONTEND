@@ -3,7 +3,6 @@ import LeadManagement from "../lead_management";
 import OnBoard from "./OnBoard";
 import AddVendorInfo from "./Initial_contact/AddVendorForm";
 import Login from "../pages/Login";
-import DashBoard from "../pages/DashBoard";
 import Bookings from "../pages/Bookings";
 import Services from "../pages/Services/ManageServices";
 import RefundsRequest from "../pages/Refunds/RefundsRequest";
@@ -31,14 +30,15 @@ import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
 import ServiceList from "./Service/ServiceList";
 import ServiceView from "./Service/ServiceView";
-import UserVendorEdit from "../components/UserVendor/UserVendorEdit"
-import UserVendorAddService from "../components/UserVendor/UserVendorAddService"
+import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
+import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
+import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 
 function AllRouting() {
   return (
     <Routes>
       <Route index element={<Login />} />
-      <Route path="/dashboard" element={<DashBoard />}></Route>
+      <Route path="/dashboard" element={<Dashboard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
@@ -63,19 +63,26 @@ function AllRouting() {
       <Route path="/analytics" element={<Analytics />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
-      <Route path="/customers/:id" element={<CustomerView />} />
+      <Route path="/customers/:customerId" element={<CustomerView />} />
       <Route path="/customers-edit/:id" element={<CustomerEdit />} />
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
-      <Route path="/user-vendor/edit/:id" element={<UserVendorEdit/>} />
-      <Route path="/user-vendor/add-service/" element={<UserVendorAddService/>} />
+      <Route path="/user-vendor/edit/:id" element={<UserVendorEdit />} />
+      <Route
+        path="/user-vendor/add-service/"
+        element={<UserVendorAddService />}
+      />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
       <Route path="/admin" element={<Admin />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
+      <Route
+        path="/user-vendor/:vendorId"
+        element={<UserVendorCardDetails />}
+      />
       <Route path="/service" element={<ServiceList />} />
       <Route path="/service-view" element={<ServiceView />} />
     </Routes>
