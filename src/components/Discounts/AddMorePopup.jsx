@@ -19,7 +19,7 @@ const style = {
     bgcolor: 'background.paper',
     borderRadius: "5px",
     boxShadow: 24,
-    p: 4,
+    p:3,
 };
 
 export default function AddMorePopup({ handleClose, handleOpen, open }) {
@@ -143,6 +143,10 @@ export default function AddMorePopup({ handleClose, handleOpen, open }) {
                    </Box>
                    </div>
                    <hr style={{border:"1px solid gray"}}/>
+                   <div className='d-flex justify-content-end'>
+                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Add</button>
+                    </div>
                    </>
                 </Box>
             </Modal>

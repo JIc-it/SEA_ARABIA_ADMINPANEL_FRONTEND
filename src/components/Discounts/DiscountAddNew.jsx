@@ -20,29 +20,53 @@ export default function DiscountEdit() {
         campaign_name: Yup.string()
             .required("Campaign Name is required")
             .max(20, "Campaign Name must be at most 20 characters"),
-        email: Yup.string()
-            .email("Invalid email address")
-            .required("Email is required"),
-        mobile: Yup.string().required("Mobile is required"),
-        location: Yup.string().required("Location is required"),
+        coupon_code: Yup.string()
+            .required("Coupon Code is required"),
+        discount_type: Yup.string()
+            .required("Discount type is required"),
+        discount_value: Yup.string()
+            .required("Specify Percentage is required"),
+        // max_redeem_amount: Yup.string()
+        //     .required("Upto Amount is required"),
+        max_redeem_count: Yup.number()
+            .required("Redemption Type is required"),
+        min_grand_total: Yup.string()
+            .required("Purchase Requirement is required"),
+        allow_multiple_redeem: Yup.boolean()
+            .required("Per Service is required"),
+        allow_global_redeem: Yup.boolean()
+            .required("Per Service is required"),
+        end_date: Yup.string()
+            .required("End Date is required"),
+        // email: Yup.string()
+        //     .email("Invalid email address")
+        //     .required("Email is required"),
+        // mobile: Yup.string().required("Mobile is required"),
+        // location: Yup.string().required("Location is required"),
     });
 
     const formik = useFormik({
         initialValues: {
+            is_enable:false,
+            image:null,
             campaign_name: "",
-            discount_code:"",
+            coupon_code: "",
             discount_type: "Percentage",
+            discount_value: "",
+            max_redeem_amount: "",
+            max_redeem_count: "",
+            min_grand_total: "",
+            allow_multiple_redeem:false,
+            allow_global_redeem:false,
+            start_date: "",
+            end_date: "",
+            services:[],
+            companies:[],
+
             redemption_type: "one_time",
             expiration: "No Expiry",
             purchase_requirement: "no minimum requirement",
-            perservice:"One Time",
-            feature_discount:{
-            campaign_name: "",
-            discount_type: "Percentage",
-            redemption_type: "one_time",
-            expiration: "No Expiry",
-            
-            }
+            perservice: "One Time",
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -164,7 +188,10 @@ export default function DiscountEdit() {
                             <div className={isMobileView?"w-100":'w-50'}>
                                 <div>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code</p>
-                                    <input type='text' defaultValue="" className='discount-input' />
+                                    <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                    {formik.touched.coupon_code && formik.errors.coupon_code ? (
+                                        <div className="error">{formik.errors.coupon_code}</div>
+                                    ) : null}
                                 </div>
 
                                 {formik.values.discount_type === "Percentage" ?
@@ -172,7 +199,10 @@ export default function DiscountEdit() {
                                     <div className='d-flex' style={{ marginTop: "8px" }}>
                                         <div>
                                         <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage</p>
-                                            <input type='text' defaultValue="" className='discount-input' style={{ width: "90%" }} />
+                                            <input type='text' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                            {formik.touched.discount_value && formik.errors.discount_value ? (
+                                        <div className="error">{formik.errors.discount_value}</div>
+                                    ) : null}
                                         </div>
                                         <div>
                                         <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount</p>
@@ -337,8 +367,19 @@ export default function DiscountEdit() {
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
                         <p style={{ fontWeight: "600", fontSize: "16px" }}>Applies To</p>
                         <div className='d-flex justify-content-between align-items-center'>
+
                             <p style={{ fontWeight: 550, fontSize: "14px" }}>Services/Vendors</p>
-                            <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open}/>
+                            <div className='d-flex justify-content-between align-items-center'>
+                                <div className='mx-2'>Apply to All</div>
+                                <div style={{ display: "flex" }}>
+                                    <label class="switch" style={{ marginRight: "5px" }}>
+                                        <input type="checkbox" defaultChecked  />
+                                        <span class="slider round"></span>
+                                    </label>
+                                    {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
+                                </div>
+                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} />
+                            </div>
                         </div>
 
                         <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px" }}>
