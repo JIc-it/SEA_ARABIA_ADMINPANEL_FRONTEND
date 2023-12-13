@@ -1,9 +1,13 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { goLive } from "../services/leadMangement";
 import Modal from "react-modal";
+import { useNavigate } from "react-router";
+import { OnboardContext } from "../Context/OnboardContext";
 Modal.setAppElement("#root");
 
 function GoLive({ userData }) {
+  const navigate = useNavigate();
+  const { vendorId } = useContext(OnboardContext);
   const customStyles = {
     content: {
       top: "50%",
@@ -69,7 +73,7 @@ function GoLive({ userData }) {
         console.error("Error on Fetching list Qualification", error);
       });
   };
-  
+
   return (
     <div className="card col-10 add_details">
       <div className="card-body">
@@ -136,9 +140,9 @@ function GoLive({ userData }) {
                             <br />
                             <button
                               className="btn my-2"
-                              // onClick={() => {
-                              //   setIsConfirm(true);
-                              // }}
+                              onClick={() => {
+                                navigate(`/user-vendor/${vendorId}`);
+                              }}
                               style={{
                                 backgroundColor: "#006875",
                                 color: "white",

@@ -342,9 +342,9 @@ function Table() {
                             >
                               <Link
                                 to={`/onboard/${item.id}`}
-                                onClick={()=>{
-                                  dispatch(setCounter(6));
-                                }}
+                                // onClick={()=>{
+                                //   dispatch(setCounter(0));
+                                // }}
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "5px",
