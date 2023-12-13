@@ -1,5 +1,68 @@
 import { Basic } from "./Tabs";
+import { useContext, useEffect, useState } from "react";
+import { OnboardContext } from "../../Context/OnboardContext";
+import {getVendorListById,getSiteVisit,getPropsal,getNegotiation,getMOU} from "../../services/leadMangement";
+
 function VendorTabs() {
+  const { vendorId, isAllowProceed, setIsAllowProceed } =
+  useContext(OnboardContext);
+const [userdata,setUserData]=useState([])
+const [sitevistview,setSiteView]=useState([])
+const [propsals,setPropsals]=useState([])
+const [negotiations,setNegotiations]=useState([])
+const [mou,setMOUs]=useState([])
+
+
+useEffect(() => {
+  getVendorListById(vendorId)
+    .then((data) => {
+      setUserData(data)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+}, [vendorId]);
+
+useEffect(() => {
+  getSiteVisit()
+    .then((data) => {
+      setSiteView(data.results)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+}, []);
+
+useEffect(() => {
+  getPropsal()
+    .then((data) => {
+      setPropsals(data.results)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+}, []);
+
+useEffect(() => {
+  getNegotiation()
+    .then((data) => {
+      setNegotiations(data.results)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+}, []);
+
+useEffect(() => {
+  getMOU()
+    .then((data) => {
+      setMOUs(data.results)
+    })
+    .catch((error) => {
+      console.error("Error fetching  data:", error);
+    });
+}, []);
+
   return (
     // <div style={{ width: "1060px" }}>
     //   <div className="vendor_listing">
@@ -307,7 +370,7 @@ function VendorTabs() {
     //     </div>
     //   </div>
     // </div>
-    <Basic />
+    <Basic leads={userdata} sitevistview={sitevistview} proposal={propsals} negotiations={negotiations} mou={mou}/>
   );
 }
 

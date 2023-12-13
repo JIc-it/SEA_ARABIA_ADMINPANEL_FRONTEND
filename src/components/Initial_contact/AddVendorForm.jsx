@@ -16,7 +16,7 @@ import { OnboardContext } from "../../Context/OnboardContext";
 const AddVendorInfo = ({ formik }) => {
   const vendorId = useParams()?.id;
 
-  console.log(formik.values.idType?.name);
+  console.log(formik.values);
   //  const vendorId=OnboardContextData.vendorId
   const [showCanvas, setOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setOffcanvas(true);
@@ -41,52 +41,6 @@ const AddVendorInfo = ({ formik }) => {
         console.error("Error fetching  data:", error);
       });
   }, []);
-  console.log(idTypeList,serviceTagList,"idlist");
-
-  // const validationSchema = Yup.object().shape({
-  //   fullName: Yup.string().required("Full Name is required"),
-  //   phone: Yup.string().required("Phone is required"),
-  //   email: Yup.string()
-  //     .email("Invalid email address")
-  //     .required("Email is required"),
-  //   location: Yup.string().required("Location is required"),
-  //   idType: Yup.string().required("ID Type is required"),
-  //   idNumber: Yup.string().required("ID Number is required"),
-  //   companyName: Yup.string().required("Company Name is required"),
-  //   companyAddress: Yup.string().required("Company Address is required"),
-  //   companyRegistrationNumber: Yup.string().required(
-  //     "Company Registration Number is required"
-  //   ),
-  //   companyWebsite: Yup.string()
-  //     .url("Invalid URL")
-  //     .required("Company Website is required"),
-  //   defineServices: Yup.array()
-  //     .min(1, "At least one service must be selected") // Adjust the minimum number of selected services as needed
-  //     .required("Define Services is required"),
-  // });
-
-  // const formik = useFormik({
-  //   initialValues: {
-  //     fullName: "",
-  //     phone: "",
-  //     email: "",
-  //     location: "",
-  //     idType: "",
-  //     idNumber: "",
-  //     companyName: "",
-  //     companyAddress: "",
-  //     companyRegistrationNumber: "",
-  //     companyWebsite: "",
-  //     defineServices: [],
-  //     thirdPartyService: false,
-  //   },
-  //   validationSchema: validationSchema,
-  //   onSubmit: (values) => {
-  //     navigate(`/onboard/${vendorId}`);
-  //     // Handle form submission
-  //     console.log(values);
-  //   },
-  // });
 
   return (
     <>
@@ -182,8 +136,7 @@ const AddVendorInfo = ({ formik }) => {
             </div>
           </div>
           <div className="row row-cards">
-            <div className="col-sm-6 ">
-            
+            <div className="col-sm-6">
               <label className="form-label">ID Type</label>
               <select
                 type="text"
@@ -193,9 +146,8 @@ const AddVendorInfo = ({ formik }) => {
                 onBlur={formik.handleBlur}
                 value={formik.values.idType || ""}
               >
-                {" "}
-                <option value="" selected>
-                  ID Type
+                <option value="" disabled>
+                  Select ID Type
                 </option>
                 {idTypeList &&
                   idTypeList.length > 0 &&

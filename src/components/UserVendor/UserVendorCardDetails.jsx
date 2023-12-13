@@ -15,7 +15,7 @@ function UserVendorCardDetails() {
   const theme = useTheme();
 
   const vendorId = useParams()?.id;
-  console.log("v-id==", vendorId);
+  // console.log("v-id==", vendorId);
 
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Services");
@@ -35,9 +35,8 @@ function UserVendorCardDetails() {
   useEffect(() => {
     getVendorListById(vendorId)
       .then((data) => {
-        // Assuming data is an object with a 'response' property
-        console.log("v detail is ---", data);
         setvendorDetails(data);
+        console.log("getVendorListById==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -478,7 +477,9 @@ function UserVendorCardDetails() {
             {active === "Vendor Details" && (
               <div>
                 <button
-                  onClick={() => navigate("/user-vendor/edit/12345")}
+                  onClick={() =>
+                    navigate(`/user-vendor/edit/${vendorDetails?.id}`)
+                  }
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
@@ -517,12 +518,18 @@ function UserVendorCardDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Full Name</p>
-                        <p style={{ fontWeight: "700" }}>Alex Paul</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {vendorDetails?.first_name}
+                          {vendorDetails?.last_name}
+                        </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
-                          <p style={{ fontWeight: "700" }}>Marina Crescent</p>
+                          <p style={{ fontWeight: "700" }}>
+                            {" "}
+                            {vendorDetails?.profileextra?.location}
+                          </p>
                           <p>
                             <svg
                               width="18"
@@ -546,7 +553,7 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Email</p>
                         <p style={{ fontWeight: "700" }}>
-                          jamescorden123@gmail.com
+                          {vendorDetails?.email}
                         </p>
                       </div>
                       <div>
@@ -557,12 +564,18 @@ function UserVendorCardDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Phone</p>
-                        <p style={{ fontWeight: "700" }}>+97455682545</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {" "}
+                          {vendorDetails?.mobile}
+                        </p>
                       </div>
 
                       <div>
                         <p style={{ color: "#68727D" }}>ID Number</p>
-                        <p style={{ fontWeight: "700" }}>7878974554211</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {" "}
+                          {vendorDetails?.company_company_user?.id_number}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -578,13 +591,16 @@ function UserVendorCardDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Company Name</p>
-                        <p style={{ fontWeight: "700" }}>MSC Cruises</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {" "}
+                          {vendorDetails?.company_company_user?.name}
+                        </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Company Website</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            www.msccruises.com
+                            {vendorDetails?.company_company_user?.website}
                           </p>
                           <p>
                             <svg
@@ -609,7 +625,10 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Company Address</p>
                         <div className="d-flex justify-content-between">
-                          <p style={{ fontWeight: "700" }}>Marina Crescent</p>
+                          <p style={{ fontWeight: "700" }}>
+                            {" "}
+                            {vendorDetails?.company_company_user?.address}
+                          </p>
                           <p>
                             <svg
                               width="18"
@@ -634,7 +653,13 @@ function UserVendorCardDetails() {
                         <p style={{ color: "#68727D" }}>
                           Company Registration Number
                         </p>
-                        <p style={{ fontWeight: "700" }}>+97455682545</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {" "}
+                          {
+                            vendorDetails?.company_company_user
+                              ?.registration_number
+                          }
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -658,7 +683,12 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Ownership</p>
                         <p style={{ fontWeight: "700" }}>
-                          Third Party Ownership
+                          {vendorDetails?.company_company_user
+                            ?.third_party_ownership ? (
+                            <>Third Party Ownership</>
+                          ) : (
+                            <>Nill</>
+                          )}
                         </p>
                       </div>
                     </div>

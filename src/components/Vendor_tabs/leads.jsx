@@ -1,4 +1,4 @@
-export default function LeadDetails() {
+export default function LeadDetails({leads}) {
   return (
     <div class="tab-content home">
       <div class="tab-pane active show" id="tabs-home-7">
@@ -58,18 +58,18 @@ export default function LeadDetails() {
               >
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Full Name</p>
-                  <p style={{ color: "#323539", fontWeight: "600" }}>James</p>
+                  <p style={{ color: "#323539", fontWeight: "600",textTransform:"capitalize" }}>{leads.first_name}</p>
                 </div>
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Email</p>
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    Jamescordvan@gmail.com
+                    {leads.email}
                   </p>
                 </div>
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Phone</p>
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    78909003939
+                    {leads.mobile}
                   </p>
                 </div>
               </div>
@@ -80,8 +80,8 @@ export default function LeadDetails() {
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Location</p>
                   <div style={{ display: "flex", gap: "40px" }}>
-                    <p style={{ color: "#323539", fontWeight: "600" }}>
-                      Marina Crescent
+                    <p style={{ color: "#323539", fontWeight: "600",textTransform:"capitalize" }}>
+                      {leads.location}
                     </p>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -102,13 +102,13 @@ export default function LeadDetails() {
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>ID Type</p>
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    Jamescordvan@gmail.com
+                    {leads?.useridentificationdata?.id_type?.name}
                   </p>
                 </div>
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>ID Number</p>
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    78909003939
+                    {leads?.useridentificationdata?.id_number}
                   </p>
                 </div>
               </div>
@@ -129,13 +129,13 @@ export default function LeadDetails() {
               >
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Company Name</p>
-                  <p style={{ color: "#323539", fontWeight: "600" }}>James</p>
+                  <p style={{ color: "#323539", fontWeight: "600" }}>{leads.company_company_user?.name}</p>
                 </div>
                 <div className="col-4">
                   <p style={{ color: "#68727D" }}>Company Address</p>
                   <div style={{ display: "flex", gap: "40px" }}>
-                    <p style={{ color: "#323539", fontWeight: "600" }}>
-                      Marina Crescent
+                    <p style={{ color: "#323539", fontWeight: "600",textTransform:"capitalize" }}>
+                    {leads.company_company_user?.address}
                     </p>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -158,7 +158,7 @@ export default function LeadDetails() {
                     Company Registration Number
                   </p>
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    78909003939
+                  {leads.company_company_user?.registration_number}
                   </p>
                 </div>
               </div>
@@ -170,12 +170,12 @@ export default function LeadDetails() {
                   <p style={{ color: "#68727D" }}>Company Website</p>
 
                   <p style={{ color: "#323539", fontWeight: "600" }}>
-                    www.mccruises.com
+                  {leads.company_company_user?.website}
                   </p>
                 </div>
               </div>
             </div>
-            <div
+            {/* <div
               style={{
                 display: "flex",
                 flexDirection: "column",
@@ -218,7 +218,7 @@ export default function LeadDetails() {
                   </tbody>
                 </table>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

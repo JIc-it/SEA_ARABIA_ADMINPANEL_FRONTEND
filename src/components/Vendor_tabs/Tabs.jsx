@@ -8,7 +8,7 @@ import Negotations from "./Negotations";
 import MOU from "./MOU";
 import { useSelector } from "react-redux";
 
-export function Basic() {
+export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
   const [selectedTab, setSelectedTab] = useTabs([
     "others",
     "leads",
@@ -96,21 +96,21 @@ export function Basic() {
             </div>
             <div className="card-body">
               <TabPanel hidden={selectedTab !== "site visit"}>
-                <SiteVisit />
+                <SiteVisit sitevistview={sitevistview}/>
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "leads"}>
-                <LeadDetails />
+                <LeadDetails leads={leads}/>
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "proposals"}>
-                <Proposal />
+                <Proposal proposal={proposal}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "negotations"}>
-                <Negotations />
+                <Negotations negotiations={negotiations}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "mou/charter"}>
-                <MOU />
+                <MOU mou={mou}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "others"}>
                 <Notes />

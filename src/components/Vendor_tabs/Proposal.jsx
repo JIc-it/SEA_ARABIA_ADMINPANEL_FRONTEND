@@ -1,11 +1,12 @@
 import AddProposalModal from "../Modal/AddProposalModal";
 import { useState } from "react";
 
-function Proposal() {
+function Proposal({proposal}) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  console.log(proposal,"propsals");
   return (
     <div className="tab-content site">
       <div className="tab-pane active show" id="tabs-home-7">
@@ -62,6 +63,16 @@ function Proposal() {
               </tr>
             </thead>
             <tbody>
+             {proposal.length>0 ?
+              proposal.map((data,index)=>
+              <tr key={data.id}>
+              <td>{data.title}</td>
+              <td>{new Date(data.datetime).toLocaleDateString("es-CL")}</td>
+              <td>{new Date(data.datetime).toLocaleTimeString()}</td>
+              <td><button className="btn btn-dark px-3 py-1">view</button></td>
+            </tr>
+              )
+             :
               <tr>
                 <td colspan="4">
                   <div>
@@ -85,7 +96,7 @@ function Proposal() {
                     </div>
                   </div>
                 </td>
-              </tr>
+              </tr>}
             </tbody>
           </table>
         </div>

@@ -39,7 +39,6 @@ function CustomerCardDetails() {
         isMobileView ? "d-flex flex-column" : "d-flex justify-content-between"
       }
     >
-    
       <div className={isMobileView ? "col-12 my-2" : "col-5 my-2"}>
         <div
           className="card personal_details"
@@ -259,7 +258,9 @@ function CustomerCardDetails() {
             {active === "Details" && (
               <>
                 <button
-                  onClick={() => navigate("/customers-edit/12345")}
+                  onClick={() =>
+                    navigate(`/customers-edit/${customerDetails?.id}`)
+                  }
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
@@ -298,12 +299,16 @@ function CustomerCardDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Full Name</p>
-                        <p style={{ fontWeight: "700" }}>Alex Paul</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails.first_name}  {customerDetails.last_name}
+                        </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
-                          <p style={{ fontWeight: "700" }}>Kuwait</p>
+                          <p style={{ fontWeight: "700" }}>
+                            {customerDetails?.profileextra?.location}
+                          </p>
                           <p>
                             <svg
                               width="18"
@@ -326,23 +331,29 @@ function CustomerCardDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Phone</p>
-                        <p style={{ fontWeight: "700" }}>+97455682545</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails.mobile}
+                        </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Date of Birth</p>
-                        <p style={{ fontWeight: "700" }}>01/09/2023</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.profileextra?.dob}
+                        </p>
                       </div>
                     </div>
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Email</p>
                         <p style={{ fontWeight: "700" }}>
-                          jamescorden123@gmail.com
+                          {customerDetails.email}
                         </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Gender</p>
-                        <p style={{ fontWeight: "700" }}>Female</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.profileextra?.gender}
+                        </p>
                       </div>
                     </div>
                   </div>

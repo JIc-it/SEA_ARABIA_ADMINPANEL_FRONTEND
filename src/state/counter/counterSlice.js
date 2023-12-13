@@ -20,9 +20,13 @@ const counterSlice = createSlice({
         state.value -= 1;
       }
     },
+    setCounter: (state, action) => {
+      // Assuming action.payload is the input number
+      state.value = action.payload;
+    },
   },
 });
 
-export const { increment, decrement } = counterSlice.actions;
+export const { increment, decrement,setCounter } = counterSlice.actions;
 
 export default counterSlice.reducer;

@@ -1,7 +1,7 @@
 import AddSiteVisitModal from "../Modal/AddSiteVisitModal";
 import { useState } from "react";
 
-function SiteVisit() {
+function SiteVisit({sitevistview}) {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -55,6 +55,16 @@ function SiteVisit() {
               </tr>
             </thead>
             <tbody>
+             {sitevistview.length>0 ?
+              sitevistview.map((data,index)=>
+              <tr key={data.id}>
+              <td>{data.title}</td>
+              <td>{data.date}</td>
+              <td>{data.time}</td>
+              <td><button className="btn btn-dark px-3 py-1">view</button></td>
+            </tr>
+              )
+             :
               <tr>
                 <td colspan="4">
                   <div>
@@ -78,7 +88,7 @@ function SiteVisit() {
                     </div>
                   </div>
                 </td>
-              </tr>
+              </tr>}
             </tbody>
           </table>
         </div>

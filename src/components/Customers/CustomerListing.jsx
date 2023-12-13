@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
-import { getCustomerlist } from "../../services/CustomerHandle";
+import {
+  getCustomerSearch,
+  getCustomerlist,
+} from "../../services/CustomerHandle";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 
 export default function CustomerListing() {
@@ -13,7 +16,14 @@ export default function CustomerListing() {
     setToggled(!isToggled);
   };
   const [listDiscount, setListDiscount] = useState([]);
-
+  const [search, setSearch] = useState("");
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
@@ -25,6 +35,21 @@ export default function CustomerListing() {
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
+
+  const getVendorListData = async () => {
+    setIsLoading(true);
+    getCustomerSearch(search, selectedValue)
+      .then((data) => {
+        console.log("Search ---:", data);
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setListDiscount(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching  data:", error);
+      });
+  };
 
   const handleExportCustomerData = () => {
     if (listDiscount) {
@@ -95,11 +120,15 @@ export default function CustomerListing() {
                     type="text"
                     className="form-control"
                     placeholder="Input search term"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
                   />
                   <button
                     type="button"
                     className="btn search_button"
                     style={{ background: "#006875" }}
+                    onClick={getVendorListData}
                   >
                     Search
                   </button>

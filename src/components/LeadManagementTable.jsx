@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
 import AddNewLead from "./Modal/AddNewLead";
 import { useEffect, useState } from "react";
 import { getVendorList, getVendorStatus } from "../services/leadMangement";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
+import { setCounter } from "../state/counter/counterSlice";
 
 function Table() {
+  const dispatch = useDispatch();
+  
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
@@ -339,6 +343,9 @@ function Table() {
                             >
                               <Link
                                 to={`/onboard/${item.id}`}
+                                // onClick={()=>{
+                                //   dispatch(setCounter(0));
+                                // }}
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "5px",

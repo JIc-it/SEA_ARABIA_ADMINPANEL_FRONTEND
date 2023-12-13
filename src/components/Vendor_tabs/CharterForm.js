@@ -62,7 +62,7 @@ function CharterForm({ title, isAllowProceed, setIsAllowProceed, formik }) {
                         </div>
                       ) : null}
                     </div>
-                    <div
+                    {/* <div
                       className="col-lg-12"
                       style={{
                         display: "flex",
@@ -111,7 +111,7 @@ function CharterForm({ title, isAllowProceed, setIsAllowProceed, formik }) {
                           </div>
                         ) : null}
                       </div>
-                    </div>
+                    </div> */}
                   </form>
                 </div>
               </div>

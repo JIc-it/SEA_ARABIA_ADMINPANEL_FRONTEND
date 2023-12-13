@@ -2,45 +2,77 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
-import { getVendorList } from "../../services/leadMangement";
-import { getCustomerlist } from "../../services/CustomerHandle";
+import { getVendorStatus } from "../../services/leadMangement";
+import {
+  getCustomerSearch,
+  getCustomerlist,
+} from "../../services/CustomerHandle";
 import VendorList from "../Initial_contact/VendorList";
 
 export default function Listing() {
   const navigate = useNavigate();
   const [isToggled, setToggled] = useState(true);
   const [vendor, setVendor] = useState();
-
+  const [search, setSearch] = useState("");
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
   const handleToggle = () => {
     setToggled(!isToggled);
+  };
+  const handleSelectChange = (event) => {
+    setSelectedValue(event.target.value);
   };
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        console.log("API Response:", data);
         const vendorList = data.results.filter(
           (item) => item.role === "Vendor"
         );
         setVendor(vendorList); // Fix the typo here
-        console.log("Vendor list =====:", vendorList); // Fix the variable name here
+        // console.log("Vendor list =====:", vendorList); // Fix the variable name here
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
   }, []);
 
-  //old
-  // useEffect(() => {
-  //   getVendorList()
-  //     .then((data) => {
-  //       console.log("API Response 2:", data);
+  const [statusList, setStatusList] = useState([]);
 
-  //       setVendor(data.results);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching distributor data:", error);
-  //     });
-  // }, []);
+  const getVendorListData = async () => {
+    setIsLoading(true);
+    getCustomerSearch(search, selectedValue)
+      .then((data) => {
+        console.log("Search ---:", data);
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setVendor(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching  data:", error);
+      });
+  };
+
+  useEffect(() => {
+    setIsLoading(true);
+    getVendorStatus()
+      .then((data) => {
+        setIsLoading(false);
+        setStatusList(data.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
+  useEffect(() => {
+    getVendorListData(search, selectedValue);
+  }, [search, selectedValue, isRefetch]);
 
   return (
     <div style={{ height: "100vh" }}>
@@ -68,16 +100,19 @@ export default function Listing() {
                       <path d="M21 21l-6 -6" />
                     </svg>
                   </span>
-
                   <input
                     type="text"
                     className="form-control"
                     placeholder="Input search term"
+                    onChange={(e) => {
+                      setSearch(e.target.value);
+                    }}
                   />
                   <button
                     type="button"
                     className="btn search_button"
                     style={{ background: "#006875" }}
+                    onClick={getVendorListData}
                   >
                     Search
                   </button>
@@ -90,6 +125,26 @@ export default function Listing() {
                 </button>
               </div>
             </form>
+          </div>
+          <div className="status_dropdown">
+            <label className="form-label">Status</label>
+            <select
+              type="text"
+              className="form-select mb-3 status_selector"
+              value={selectedValue}
+              onChange={handleSelectChange}
+            >
+              <option value="">All</option>
+              {statusList &&
+                statusList.length > 0 &&
+                statusList.map((item, i) => {
+                  return (
+                    <option value={item.name} key={`statusList-${i}`}>
+                      {item.name}
+                    </option>
+                  );
+                })}
+            </select>
           </div>
         </div>
         <div className="action_buttons col-4">

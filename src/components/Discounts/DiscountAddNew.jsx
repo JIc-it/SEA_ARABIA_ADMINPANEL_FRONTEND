@@ -3,11 +3,15 @@ import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Radio, Paper, Typography, ButtonGroup, Button, Box } from '@mui/material';
+import { Radio, Paper, Typography, ButtonGroup, Button, Box,Checkbox } from '@mui/material';
 import AddMorePopup from './AddMorePopup';
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 
-export default function DiscountAddNew() {
+export default function DiscountEdit() {
+    const theme = useTheme();
+    const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -31,12 +35,13 @@ export default function DiscountAddNew() {
             redemption_type: "one_time",
             expiration: "No Expiry",
             purchase_requirement: "no minimum requirement",
-
+            perservice:"One Time",
             feature_discount:{
             campaign_name: "",
             discount_type: "Percentage",
             redemption_type: "one_time",
             expiration: "No Expiry",
+            
             }
         },
         validationSchema,
@@ -77,7 +82,7 @@ export default function DiscountAddNew() {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
     const navigate = useNavigate();
-
+    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
             <div className="page" style={{ backgroundColor: "#DDECEE" }}>
@@ -101,11 +106,11 @@ export default function DiscountAddNew() {
 
                 <form onSubmit={formik.handleSubmit} style={{ padding: "1rem" }}>
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
-                        <p style={{ fontWeight: "500", fontSize: "16px" }}>Discount Details</p>
-                        <div className='d-flex'>
-                            <div className='w-50'>
+                        <p style={{ fontWeight: "600", fontSize: "16px" }}>Discount Details</p>
+                        <div className={isMobileView?"d-flex flex-column":'d-flex'}>
+                            <div className={isMobileView?"w-100":'w-50'}>
                                 <div>
-                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Campaign Name</p>
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Campaign Name</p>
                                     <input type='text' name="campaign_name" value={formik.values.campaign_name} className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                     {formik.touched.campaign_name && formik.errors.campaign_name ? (
                                         <div className="error">{formik.errors.campaign_name}</div>
@@ -113,14 +118,15 @@ export default function DiscountAddNew() {
                                 </div>
 
                                 <div>
-                                    <Typography variant="subtitle1" fontWeight={500} fontSize="16px" marginTop="8px">
+                                    <Typography variant="subtitle1" fontWeight={550} fontSize="14px" marginTop="8px">
                                         Discount Type
                                     </Typography>
-                                    <ButtonGroup style={{ border: "1px solid black" }}>
+                                    <ButtonGroup style={{ border: "1px solid black" }} >
                                         <Button
                                             style={{
                                                 fontWeight: "500",
                                                 fontSize: "15px",
+                                                textTransform:"capitalize",
                                                 // width: "40%",
                                                 backgroundColor: formik.values.discount_type === "Percentage" ? "black" : "",
                                                 color: formik.values.discount_type === "Percentage" ? "white" : "",
@@ -138,6 +144,7 @@ export default function DiscountAddNew() {
                                                 fontWeight: "500",
                                                 fontSize: "15px",
                                                 // width: "40%",
+                                                textTransform:"capitalize",
                                                 backgroundColor: formik.values.discount_type === "Fixed Amount" ? "black" : "",
                                                 color: formik.values.discount_type === "Fixed Amount" ? "white" : "",
                                                 padding: "8px",
@@ -154,9 +161,9 @@ export default function DiscountAddNew() {
 
 
                             </div>
-                            <div className='w-50'>
+                            <div className={isMobileView?"w-100":'w-50'}>
                                 <div>
-                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Discount Code</p>
+                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code</p>
                                     <input type='text' defaultValue="" className='discount-input' />
                                 </div>
 
@@ -164,16 +171,16 @@ export default function DiscountAddNew() {
 
                                     <div className='d-flex' style={{ marginTop: "8px" }}>
                                         <div>
-                                            <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Percentage</p>
+                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage</p>
                                             <input type='text' defaultValue="" className='discount-input' style={{ width: "90%" }} />
                                         </div>
                                         <div>
-                                            <p style={{ fontWeight: 500, fontSize: "16px" }}>Upto Amount</p>
+                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount</p>
                                             <input type='text' defaultValue="" className='discount-input' style={{ width: "90%" }} />
                                         </div>
                                     </div> :
                                     <div style={{ marginTop: "8px" }}>
-                                        <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Amount</p>
+                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Amount</p>
                                         <input type='text' defaultValue="" className='discount-input' />
                                     </div>
 
@@ -182,17 +189,17 @@ export default function DiscountAddNew() {
                             </div>
                         </div>
                         <div>
-                            <p style={{ fontWeight: 500, fontSize: "16px", marginTop: "8px" }}>Redemption Type</p>
-                            <div className='d-flex justify-content-between'>
+                        <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px" }}>Redemption Type</p>
+                            <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-between'}>
                                 <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "one-time" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
                                         border: '1px solid lightgray',
-                                        width: '30%',
+                                        width: isMobileView?"100%":"30%",
                                         border: formik.values.redemption_type === "one-time" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
-                                        padding: '5px',
+                                        padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">One-Time</Typography>
@@ -202,11 +209,12 @@ export default function DiscountAddNew() {
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
                                         alignItems: 'center',
                                         border: formik.values.redemption_type === "unlimited" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
-                                        width: '30%',
+                                        width: isMobileView?"100%":"30%",
                                         borderRadius: '5px',
-                                        padding: '5px',
+                                        padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">Unlimited</Typography>
@@ -216,11 +224,12 @@ export default function DiscountAddNew() {
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
                                         alignItems: 'center',
                                         border: formik.values.redemption_type === "limited-number" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
-                                        width: '30%',
+                                        width: isMobileView?"100%":"30%",
                                         borderRadius: '5px',
-                                        padding: '5px',
+                                        padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">Limited-Number</Typography>
@@ -235,9 +244,53 @@ export default function DiscountAddNew() {
                             </div>
                         }
 
-                        <div className='d-flex'>
-                            <div className='w-50'>
-                                <Typography variant="subtitle1" fontWeight={500} fontSize="16px" marginTop="8px">
+                        <div className={isMobileView?"d-flex flex-column":'d-flex'}>
+                            <div className={isMobileView?"w-100":'w-50'}>
+                                <Typography variant="subtitle1" fontWeight={550} fontSize="14px" marginTop="8px">
+                                    Per Service
+                                </Typography>
+                                <ButtonGroup style={{ border: "1px solid black" }}>
+                                    <Button
+                                        style={{
+                                            fontWeight: "500",
+                                            textTransform:"capitalize",
+                                            fontSize: "15px",
+                                            backgroundColor: formik.values.perservice === "One Time" ? "black" : "",
+                                            color: formik.values.perservice === "One Time" ? "white" : "",
+                                            padding: "8px",
+                                            textAlign: "center",
+                                        }}
+                                        onClick={() => updateFormValues({ ...formik.values, perservice: "One Time" })}
+                                    >
+                                        One Time
+                                    </Button>
+                                    <Button
+                                        style={{
+                                            fontWeight: "500",
+                                            fontSize: "15px",
+                                            textTransform:"capitalize",
+                                            backgroundColor: formik.values.perservice === "Multiple Time" ? "black" : "",
+                                            color: formik.values.perservice === "Multiple Time" ? "white" : "",
+                                            padding: "8px",
+                                            textAlign: "center",
+                                        }}
+                                        onClick={() => updateFormValues({ ...formik.values, perservice: "Multiple Time" })}
+                                    >
+                                        Multiple Time
+                                    </Button>
+                                </ButtonGroup>
+                            </div>
+
+
+                            <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
+                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number</p>
+                                <input type='number' defaultValue="" disabled={formik.values.perservice === "One Time"} className='discount-input' style={{ padding: "5px" }} />
+                            </div>
+
+                        </div>
+                        <div className={isMobileView?"d-flex flex-column":'d-flex'}>
+                            <div className={isMobileView?"w-100":'w-50'}>
+                                <Typography variant="subtitle1" fontWeight={550} fontSize="14px" marginTop="8px">
                                     Expiration
                                 </Typography>
                                 <ButtonGroup style={{ border: "1px solid black" }}>
@@ -245,6 +298,7 @@ export default function DiscountAddNew() {
                                         style={{
                                             fontWeight: "500",
                                             fontSize: "15px",
+                                            textTransform:"capitalize",
                                             backgroundColor: formik.values.expiration === "No Expiry" ? "black" : "",
                                             color: formik.values.expiration === "No Expiry" ? "white" : "",
                                             padding: "8px",
@@ -258,6 +312,7 @@ export default function DiscountAddNew() {
                                         style={{
                                             fontWeight: "500",
                                             fontSize: "15px",
+                                            textTransform:"capitalize",
                                             backgroundColor: formik.values.expiration === "Limited Time" ? "black" : "",
                                             color: formik.values.expiration === "Limited Time" ? "white" : "",
                                             padding: "8px",
@@ -271,24 +326,24 @@ export default function DiscountAddNew() {
                             </div>
 
 
-                            <div className='w-50' style={{ marginTop: "8px" }}>
-                                <p style={{ fontWeight: 500, fontSize: "16px" }}>Validity Period</p>
-                                <input type='date' defaultValue="" disabled={formik.values.expiration === "No Expiry"} className='discount-input' style={{ padding: "5px" }} />
+                            <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
+                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Validity Period</p>
+                                <input type='number' defaultValue="" disabled={formik.values.expiration === "No Expiry"} className='discount-input' style={{ padding: "5px" }} />
                             </div>
 
                         </div>
                     </div>
 
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
-                        <p style={{ fontWeight: "500", fontSize: "16px" }}>Applies To</p>
+                        <p style={{ fontWeight: "600", fontSize: "16px" }}>Applies To</p>
                         <div className='d-flex justify-content-between align-items-center'>
-                            <p style={{ fontWeight: 500, fontSize: "16px" }}>Services/Vendors</p>
+                            <p style={{ fontWeight: 550, fontSize: "14px" }}>Services/Vendors</p>
                             <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open}/>
                         </div>
 
                         <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px" }}>
                             <div className='d-flex justify-content-between'>
-                                <p style={{ fontWeight: "500", fontSize: "18px" }}>Spectre Company</p>
+                                <p style={{ fontWeight: "550", fontSize: "14px" }}>Spectre Company</p>
                                 <div className='d-flex align-items-center justify-content-between'>
                                     <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
@@ -309,7 +364,7 @@ export default function DiscountAddNew() {
                         </div>
                         <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
                             <div className='d-flex justify-content-between'>
-                                <p style={{ fontWeight: "500", fontSize: "18px" }}>Salma international</p>
+                                <p style={{ fontWeight: "550", fontSize: "14px" }}>Salma international</p>
                                 <div className='d-flex align-items-center justify-content-between'>
                                     <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
@@ -331,16 +386,17 @@ export default function DiscountAddNew() {
                     </div>
 
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px", marginBottom: "2%" }}>
-                        <p style={{ fontWeight: "500", fontSize: "16px" }}>Requirements</p>
-                        <div className='d-flex align-item-center'>
-                            <div className='w-50'>
+                        <p style={{ fontWeight: "600", fontSize: "16px" }}>Requirements</p>
+                        <div className={isMobileView?"d-flex flex-column":'d-flex align-item-center'}>
+                            <div className={isMobileView?"w-100":"w-50"}>
                                 <div>
-                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Purchase Requirements</p>
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Purchase Requirements</p>
                                     <ButtonGroup style={{ border: "1px solid black" }}>
                                         <Button
                                             style={{
                                                 fontWeight: "500",
                                                 fontSize: "15px",
+                                                textTransform:"capitalize",
                                                 backgroundColor: formik.values.purchase_requirement === "no minimum requirement" ? "black" : "",
                                                 color: formik.values.purchase_requirement === "no minimum requirement" ? "white" : "",
                                                 padding: "2px",
@@ -354,6 +410,7 @@ export default function DiscountAddNew() {
                                             style={{
                                                 fontWeight: "500",
                                                 fontSize: "15px",
+                                                textTransform:"capitalize",
                                                 backgroundColor: formik.values.purchase_requirement === "minimum purchase amount" ? "black" : "",
                                                 color: formik.values.purchase_requirement === "minimum purchase amount" ? "white" : "",
                                                 padding: "2px",
@@ -366,7 +423,7 @@ export default function DiscountAddNew() {
                                     </ButtonGroup>
                                 </div>
                             </div>
-                            <div className='w-50'>
+                            <div className={isMobileView?"w-100":'w-50'} style={{marginTop:isMobileView?"5px":""}}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount</p>
                                 <input type='text' className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === "no minimum requirement"} />
                             </div>
@@ -374,7 +431,21 @@ export default function DiscountAddNew() {
                     </div>
 
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
-                        <p style={{ fontWeight: "500", fontSize: "16px" }}>Feature Discount (optional)</p>
+                        <p style={{ fontWeight: "600", fontSize: "16px" }}>Feature Discount (optional)</p>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox {...label} defaultChecked size="small" />
+                            <Typography variant="p" component="p">
+                                On Checkout
+                            </Typography>
+                        </Box>
+                        <hr></hr>
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                            <Checkbox {...label}  size="small" />
+                            <Typography variant="p" component="p">
+                                On Home Screen
+                            </Typography>
+                        </Box>
+                        <p style={{ fontWeight: "600",marginTop:"5px"}}>Image</p>
                         <Box textAlign="center" mt={1} style={{width:"100%",marginBottom:"5px"}}>
                             <label htmlFor="file-input" style={{width:"100%"}}>
                                 <Paper
@@ -412,7 +483,7 @@ export default function DiscountAddNew() {
 
 
                         </Box>
-                        <div className='d-flex'>
+                        {/* <div className='d-flex'>
                             <div className='w-50'>
                                 <div>
                                     <p style={{ fontWeight: 500, fontSize: "16px" }}>Campaign Name</p>
@@ -490,8 +561,8 @@ export default function DiscountAddNew() {
                                 }
 
                             </div>
-                        </div>
-                        <div>
+                        </div> */}
+                        {/* <div>
                             <p style={{ fontWeight: 500, fontSize: "16px", marginTop: "8px" }}>Redemption Type</p>
                             <div className='d-flex justify-content-between'>
                                 <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "one-time" })}
@@ -537,15 +608,15 @@ export default function DiscountAddNew() {
                                     <Radio checked={formik.values.redemption_type === "limited-number"} value={formik.values.redemption_type} />
                                 </Paper>
                             </div>
-                        </div>
-                        {formik.values.redemption_type === "limited-number" &&
+                        </div> */}
+                        {/* {formik.values.redemption_type === "limited-number" &&
                             <div style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number</p>
                                 <input type='text' defaultValue="" className='discount-input' style={{ width: "50%" }} />
                             </div>
-                        }
+                        } */}
 
-                        <div className='d-flex'>
+                        {/* <div className='d-flex'>
                             <div className='w-50'>
                                 <Typography variant="subtitle1" fontWeight={500} fontSize="16px" marginTop="8px">
                                     Expiration
@@ -586,7 +657,7 @@ export default function DiscountAddNew() {
                                 <input type='date' defaultValue="" disabled={formik.values.expiration === "No Expiry"} className='discount-input' style={{ padding: "5px" }} />
                             </div>
 
-                        </div>
+                        </div> */}
                     </div>
                     <hr style={{borderBottom:"2px solid black"}}/>
                     <div className='d-flex justify-content-end'>
