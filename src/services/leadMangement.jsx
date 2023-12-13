@@ -7,18 +7,17 @@ const getVendorServiceUrl = "/main/category-list";
 const getIndivitualVendorListUrl = "/account/vendor-list-details";
 const getIndivitualVendorUrl = "/account/vendor-details";
 const idTypeUrl = "/account/userid-type";
-const createSiteVist="company/sitevisit-create/"
-const getSiteVist="company/sitevisit-list"
-const getSiteVistQualifications="/company/qualification-list"
-const createPropsal="company/proposal-create/"
-const getPropsals="company/proposal-list"
-const createNegotation="company/negotation-create/"
-const getNegotiations="company/negotation-list"
-const createMOU="company/mou-create/"
-const getMOUs="company/mou-list"
-const goLives="company/onboard-vendor/"
-const updateVendorDetails="account/vendor-add-details"
-
+const createSiteVist = "company/sitevisit-create/";
+const getSiteVist = "company/sitevisit-list";
+const getSiteVistQualifications = "/company/qualification-list";
+const createPropsal = "company/proposal-create/";
+const getPropsals = "company/proposal-list";
+const createNegotation = "company/negotation-create/";
+const getNegotiations = "company/negotation-list";
+const createMOU = "company/mou-create/";
+const getMOUs = "company/mou-list";
+const goLives = "company/onboard-vendor/";
+const updateVendorDetails = "account/vendor-add-details";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -69,9 +68,11 @@ export const getVendorListById = (id) => {
       throw error;
     });
 };
-export const UpdateVendorListById = (id,data) => {
+export const UpdateVendorListById = (id, data) => {
   return axiosInstance
-    .put(`${updateVendorDetails}/${id}`,data)
+    .put(`${updateVendorDetails}/${id}`, data, {
+      headers: { "Content-Type": "application/json", Accept: "*/*" },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -100,7 +101,13 @@ export const getUserIdType = () => {
 };
 export const submitSiteVisit = (data) => {
   return axiosInstance
-    .post(createSiteVist,data)
+    .post(
+      createSiteVist,
+      data
+      //   {
+      //   headers: { "Content-Type": "application/json", Accept: "*/*" },
+      // }
+    )
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -128,7 +135,13 @@ export const siteVisitQualification = () => {
 };
 export const submitProposal = (data) => {
   return axiosInstance
-    .post(createPropsal,data)
+    .post(
+      createPropsal,
+      data
+      //    {
+      //   headers: { "Content-Type": "application/json", Accept: "*/*" },
+      // }
+    )
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -148,7 +161,13 @@ export const getPropsal = () => {
 
 export const submitNegotiation = (data) => {
   return axiosInstance
-    .post(createNegotation,data)
+    .post(
+      createNegotation,
+      data
+      //    {
+      //   headers: { "Content-Type": "application/json", Accept: "*/*" },
+      // }
+    )
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -168,7 +187,13 @@ export const getNegotiation = () => {
 
 export const submitCharter = (data) => {
   return axiosInstance
-    .post(createMOU,data)
+    .post(
+      createMOU,
+      data
+      //   {
+      //   headers: { "Content-Type": "application/json", Accept: "*/*" },
+      // }
+    )
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -188,7 +213,7 @@ export const getMOU = () => {
 
 export const goLive = (id) => {
   return axiosInstance
-    .put(`${goLives}${id}`,{status:"True"})
+    .put(`${goLives}${id}`, { status: "True" })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -19,13 +19,17 @@ import AddVendorInfo from "../Initial_contact/AddVendorForm";
 import {
   getIndivitualVendorDetail,
   getUserIdType,
-  getVendorListById,UpdateVendorListById,
+  getVendorListById,
+  UpdateVendorListById,
   getVendorServiceTag,
-  submitSiteVisit,siteVisitQualification,
+  submitSiteVisit,
+  siteVisitQualification,
   submitProposal,
   submitNegotiation,
-  submitCharter,goLive
+  submitCharter,
+  goLive,
 } from "../../services/leadMangement";
+import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
 function ProgressBar() {
@@ -80,12 +84,11 @@ function ProgressBar() {
   const [isOpen, setIsOpen] = useState(false);
   const [buttonState, setButtonState] = useState(true);
   const count = useSelector((state) => state.counter.value);
+  // console.log(count);
   const { vendorId, isAllowProceed, setIsAllowProceed } =
     useContext(OnboardContext);
-const [userdata,setUserData]=useState([])
-const [qualificationlist,setQualificationList]=useState([])
-  // console.log(vendorId);
-  // const [validationSchema, setValidationSchema] = useState();
+  const [userdata, setUserData] = useState([]);
+  const [qualificationlist, setQualificationList] = useState([]);
 
   var initialValueForInitialContact = {
     fullName: "",
@@ -103,24 +106,14 @@ const [qualificationlist,setQualificationList]=useState([])
   };
 
   useEffect(() => {
-    // getVendorListById(vendorId)
-    //   .then((data) => {
-    //     console.log(data);
-
-    //   })
-    //   .catch((error) => {
-    //     console.error("Error fetching  data:", error);
-    //   });
-
     getVendorListById(vendorId)
       .then((data) => {
-        console.log(data);
-        setUserData(data)
+        setUserData(data);
         formik.setFieldValue("fullName", data.first_name);
         formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
-        formik.setFieldValue("location", data.location);
+        formik.setFieldValue("location", data.profileextra?.location);
         formik.setFieldValue("idType", data?.useridentificationdata?.id_type);
         formik.setFieldValue(
           "idNumber",
@@ -152,18 +145,18 @@ const [qualificationlist,setQualificationList]=useState([])
         console.error("Error fetching  data:", error);
       });
 
-
-      siteVisitQualification().then((data)=>setQualificationList(data.results)).catch((error)=>{
-        console.error("Error on Fetching list Qualification",error)
-      })
-    getVendorListById(vendorId)
+    siteVisitQualification()
+      .then((data) => setQualificationList(data.results))
+      .catch((error) => {
+        console.error("Error on Fetching list Qualification", error);
+      });
+    getVendorListById(vendorId);
   }, [vendorId]);
 
   const qualificationSchema = Yup.object().shape({
     id: Yup.string().required(),
   });
-  
-  
+
   const initialValueForProposals = {
     proposalTitle: "",
     files: [],
@@ -210,7 +203,6 @@ const [qualificationlist,setQualificationList]=useState([])
       .required("Define Services is required"),
   });
 
-
   const initialValueForSiteVisit = {
     title: "",
     files: [],
@@ -226,7 +218,7 @@ const [qualificationlist,setQualificationList]=useState([])
     note: Yup.string().required("Note is required"),
     siteVisitTime: Yup.string().required("Time is required"),
     siteVisitDate: Yup.string().required("Date is required"),
-    qualification:Yup.array().required("All Qualification")
+    qualification: Yup.array().required("All Qualification"),
   });
 
   const validationSchemaForProposal = Yup.object({
@@ -284,131 +276,9 @@ const [qualificationlist,setQualificationList]=useState([])
         : validationSchemaForProposal,
     onSubmit: async (values) => {
       setIsOpen(true);
-      // Handle form submission here
-      // setIsAllowProceed(true);
-      console.log(values);
-
-      //Example: Submit API request based on count
-      switch (count) {
-        case 0:
-        case 1:
-          try {
-            const definesevices=values.defineServices.map((datas)=>datas.id)
-            const passdata={
-              email: values.email,
-              mobile: values.phone,
-              first_name:values.fullName,
-              last_name: values.last_name,
-              location:values.location,
-              useridentificationdata: {
-                id_type: values.idType,
-                id_number: values.idNumber
-              },
-              company_company_user: {
-                service_summary: definesevices,
-                name: values.companyName,
-                registration_number: values.companyRegistrationNumber,
-                address: values.companyAddress,
-                website: values.companyWebsite,
-                third_party_ownership: values.thirdPartyService
-              }
-            }
-            console.log(passdata,"check");
-            const response = await UpdateVendorListById(userdata.id,passdata);
-            console.log("Update API response :", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-          break;
-        case 2:
-          // API logic for Site Visit
-          try {
-            const formdata=new FormData();
-            formdata.append('company',userdata?.company_company_user?.id);
-            formdata.append('title',values.title);
-            formdata.append('attachment',values.files[0]);
-            formdata.append('note',values.note);
-            formdata.append('date',values.siteVisitDate);
-            formdata.append('time',values.siteVisitTime);
-            formdata.append('qualifications',values.qualification);
-            console.log(formdata.getAll("qualifications"));
-            const response = await submitSiteVisit(formdata);
-            console.log("API response:", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-          break;
-
-        case 3:
-          // API logic for Proposal
-          try {
-            const formdata=new FormData();
-            formdata.append('company',userdata?.company_company_user?.id);
-            formdata.append('title',values.proposalTitle);
-            formdata.append('attachment',values.files[0]);
-            formdata.append('note',values.proposalNote);
-            const response = await submitProposal(formdata);
-            console.log("API response:", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-          break;
-
-        case 4:
-          // API logic for Negotiation
-          try {
-            const formdata=new FormData();
-            formdata.append('company',userdata?.company_company_user?.id);
-            formdata.append('title',values.negotiationTitle);
-            formdata.append('attachment',values.files[0]);
-            formdata.append('note',values.negotiationNote);
-            const response = await submitNegotiation(formdata);
-            console.log("API response:", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-          break;
-
-        case 5:
-          // API logic for Charter
-          try {
-            const formdata=new FormData();
-            formdata.append('company',userdata?.company_company_user?.id);
-            formdata.append('title',values.charterTitle);
-            formdata.append('attachment',values.files[0]);
-            formdata.append('note',values.charterNote);
-            const response = await submitCharter(formdata);
-            console.log("API response:", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-          break;
-        case 6:
-          try {
-            const response = await goLive(userdata?.company_company_user?.id);
-            console.log("API response:", response);
-            // Handle success or error
-          } catch (error) {
-            console.error("API error:", error);
-            // Handle error
-          }
-        default:
-          break;
-      }
     },
   });
 
- 
   useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
@@ -419,11 +289,158 @@ const [qualificationlist,setQualificationList]=useState([])
       });
   }, []);
 
+  const updateInitialContact = async () => {
+    try {
+      const definesevices = formik.values.defineServices.map(
+        (datas) => datas.id
+      );
+      const passdata = {
+        email: formik.values.email,
+        mobile: formik.values.phone,
+        first_name: formik.values.fullName,
+        last_name: formik.values.last_name,
+        location: formik.values.location,
+        useridentificationdata: {
+          id_type: formik.values.idType,
+          id_number: formik.values.idNumber,
+        },
+        company_company_user: {
+          service_summary: definesevices,
+          name: formik.values.companyName,
+          registration_number: formik.values.companyRegistrationNumber,
+          address: formik.values.companyAddress,
+          website: formik.values.companyWebsite,
+          third_party_ownership: formik.values.thirdPartyService,
+        },
+      };
+      console.log(passdata, "check");
+      const response = await UpdateVendorListById(userdata.id, passdata);
+      if (response) {
+        dispatch(increment());
+      }
+      console.log("Update API response :", response);
+      // Handle success or error
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.message);
+      // Handle error
+    }
+  };
+
+  const updateSiteVisit = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append('company',userdata?.company_company_user?.id);
+      formdata.append("title", formik.values.title);
+      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("note", formik.values.note);
+      formdata.append("date", formik.values.siteVisitDate);
+      formdata.append("time", formik.values.siteVisitTime);
+      formdata.append("qualifications", formik.values.qualification);
+      // console.log(formdata.getAll("qualifications"));
+      const response = await submitSiteVisit(formdata);
+      if (response) {
+        dispatch(increment());
+      } else {
+        toast.error("site visit adding failed ");
+      }
+      console.log("API response:", response);
+      // Handle success or error
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.message);
+      // Handle error
+    }
+  };
+
+  const updateProposal = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("company", userdata?.company_company_user?.id);
+      formdata.append("title", formik.values.proposalTitle);
+      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("note", formik.values.proposalNote);
+      const response = await submitProposal(formdata);
+      console.log("API response:", response);
+      if (response) {
+        dispatch(increment());
+      } else {
+        toast.error("propsal adding failed ");
+      }
+      // Handle success or error
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.message);
+      // Handle error
+    }
+  };
+
+  const updateNegotiation = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("company", userdata?.company_company_user?.id);
+      formdata.append("title", formik.values.negotiationTitle);
+      formdata.append("attachment", formik.values?.files[0]);
+      formdata.append("note", formik.values.negotiationNote);
+      const response = await submitNegotiation(formdata);
+      console.log("API response:", response);
+      if (response) {
+        dispatch(increment());
+      } else {
+        toast.error("Negotiation adding failed ");
+      }
+      // Handle success or error
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.message);
+      // Handle error
+    }
+  };
+
+  const updateCharter = async () => {
+    try {
+      const formdata = new FormData();
+      formdata.append("company", userdata?.company_company_user?.id);
+      formdata.append("title", formik.values.charterTitle);
+      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("note", formik.values.charterNote);
+      const response = await submitCharter(formdata);
+      console.log("API response:", response);
+      if (response) {
+        dispatch(increment());
+      } else {
+        toast.error("Charter adding failed ");
+      }
+      // Handle success or error
+    } catch (error) {
+      console.error("API error:", error);
+      toast.error(error.message);
+      // Handle error
+    }
+  };
+
   const handleConfirm = () => {
     setIsOpen(false);
-    buttonState ? dispatch(increment()) : dispatch(decrement());
-    setButtonState(true);
-    // setIsAllowProceed(false);
+    if (count === 0) {
+      dispatch(increment());
+    }
+    // buttonState ? dispatch(increment()) : dispatch(decrement());
+    // setButtonState(true);
+    if (count === 1) {
+      updateInitialContact();
+    }
+    if (count === 2) {
+      updateSiteVisit();
+    }
+    if (count === 3) {
+      updateProposal();
+    }
+    if (count === 4) {
+      updateNegotiation();
+    }
+    if (count === 5) {
+      updateCharter();
+    }
   };
 
   const dispatch = useDispatch();
@@ -512,7 +529,9 @@ const [qualificationlist,setQualificationList]=useState([])
             </div>
           </div>
           {count === 1 && <AddVendorInfo formik={formik} />}
-          {count === 2 && <AddSiteVisit formik={formik} qualification={qualificationlist}/>}
+          {count === 2 && (
+            <AddSiteVisit formik={formik} qualification={qualificationlist} />
+          )}
           {count === 3 && (
             <CommonAddDetails title="Add Proposal" formik={formik} />
           )}
@@ -522,12 +541,12 @@ const [qualificationlist,setQualificationList]=useState([])
           {count === 5 && (
             <CharterForm title="Add MOU / Charter" formik={formik} />
           )}
-          {count === 6 && <GoLive />}
+          {count === 6 && <GoLive userData={userdata} />}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           {count != 6 && (
             <div className="col-12 actions_menu">
               <div style={{ display: "flex", gap: "20px" }}>
-                {count >= 1 && (
+                {/* {count >= 1 && (
                   <button
                     className="btn"
                     style={{
@@ -543,7 +562,7 @@ const [qualificationlist,setQualificationList]=useState([])
                   >
                     Revert
                   </button>
-                )}
+                )} */}
                 <button
                   className="btn"
                   type="submit"

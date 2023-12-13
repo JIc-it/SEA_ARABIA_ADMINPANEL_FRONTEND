@@ -363,7 +363,7 @@ const steps = [
   { title: "Proposals", label: "Proposal Details" },
   { title: "Negotiations", label: "Negotation Details" },
   { title: "MOU / Charter", label: "MOU / Charter Details" },
-  { title: "Go Live", label: "Go Live" },
+  { title: "Onboard", label: "Vendor Onboard" },
 ];
 export default function ProgressBarComponent() {
   const count = useSelector((state) => state.counter.value);
