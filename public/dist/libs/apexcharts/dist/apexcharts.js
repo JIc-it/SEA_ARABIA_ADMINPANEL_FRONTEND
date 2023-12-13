@@ -15329,7 +15329,7 @@
               options.yaxis = yaxis;
             }
 
-            me.ctx.updateHelpers._updateOptions(options, false, me.w.config.chart.animations.dynamicAnimation.enabled);
+            me.ctx.updateHelpers._Options(options, false, me.w.config.chart.animations.dynamicAnimation.enabled);
 
             if (typeof w.config.chart.events.zoomed === 'function') {
               toolbar.zoomCallback(xaxis, yaxis);

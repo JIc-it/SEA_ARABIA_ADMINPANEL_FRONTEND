@@ -59,9 +59,9 @@ export const getVendorServiceTag = () => {
     });
 };
 
-export const getVendorListById = (id) => {
+export const getVendorListById = (vendorId) => {
   return axiosInstance
-    .get(`${getIndivitualVendorListUrl}/${id}`)
+    .get(`${getIndivitualVendorListUrl}/${vendorId}`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

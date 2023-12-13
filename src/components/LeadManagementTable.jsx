@@ -10,6 +10,7 @@ import { setCounter } from "../state/counter/counterSlice";
 
 function Table() {
   const dispatch = useDispatch();
+  
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");

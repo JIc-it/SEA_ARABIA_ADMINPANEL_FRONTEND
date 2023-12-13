@@ -1,9 +1,10 @@
-import React from 'react'
-import { useNavigate } from 'react-router-dom';
-import CustomerCardDetails from './CustomerCardDetails';
+import React, {} from "react";
+import { useNavigate } from "react-router-dom";
+import CustomerCardDetails from "./CustomerCardDetails";
 
 function CustomerView() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
+
   return (
     <>
       <div className="page">
@@ -52,11 +53,24 @@ function CustomerView() {
                 </div>
               </div>
             </div>
-            <div className='d-flex justify-content-between mt-5 ms-3'>
+            <div className="d-flex justify-content-between mt-5 ms-3">
               <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
-                <svg width={20} height={20} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg> &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
+                <svg
+                  width={20}
+                  height={20}
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M20 12H4M4 12L10 6M4 12L10 18"
+                    stroke="#252525"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>{" "}
+                &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
               </div>
             </div>
             <CustomerCardDetails />
@@ -64,7 +78,7 @@ function CustomerView() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
 export default CustomerView;

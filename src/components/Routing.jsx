@@ -30,9 +30,9 @@ import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
 import ServiceList from "./Service/ServiceList";
 import ServiceView from "./Service/ServiceView";
-import UserVendorEdit from "../components/UserVendor/UserVendorEdit"
-import UserVendorAddService from "../components/UserVendor/UserVendorAddService"
-import Dashboard from "./Dashboard/Dashboard";
+import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
+import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
+import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 
 function AllRouting() {
   return (
@@ -63,19 +63,26 @@ function AllRouting() {
       <Route path="/analytics" element={<Analytics />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
-      <Route path="/customers/:id" element={<CustomerView />} />
+      <Route path="/customers/:customerId" element={<CustomerView />} />
       <Route path="/customers-edit/:id" element={<CustomerEdit />} />
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
-      <Route path="/user-vendor/edit/:id" element={<UserVendorEdit/>} />
-      <Route path="/user-vendor/add-service/" element={<UserVendorAddService/>} />
+      <Route path="/user-vendor/edit/:id" element={<UserVendorEdit />} />
+      <Route
+        path="/user-vendor/add-service/"
+        element={<UserVendorAddService />}
+      />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
       <Route path="/admin" element={<Admin />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
+      <Route
+        path="/user-vendor/:vendorId"
+        element={<UserVendorCardDetails />}
+      />
       <Route path="/service" element={<ServiceList />} />
       <Route path="/service-view" element={<ServiceView />} />
     </Routes>
