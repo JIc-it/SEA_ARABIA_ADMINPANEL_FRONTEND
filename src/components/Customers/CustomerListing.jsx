@@ -1,135 +1,179 @@
-import React,{useState,useEffect} from 'react'
-import { Link } from 'react-router-dom'
-import { useNavigate } from 'react-router-dom'
-import filterIcon from "../../static/img/Filter.png"
-import { getCustomerist } from '../../services/CustomerHandle'
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import filterIcon from "../../static/img/Filter.png";
+import { getCustomerlist } from "../../services/CustomerHandle";
+import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 
 export default function CustomerListing() {
-    const navigate=useNavigate()
-    const [isToggled, setToggled] = useState(true);
+  const navigate = useNavigate();
+  const [isToggled, setToggled] = useState(true);
 
-    const handleToggle = () => {
-      setToggled(!isToggled);
+  const handleToggle = () => {
+    setToggled(!isToggled);
+  };
+  const [listDiscount, setListDiscount] = useState([]);
+
+  useEffect(() => {
+    getCustomerlist()
+      .then((data) => {
+        console.log("customer-list", data);
+        setListDiscount(data.results);
+        // setCustomerId(data.results[0]?.id);
+      })
+      .catch((error) => {
+        console.error("Error fetching Customer List data:", error);
+      });
+  }, []);
+
+  const handleExportCustomerData = () => {
+    if (listDiscount) {
+      const header = [
+        "NAME",
+        "EMAIL",
+        "PHONE",
+        "LOCATION",
+        "CREATED ON",
+        "CREATED BY",
+        "STATUS",
+      ];
+      const csvData = listDiscount.map((elem) => {
+        let formatedDate = formatDate(elem.created_at);
+        return [
+          elem.first_name,
+          elem.email,
+          elem.mobile,
+          elem.location,
+          elem.state?.state,
+          formatedDate,
+          elem.created_by,
+          `${elem.status ? elem.status : "-"} `,
+        ];
+      });
+
+      const csvContent = [header, ...csvData]
+        .map((row) => row.join(","))
+        .join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Customer-List.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
     }
-const [listDiscount,setListDiscount]=useState([])
-
-useEffect(() => {
-  getCustomerist()
-    .then((data) => {
-      console.log(data);
-      setListDiscount(data.results);
-    })
-    .catch((error) => {
-      console.error("Error fetching distributor data:", error);
-    });
-}, []);
-
+  };
 
   return (
-    <div style={{height:"100vh"}}>
-    <div className="col-12 actions_menu my-2 px-3">
-    <div className="action_menu_left col-8">
-      <div>
-        <form action="" method="post" autocomplete="off">
-         <div style={{display:"flex"}}>
-         <div className="input-icon">
-            <span className="input-icon-addon">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                fill="none"
+    <div style={{ height: "100vh" }}>
+      <div className="col-12 actions_menu my-2 px-3">
+        <div className="action_menu_left col-8">
+          <div>
+            <form action="" method="post" autocomplete="off">
+              <div style={{ display: "flex" }}>
+                <div className="input-icon">
+                  <span className="input-icon-addon">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      strokeWidth="2"
+                      stroke="currentColor"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                      <path d="M21 21l-6 -6" />
+                    </svg>
+                  </span>
+
+                  <input
+                    type="text"
+                    className="form-control"
+                    placeholder="Input search term"
+                  />
+                  <button
+                    type="button"
+                    className="btn search_button"
+                    style={{ background: "#006875" }}
+                  >
+                    Search
+                  </button>
+                </div>
+                <button
+                  className="bg-black"
+                  style={{ borderRadius: "5px", marginLeft: "5px" }}
+                >
+                  <img src={filterIcon} alt="filter" width={25} />
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        <div className="action_buttons col-4">
+          <button
+            className="btn btn-outline"
+            style={{ borderRadius: "6px" }}
+            onClick={handleExportCustomerData}
+          >
+            Export &nbsp;
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+            >
+              <path
+                d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                stroke="#252525"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+              />
+              <path
+                d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                stroke="#252525"
+                strokeWidth="1.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-                <path d="M21 21l-6 -6" />
-              </svg>
-            </span>
-
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Input search term"
-            />
-            <button
-              type="button"
-              className="btn search_button"
-              style={{ background: "#006875" }}
+              />
+            </svg>
+          </button>
+          <button
+            // onClick={()=>navigate("/discounts-offers/add")}
+            className="btn btn-info vendor_button"
+            style={{ borderRadius: "6px" }}
+            type="button"
+          >
+            Add Customer &nbsp;
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
             >
-              Search
-            </button>
-          </div>
-          <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}}>
-          <img src={filterIcon} alt="filter" width={25}/>
-            </button>
-         </div>
-        </form>
+              <path
+                d="M10 3L10 17"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+              <path
+                d="M3 10H17"
+                stroke="white"
+                strokeWidth="2"
+                strokeLinecap="round"
+              />
+            </svg>
+          </button>
+        </div>
       </div>
-      
-    </div>
-    <div className="action_buttons col-4">
-      
-      <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-        Export &nbsp;
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-            stroke="#252525"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-          />
-          <path
-            d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-            stroke="#252525"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </button>
-      <button
-        // onClick={()=>navigate("/discounts-offers/add")}
-        className="btn btn-info vendor_button"
-        style={{ borderRadius: "6px" }}
-        type="button"
-      >
-        Add Customer &nbsp;
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-        >
-          <path
-            d="M10 3L10 17"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-          <path
-            d="M3 10H17"
-            stroke="white"
-            strokeWidth="2"
-            strokeLinecap="round"
-          />
-        </svg>
-      </button>
-    </div>
-  </div>
-  <div className="card mx-3">
+      <div className="card mx-3">
         <div className="table-responsive">
           <table className="table card-table table-vcenter text-nowrap datatable">
             <thead>
@@ -278,7 +322,7 @@ useEffect(() => {
                 <>
                   {listDiscount.map((item, index) => {
                     let formatedDate = item.created_at;
-                    return ( 
+                    return (
                       <tr>
                         <td>
                           <span className="text-secondary">
@@ -292,23 +336,17 @@ useEffect(() => {
                           <span className="text-secondary">{item.mobile}</span>
                         </td>
                         <td>
-                          <span className="text-secondary">
-                            India
-                          </span>
+                          <span className="text-secondary">India</span>
                         </td>
                         <td>
                           <span className="text-secondary">08 OCT,2022</span>
                         </td>
                         <td>
-                          <span className="text-secondary">
-                            80
-                          </span>
+                          <span className="text-secondary">80</span>
                         </td>
                         <td>
-                          <span className="text-secondary">
-                            Active
-                          </span>
-                          </td>
+                          <span className="text-secondary">Active</span>
+                        </td>
                         <td
                           style={{
                             display: "flex",
@@ -317,7 +355,7 @@ useEffect(() => {
                           }}
                         >
                           <Link
-                            to={"/customers/12345"}
+                            to={`/customers/${item.id}`}
                             className="btn btn-sm btn-info"
                             style={{ padding: "6px 10px", borderRadius: "4px" }}
                           >
@@ -339,16 +377,15 @@ useEffect(() => {
                             </svg>
                           </Link>
                         </td>
-                
                       </tr>
-                     );
-                  })} 
+                    );
+                  })}
                 </>
-               ) : (
+              ) : (
                 <tr>
                   <td className="error">No Records Found</td>
                 </tr>
-              )} 
+              )}
             </tbody>
           </table>
         </div>
@@ -403,6 +440,6 @@ useEffect(() => {
           </ul>
         </div> */}
       </div>
-  </div>
-  )
+    </div>
+  );
 }

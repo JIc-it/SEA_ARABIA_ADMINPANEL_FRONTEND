@@ -48,9 +48,9 @@ export const getVendorServiceTag = () => {
     });
 };
 
-export const getVendorListById = (id) => {
+export const getVendorListById = (vendorId) => {
   return axiosInstance
-    .get(`${getIndivitualVendorListUrl}/${id}`)
+    .get(`${getIndivitualVendorListUrl}/${vendorId}`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -71,6 +71,18 @@ export const getIndivitualVendorDetail = (id) => {
 export const getUserIdType = () => {
   return axiosInstance
     .get(`${idTypeUrl}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+//new
+
+export const getVendorlistData = () => {
+  return axiosInstance
+    .get("account/user-list/")
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
