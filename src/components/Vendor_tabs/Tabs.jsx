@@ -1,17 +1,18 @@
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "./TabSelector";
 import SiteVisit from "./SiteVisit";
-import Notes from "./Notes";
+import Notes from "./Miscellaneous/MiscellaneousList";
 import LeadDetails from "./leads";
 import Proposal from "./Proposal";
 import Negotations from "./Negotations";
 import MOU from "./MOU";
 import { useSelector } from "react-redux";
+import MiscellaneousList from "./Miscellaneous/MiscellaneousList";
 
-export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
+export function Basic({ leads, sitevistview, proposal, negotiations, mou }) {
   const [selectedTab, setSelectedTab] = useTabs([
     "Miscellaneous",
-    "leads",
+    "Vendor Details",
     "site visit",
     "proposals",
     "negotations",
@@ -29,15 +30,6 @@ export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
                 data-bs-toggle="tabs"
                 style={{ borderRadius: "10px" }}
               >
-                <li className="nav-item">
-                  <TabSelector
-                    isActive={selectedTab === "Miscellaneous"}
-                    onClick={() => setSelectedTab("Miscellaneous")}
-                  >
-                    Miscellaneous
-                  </TabSelector>
-                </li>
-
                 {count >= 2 && (
                   <li className="nav-item">
                     <TabSelector
@@ -92,28 +84,36 @@ export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
                     </TabSelector>
                   </li>
                 )}
+                <li className="nav-item">
+                  <TabSelector
+                    isActive={selectedTab === "Miscellaneous"}
+                    onClick={() => setSelectedTab("Miscellaneous")}
+                  >
+                    Miscellaneous
+                  </TabSelector>
+                </li>
               </ul>
             </div>
             <div className="card-body">
               <TabPanel hidden={selectedTab !== "site visit"}>
-                <SiteVisit sitevistview={sitevistview}/>
+                <SiteVisit sitevistview={sitevistview} />
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "Vendor Details"}>
-                <LeadDetails leads={leads}/>
+                <LeadDetails leads={leads} />
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "proposals"}>
-                <Proposal proposal={proposal}/>
+                <Proposal proposal={proposal} />
               </TabPanel>
               <TabPanel hidden={selectedTab !== "negotations"}>
-                <Negotations negotiations={negotiations}/>
+                <Negotations negotiations={negotiations} />
               </TabPanel>
               <TabPanel hidden={selectedTab !== "mou/charter"}>
-                <MOU mou={mou}/>
+                <MOU mou={mou} />
               </TabPanel>
               <TabPanel hidden={selectedTab !== "Miscellaneous"}>
-                <Notes />
+                <MiscellaneousList />
               </TabPanel>
             </div>
           </div>

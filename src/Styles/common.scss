@@ -368,3 +368,10 @@ tr {
   gap: 6px;
   display: inline-flex;
 }
+.upload-filename {
+  margin: 1rem 1.3rem;
+  display: flex;
+}
+.file-modal .ReactModalPortal .ReactModal__Overlay{
+  z-index: 9999 !important;
+}

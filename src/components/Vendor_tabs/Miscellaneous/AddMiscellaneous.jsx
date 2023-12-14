@@ -6,25 +6,25 @@ import { useContext, useEffect, useState } from "react";
 import {
   addMiscellaneousAttachment,
   getMiscellaneousTypeList,
-} from "../../services/leadMangement";
-import DropZone from "../Common/DropZone";
-import { FileUploader } from "./FileUploader";
+} from "../../../services/leadMangement";
+import DropZone from "../../Common/DropZone";
+import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
-import { OnboardContext } from "../../Context/OnboardContext";
+import { OnboardContext } from "../../../Context/OnboardContext";
 
-function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
+function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-
+  const initialValues = {
+    title: "",
+    // type: "",
+    files: "",
+    note: "",
+    // time: "",
+    // date: "",
+  };
   const formik = useFormik({
-    initialValues: {
-      title: "",
-      type: "",
-      files: "",
-      note: "",
-      // time: "",
-      // date: "",
-    },
+    initialValues: initialValues,
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       files: Yup.string().required("Please upload at least one file"),
@@ -32,7 +32,7 @@ function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       console.log(values);
       setIsLoading(true);
 
@@ -53,6 +53,7 @@ function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
             setIsRefetch(!isRefetch);
             toast.success("Attachment Added Successfully.");
             close();
+            resetForm();
           } else {
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
@@ -74,7 +75,12 @@ function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
   return (
     <Offcanvas
       show={show}
-      onHide={close}
+      onHide={() => {
+        close();
+        formik.setFieldValue("title", "");
+        formik.setFieldValue("files", "");
+        formik.setFieldValue("note", "");
+      }}
       placement="end"
       style={{ overflow: "auto" }}
     >
@@ -106,6 +112,10 @@ function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
           ) : null}
         </div>
         <FileUploader formik={formik} handleFileChange={handleFileChange} />
+        <div className="upload-filename">
+          <label htmlFor="">Uploaded File: </label> 
+          <span className="mx-2">{formik.values.files?.name}</span>
+        </div>
         {/* <div style={{ margin: "20px" }}>
           <DropZone formik={formik} />
         </div> */}
@@ -227,4 +237,4 @@ function AddOthersModal({ show, close, setIsRefetch, isRefetch }) {
   );
 }
 
-export default AddOthersModal;
+export default AddMiscellaneous;
