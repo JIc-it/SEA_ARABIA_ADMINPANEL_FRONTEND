@@ -27,8 +27,11 @@ export default function CustomerListing() {
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        console.log("customer-list", data);
-        setListDiscount(data.results);
+        console.log("customer-list", data.results);
+        // setListDiscount(data.results);
+        const filteredResults = data.results.filter((item) => item.role === 'User');
+
+        setListDiscount(filteredResults);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {

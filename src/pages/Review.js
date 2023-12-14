@@ -1,11 +1,12 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter } from "../services/review"
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList } from "../services/review"
 
 const Review = () => {
   const [categorylist, setCategorylist] = useState([])
   const [subcategorylist, setSubCategorylist] = useState([])
   const [servicefilterlist, setserviceFilterList] = useState([])
+  const [companyList,setCompanyList]=useState([])
   const [selectedValue, setSelectedValue] = useState("New Lead");
   const [filterdataid, setfilterid] = useState("")
   const [filterdataidData, setfilteridData] = useState([])
@@ -22,6 +23,17 @@ const Review = () => {
       }
     })
   }
+
+  useEffect(() => {
+    getCompanyList()
+      .then((data) => {
+        console.log(data);
+        setCompanyList(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching distributor data:", error);
+      });
+  }, []);
 
   useEffect(() => {
     getCategoryist()
@@ -85,6 +97,25 @@ const Review = () => {
                     placeholder="Search"
                     onChange={(e) => handlefiltering({ search: e.target.value })}
                   />
+                </div>
+              </div>
+              <div className='col-lg-12 mt-2'>
+                <label className="form-label">Vendor :</label>
+                <div className="status_dropdown">
+                  <select
+                    type="text"
+                    className="form-select mb-3 status_selector"
+                    value={selectedValue}
+                    onChange={handleSelectChange}
+                  >
+                    <option value="All">All</option>
+                    {companyList.map((data, index) =>
+                      <option key={data.id} value={data.name}>{data.name}</option>
+                    )}
+                    {/* <option value="New Lead">All</option>
+                                        <option value="Yatch">Yatch</option>
+                                        <option value="Boat">Boat</option> */}
+                  </select>
                 </div>
               </div>
               <div className='col-lg-12'>

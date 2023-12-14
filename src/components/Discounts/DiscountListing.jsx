@@ -4,38 +4,59 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
+import CircularProgress from "@mui/material/CircularProgress";
 
 function DiscountListing() {
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate=useNavigate();
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [offerslist,setOffersList]=useState([])
+ const [isLoading,setIsLoading]=useState(false)
   const [selectedValue, setSelectedValue] = useState("New Lead");
 
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
-
+ 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
-  const [listDiscount, setlistDiscount] = useState([]);
 
-  const [isToggled, setToggled] = useState(true);
+  const handleToggle = async (itemId) => {
+    
+    setOffersList((prevItems) =>
+      prevItems.map((item) =>
+        item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
+      )
+    );
+  
+    const toggledItem = offerslist.find((item) => item.id === itemId);
+    if (toggledItem) {
+      const data = { is_enable: !toggledItem.is_enable };
+      try {
+        const response = await UpdateStatus(itemId, data);
+        if(response){
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error("Error updating status:", error);
+      }
+    } else {
+      console.error("Item not found");
+    }
+  };
+  
 
-  const handleToggle = () => {
-    setToggled(!isToggled);
-  }
-//   useEffect(() => {
-//     getVendorList()
-//       .then((data) => {
-//         setlistDiscount(data?.results);
-//       })
-//       .catch((error) => {
-//         console.error("Error fetching  data:", error);
-//       });
-//   }, []);
+  useEffect(() => {
+    setIsLoading(true)
+    getDiscountOfferList()
+      .then((data) => {
+        setOffersList(data?.results);
+        setIsLoading(false)
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
+
 
   return (
     <div>
@@ -270,30 +291,30 @@ function DiscountListing() {
               </tr>
             </thead>
             <tbody>
-              {/* {listDiscount && listDiscount.length > 0 ? ( */}
+              {!isLoading && offerslist && offerslist.length > 0 ? (
                 <>
-                  {/* {listDiscount.map((item, index) => { */}
-                    {/* let formatedDate = item.created_at;
-                    return ( */}
+                  {offerslist.map((item, index) => {
+                    let formatedDate = item.created_at;
+                    return (
                       <tr>
                         <td>
                           <span className="text-secondary">
-                            FREE25
+                            {item?.coupon_code}
                           </span>
                         </td>
                         <td>
-                          <span className="text-secondary">25% &nbsp;Discount</span>
+                          <span className="text-secondary">{item?.name}</span>
                         </td>
                         <td>
-                          <span className="text-secondary">53</span>
+                          <span className="text-secondary">0</span>
                         </td>
                         <td>
                           <span className="text-secondary">
-                            80
+                            {item.max_redeem_count}
                           </span>
                         </td>
                         <td>
-                          <span className="text-secondary">08 OCT,2022</span>
+                          <span className="text-secondary">{new Date(item.end_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric"})}</span>
                         </td>
                         <td
                           style={{
@@ -303,7 +324,7 @@ function DiscountListing() {
                           }}
                         >
                           <Link
-                            to={"/discounts-offers/12345"}
+                            to={"/discounts-offers/"+item.id}
                             className="btn btn-sm btn-info"
                             style={{ padding: "6px 10px", borderRadius: "4px" }}
                           >
@@ -328,22 +349,32 @@ function DiscountListing() {
                   <td>
                    <div style={{display:"flex"}}>
                    <label class="switch" style={{marginRight:"5px"}}>
-                      <input type="checkbox" checked={isToggled} value={isToggled} onChange={handleToggle}/>
+                      <input type="checkbox" defaultChecked={item.is_enable} value={item.is_enable} onChange={()=>handleToggle(item.id)}/>
                       <span class="slider round"></span>
                     </label>
-                    <div>{isToggled?"ACTIVE":"INACTIVE"}</div>
+                    <div>{item?.is_enable===true?"ACTIVE":"INACTIVE"}</div>
                    </div>
                     
                   </td>
                       </tr>
-                    {/* ); */}
-                  {/* })} */}
+                     );
+                   })}
                 </>
-              {/* ) : (
+              ) : (
                 <tr>
                   <td className="error">No Records Found</td>
                 </tr>
-              )} */}
+              )} 
+
+              {isLoading && 
+               (
+                <tr>
+                  <td colSpan={"8"} align="center">
+                    <CircularProgress />
+                  </td>
+                </tr>
+              )
+              }
             </tbody>
           </table>
         </div>

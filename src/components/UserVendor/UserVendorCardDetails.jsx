@@ -115,7 +115,7 @@ function UserVendorCardDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; Kuwait
+                  &nbsp; {vendorDetails?.profileextra?.location}
                 </p>
               </div>
             </div>

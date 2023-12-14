@@ -19,7 +19,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: 800,
+  width: 600,
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -774,14 +774,136 @@ const BookinList = () => {
                       <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Category</button>
                       <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Vendor</button>
                       <small>Customer</small>
-                      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Messages</button>
-                      <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Settings</button>
+                      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Customer</button>
+                      <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Customer Type</button>
+                      <small>Booking</small>
+                      <button class="nav-link" id="v-pills-status-tab" data-bs-toggle="pill" data-bs-target="#v-pills-status" type="button" role="tab" aria-controls="v-pills-status" aria-selected="false">Status</button>
+                      <small>Date</small>
+                      <button class="nav-link" id="v-pills-creationDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-creationDate" type="button" role="tab" aria-controls="v-pills-creationDate" aria-selected="false">Creation Date</button>
+                      <button class="nav-link" id="v-pills-commencementDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-commencementDate" type="button" role="tab" aria-controls="v-pills-commencementDate" aria-selected="false">Commencement Date</button>
                     </div>
                     <div class="tab-content" id="v-pills-tabContent">
-                      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">A</div>
-                      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">B</div>
-                      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">Confirmed</div>
-                      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">D</div>
+                      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                        <h4>Category</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Boat
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Yatch
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            JAt Ski
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Hot air Balloon
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Desert Safari
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        <h4>Vendor</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Salma international
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Uber Marine Company
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Ghanayem El-Khair
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Flyworld
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Vanuatu
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <h4>Customer</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Shaheel Arham
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Jane Cooper
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Esther Howard
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Cobi Keller
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Manolo Cannon
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Customer Type</div>
+                      <div class="tab-pane fade" id="v-pills-status" role="tabpanel" aria-labelledby="v-pills-settings-tab">Status</div>
+                      <div class="tab-pane fade" id="v-pills-creationDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Creation Date</div>
+                      <div class="tab-pane fade" id="v-pills-commencementDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Commencement Date</div>
                     </div>
                   </div>
                 </Box>

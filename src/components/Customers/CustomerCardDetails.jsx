@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 import UploadFiles from "../Common/UploadFile";
 import { getCustomerListById } from "../../services/CustomerHandle";
+import CustomerEditModal from "./CustomerEditModal";
 
 function CustomerCardDetails() {
   const navigate = useNavigate();
@@ -18,6 +19,11 @@ function CustomerCardDetails() {
   const [customerVieList, setCustomerViewList] = useState();
   const [customerDetails, setCustomerDetails] = useState([]);
 
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+
   const customerId = useParams()?.customerId;
   // console.log("customer-id=====", customerId);
 
@@ -25,7 +31,7 @@ function CustomerCardDetails() {
     getCustomerListById(customerId)
       .then((data) => {
         // Assuming data is an object with a 'response' property
-        console.log("customer detail is ---", data);
+        // console.log("customer detail is ---", data);
         setCustomerDetails(data);
       })
       .catch((error) => {
@@ -257,10 +263,15 @@ function CustomerCardDetails() {
 
             {active === "Details" && (
               <>
+                <CustomerEditModal
+                  show={showOffcanvas}
+                  close={handleCloseOffcanvas}
+                />
                 <button
-                  onClick={() =>
-                    navigate(`/customers-edit/${customerDetails?.id}`)
-                  }
+                  onClick={handleOpenOffcanvas}
+                  // onClick={() =>
+                  //   navigate(`/customers-edit/${customerDetails?.id}`)
+                  // }
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
@@ -300,7 +311,8 @@ function CustomerCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Full Name</p>
                         <p style={{ fontWeight: "700" }}>
-                          {customerDetails.first_name}  {customerDetails.last_name}
+                          {customerDetails.first_name}{" "}
+                          {customerDetails.last_name}
                         </p>
                       </div>
                       <div>
@@ -347,6 +359,12 @@ function CustomerCardDetails() {
                         <p style={{ color: "#68727D" }}>Email</p>
                         <p style={{ fontWeight: "700" }}>
                           {customerDetails.email}
+                        </p>
+                      </div>
+                      <div>
+                        <p style={{ color: "#68727D" }}>Location</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.profileextra?.location}
                         </p>
                       </div>
                       <div>
