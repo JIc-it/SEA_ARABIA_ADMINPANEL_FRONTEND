@@ -10,7 +10,10 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import { getVendorListById } from "../../services/leadMangement";
 import { useParams } from "react-router-dom";
-import { UpdateCustomerListById,  } from "../../services/CustomerHandle";
+import {
+  UpdateCustomerListById,
+  UpdateVendorListById,
+} from "../../services/CustomerHandle";
 
 function UserVendorEdit({ show, close }) {
   const theme = useTheme();
@@ -30,9 +33,11 @@ function UserVendorEdit({ show, close }) {
         setvendorDetails(data);
       })
       .catch((error) => {
-        console.error("Error fetching customer data:", error);
+        console.error("Error fetching vendor data:", error);
       });
   }, [vendorId]);
+
+  console.log("vendor detail state", vendorDetails.email);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -56,13 +61,16 @@ function UserVendorEdit({ show, close }) {
     defineservice: Yup.string().required("Define Service is required"),
   });
 
-
+  // update vendor details
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      email: "",
-      mobile: "",
-      location: "",
+      first_name: vendorDetails?.first_name || "",
+      email: vendorDetails?.email || "",
+      mobile: vendorDetails?.mobile || "",
+      location: vendorDetails?.profileextra?.location || "",
+      address: vendorDetails?.profileextra?.address || "",
+      website: vendorDetails?.profileextra?.website || "",
+      // Add other fields as needed
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -71,16 +79,25 @@ function UserVendorEdit({ show, close }) {
       if (!isLoading) {
         try {
           const data = {
+            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.name,
-            last_name: "",
+
             role: "Vendor",
             email: values.email,
-            mobile: `+965 ${values.mobile}`,
-            location: values.location,
+            mobile: values.mobile,
+            company_company_user: {
+              registration_number: values.companyregnumber,
+              name: values.companyname,
+              address: values.companyaddress,
+              website: values.companywebaddress,
+            },
+            profileextra: {
+              location: values.location,
+            },
           };
 
-          const vendorData = await UpdateCustomerListById(vendorId, data);
-          console.log("v updated detail is ---", vendorData);
+          const vendorData = await UpdateVendorListById(vendorId, data);
+          console.log("Vendor updated detail is ---", vendorDetails?.email);
           if (vendorData) {
             setIsLoading(false);
             // window.location.reload();
@@ -88,10 +105,9 @@ function UserVendorEdit({ show, close }) {
             toast.success("Vendor updated Successfully.");
             close();
           } else {
-            console.error("Error while creating Admin:", vendorData.error);
+            console.error("Error while updating Vendor:", vendorData.error);
             setIsLoading(false);
           }
-          setIsLoading(false);
         } catch (err) {
           console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
@@ -101,54 +117,8 @@ function UserVendorEdit({ show, close }) {
       }
     },
   });
-  //   const formik = useFormik({
-  //     initialValues: {
-  //       name: "",
-  //       email: "",
-  //       mobile: "",
-  //       location: "",
-  //       idtype: "",
-  //       idnumber: "",
-  //       companyname: "",
-  //       companyaddress: "",
-  //       companyregnumber: "",
-  //       companywebaddress: "",
-  //       defineservice: "",
-  //     },
-  //     validationSchema,
-  // onSubmit: async (values) => {
-  //   setIsLoading(true);
 
-  //   if (!isLoading) {
-  //     try {
-  //       const data = {
-  //         first_name: values.name,
-  //         last_name: "",
-  //         role: "Vendor",
-  //         email: values.email,
-  //         mobile: `+965 ${values.mobile}`,
-  //         location: values.location,
-  //       };
-
-  //       const adminData = await createVenderLead(data);
-
-  //       if (adminData) {
-  //         setIsLoading(false);
-  //         window.location.reload();
-  //       } else {
-  //         console.error("Error while creating Admin:", adminData.error);
-  //         setIsLoading(false);
-  //       }
-  //       setIsLoading(false);
-  //     } catch (err) {
-  //       console.log(err);
-  //       err.response.data.email && toast.error(err.response.data.email[0]);
-  //       err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-  //       setIsLoading(false);
-  //     }
-  //   }
-  // },
-  //   });
+  // console.log(formik, "data");
 
   return (
     <div style={{ height: "100vh" }}>
