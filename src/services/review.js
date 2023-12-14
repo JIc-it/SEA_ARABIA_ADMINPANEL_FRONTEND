@@ -1,5 +1,14 @@
 import axiosInstance from "./authHandle";
 
+export const getCompanyList = () => {
+  return axiosInstance
+    .get("company/companycms-list")
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
 export const getCategoryist = () => {
   return axiosInstance
     .get("service/category-list")
@@ -20,7 +29,7 @@ export const getSubCategoryist = () => {
 };
 export const getServiceFilterList = (data) => {
   return axiosInstance
-    .get("service/service-filter-list",{params:{search:data.search,category:data?.categoryid,subcategory:data?.subcategoryid}})
+    .get("service/service-filter-list-cms",{params:{search:data.search,category:data?.categoryid,subcategory:data?.subcategoryid}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -9,8 +9,29 @@ import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 600,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 const BookinList = () => {
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
@@ -105,8 +126,8 @@ const BookinList = () => {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
+          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+          : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -154,7 +175,7 @@ const BookinList = () => {
                       </svg>
                     }
                     firstCount={"198"}
-                    secondLabel={"New Bookings"}
+                    secondLabel={"Today's New Bookings"}
                     secondIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +196,7 @@ const BookinList = () => {
                       </svg>
                     }
                     secondCount={"198"}
-                    thirdLabel={"Confirmed Bookings"}
+                    thirdLabel={"Total Confirmed Bookings"}
                     thirdIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -200,7 +221,7 @@ const BookinList = () => {
                       </svg>
                     }
                     thirdCount={"198"}
-                    fourthLabel={"Cancelled Bookings"}
+                    fourthLabel={"Total Cancelled Bookings"}
                     fourthIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -279,7 +300,8 @@ const BookinList = () => {
                       <button
                         className="btn  filter-button  "
                         style={{ borderRadius: "6px", marginLeft: "10px" }}
-                        // onClick={handleExportData}
+                        onClick={handleOpen}
+                        type="button"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -671,9 +693,8 @@ const BookinList = () => {
           </p> */}
                   <ul className="pagination m-0 ms-auto">
                     <li
-                      className={`page-item  ${
-                        !listPageUrl.previous && "disabled"
-                      }`}
+                      className={`page-item  ${!listPageUrl.previous && "disabled"
+                        }`}
                     >
                       <a
                         className="page-link"
@@ -703,9 +724,8 @@ const BookinList = () => {
                     </li>
 
                     <li
-                      className={`page-item  ${
-                        !listPageUrl.next && "disabled"
-                      }`}
+                      className={`page-item  ${!listPageUrl.next && "disabled"
+                        }`}
                     >
                       <a
                         className="page-link"
@@ -735,6 +755,159 @@ const BookinList = () => {
                   </ul>
                 </div>
               </div>
+              <Modal
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  {/* <Typography id="modal-modal-title" variant="h6" component="h2">
+                    Text in a modal
+                  </Typography>
+                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+                  </Typography> */}
+                  <div class="d-flex align-items-start">
+                    <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                      <small>Service</small>
+                      <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Category</button>
+                      <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Vendor</button>
+                      <small>Customer</small>
+                      <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Customer</button>
+                      <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Customer Type</button>
+                      <small>Booking</small>
+                      <button class="nav-link" id="v-pills-status-tab" data-bs-toggle="pill" data-bs-target="#v-pills-status" type="button" role="tab" aria-controls="v-pills-status" aria-selected="false">Status</button>
+                      <small>Date</small>
+                      <button class="nav-link" id="v-pills-creationDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-creationDate" type="button" role="tab" aria-controls="v-pills-creationDate" aria-selected="false">Creation Date</button>
+                      <button class="nav-link" id="v-pills-commencementDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-commencementDate" type="button" role="tab" aria-controls="v-pills-commencementDate" aria-selected="false">Commencement Date</button>
+                    </div>
+                    <div class="tab-content" id="v-pills-tabContent">
+                      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                        <h4>Category</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Boat
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Yatch
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            JAt Ski
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Hot air Balloon
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Desert Safari
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        <h4>Vendor</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Salma international
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Uber Marine Company
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Ghanayem El-Khair
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Flyworld
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Vanuatu
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        <h4>Customer</h4>
+                        <input
+                          type="text"
+                          className="form-control"
+                          placeholder="search"
+                        />
+                        <br />
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Shaheel Arham
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Jane Cooper
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Esther Howard
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Cobi Keller
+                          </label>
+                        </div>
+                        <div class="form-check">
+                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <label class="form-check-label" for="Boat">
+                            Manolo Cannon
+                          </label>
+                        </div>
+                      </div>
+                      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Customer Type</div>
+                      <div class="tab-pane fade" id="v-pills-status" role="tabpanel" aria-labelledby="v-pills-settings-tab">Status</div>
+                      <div class="tab-pane fade" id="v-pills-creationDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Creation Date</div>
+                      <div class="tab-pane fade" id="v-pills-commencementDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Commencement Date</div>
+                    </div>
+                  </div>
+                </Box>
+              </Modal>
             </div>
           </div>
           <Footer />
@@ -745,104 +918,3 @@ const BookinList = () => {
 };
 
 export default BookinList;
-
-// <tbody>
-//   {!isLoading ? (
-//     <>
-//       {listVendor && listVendor.length > 0 ? (
-//         <>
-//           {listVendor.map((item, index) => {
-//             let formatedDate = formatDate(item.created_at);
-//             return (
-//               <tr>
-//                 <td>
-//                   <span className="text-secondary">{item.first_name}</span>
-//                 </td>
-//                 <td>
-//                   <span className="text-secondary">{item.email}</span>
-//                 </td>
-//                 <td>
-//                   <span className="text-secondary">{item.mobile}</span>
-//                 </td>
-//                 <td>
-//                   <span className="text-secondary">{item.location}</span>
-//                 </td>
-//                 <td>
-//                   <span className="text-secondary">{formatedDate}</span>
-//                 </td>
-//                 <td>
-//                   <span className="text-secondary">{item.created_by}</span>
-//                 </td>
-//                 <td>
-//                   {item.status ? (
-//                     <span
-//                       className="badge  text-blue-fg"
-//                       style={{
-//                         width: "100px",
-//                         padding: "5px 9px",
-//                         borderRadius: "4px",
-//                         backgroundColor: "#5A9CD9",
-//                       }}
-//                     >
-//                       {`${item.status ? item.status : "New Lead"} `}
-//                     </span>
-//                   ) : (
-//                     "-"
-//                   )}
-//                 </td>
-//                 <td
-//                   style={{
-//                     display: "flex",
-//                     gap: "10px",
-//                     alignItems: "baseline",
-//                   }}
-//                 >
-//                   <Link
-//                     to={"/onboard"}
-//                     className="btn btn-sm btn-info"
-//                     style={{
-//                       padding: "5px",
-//                       borderRadius: "4px",
-//                       borderRadius: "var(--roundness-round-inside, 6px)",
-//                       background: "#187AF7",
-
-//                       /* Shadow/XSM */
-//                       boxSShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-//                     }}
-//                   >
-//                     Onboard &nbsp;
-//                     <svg
-//                       xmlns="http://www.w3.org/2000/svg"
-//                       width="16"
-//                       height="16"
-//                       viewBox="0 0 16 16"
-//                       fill="none"
-//                     >
-//                       <path
-//                         d="M4 12L12 4M12 4H6M12 4V10"
-//                         stroke="white"
-//                         strokeWidth="1.5"
-//                         strokeLinecap="round"
-//                         strokeLinejoin="round"
-//                       />
-//                     </svg>
-//                   </Link>
-//                 </td>
-//               </tr>
-//             );
-//           })}
-//         </>
-//       ) : (
-//         <tr>
-//           <td className="error">No Records Found</td>
-//         </tr>
-//       )}
-//     </>
-//   ) : (
-//     <tr>
-//       <td colSpan={"8"} align="center">
-//         <CircularProgress />
-//       </td>
-//     </tr>
-//   )}
-// </tbody>;

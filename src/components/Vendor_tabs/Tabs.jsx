@@ -10,7 +10,7 @@ import { useSelector } from "react-redux";
 
 export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
   const [selectedTab, setSelectedTab] = useTabs([
-    "others",
+    "Miscellaneous",
     "leads",
     "site visit",
     "proposals",
@@ -31,20 +31,20 @@ export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
               >
                 <li className="nav-item">
                   <TabSelector
-                    isActive={selectedTab === "others"}
-                    onClick={() => setSelectedTab("others")}
+                    isActive={selectedTab === "Miscellaneous"}
+                    onClick={() => setSelectedTab("Miscellaneous")}
                   >
-                    Others
+                    Miscellaneous
                   </TabSelector>
                 </li>
 
                 {count >= 2 && (
                   <li className="nav-item">
                     <TabSelector
-                      isActive={selectedTab === "leads"}
-                      onClick={() => setSelectedTab("leads")}
+                      isActive={selectedTab === "Vendor Details"}
+                      onClick={() => setSelectedTab("Vendor Details")}
                     >
-                      Leads
+                      Vendor Details
                     </TabSelector>
                   </li>
                 )}
@@ -99,7 +99,7 @@ export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
                 <SiteVisit sitevistview={sitevistview}/>
               </TabPanel>
 
-              <TabPanel hidden={selectedTab !== "leads"}>
+              <TabPanel hidden={selectedTab !== "Vendor Details"}>
                 <LeadDetails leads={leads}/>
               </TabPanel>
 
@@ -112,7 +112,7 @@ export function Basic({leads,sitevistview,proposal,negotiations,mou}) {
               <TabPanel hidden={selectedTab !== "mou/charter"}>
                 <MOU mou={mou}/>
               </TabPanel>
-              <TabPanel hidden={selectedTab !== "others"}>
+              <TabPanel hidden={selectedTab !== "Miscellaneous"}>
                 <Notes />
               </TabPanel>
             </div>

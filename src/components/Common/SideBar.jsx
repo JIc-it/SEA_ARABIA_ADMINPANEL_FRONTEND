@@ -402,8 +402,15 @@ function SideBar() {
                 </span>
               </a>
             </li>
-            <li className="nav-item">
-              <a className="nav-link" href="/booking">
+            <li className="nav-item dropdown">
+              <a
+                className="nav-link dropdown-toggle"
+                href="/booking"
+                data-bs-toggle="dropdown"
+                data-bs-auto-close="false"
+                role="button"
+                aria-expanded="false"
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"
@@ -423,8 +430,63 @@ function SideBar() {
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="nav-link-title">&nbsp; Bookings</span>
+                <span className="nav-link-title"> &nbsp; Booking Managment </span>
               </a>
+              <div className="dropdown-menu">
+                <div className="dropdown-menu-columns">
+                  <div className="dropdown-menu-column">
+                    <a
+                      className="dropdown-item"
+                      href="/booking"
+                      style={{ color: "#006875;" }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                          fill="#006875"
+                        />
+                      </svg>
+                      &nbsp; Booking{" "}
+                    </a>
+                    <a className="dropdown-item" href="/cancellation-booking">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                          fill="#68727D"
+                        />
+                      </svg>
+                      &nbsp; Cancellation Booking
+                    </a>
+                    <a className="dropdown-item" href="/cancellation-history">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                          fill="#68727D"
+                        />
+                      </svg>
+                      &nbsp; Cancellation History
+                    </a>
+                  </div>
+                </div>
+              </div>
             </li>
             <li className="nav-item dropdown">
               <a
@@ -499,7 +561,7 @@ function SideBar() {
             </li>
 
             <li className="nav-item dropdown">
-            <a className="nav-link" href="/service">
+              <a className="nav-link" href="/service">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="22"

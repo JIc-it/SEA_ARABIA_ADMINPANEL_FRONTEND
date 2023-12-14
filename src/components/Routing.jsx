@@ -1,9 +1,9 @@
+/* eslint-disable */
 import { Routes, Route } from "react-router-dom";
 import LeadManagement from "../lead_management";
 import OnBoard from "./OnBoard";
 import AddVendorInfo from "./Initial_contact/AddVendorForm";
 import Login from "../pages/Login";
-import DashBoard from "../pages/DashBoard";
 import Bookings from "../pages/Bookings";
 import Services from "../pages/Services/ManageServices";
 import RefundsRequest from "../pages/Refunds/RefundsRequest";
@@ -34,6 +34,7 @@ import ServiceView from "./Service/ServiceView";
 import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
 import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
 import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
+import DashBoard from "../pages/DashBoard";
 
 function AllRouting() {
   return (
@@ -42,7 +43,7 @@ function AllRouting() {
       <Route path="/dashboard" element={<DashBoard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
       <Route path="/booking" element={<Bookings />} />
-      <Route path="/onboard/:id" element={<OnBoard />} />
+      <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
       <Route path="/refunds-request" element={<RefundsRequest />} />
       <Route path="/refunds-history" element={<RefundHistory />} />

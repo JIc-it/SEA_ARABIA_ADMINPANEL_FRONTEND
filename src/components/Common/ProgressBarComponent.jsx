@@ -107,7 +107,7 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
 
 function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
-
+console.log(props,'props');
   return (
     <ColorlibStepIconRoot
       ownerState={{ completed, active }}

@@ -1,67 +1,71 @@
 import { Basic } from "./Tabs";
 import { useContext, useEffect, useState } from "react";
 import { OnboardContext } from "../../Context/OnboardContext";
-import {getVendorListById,getSiteVisit,getPropsal,getNegotiation,getMOU} from "../../services/leadMangement";
+import {
+  getVendorListById,
+  getSiteVisit,
+  getPropsal,
+  getNegotiation,
+  getMOU,
+} from "../../services/leadMangement";
 
 function VendorTabs() {
-  const { vendorId, isAllowProceed, setIsAllowProceed } =
-  useContext(OnboardContext);
-const [userdata,setUserData]=useState([])
-const [sitevistview,setSiteView]=useState([])
-const [propsals,setPropsals]=useState([])
-const [negotiations,setNegotiations]=useState([])
-const [mou,setMOUs]=useState([])
+  const { vendorId } = useContext(OnboardContext);
+  const [userdata, setUserData] = useState([]);
+  const [sitevistview, setSiteView] = useState([]);
+  const [propsals, setPropsals] = useState([]);
+  const [negotiations, setNegotiations] = useState([]);
+  const [mou, setMOUs] = useState([]);
 
+  useEffect(() => {
+    getVendorListById(vendorId)
+      .then((data) => {
+        setUserData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, [vendorId]);
 
-useEffect(() => {
-  getVendorListById(vendorId)
-    .then((data) => {
-      setUserData(data)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-}, [vendorId]);
+  useEffect(() => {
+    getSiteVisit()
+      .then((data) => {
+        setSiteView(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
-useEffect(() => {
-  getSiteVisit()
-    .then((data) => {
-      setSiteView(data.results)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-}, []);
+  useEffect(() => {
+    getPropsal()
+      .then((data) => {
+        setPropsals(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
-useEffect(() => {
-  getPropsal()
-    .then((data) => {
-      setPropsals(data.results)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-}, []);
+  useEffect(() => {
+    getNegotiation()
+      .then((data) => {
+        setNegotiations(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
-useEffect(() => {
-  getNegotiation()
-    .then((data) => {
-      setNegotiations(data.results)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-}, []);
-
-useEffect(() => {
-  getMOU()
-    .then((data) => {
-      setMOUs(data.results)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-}, []);
+  useEffect(() => {
+    getMOU()
+      .then((data) => {
+        setMOUs(data.results);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
 
   return (
     // <div style={{ width: "1060px" }}>
@@ -370,7 +374,14 @@ useEffect(() => {
     //     </div>
     //   </div>
     // </div>
-    <Basic leads={userdata} sitevistview={sitevistview} proposal={propsals} negotiations={negotiations} mou={mou}/>
+    <Basic
+      leads={userdata}
+      sitevistview={sitevistview}
+      proposal={propsals}
+      negotiations={negotiations}
+      mou={mou}
+      
+    />
   );
 }
 
