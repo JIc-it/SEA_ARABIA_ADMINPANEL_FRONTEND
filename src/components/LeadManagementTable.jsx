@@ -6,10 +6,10 @@ import { getVendorList, getVendorStatus } from "../services/leadMangement";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
+import { setCounter } from "../state/counter/counterSlice";
 
 function Table() {
   const dispatch = useDispatch();
-  
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
@@ -192,7 +192,7 @@ function Table() {
             style={{ borderRadius: "6px" }}
             type="button"
           >
-            Vendor Lead &nbsp;
+            Vendor Leads &nbsp;
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -321,7 +321,7 @@ function Table() {
                                 <span
                                   className="badge  text-blue-fg"
                                   style={{
-                                    width: "100px",
+                                    minWidth: "100px",
                                     padding: "7px 9px 5px 9px ",
                                     borderRadius: "4px",
                                     backgroundColor: "#5A9CD9",
@@ -342,9 +342,29 @@ function Table() {
                             >
                               <Link
                                 to={`/onboard/${item.id}/${item.company_id}`}
-                                // onClick={()=>{
-                                //   dispatch(setCounter(0));
-                                // }}
+                                onClick={() => {
+                                  if (item.status === "New Lead") {
+                                    dispatch(setCounter(0));
+                                  }
+                                  if (item.status === "Initial Contact") {
+                                    dispatch(setCounter(1));
+                                  }
+                                  if (item.status === "Site Visit") {
+                                    dispatch(setCounter(2));
+                                  }
+                                  if (item.status === "Proposal") {
+                                    dispatch(setCounter(3));
+                                  }
+                                  if (item.status === "Negotiation") {
+                                    dispatch(setCounter(4));
+                                  }
+                                  if (item.status === "MOU / Charter") {
+                                    dispatch(setCounter(5));
+                                  }
+                                  if (item.status === "Ready to Onboard") {
+                                    dispatch(setCounter(6));
+                                  }
+                                }}
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "5px",

@@ -2,14 +2,14 @@ import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "./TabSelector";
 import SiteVisit from "./SiteVisit";
 import Notes from "./Miscellaneous/MiscellaneousList";
-import LeadDetails from "./leads";
+import LeadDetails from "./VenderDetailsEdit/leads";
 import Proposal from "./Proposal";
 import Negotations from "./Negotations";
 import MOU from "./MOU";
 import { useSelector } from "react-redux";
 import MiscellaneousList from "./Miscellaneous/MiscellaneousList";
 
-export function Basic({ leads, sitevistview, proposal, negotiations, mou }) {
+export function Basic({  sitevistview, proposal, negotiations, mou }) {
   const [selectedTab, setSelectedTab] = useTabs([
     "Miscellaneous",
     "Vendor Details",
@@ -100,7 +100,7 @@ export function Basic({ leads, sitevistview, proposal, negotiations, mou }) {
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "Vendor Details"}>
-                <LeadDetails leads={leads} />
+                <LeadDetails  />
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "proposals"}>

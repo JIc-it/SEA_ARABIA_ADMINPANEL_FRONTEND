@@ -1,4 +1,29 @@
+import { useEffect, useState } from "react";
+import { getVendorLeadCount } from "../../services/leadMangement";
+
 function HeaderTiles(props) {
+  const [leadCount, setLeadCount] = useState({
+    totalCount: 0,
+    leadThisWeek: 0,
+    onBoard: 0,
+    active: 0,
+  });
+
+  useEffect(() => {
+    getVendorLeadCount()
+      .then((data) => {
+        setLeadCount({
+          totalCount: data.total_lead,
+          leadThisWeek: data.new_leads,
+          onBoard: data.onboarded_vendors,
+          active: data.active_vedors,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, []);
+
   return (
     <div className="row row-cards">
       {/* <style>
@@ -64,13 +89,13 @@ function HeaderTiles(props) {
               </div>
               <div className="col">
                 <div className="font-weight-medium count_card_heading">
-                  Total Leads
+                  Vendor Leads
                 </div>
                 <div
                   className="text-secondary"
                   style={{ fontSize: "18px", fontWeight: "700" }}
                 >
-                  469
+                  {leadCount.totalCount}
                 </div>
               </div>
             </div>
@@ -122,13 +147,13 @@ function HeaderTiles(props) {
               </div>
               <div className="col">
                 <div className="font-weight-medium count_card_heading">
-                  New Leads
+                  New Leads This Week
                 </div>
                 <div
                   className="text-secondary"
                   style={{ fontSize: "18px", fontWeight: "700" }}
                 >
-                  123
+                  {leadCount.leadThisWeek}
                 </div>
               </div>
             </div>
@@ -194,7 +219,7 @@ function HeaderTiles(props) {
                   className="text-secondary"
                   style={{ fontSize: "18px", fontWeight: "700" }}
                 >
-                  326
+                  {leadCount.onBoard}
                 </div>
               </div>
             </div>
@@ -242,13 +267,13 @@ function HeaderTiles(props) {
               </div>
               <div className="col">
                 <div className="font-weight-medium count_card_heading">
-                  Rejected Leads
+                  Active Vendors
                 </div>
                 <div
                   className="text-secondary"
                   style={{ fontSize: "18px", fontWeight: "700" }}
                 >
-                  153
+                  {leadCount.active}
                 </div>
               </div>
             </div>

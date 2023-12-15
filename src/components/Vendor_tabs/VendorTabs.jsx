@@ -11,21 +11,13 @@ import {
 
 function VendorTabs() {
   const { vendorId } = useContext(OnboardContext);
-  const [userdata, setUserData] = useState([]);
+  
   const [sitevistview, setSiteView] = useState([]);
   const [propsals, setPropsals] = useState([]);
   const [negotiations, setNegotiations] = useState([]);
   const [mou, setMOUs] = useState([]);
 
-  useEffect(() => {
-    getVendorListById(vendorId)
-      .then((data) => {
-        setUserData(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching  data:", error);
-      });
-  }, [vendorId]);
+ 
 
   useEffect(() => {
     getSiteVisit()
@@ -375,7 +367,7 @@ function VendorTabs() {
     //   </div>
     // </div>
     <Basic
-      leads={userdata}
+   
       sitevistview={sitevistview}
       proposal={propsals}
       negotiations={negotiations}

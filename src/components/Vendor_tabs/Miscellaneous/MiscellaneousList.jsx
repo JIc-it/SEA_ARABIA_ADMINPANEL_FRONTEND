@@ -307,18 +307,22 @@ export default function MiscellaneousList() {
           </ul>
         </div>
       </div>
-      <ViewMiscellaneous
-        show={isViewMiscellaneous}
-        close={handleCloseViewMiscellaneous}
-        selectedData={selectedData}
-      />
-      <EditMiscellaneous
-        show={isEditMiscellaneous}
-        close={handleCloseEditMiscellaneous}
-        isRefetch={isRefetch}
-        setIsRefetch={setIsRefetch}
-        selectedData={selectedData}
-      />
+      {isViewMiscellaneous && (
+        <ViewMiscellaneous
+          show={isViewMiscellaneous}
+          close={handleCloseViewMiscellaneous}
+          selectedData={selectedData}
+        />
+      )}
+      {isEditMiscellaneous && (
+        <EditMiscellaneous
+          show={isEditMiscellaneous}
+          close={handleCloseEditMiscellaneous}
+          isRefetch={isRefetch}
+          setIsRefetch={setIsRefetch}
+          selectedData={selectedData}
+        />
+      )}
     </div>
   );
 }

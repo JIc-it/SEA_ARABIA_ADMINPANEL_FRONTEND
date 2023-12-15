@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import { useState } from "react";
 import { createVenderLead } from "../../services/leadMangement";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -46,11 +47,11 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
           const adminData = await createVenderLead(data);
 
           if (adminData) {
-            setIsLoading(false);
             // window.location.reload();
             setIsRefetch(!isRefetch);
             toast.success("Vendor Added Successfully.");
             close();
+            setIsLoading(false);
           } else {
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
@@ -214,7 +215,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             bottom: "1rem",
           }}
         >
-          Add
+          {isLoading ? <CircularProgress /> : "Add"}
         </button>
       </form>
     </Offcanvas>

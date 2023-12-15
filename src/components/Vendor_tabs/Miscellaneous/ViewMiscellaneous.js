@@ -1,6 +1,6 @@
 import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
-import Modal from "react-modal";
+
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
 import {
@@ -12,56 +12,10 @@ import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { convertedDateAndTime, removeFolderPath } from "../../../helpers";
-Modal.setAppElement("#root");
+import FileViewer from "../FileViewer";
+
 
 function ViewMiscellaneous({ show, close, selectedData }) {
-  const customStyles = {
-    content: {
-      top: "50%",
-      left: "50%",
-      right: "auto",
-      bottom: "auto",
-      marginRight: "-50%",
-      transform: "translate(-50%, -50%)",
-      borderRadius: "10px",
-      width: "400px",
-      height: "210px",
-    },
-  };
-
-  const paragraphStyle = {
-    color: "#68727D",
-    fontFamily: "Roboto",
-    fontSize: "16px",
-    fontStyle: "normal",
-    fontWeight: 400,
-    lineHeight: "24px", // You can also specify "150%" as a string if needed
-  };
-
-  const paraHeaderStyle = {
-    color: "#252525",
-    fontFamily: "Roboto",
-    fontSize: "18px",
-    fontStyle: "normal",
-    fontWeight: 600,
-    lineHeight: "28px", // You can also specify "155.556%" as a string if needed
-    letterSpacing: "-0.18px",
-  };
-  const buttonDiv = {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-  };
-
-  const proceedStyle = {
-    width: "150px",
-    fontWeight: 500,
-    backgroundColor: "#0A77FF",
-  };
-  const cancelStyle = {
-    width: "150px",
-    fontWeight: 500,
-  };
   const [isViewFile, setIsViewFile] = useState(false);
   const fileName =
     selectedData && removeFolderPath(selectedData && selectedData.attachment);
@@ -104,10 +58,10 @@ function ViewMiscellaneous({ show, close, selectedData }) {
               <span>{fileName}</span>
               <button
                 className="btn btn-sm btn-info px-4 py-1"
-                // onClick={() => {
-                //   console.log("check");
-                //   setIsViewFile(true);
-                // }}
+                onClick={() => {
+                  console.log("check");
+                  setIsViewFile(true);
+                }}
               >
                 View
               </button>
@@ -146,39 +100,11 @@ function ViewMiscellaneous({ show, close, selectedData }) {
         </div>
 
         {isViewFile && (
-          <div className="file-modal">
-            {" "}
-            <Modal
-              isOpen={isViewFile}
-              onRequestClose={() => setIsViewFile(false)}
-              style={customStyles}
-            >
-              <div style={{ marginTop: "5px" }}>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                  {selectedData && <img src={selectedData.attachment} alt="" />}
-                </div>
-                {/* <div style={buttonDiv}>
-                  <button
-                    onClick={() => {
-                      setIsOpen(false);
-                    }}
-                    className="btn btn-outline"
-                    style={cancelStyle}
-                  >
-                    Close
-                  </button>
-                  <button
-                    onClick={handleConfirm}
-                    className="btn btn-info"
-                    style={proceedStyle}
-                    type="submit"
-                  >
-                    Confirm
-                  </button>
-                </div> */}
-              </div>
-            </Modal>
-          </div>
+          <FileViewer
+            setIsViewFile={setIsViewFile}
+            isViewFile={isViewFile}
+            selectedData={selectedData}
+          />
         )}
       </div>
     </Offcanvas>

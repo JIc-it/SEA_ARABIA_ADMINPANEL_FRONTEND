@@ -372,6 +372,11 @@ tr {
   margin: 1rem 1.3rem;
   display: flex;
 }
-.file-modal .ReactModalPortal .ReactModal__Overlay{
-  z-index: 9999 !important;
+
+.close-icon {
+  display: flex;
+  justify-content: end;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
 }

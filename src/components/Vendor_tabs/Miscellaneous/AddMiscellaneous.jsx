@@ -11,6 +11,7 @@ import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -33,7 +34,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
       // date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-      console.log(values);
+
       setIsLoading(true);
 
       if (!isLoading) {
@@ -67,9 +68,9 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
       }
     },
   });
-  console.log(formik);
+
   const handleFileChange = (file) => {
-    console.log(file[0]);
+   
     formik.setFieldValue("files", file[0]);
   };
   return (
@@ -113,7 +114,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
         </div>
         <FileUploader formik={formik} handleFileChange={handleFileChange} />
         <div className="upload-filename">
-          <label htmlFor="">Uploaded File: </label> 
+          <label htmlFor="">Uploaded File: </label>
           <span className="mx-2">{formik.values.files?.name}</span>
         </div>
         {/* <div style={{ margin: "20px" }}>
@@ -228,7 +229,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
                 backgroundColor: "#006875",
               }}
             >
-              Add
+              {isLoading ? <CircularProgress /> : "Add"}
             </button>
           </div>
         </div>

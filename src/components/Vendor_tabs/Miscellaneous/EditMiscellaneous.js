@@ -23,7 +23,7 @@ function EditMiscellaneous({
 }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-  console.log(selectedData, "tets");
+  
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -41,7 +41,7 @@ function EditMiscellaneous({
       // date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values) => {
-      console.log(values);
+  
       setIsLoading(true);
 
       if (!isLoading) {
@@ -76,9 +76,9 @@ function EditMiscellaneous({
       }
     },
   });
-  console.log(formik);
+
   const handleFileChange = (file) => {
-    console.log(file[0]);
+
     formik.setFieldValue("files", file[0]);
   };
 

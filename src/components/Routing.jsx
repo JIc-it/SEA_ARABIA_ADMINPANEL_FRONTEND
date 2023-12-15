@@ -1,6 +1,6 @@
 /* eslint-disable */
 import { Routes, Route } from "react-router-dom";
-import LeadManagement from "../lead_management";
+import LeadManagement from "../pages/lead_management";
 import OnBoard from "./OnBoard";
 import AddVendorInfo from "./Initial_contact/AddVendorForm";
 import Login from "../pages/Login";
