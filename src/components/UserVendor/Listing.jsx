@@ -33,7 +33,7 @@ export default function Listing() {
         const vendorList = data.results.filter(
           (item) => item.role === "Vendor"
         );
-        setVendor(vendorList); // Fix the typo here
+        setVendor(vendorList); 
         // console.log("Vendor list =====:", vendorList); // Fix the variable name here
       })
       .catch((error) => {

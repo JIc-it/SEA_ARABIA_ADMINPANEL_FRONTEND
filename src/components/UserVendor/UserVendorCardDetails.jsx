@@ -9,6 +9,9 @@ import { useNavigate } from "react-router-dom";
 import AddSiteVisitModal from "../Modal/AddSiteVisitModal";
 
 import { getVendorListById } from "../../services/leadMangement";
+import {
+  
+} from "../../services/CustomerHandle";
 
 function UserVendorCardDetails() {
   const navigate = useNavigate();
@@ -16,7 +19,7 @@ function UserVendorCardDetails() {
 
   const vendorId = useParams()?.id;
   // console.log("v-id==", vendorId);
-
+  const customerId = useParams()?.customerId;
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Services");
   const [isToggled, setToggled] = useState(true);
@@ -32,11 +35,24 @@ function UserVendorCardDetails() {
 
   const [vendorDetails, setvendorDetails] = useState([]);
 
+  const [serviceData, setServiceData] = useState();
+
+  // useEffect(() => {
+  //   getVendorServiceDataById()
+  //     .then((data) => {
+  //       console.log("service data of c", data);
+  //       setServiceData(data); // assuming data.result is the service data
+  //     })
+  //     .catch((error) => {
+  //       console.error("failed to fetch service data", error);
+  //     });
+  // }, [vendorId]);
+
   useEffect(() => {
     getVendorListById(vendorId)
       .then((data) => {
         setvendorDetails(data);
-        console.log("getVendorListById==", data);
+        console.log(" card details getVendorListById==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);

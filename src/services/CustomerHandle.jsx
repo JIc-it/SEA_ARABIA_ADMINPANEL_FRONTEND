@@ -3,6 +3,7 @@ const getIndivitualVendorListUrl = "/account/vendor-list-details";
 const updateVendorDetails = "account/vendor-add-details";
 const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
+const serviceDetails = "main/category-list";
 
 export const getCustomerlist = () => {
   return axiosInstance
@@ -62,7 +63,31 @@ export const getCustomerTotalCount = () => {
     .get(customerCount)
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error(
+        "Error while fetching total count of customer request:",
+        error
+      );
       throw error;
     });
 };
+
+// export const getServiceDataById = (customerId) => {
+//   return axiosInstance
+//     .get(`${serviceDetails}/${customerId}`)
+//     .then((response) => response.data)
+//     .catch((error) => {
+//       console.error(
+//         "Error while fetching customer service details request:",
+//         error
+//       );
+//     });
+// };
+// export const getVendorServiceDataById = () => {
+//   return axiosInstance
+//     .get(serviceDetails)
+//     .then((response) => response.data)
+//     .catch((error) => {
+//       console.error("Error while fetching lead request:", error);
+//       throw error;
+//     });
+// };

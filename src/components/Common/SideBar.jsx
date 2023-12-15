@@ -1,5 +1,8 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 function SideBar() {
+  const location = useLocation();
+  const activeLink = location.pathname;
+  console.log("loc==", activeLink);
   return (
     <aside
       className="navbar navbar-vertical navbar-expand-lg"
@@ -352,7 +355,11 @@ function SideBar() {
         </div> */}
         <div className="collapse navbar-collapse" id="sidebar-menu">
           <ul className="navbar-nav pt-lg-3 " style={{ gap: "30px" }}>
-            <li className="nav-item">
+            <li
+              className={`nav-item ${
+                activeLink === "/dashboard" ? "active" : ""
+              }`}
+            >
               <a className="nav-link" href="/dashboard">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -373,7 +380,13 @@ function SideBar() {
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="nav-link-title">&nbsp; Dashboard </span>
+                <span
+                  className={`nav-link-title ${
+                    activeLink === "/dashboard" ? "text-success" : "text-dark"
+                  }`}
+                >
+                  &nbsp; Dashboard{" "}
+                </span>
               </a>
             </li>
             <li className="nav-item">
@@ -430,7 +443,10 @@ function SideBar() {
                     strokeLinecap="round"
                   />
                 </svg>
-                <span className="nav-link-title"> &nbsp; Booking Managment </span>
+                <span className="nav-link-title">
+                  {" "}
+                  &nbsp; Booking Managment{" "}
+                </span>
               </a>
               <div className="dropdown-menu">
                 <div className="dropdown-menu-columns">

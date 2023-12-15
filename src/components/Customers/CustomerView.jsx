@@ -1,4 +1,4 @@
-import React, {} from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import CustomerCardDetails from "./CustomerCardDetails";
 
@@ -14,7 +14,12 @@ function CustomerView() {
               <div className="col-12">
                 <div className="row row-cards">
                   <div className="breadcrumbs">
-                    <p>Users</p>
+                    <div
+                      style={{ cursor: "pointer" }}
+                      onClick={() => navigate("/customers")}
+                    >
+                      <p>Users</p>
+                    </div>
                     <span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

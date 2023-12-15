@@ -11,8 +11,9 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { getVendorListById } from "../../services/leadMangement";
 import { useParams } from "react-router-dom";
 import {
-  UpdateCustomerListById,
+  
   UpdateVendorListById,
+  
 } from "../../services/CustomerHandle";
 
 function UserVendorEdit({ show, close }) {
@@ -60,6 +61,8 @@ function UserVendorEdit({ show, close }) {
     companywebaddress: Yup.string().required("Company Website is required"),
     defineservice: Yup.string().required("Define Service is required"),
   });
+  const [serviceData, setServiceData] = useState();
+  
 
   // update vendor details
   const formik = useFormik({
@@ -117,7 +120,23 @@ function UserVendorEdit({ show, close }) {
       }
     },
   });
-
+  useEffect(() => {
+    formik.setValues({
+      name: vendorDetails?.first_name || "",
+      email: vendorDetails?.email || "",
+      mobile: vendorDetails?.mobile || "",
+      location: vendorDetails?.profileextra?.location || "",
+      idtype: vendorDetails?.useridentificationdata?.id_type || "",
+      idnumber:vendorDetails?.useridentificationdata?.id_number || "",
+      companyaddress: vendorDetails?.company_company_user?.address || "",
+      companywebaddress: vendorDetails?.company_company_user?.website || "",
+      companyname: vendorDetails?.company_company_user?.name || "",
+      companyregnumber:
+        vendorDetails?.company_company_user?.registration_number || "",
+      // defineservice: vendorDetails?.useridentificationdata?.,
+      // Add other fields as needed
+    });
+  }, [vendorDetails]);
   // console.log(formik, "data");
 
   return (
