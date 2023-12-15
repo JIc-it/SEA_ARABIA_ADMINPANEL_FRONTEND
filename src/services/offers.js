@@ -6,6 +6,7 @@ const UpdateOffers="offer/offers";
 const companylisting="company/companycms-list"
 const serviceOnelisting="service/service-filter-list-cms"
 
+
 export const getCompanyListing = () => {
     return axiosInstance
       .get(companylisting)
@@ -37,6 +38,19 @@ export const getDiscountOfferList = () => {
 export const UpdateStatus = (id,data) => {
     return axiosInstance
       .put(`${UpdateOffers}/${id}/update/`,data)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Error while fetching lead request:", error);
+        throw error;
+      });
+  };
+export const UpdateOffer = (id,data) => {
+  console.log(data)
+    return axiosInstance
+      .put(`${UpdateOffers}/${id}/update/`,data, {
+        headers: {
+            'Content-Type': 'multipart/form-data', // Important for sending form data
+        }})
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);

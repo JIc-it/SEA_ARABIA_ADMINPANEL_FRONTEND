@@ -14,7 +14,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-// import CircularProgress from "@mui/material/CircularProgress";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
     position: 'absolute',
@@ -31,7 +31,7 @@ const style = {
 };
 
 
-export default function AddMorePopup({ handleClose, handleOpen, open }) {
+export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd }) {
     const [companylist,setCompanyList]=useState([])
     const [isLoading,setIsLoading]=useState(false)
     const [idset,setIdSet]=useState("")
@@ -54,10 +54,12 @@ export default function AddMorePopup({ handleClose, handleOpen, open }) {
       }, []);
 
     useEffect(()=>{
+        // setIsLoading(true)
         getOneServiceListing(idset)
         .then((data) => {
+            // setIsLoading(false)
             setCompanyList((prev) => {
-                const updatedList = prev.map((company) => {
+                const updatedList = prev?.map((company) => {
                     if (company.id === idset) {
                         return {
                             ...company,
@@ -128,18 +130,18 @@ console.log(companylist,"lists");
                                         id="panel1a-header"
                                     >
                                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Checkbox {...label}  size="small"/>
+                                    <Checkbox {...label}  size="small" onChange={()=>handleAdd(data.id,data.name)}/>
                                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
                                         {data.name}
                                     </Typography>
                                 </Box>
                                 </AccordionSummary>
                                 <AccordionDetails>
-                                <div style={{ marginLeft: "20px" }}>
+                                {!isLoading && <div style={{ marginLeft: "20px" }}>
                                     {
                                         data?.companyData?.map((dat)=>
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                                        <Checkbox {...label} defaultChecked size="small" />
+                                        <Checkbox {...label}  size="small" onChange={()=>handleServiceAdd(dat.id,dat.name)}/>
                                         <Typography variant="p" component="p">
                                             {dat.name}
                                         </Typography>
@@ -148,7 +150,12 @@ console.log(companylist,"lists");
                                         )
                                     }
                                     
-                                </div>
+                                </div>}
+
+                             {/* {isLoading &&
+                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
+                                        <CircularProgress />
+                                    </div>} */}
                                 </AccordionDetails>
                                 </Accordion>
                                 {/* <hr style={{ border: "1px solid gray" }} /> */}
@@ -158,8 +165,8 @@ console.log(companylist,"lists");
                     }
                    
                    <div className='d-flex justify-content-end'>
-                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
-                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Add</button>
+                        <button type='reset' className='m-1 btn btn-small btn-white'  onClick={handleClose}>cancel</button>
+                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}  onClick={handleClose}>Add</button>
                     </div>
                    {/* <>
                   <Box sx={{display:"flex",alignItems:"center"}}>
