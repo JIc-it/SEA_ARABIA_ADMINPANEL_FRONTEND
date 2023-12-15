@@ -33,8 +33,9 @@ function DiscountListing() {
       const data = { is_enable: !toggledItem.is_enable };
       try {
         const response = await UpdateStatus(itemId, data);
-        setOffersList(response.results);
-        setIsLoading(false);
+        if(response){
+          setIsLoading(false)
+        }
       } catch (error) {
         console.error("Error updating status:", error);
       }

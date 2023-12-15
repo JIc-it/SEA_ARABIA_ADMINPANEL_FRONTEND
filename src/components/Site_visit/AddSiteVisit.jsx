@@ -192,7 +192,7 @@ function AddSiteVisit({ formik, qualification }) {
                                   );
                                 }}
                                 onBlur={formik.handleBlur}
-                                checked={formik.values.qualification.includes(
+                                checked={formik.values.qualification?.includes(
                                   data.id
                                 )}
                               />

@@ -7,8 +7,14 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import SearchIcon from '@mui/icons-material/Search';
 import { TextField } from '@mui/material';
-import { useState } from 'react';
+import { useState , useEffect } from 'react';
 import Checkbox from '@mui/material/Checkbox';
+import {getCompanyListing,getOneServiceListing} from "../../services/offers"
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+// import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
     position: 'absolute',
@@ -19,15 +25,59 @@ const style = {
     bgcolor: 'background.paper',
     borderRadius: "5px",
     boxShadow: 24,
-    p:3,
+    p: 4,
+    overflowY: 'auto', // Add this line for vertical scroll
+    maxHeight: '90vh', // Adjust the maximum height if needed
 };
 
+
 export default function AddMorePopup({ handleClose, handleOpen, open }) {
+    const [companylist,setCompanyList]=useState([])
+    const [isLoading,setIsLoading]=useState(false)
+    const [idset,setIdSet]=useState("")
     const[search,setSearch]=useState("")
     const handleSearchChange = (e) => {
         const searchTerm = e.target.value;
         setSearch(searchTerm);
     };
+
+    useEffect(() => {
+        setIsLoading(true)
+        getCompanyListing()
+          .then((data) => {
+            setCompanyList(data?.results);
+            setIsLoading(false)
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
+      }, []);
+
+    useEffect(()=>{
+        getOneServiceListing(idset)
+        .then((data) => {
+            setCompanyList((prev) => {
+                const updatedList = prev.map((company) => {
+                    if (company.id === idset) {
+                        return {
+                            ...company,
+                            companyData: data.results,
+                        };
+                    }
+                    return company;
+                });
+
+                return updatedList;
+            });
+        })
+        .catch((error) => {
+            console.error("Error fetching data:", error);
+        });
+    },[idset])
+       
+
+console.log(companylist,"lists");
+
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <div>
@@ -68,37 +118,50 @@ export default function AddMorePopup({ handleClose, handleOpen, open }) {
                             ),
                         }}
                     />
-                    <hr style={{border:"1px solid gray"}}/>
-                  <>
-                  <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                       Salma International
-                    </Typography>
-                   </Box>
-                   <div style={{marginLeft:"20px"}}>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                       Albadee
-                    </Typography>
-                   </Box>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                       Durrat Almarina
-                    </Typography>
-                   </Box>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                       Almayaseen
-                    </Typography>
-                   </Box>
-                   </div>
-                   <hr style={{border:"1px solid gray"}}/>
-                   </>
-                   <>
+                    {companylist.length > 0 &&
+                        companylist.map((data) =>
+                            <>
+                                <Accordion sx={{ marginTop: "10px",marginBottom:"5px",border:"noneZ" }} onClick={()=>setIdSet(data.id)}>
+                                    <AccordionSummary
+                                        expandIcon={<ExpandMoreIcon />}
+                                        aria-controls="panel1a-content"
+                                        id="panel1a-header"
+                                    >
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <Checkbox {...label}  size="small"/>
+                                    <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
+                                        {data.name}
+                                    </Typography>
+                                </Box>
+                                </AccordionSummary>
+                                <AccordionDetails>
+                                <div style={{ marginLeft: "20px" }}>
+                                    {
+                                        data?.companyData?.map((dat)=>
+                                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                                        <Checkbox {...label} defaultChecked size="small" />
+                                        <Typography variant="p" component="p">
+                                            {dat.name}
+                                        </Typography>
+                                    </Box>
+                                        
+                                        )
+                                    }
+                                    
+                                </div>
+                                </AccordionDetails>
+                                </Accordion>
+                                {/* <hr style={{ border: "1px solid gray" }} /> */}
+                            </>
+                        )
+
+                    }
+                   
+                   <div className='d-flex justify-content-end'>
+                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Add</button>
+                    </div>
+                   {/* <>
                   <Box sx={{display:"flex",alignItems:"center"}}>
                    <Checkbox {...label} defaultChecked size="small" />
                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
@@ -114,8 +177,8 @@ export default function AddMorePopup({ handleClose, handleOpen, open }) {
                    </Box>
                    </div>
                    <hr style={{border:"1px solid gray"}}/>
-                   </>
-                   <>
+                   </> */}
+                   {/* <>
                   <Box sx={{display:"flex",alignItems:"center"}}>
                    <Checkbox {...label} defaultChecked size="small" />
                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
@@ -147,7 +210,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open }) {
                         <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
                         <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Add</button>
                     </div>
-                   </>
+                   </> */}
                 </Box>
             </Modal>
         </div>

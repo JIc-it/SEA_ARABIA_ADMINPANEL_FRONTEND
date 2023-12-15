@@ -28,6 +28,7 @@ import {
   submitNegotiation,
   submitCharter,
   goLive,
+  updateVendorStatus,
 } from "../../services/leadMangement";
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
@@ -85,8 +86,7 @@ function ProgressBar() {
   const [buttonState, setButtonState] = useState(true);
   const count = useSelector((state) => state.counter.value);
   // console.log(count);
-  const { vendorId} =
-    useContext(OnboardContext);
+  const { vendorId, companyID } = useContext(OnboardContext);
   const [userdata, setUserData] = useState([]);
   const [qualificationlist, setQualificationList] = useState([]);
 
@@ -114,7 +114,7 @@ function ProgressBar() {
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
         formik.setFieldValue("location", data.profileextra?.location);
-        formik.setFieldValue("idType", data?.useridentificationdata?.id_type);
+        // formik.setFieldValue("idType", data?.useridentificationdata?.id_type);
         formik.setFieldValue(
           "idNumber",
           data?.useridentificationdata?.id_number
@@ -195,9 +195,9 @@ function ProgressBar() {
     companyRegistrationNumber: Yup.string().required(
       "Company Registration Number is required"
     ),
-    companyWebsite: Yup.string()
-      .url("Invalid URL")
-      .required("Company Website is required"),
+    // companyWebsite: Yup.string()
+    //   .url("Invalid URL")
+    //   .required("Company Website is required"),
     defineServices: Yup.array()
       .min(1, "At least one service must be selected") // Adjust the minimum number of selected services as needed
       .required("Define Services is required"),
@@ -316,7 +316,14 @@ function ProgressBar() {
       console.log(passdata, "check");
       const response = await UpdateVendorListById(userdata.id, passdata);
       if (response) {
-        dispatch(increment());
+        updateVendorStatus(companyID, "Site Visit")
+          .then((data) => {
+            console.log(data);
+            dispatch(increment());
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
       }
       console.log("Update API response :", response);
       // Handle success or error
@@ -330,7 +337,7 @@ function ProgressBar() {
   const updateSiteVisit = async () => {
     try {
       const formdata = new FormData();
-      formdata.append('company',userdata?.company_company_user?.id);
+      formdata.append("company", userdata?.company_company_user?.id);
       formdata.append("title", formik.values.title);
       formdata.append("attachment", formik.values.files[0]);
       formdata.append("note", formik.values.note);
@@ -340,7 +347,14 @@ function ProgressBar() {
       // console.log(formdata.getAll("qualifications"));
       const response = await submitSiteVisit(formdata);
       if (response) {
-        dispatch(increment());
+        updateVendorStatus(companyID, "Proposal")
+          .then((data) => {
+            console.log(data);
+            dispatch(increment());
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
       } else {
         toast.error("site visit adding failed ");
       }
@@ -363,7 +377,14 @@ function ProgressBar() {
       const response = await submitProposal(formdata);
       console.log("API response:", response);
       if (response) {
-        dispatch(increment());
+        updateVendorStatus(companyID, "Negotiation")
+          .then((data) => {
+            console.log(data);
+            dispatch(increment());
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
       } else {
         toast.error("propsal adding failed ");
       }
@@ -385,7 +406,14 @@ function ProgressBar() {
       const response = await submitNegotiation(formdata);
       console.log("API response:", response);
       if (response) {
-        dispatch(increment());
+        updateVendorStatus(companyID, "MOU / Charter")
+          .then((data) => {
+            console.log(data);
+            dispatch(increment());
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
       } else {
         toast.error("Negotiation adding failed ");
       }
@@ -407,7 +435,14 @@ function ProgressBar() {
       const response = await submitCharter(formdata);
       console.log("API response:", response);
       if (response) {
-        dispatch(increment());
+        updateVendorStatus(companyID, "Ready to Onboard")
+          .then((data) => {
+            console.log(data);
+            dispatch(increment());
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
       } else {
         toast.error("Charter adding failed ");
       }
@@ -422,7 +457,14 @@ function ProgressBar() {
   const handleConfirm = () => {
     setIsOpen(false);
     if (count === 0) {
-      dispatch(increment());
+      updateVendorStatus(companyID, "Initial Contact")
+        .then((data) => {
+          console.log(data);
+          dispatch(increment());
+        })
+        .catch((error) => {
+          console.error("Error fetching  data:", error);
+        });
     }
     // buttonState ? dispatch(increment()) : dispatch(decrement());
     // setButtonState(true);
@@ -573,9 +615,7 @@ function ProgressBar() {
                     width: "120px",
                   }}
                   onClick={() => {
-                  
                     count === 0 && setIsOpen(true);
-            
                   }}
                 >
                   Proceed
@@ -630,7 +670,6 @@ function ProgressBar() {
                   </div>
                 </Modal>
               </div>
-         
             </div>
           )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}

@@ -368,3 +368,15 @@ tr {
   gap: 6px;
   display: inline-flex;
 }
+.upload-filename {
+  margin: 1rem 1.3rem;
+  display: flex;
+}
+
+.close-icon {
+  display: flex;
+  justify-content: end;
+  font-size: 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+}
