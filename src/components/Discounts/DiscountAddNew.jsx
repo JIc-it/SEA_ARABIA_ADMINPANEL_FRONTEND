@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState,useEffect } from 'react'
 import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useFormik } from "formik";
@@ -7,9 +7,15 @@ import { Radio, Paper, Typography, ButtonGroup, Button, Box,Checkbox } from '@mu
 import AddMorePopup from './AddMorePopup';
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import {CreateOffer} from "../../services/offers"
+import CircularProgress from "@mui/material/CircularProgress";
+import moment from 'moment-timezone';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 
 export default function DiscountAddNew() {
+    const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const [open, setOpen] = React.useState(false);
@@ -38,7 +44,7 @@ export default function DiscountAddNew() {
         }),
 
         specify_no: Yup.number().when("redemption_type", ([redemption_type], schema) => {
-            if (redemption_type === "limited-number") {
+            if (redemption_type === "Limited-Number") {
                 return schema
                     .typeError("Specify Number  must be a number")
                     .required("Specify Number is Required")
@@ -50,7 +56,7 @@ export default function DiscountAddNew() {
         }),
 
         min_purchase_amount: Yup.number().when("purchase_requirement", ([purchase_requirement], schema) => {
-            if (purchase_requirement !== "no minimum requirement") {
+            if (purchase_requirement === true) {
                 return schema
                     .required("Minimum Amount is Required")
             }
@@ -58,21 +64,18 @@ export default function DiscountAddNew() {
                 return schema.notRequired();
             }
         }),
-        specify_no: Yup.boolean().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
-                if (allow_multiple_redeem === true) {
+        multiple_redeem_specify_no: Yup.number().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
+                if (allow_multiple_redeem === "Multiple-time") {
                     return schema
-                        .typeError("Specify Number  must be a number")
                         .required("Specify Number is Required")
-                        .typeError("Specify Number must be a number");
                 }
                 else {
                     return schema.notRequired();
                 }
             }),
-        allow_global_redeem: Yup.boolean()
-            .required("Per Service is required"),
-        end_date: Yup.string().when("expiration", ([expiration], schema) => {
-                if (expiration !== "No Expiry") {
+       
+        end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
+                if (is_lifetime ===false) {
                     return schema
                         .required("Validity is Required")
                 }
@@ -80,7 +83,9 @@ export default function DiscountAddNew() {
                     return schema.notRequired();
                 }
             }),
-        image: Yup.mixed().test('fileSize', 'File size is too large', (value) => {
+
+        image: Yup.mixed()        
+        .test('fileSize', 'File size is too large', (value) => {
                 if (!value) {
                   return false;
                 }
@@ -102,11 +107,11 @@ export default function DiscountAddNew() {
             coupon_code: "",
             discount_type: "Percentage",
             discount_value: "",
-            up_to_amount: null,
-            redemption_type: "one_time",
-            specify_no: null,
-            allow_multiple_redeem: "",
-            multiple_redeem_specify_no: null,
+            up_to_amount: 0,
+            redemption_type: "One-Time",
+            specify_no: 0,
+            allow_multiple_redeem: "One-Time",
+            multiple_redeem_specify_no: 0,
             start_date: "",
             is_lifetime: false,
             end_date: "",
@@ -116,123 +121,144 @@ export default function DiscountAddNew() {
             services: [],
             companies: [],
             purchase_requirement: true,
-            min_purchase_amount: null,
+            min_purchase_amount: 0,
         },
         validationSchema,
         onSubmit: async (values) => {
-            // setIsLoading(true);
+            setIsLoading(true);
 
-            // if (!isLoading) {
-            //   try {
-            const data = {
-                name: values.name,
-                discount_type: values.discount_type,
-                redemption_type: values.redemption_type,
-                expiration: values.expiration,
-            };
+            if (!isLoading) {
+              try {
+                const formdata=new FormData()
+                function checktrue(values){
+                    if(values===true){
+                        return "True"
+                    }
+                    else{
+                        return "False"
+                    }
+                   }
+                    const companiesId=values.companies.map((data)=>{return data.id})
+                    const servicesId=values.services.map((data)=>{return data.id})
 
-            // const adminData = await createVenderLead(data);
+                   formdata.append("is_enable",checktrue(values.is_enable));
+                   formdata.append("image",values.image);
+                   formdata.append("name",values.name);
+                   formdata.append("coupon_code",values.coupon_code);
+                   formdata.append("discount_type",values.discount_type);
+                   formdata.append("discount_value",values.discount_value);
+                   formdata.append("up_to_amount",values.up_to_amount);
+                   formdata.append("redemption_type",values.redemption_type);
+                   formdata.append("specify_no",values.specify_no);
+                   formdata.append("allow_multiple_redeem",values.allow_multiple_redeem);
+                   formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no);
+                   formdata.append("start_date",values.start_date);
+                   formdata.append("is_lifetime",checktrue(values.is_lifetime));
+                   formdata.append("end_date",values.end_date);
+                   formdata.append("on_home_screen",checktrue(values.on_home_screen));
+                   formdata.append("on_checkout",checktrue(values.on_checkout));
+                   formdata.append("apply_global",checktrue(values.apply_global));
+                   formdata.append(`companies`,companiesId);
+                   formdata.append(`services`,servicesId);
+                //    values.companies.map((data,index)=>{
+                //        return formdata.append(`companies${index}`,data.id);
+                //    })
+                //    values.services.map((data,index)=>{
+                //        return formdata.append(`services${index}`,data.id);
+                //    })
+   
+                   formdata.append("purchase_requirement",checktrue(values.purchase_requirement));
+                   formdata.append("min_purchase_amount",values.min_purchase_amount);
+            
 
-            // if (adminData) {
-            //   setIsLoading(false);
-            //   window.location.reload();
-            // } else {
-            //   console.error("Error while creating Admin:", adminData.error);
-            //   setIsLoading(false);
-            // }
-            // setIsLoading(false);
-            //   } catch (err) {
-            //     console.log(err);
-            //     err.response.data.email && toast.error(err.response.data.email[0]);
-            //     err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-            //     setIsLoading(false);
-            //   }
-            // }
+            const adminData = await CreateOffer(formdata);
+
+            if (adminData) {
+              setIsLoading(false);
+              toast.success("Created Successfully")
+              navigate("/discounts-offers")
+            } else {
+              console.error("Error while creating Admin:", adminData.error);
+              setIsLoading(false);
+            }
+            setIsLoading(false);
+              }catch (err) {
+                console.log(err);
+                // err.response.data.email && toast.error(err.response.data.email[0]);
+                // err.response.data.mobile && toast.error(err.response.data.mobile[0]);
+                setIsLoading(false);
+              }
+            }
         },
     });
 
-    console.log(formik.values,"results");
     const handleFileChange = (file) => {
         formik.setFieldValue("image", file);
       };
 
-   
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
 
-    const updateCompanyIndex = (id) => {
-        formik.setValues((prev) => {
-            const companyExists = (prev?.companies || []).some((company) => company.id === id);
-    
-            const updatedList = companyExists
-                ? (prev?.companies || []).filter((company) => company.id !== id)
-                : [
-                      ...((prev?.companies || []).map((company) => ({ ...company }))), // Clone existing companies
-                      { id: id, /* Add other properties for the new company */ },
-                  ];
-    
-            return {
-                ...prev,
-                companies: updatedList,
-            };
-        });
+    const CouponCode = (data) => {
+        formik.setValues((prev) => { return { ...prev,coupon_code:data.toUpperCase()  } });
     };
-    
-    
-
-    // const updateCompanyServiceIndex = (id, data, serviceIdToAddOrRemove) => {
-    //     formik.setValues((prev) => {
-    //         const updatedList = (prev?.companies || []).map((company) => {
-    //             if (company.id === id) {
-    //                 let updatedServiceData = data?.companyData?.map((serv) => ({ id: serv.id, name: serv.name }));
-    //                 let newService = data?.companyData?.map((serv) => serv.name);
-    
-    //                 if (serviceIdToAddOrRemove) {
-                        
-    //                     const serviceIndex = updatedServiceData.findIndex((serv) => serv.id === serviceIdToAddOrRemove);
-    
-    //                     if (serviceIndex !== -1) {
-                            
-    //                         updatedServiceData.splice(serviceIndex, 1);
-    //                     } else {
-                            
-    //                         updatedServiceData.push({ id: serviceIdToAddOrRemove, name: newService });
-    //                     }
-    //                 }
-    
-    //                 return {
-    //                     ...company,
-    //                     id: id,
-    //                     name: data.name,
-    //                     service: updatedServiceData,
-    //                 };
-    //             }
-    //             return company;
-    //         });
-    
-    //         const companyExists = updatedList.some((company) => company.id === id);
-    
-    //         if (!companyExists) {
-    //             const servicedata = data?.companyData?.map((serv) => ({ id: serv.id, name: serv.name }));
-    //             // If company does not exist, create a new entry
-    //             updatedList.push({
-    //                 id: id,
-    //                 name: data.name,
-    //                 service: servicedata,
-    //             });
-    //         }
-    
-    //         return {
-    //             ...prev,
-    //             companies: updatedList,
-    //         };
-    //     });
-    // };
-    
 
     const navigate = useNavigate();
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+console.log(formik.values,"values get");
+
+const convertAndFormatDateTime = (dateTimeString) => {
+    const formattedDateTime = moment(dateTimeString).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm');
+
+    return formattedDateTime;
+  };
+
+  const deletecompany = (id) => {
+    formik.setValues((prev) => ({
+        ...prev,
+        companies: (prev?.companies || []).filter((company) => company.id !== id),
+    }));
+};
+
+
+  const updateCompanyIndex = (id,name) => {
+    formik.setValues((prev) => {
+        const companyExists = (prev?.companies || []).some((company) => company.id === id);
+
+        const updatedList = companyExists
+            ? (prev?.companies || []).filter((company) => company.id !== id)
+            : [
+                  ...((prev?.companies || []).map((company) => ({ id:company.id,name:company.name }))), // Clone existing companies
+                  { id: id,  name:name},
+              ];
+
+        return {
+            ...prev,
+            companies: updatedList,
+        };
+    });
+};
+  const updateServiceIndex = (id,name) => {
+    formik.setValues((prev) => {
+        const companyExists = (prev?.services || []).some((company) => company.id === id);
+
+        const updatedList = companyExists
+            ? (prev?.services || []).filter((company) => company.id !== id)
+            : [
+                  ...((prev?.services || []).map((company) => ({ id:company.id,name:company.name }))), // Clone existing companies
+                  { id: id, name:name},
+              ];
+
+        return {
+            ...prev,
+            services: updatedList,
+        };
+    });
+};
+
+
+if(!isLoading){
     return (
         <>
             <div className="page" style={{ backgroundColor: "#DDECEE" }}>
@@ -295,14 +321,14 @@ export default function DiscountAddNew() {
                                                 fontSize: "15px",
                                                 // width: "40%",
                                                 textTransform:"capitalize",
-                                                backgroundColor: formik.values.discount_type === "Fixed Amount" ? "black" : "",
-                                                color: formik.values.discount_type === "Fixed Amount" ? "white" : "",
+                                                backgroundColor: formik.values.discount_type === "Fixed" ? "black" : "",
+                                                color: formik.values.discount_type === "Fixed" ? "white" : "",
                                                 padding: "3px 30px",
                                                 // borderRadius: "5px",
                                                 textAlign: "center",
                                                 // margin: "4px"
                                             }}
-                                            onClick={() => updateFormValues(({ ...formik.values, discount_type: "Fixed Amount" }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, discount_type: "Fixed" }))}
                                         >
                                             Fixed Amount
                                         </Button>
@@ -314,7 +340,7 @@ export default function DiscountAddNew() {
                             <div className={isMobileView?"w-100":'w-50'}>
                                 <div>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code</p>
-                                    <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                    <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input' onChange={(e)=>CouponCode(e.target.value)} onBlur={formik.handleBlur}/>
                                     {formik.touched.coupon_code && formik.errors.coupon_code ? (
                                         <div className="error">{formik.errors.coupon_code}</div>
                                     ) : null}
@@ -353,53 +379,53 @@ export default function DiscountAddNew() {
                         <div>
                         <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px" }}>Redemption Type</p>
                             <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-between'}>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "one-time",specify_no:1 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "One-Time",specify_no:1 })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         alignItems: 'center',
                                         border: '1px solid lightgray',
                                         width: isMobileView?"100%":"30%",
-                                        border: formik.values.redemption_type === "one-time" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        border: formik.values.redemption_type === "One-Time" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                         padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">One-Time</Typography>
-                                    <Radio checked={formik.values.redemption_type === "one-time"} value={formik.values.redemption_type} />
+                                    <Radio name={formik.values.redemption_type} checked={formik.values.redemption_type === "One-Time"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "unlimited",specify_no:9999 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Unlimited",specify_no:9999 })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         marginTop:isMobileView?"5px":"",
                                         alignItems: 'center',
-                                        border: formik.values.redemption_type === "unlimited" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        border: formik.values.redemption_type === "Unlimited" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                         width: isMobileView?"100%":"30%",
                                         borderRadius: '5px',
                                         padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">Unlimited</Typography>
-                                    <Radio checked={formik.values.redemption_type === "unlimited"} value={formik.values.redemption_type} />
+                                    <Radio  name={formik.values.redemption_type} checked={formik.values.redemption_type === "Unlimited"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "limited-number",specify_no:null })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0 })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
                                         marginTop:isMobileView?"5px":"",
                                         alignItems: 'center',
-                                        border: formik.values.redemption_type === "limited-number" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        border: formik.values.redemption_type === "Limited-Number" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                         width: isMobileView?"100%":"30%",
                                         borderRadius: '5px',
                                         padding: isMobileView?'2px':"5px",
                                     }}
                                 >
                                     <Typography variant="body1">Limited-Number</Typography>
-                                    <Radio checked={formik.values.redemption_type === "limited-number"} value={formik.values.redemption_type} />
+                                    <Radio  name={formik.values.redemption_type} checked={formik.values.redemption_type === "Limited-Number"} />
                                 </Paper>
                             </div>
                         </div>
-                        {formik.values.redemption_type === "limited-number" &&
+                        {formik.values.redemption_type==="Limited-Number" &&
                             <div style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number</p>
                                 <input type='number' value={formik.values.specify_no} name="specify_no" onChange={formik.handleChange} onBlur={formik.handleBlur} className='discount-input' style={{ width: "50%" }} />
@@ -420,12 +446,12 @@ export default function DiscountAddNew() {
                                             fontWeight: "500",
                                             textTransform:"capitalize",
                                             fontSize: "15px",
-                                            backgroundColor: formik.values.allow_multiple_redeem === false ? "black" : "",
-                                            color: formik.values.allow_multiple_redeem === false ? "white" : "",
+                                            backgroundColor: formik.values.allow_multiple_redeem === "One-Time" ? "black" : "",
+                                            color: formik.values.allow_multiple_redeem === "One-Time" ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :!formik.values.allow_multiple_redeem })}
+                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"One-Time",multiple_redeem_specify_no:0 })}
                                     >
                                         One Time
                                     </Button>
@@ -434,12 +460,12 @@ export default function DiscountAddNew() {
                                             fontWeight: "500",
                                             fontSize: "15px",
                                             textTransform:"capitalize",
-                                            backgroundColor: formik.values.allow_multiple_redeem === true ? "black" : "",
-                                            color: formik.values.allow_multiple_redeem === true ? "white" : "",
+                                            backgroundColor: formik.values.allow_multiple_redeem === "Multiple-time" ? "black" : "",
+                                            color: formik.values.allow_multiple_redeem === "Multiple-time" ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :!formik.values.allow_multiple_redeem })}
+                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"Multiple-time" })}
                                     >
                                         Multiple Time
                                     </Button>
@@ -449,16 +475,16 @@ export default function DiscountAddNew() {
 
                             <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number</p>
-                                <input type='number' name="specify_no" disabled={formik.values.allow_multiple_redeem===false} value={formik.values.specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
-                                {formik.touched.specify_no && formik.errors.specify_no ? (
-                                        <div className="error">{formik.errors.specify_no}</div>
+                                <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem==="One-Time"} value={formik.values.multiple_redeem_specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                {formik.touched.multiple_redeem_specify_no && formik.errors.multiple_redeem_specify_no ? (
+                                        <div className="error">{formik.errors.multiple_redeem_specify_no}</div>
                                     ) : null}
                             </div>
 
                         </div>
                         <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Start Date</p>
-                                <input type='date' value={formik.values.start_date} name="start_date"  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                <input type='datetime-local' value={convertAndFormatDateTime(formik?.values?.start_date)} name="start_date"  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
                                 {formik.touched.start_date && formik.errors.start_date ? (
                                         <div className="error">{formik.errors.start_date}</div>
                                     ) : null}
@@ -474,12 +500,12 @@ export default function DiscountAddNew() {
                                             fontWeight: "500",
                                             fontSize: "15px",
                                             textTransform:"capitalize",
-                                            backgroundColor: formik.values.expiration === "No Expiry" ? "black" : "",
-                                            color: formik.values.expiration === "No Expiry" ? "white" : "",
+                                            backgroundColor: formik.values.is_lifetime === true ? "black" : "",
+                                            color: formik.values.is_lifetime === true ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, expiration: "No Expiry" })}
+                                        onClick={() => updateFormValues({ ...formik.values, is_lifetime: !formik.values.is_lifetime,end_date:"" })}
                                     >
                                         No Expiry
                                     </Button>
@@ -488,12 +514,12 @@ export default function DiscountAddNew() {
                                             fontWeight: "500",
                                             fontSize: "15px",
                                             textTransform:"capitalize",
-                                            backgroundColor: formik.values.expiration === "Limited Time" ? "black" : "",
-                                            color: formik.values.expiration === "Limited Time" ? "white" : "",
+                                            backgroundColor: formik.values.is_lifetime === false ? "black" : "",
+                                            color: formik.values.is_lifetime === false ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, expiration: "Limited Time" })}
+                                        onClick={() => updateFormValues({ ...formik.values, is_lifetime: !formik.values.is_lifetime })}
                                     >
                                         Limited Time
                                     </Button>
@@ -503,7 +529,7 @@ export default function DiscountAddNew() {
 
                             <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Validity Period</p>
-                                <input type='date' value={formik.values.end_date} name="end_date" disabled={formik.values.expiration === "No Expiry"} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                <input type='datetime-local' value={convertAndFormatDateTime(formik.values?.end_date)} name="end_date" disabled={formik.values.is_lifetime === true} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
                                 {formik.touched.end_date && formik.errors.end_date ? (
                                         <div className="error">{formik.errors.end_date}</div>
                                     ) : null}
@@ -526,13 +552,16 @@ export default function DiscountAddNew() {
                                     </label>
                                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
-                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} />
+                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex}/>
                             </div>
                         </div>
 
-                        <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px" }}>
+                       {formik?.values?.companies &&
+                       
+                       formik?.values?.companies.map((company)=>
+                       <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px",marginTop:"5px" }}>
                             <div className='d-flex justify-content-between'>
-                                <p style={{ fontWeight: "550", fontSize: "14px" }}>Spectre Company</p>
+                                <p style={{ fontWeight: "550", fontSize: "14px" }}>{company.name}</p>
                                 <div className='d-flex align-items-center justify-content-between'>
                                     {/* <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
@@ -542,7 +571,7 @@ export default function DiscountAddNew() {
                                         </svg>
                                         Edit
                                     </Button> */}
-                                    <svg style={{cursor:"pointer"}} xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
+                                    <svg style={{cursor:"pointer"}} onClick={()=>deletecompany(company.id)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
                                         <path d="M2.5 5.43586C2.5 5.10712 2.77226 4.84062 3.10811 4.84062H7.09823C7.10364 4.1396 7.17962 3.17855 7.87531 2.51325C8.4228 1.98967 9.1734 1.66602 9.99999 1.66602C10.8266 1.66602 11.5772 1.98967 12.1247 2.51325C12.8204 3.17855 12.8963 4.1396 12.9018 4.84062H16.8919C17.2277 4.84062 17.5 5.10712 17.5 5.43586C17.5 5.7646 17.2277 6.0311 16.8919 6.0311H3.10811C2.77226 6.0311 2.5 5.7646 2.5 5.43586Z" fill="#F6513B" />
                                         <path fillRule="evenodd" clipRule="evenodd" d="M9.663 18.3327H10.337C12.6559 18.3327 13.8154 18.3327 14.5693 17.5944C15.3231 16.8561 15.4003 15.6451 15.5545 13.2231L15.7768 9.73318C15.8605 8.41902 15.9023 7.76194 15.5241 7.34556C15.1459 6.92917 14.5073 6.92917 13.23 6.92917H6.77004C5.49272 6.92917 4.85407 6.92917 4.47588 7.34556C4.09769 7.76194 4.13953 8.41902 4.22323 9.73319L4.44549 13.2231C4.59975 15.6451 4.67687 16.8561 5.43074 17.5944C6.18461 18.3327 7.34407 18.3327 9.663 18.3327ZM8.53856 10.1564C8.50422 9.79487 8.19794 9.53109 7.85448 9.56725C7.51101 9.6034 7.26042 9.9258 7.29477 10.2873L7.71143 14.6733C7.74578 15.0348 8.05206 15.2986 8.39552 15.2625C8.73899 15.2263 8.98958 14.9039 8.95523 14.5424L8.53856 10.1564ZM12.1455 9.56725C12.489 9.6034 12.7396 9.9258 12.7052 10.2873L12.2886 14.6733C12.2542 15.0348 11.9479 15.2986 11.6045 15.2625C11.261 15.2263 11.0104 14.9039 11.0448 14.5424L11.4614 10.1564C11.4958 9.79487 11.8021 9.53109 12.1455 9.56725Z" fill="#F6513B" />
                                     </svg>
@@ -551,7 +580,9 @@ export default function DiscountAddNew() {
                             </div>
                             <p className='typography-dicount-view'>( 1 of 1 Services Selected )</p>
                         </div>
-                        <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
+                       
+                       )}
+                        {/* <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
                             <div className='d-flex justify-content-between'>
                                 <p style={{ fontWeight: "550", fontSize: "14px" }}>Salma international</p>
                                 <div className='d-flex align-items-center justify-content-between'>
@@ -571,7 +602,7 @@ export default function DiscountAddNew() {
                                 </div>
                             </div>
                             <p className='typography-dicount-view'>( 1 of 3 Services Selected )</p>
-                        </div>
+                        </div> */}
                     </div>
 
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px", marginBottom: "2%" }}>
@@ -586,12 +617,12 @@ export default function DiscountAddNew() {
                                                 fontWeight: "500",
                                                 fontSize: "15px",
                                                 textTransform:"capitalize",
-                                                backgroundColor: formik.values.purchase_requirement === "no minimum requirement" ? "black" : "",
-                                                color: formik.values.purchase_requirement === "no minimum requirement" ? "white" : "",
-                                                padding: "2px",
+                                                backgroundColor: formik.values.purchase_requirement ===false ? "black" : "",
+                                                color: formik.values.purchase_requirement ===false ? "white" : "",
+                                                padding: "3px 30px",
                                                 textAlign: "center",
                                             }}
-                                            onClick={() => updateFormValues({ ...formik.values, purchase_requirement: "no minimum requirement" })}
+                                            onClick={() => updateFormValues({ ...formik.values, purchase_requirement: !formik.values.purchase_requirement,min_purchase_amount:0 })}
                                         >
                                             No Minimum Requirement
                                         </Button>
@@ -600,12 +631,12 @@ export default function DiscountAddNew() {
                                                 fontWeight: "500",
                                                 fontSize: "15px",
                                                 textTransform:"capitalize",
-                                                backgroundColor: formik.values.purchase_requirement === "minimum purchase amount" ? "black" : "",
-                                                color: formik.values.purchase_requirement === "minimum purchase amount" ? "white" : "",
-                                                padding: "2px",
+                                                backgroundColor: formik.values.purchase_requirement ===true ? "black" : "",
+                                                color: formik.values.purchase_requirement ===true ? "white" : "",
+                                                padding: "3px 30px",
                                                 textAlign: "center",
                                             }}
-                                            onClick={() => updateFormValues({ ...formik.values, purchase_requirement: "minimum purchase amount" })}
+                                            onClick={() => updateFormValues({ ...formik.values, purchase_requirement: !formik.values.purchase_requirement })}
                                         >
                                             Minimum Purchase Amount
                                         </Button>
@@ -614,7 +645,7 @@ export default function DiscountAddNew() {
                             </div>
                             <div className={isMobileView?"w-100":'w-50'} style={{marginTop:isMobileView?"5px":""}}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount</p>
-                                <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === "no minimum requirement"} />
+                                <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement===false} />
                                 {formik.touched.min_purchase_amount && formik.errors.min_purchase_amount ? (
                                         <div className="error">{formik.errors.min_purchase_amount}</div>
                                     ) : null}            
@@ -625,14 +656,14 @@ export default function DiscountAddNew() {
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
                         <p style={{ fontWeight: "600", fontSize: "16px" }}>Feature Discount (optional)</p>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Checkbox {...label} defaultChecked size="small" />
+                            <Checkbox size="small" name="on_checkout" checked={formik.values.on_checkout} value={formik.values.on_checkout} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                             <Typography variant="p" component="p">
                                 On Checkout
                             </Typography>
                         </Box>
                         <hr></hr>
                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                            <Checkbox name="display_global" checked={formik.values.display_global} value={formik.values.display_global} onChange={formik.handleChange} onBlur={formik.handleBlur}  size="small" />
+                            <Checkbox name="on_home_screen" checked={formik.values.on_home_screen} value={formik.values.on_home_screen} onChange={formik.handleChange} onBlur={formik.handleBlur}  size="small" />
                             <Typography variant="p" component="p">
                                 On Home Screen
                             </Typography>
@@ -654,7 +685,7 @@ export default function DiscountAddNew() {
                                     <input
                                         type="file"
                                         id="file-input"
-                                        required
+                                        // required={formik.values?.image?.includes("https://")? false:true}
                                         accept=".jpg, .jpeg, .png"
                                         style={{ display: 'none' }}
                                         onBlur={formik.handleBlur}
@@ -676,7 +707,7 @@ export default function DiscountAddNew() {
                             {formik.touched.image && formik.errors.image ? (
                                 <div className="error">{formik.errors.image}</div>
                             ) : null} 
-                            {formik.values?.image && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
+                            {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
                         </Box>
                     </div>
                     <hr style={{borderBottom:"2px solid black"}}/>
@@ -690,4 +721,13 @@ export default function DiscountAddNew() {
 
         </>
     )
+}
+else{
+    return (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+          <CircularProgress />
+        </div>
+    )
+}
+ 
 }

@@ -58,6 +58,22 @@ export const UpdateOffer = (id,data) => {
       });
   };
 
+export const CreateOffer = (data) => {
+  console.log(data)
+    return axiosInstance
+      .post(`${UpdateOffers}/create/`,data,
+      //  {
+      //   headers: {
+      //       'Content-Type': 'multipart/form-data', // Important for sending form data
+      //   }}
+        )
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Error while fetching lead request:", error);
+        throw error;
+      });
+  };
+
 export const getDiscountOfferView = (id) => {
     return axiosInstance
       .get(`${getOfferViews}/${id}/`)

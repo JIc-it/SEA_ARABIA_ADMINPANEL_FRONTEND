@@ -11,7 +11,8 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {getDiscountOfferView,UpdateOffer} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
 import moment from 'moment-timezone';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountEdit() {
     const [isLoading, setIsLoading] = useState(false)
@@ -64,17 +65,17 @@ export default function DiscountEdit() {
                 return schema.notRequired();
             }
         }),
-        // multiple_redeem_specify_no: Yup.boolean().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
-        //         if (allow_multiple_redeem === "Multiple-time") {
-        //             return schema
-        //                 .typeError("Specify Number  must be a number")
-        //                 .required("Specify Number is Required")
-        //                 .typeError("Specify Number must be a number");
-        //         }
-        //         else {
-        //             return schema.notRequired();
-        //         }
-        //     }),
+        multiple_redeem_specify_no: Yup.number().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
+                if (allow_multiple_redeem === "Multiple-time") {
+                    return schema
+                        .typeError("Specify Number  must be a number")
+                        .required("Specify Number is Required")
+                        .typeError("Specify Number must be a number");
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
        
         end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
                 if (is_lifetime ===false) {
@@ -85,7 +86,9 @@ export default function DiscountEdit() {
                     return schema.notRequired();
                 }
             }),
-        // image: Yup.mixed().test('fileSize', 'File size is too large', (value) => {
+
+        // image: Yup.mixed()        
+        // .test('fileSize', 'File size is too large', (value) => {
         //         if (!value) {
         //           return false;
         //         }
@@ -107,11 +110,11 @@ export default function DiscountEdit() {
             coupon_code: "",
             discount_type: "",
             discount_value: "",
-            up_to_amount: null,
+            up_to_amount: 0,
             redemption_type: "",
-            specify_no: null,
+            specify_no: 0,
             allow_multiple_redeem: "",
-            multiple_redeem_specify_no: null,
+            multiple_redeem_specify_no: 0,
             start_date: "",
             is_lifetime: false,
             end_date: "",
@@ -121,20 +124,27 @@ export default function DiscountEdit() {
             services: [],
             companies: [],
             purchase_requirement: true,
-            min_purchase_amount: null,
+            min_purchase_amount: 0,
         },
         validationSchema,
         onSubmit: async (values) => {
-            // setIsLoading(true);
+            setIsLoading(true);
 
             if (!isLoading) {
               try {
                 const formdata=new FormData()
-           const servicesId=values.services.map((data)=>data.id)
-           const CompanyId=values.companies.map((data)=>data.id)
-           console.log("services",servicesId);
-           console.log("company",CompanyId);
-                formdata.append("is_enable",values.is_enable);
+
+           function checktrue(values){
+            if(values===true){
+                return "True"
+            }
+            else{
+                return "False"
+            }
+           }
+           const companiesId=values.companies.map((data)=>{return data.id})
+           const servicesId=values.services.map((data)=>{return data.id})
+                formdata.append("is_enable",checktrue(values.is_enable));
                 formdata.append("image",values.image);
                 formdata.append("name",values.name);
                 formdata.append("coupon_code",values.coupon_code);
@@ -146,22 +156,29 @@ export default function DiscountEdit() {
                 formdata.append("allow_multiple_redeem",values.allow_multiple_redeem);
                 formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no);
                 formdata.append("start_date",values.start_date);
-                formdata.append("is_lifetime",values.is_lifetime);
+                formdata.append("is_lifetime",checktrue(values.is_lifetime));
                 formdata.append("end_date",values.end_date);
-                formdata.append("on_home_screen",values.on_home_screen);
-                formdata.append("on_checkout",values.on_checkout);
-                formdata.append("apply_global",values.apply_global);
-                formdata.append("services",servicesId);
-                formdata.append("companies",CompanyId);
-                formdata.append("purchase_requirement",values.purchase_requirement);
+                formdata.append("on_home_screen",checktrue(values.on_home_screen));
+                formdata.append("on_checkout",checktrue(values.on_checkout));
+                formdata.append("apply_global",checktrue(values.apply_global));
+                formdata.append(`companies`,companiesId);
+                formdata.append(`services`,servicesId);
+                // values.companies.map((data,index)=>{
+                //     return formdata.append(`companies${index}`,data.id);
+                // })
+                // values.services.map((data,index)=>{
+                //     return formdata.append(`services${index}`,data.id);
+                // })
+
+                formdata.append("purchase_requirement",checktrue(values.purchase_requirement));
                 formdata.append("min_purchase_amount",values.min_purchase_amount);
             
-
             const adminData = await UpdateOffer(params.id,formdata);
 
             if (adminData) {
               setIsLoading(false);
-              window.location.reload();
+              toast.success("Updated Successfully")
+                setTimeout(()=>window.location.reload(),500)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -214,25 +231,13 @@ export default function DiscountEdit() {
     
       }, [params.id]);
 
-
-      const updateoffers=(id,data) => {
-        setIsLoading(true)
-        UpdateOffer(id,data)
-          .then((data) => {
-            setIsLoading(false)
-          })
-          .catch((error) => {
-            console.error("Error fetching  data:", error);
-          });
-    
-      }
-
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
     const navigate = useNavigate();
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-console.log(formik.values,"values get");
+
+console.log(formik.values);
 
 const convertAndFormatDateTime = (dateTimeString) => {
     const formattedDateTime = moment(dateTimeString).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm');
@@ -283,6 +288,9 @@ const convertAndFormatDateTime = (dateTimeString) => {
     });
 };
 
+const CouponCode = (data) => {
+    formik.setValues((prev) => { return { ...prev,coupon_code:data.toUpperCase()  } });
+};
 
 if(!isLoading){
     return (
@@ -366,7 +374,7 @@ if(!isLoading){
                             <div className={isMobileView?"w-100":'w-50'}>
                                 <div>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code</p>
-                                    <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                    <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input'  onChange={(e)=>CouponCode(e.target.value)} onBlur={formik.handleBlur}/>
                                     {formik.touched.coupon_code && formik.errors.coupon_code ? (
                                         <div className="error">{formik.errors.coupon_code}</div>
                                     ) : null}
@@ -711,8 +719,8 @@ if(!isLoading){
                                     <input
                                         type="file"
                                         id="file-input"
-                                        required
-                                        // accept=".jpg, .jpeg, .png"
+                                        // required={formik.values?.image?.includes("https://")? false:true}
+                                        accept=".jpg, .jpeg, .png"
                                         style={{ display: 'none' }}
                                         onBlur={formik.handleBlur}
                                         onChange={(e)=>handleFileChange(e.target.files[0])}
@@ -733,8 +741,8 @@ if(!isLoading){
                             {formik.touched.image && formik.errors.image ? (
                                 <div className="error">{formik.errors.image}</div>
                             ) : null} 
-                            {!formik.values?.image?.name && formik.values?.image?.includes("https://") && <img className='my-3 w-25' src={formik?.values?.image}/>}
-                            {formik.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
+                            {!formik?.values?.image?.name && formik?.values?.image?.includes("https://") && <img className='my-3 w-25' src={formik?.values?.image}/>}
+                            {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
                         </Box>
                     </div>
                     <hr style={{borderBottom:"2px solid black"}}/>

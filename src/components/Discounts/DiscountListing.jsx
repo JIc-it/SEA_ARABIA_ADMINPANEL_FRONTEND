@@ -13,12 +13,7 @@ function DiscountListing() {
   const navigate=useNavigate();
   const [offerslist,setOffersList]=useState([])
  const [isLoading,setIsLoading]=useState(false)
-  const [selectedValue, setSelectedValue] = useState("New Lead");
-
- 
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
+ const [currentPage, setCurrentPage] = useState(1);
 
   const handleToggle = async (itemId) => {
     
@@ -57,12 +52,13 @@ function DiscountListing() {
       });
   }, []);
 
-
+  const itemsPerPage = 10; // Set the number of items to display per page
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = offerslist.slice(indexOfFirstItem, indexOfLastItem);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
   return (
     <div>
-      {/* {showOffcanvas && (
-        <AddNewLead show={showOffcanvas} close={handleCloseOffcanvas} />
-      )} */}
       <div className="col-12 actions_menu my-2">
         <div className="action_menu_left col-8">
           <div>
@@ -293,7 +289,7 @@ function DiscountListing() {
             <tbody>
               {!isLoading && offerslist && offerslist.length > 0 ? (
                 <>
-                  {offerslist.map((item, index) => {
+                  {currentItems.map((item, index) => {
                     let formatedDate = item.created_at;
                     return (
                       <tr>
@@ -310,7 +306,7 @@ function DiscountListing() {
                         </td>
                         <td>
                           <span className="text-secondary">
-                            {item.max_redeem_count}
+                            {item.multiple_redeem_specify_no}
                           </span>
                         </td>
                         <td>
@@ -379,82 +375,30 @@ function DiscountListing() {
           </table>
         </div>
         <div className="card-footer d-flex align-items-center">
-          {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
-          <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                aria-disabled="true"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
-            {/* <li className="page-item active">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item ">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                4
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                5
-              </a>
-            </li> */}
-            <li className="page-item">
-              <a className="page-link" href="#">
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
+         
+        <ul className="pagination m-0 ms-auto">
+        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
+          <button
+            className="page-link"
+            onClick={() => paginate(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            prev
+          </button>
+        </li>
+
+        
+
+        <li className={`page-item ${currentPage === Math.ceil(offerslist.length / itemsPerPage) ? 'disabled' : ''}`}>
+          <button
+            className="page-link"
+            onClick={() => paginate(currentPage + 1)}
+            disabled={currentPage === Math.ceil(offerslist.length / itemsPerPage)}
+          >
+            next
+          </button>
+        </li>
+      </ul>
         </div>
       </div>
     </div>

@@ -33,9 +33,9 @@ const style = {
 
 export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd }) {
     const [companylist,setCompanyList]=useState([])
-    const [isLoading,setIsLoading]=useState(false)
+    const [isLoading,setIsLoading]=useState(false);
+    const [search,setSearch]=useState("")
     const [idset,setIdSet]=useState("")
-    const[search,setSearch]=useState("")
     const handleSearchChange = (e) => {
         const searchTerm = e.target.value;
         setSearch(searchTerm);
@@ -77,9 +77,12 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
         });
     },[idset])
        
-
-console.log(companylist,"lists");
-
+    const lowercasedFilter = search.toLowerCase();
+    const filteredData = companylist.filter(item => {
+      return Object.keys(item).some(key =>
+        item[key].toLowerCase().includes(lowercasedFilter)
+      );
+    });
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <div>
@@ -121,7 +124,7 @@ console.log(companylist,"lists");
                         }}
                     />
                     {companylist.length > 0 &&
-                        companylist.map((data) =>
+                        filteredData.map((data) =>
                             <>
                                 <Accordion sx={{ marginTop: "10px",marginBottom:"5px",border:"noneZ" }} onClick={()=>setIdSet(data.id)}>
                                     <AccordionSummary
