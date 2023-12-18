@@ -3,7 +3,6 @@ import guestUserImg from "../../static/img/guest-user.png"
 import filterIcon from "../../static/img/Filter.png"
 import { Link } from "react-router-dom";
 
-
 const GuestUser = () => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const handleOpenOffcanvas = () => setShowOffcanvas(true);
@@ -117,34 +116,6 @@ const GuestUser = () => {
                                 />
                             </svg>
                         </button>
-                        {/* <button
-              onClick={handleOpenOffcanvas}
-              className="btn btn-info vendor_button"
-              style={{ borderRadius: "6px" }}
-              type="button"
-            >
-              Create New Admin &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M10 3L10 17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M3 10H17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button> */}
                     </div>
                 </div>
                 <div className="card">
@@ -152,7 +123,7 @@ const GuestUser = () => {
                         <table className="table card-table table-vcenter text-nowrap datatable">
                             <thead>
                                 <tr>
-                                    <th className="w-1">
+                                    <th>
                                         <span>Name</span>
                                     </th>
                                     <th>
@@ -173,18 +144,18 @@ const GuestUser = () => {
                                 <tr>
                                     <td>
                                         <span className="text-secondary">
-                                            Achille Lauro
+                                            User Name
                                         </span>
                                     </td>
                                     <td>
-                                        <span className="text-secondary">Boat</span>
+                                        <span className="text-secondary">user@gmail.com</span>
                                     </td>
                                     <td>
-                                        <span className="text-secondary">Round Trip Boat</span>
+                                        <span className="text-secondary">+91 9632587410</span>
                                     </td>
                                     <td>
                                         <span className="text-secondary">
-                                            StarLauro Cruises
+                                            Kuwait
                                         </span>
                                     </td>
                                     <td
@@ -221,18 +192,18 @@ const GuestUser = () => {
                                 <tr>
                                     <td>
                                         <span className="text-secondary">
-                                            Achille Lauro
+                                            User Name
                                         </span>
                                     </td>
                                     <td>
-                                        <span className="text-secondary">Boat</span>
+                                        <span className="text-secondary">user@gmail.com</span>
                                     </td>
                                     <td>
-                                        <span className="text-secondary">Round Trip Boat</span>
+                                        <span className="text-secondary">+91 748596310</span>
                                     </td>
                                     <td>
                                         <span className="text-secondary">
-                                            StarLauro Cruises
+                                            Kuwait
                                         </span>
                                     </td>
                                     <td
@@ -270,10 +241,6 @@ const GuestUser = () => {
                         </table>
                     </div>
                     <div className="card-footer d-flex align-items-center">
-                        {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
                         <ul className="pagination m-0 ms-auto">
                             <li className="page-item disabled">
                                 <a
@@ -300,31 +267,6 @@ const GuestUser = () => {
                                     prev
                                 </a>
                             </li>
-                            {/* <li className="page-item active">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item ">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                4
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                5
-              </a>
-            </li> */}
                             <li className="page-item">
                                 <a className="page-link" href="#">
                                     next
@@ -349,14 +291,6 @@ const GuestUser = () => {
                     </div>
                 </div>
             </div>
-            {/* {showOffcanvas && (
-        <AddNewService
-            show={showOffcanvas}
-            close={handleCloseOffcanvas}
-            isRefetch={isRefetch}
-            setIsRefetch={setIsRefetch}
-        />
-    )} */}
         </div>
     )
 }
