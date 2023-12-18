@@ -293,17 +293,19 @@ function ServiceList() {
                                             </td>
 
                                             <td>
-                                                {data.category.map((categories) =>
-                                                    <>
-                                                        <span className="text-secondary">{categories}</span> <br></br>
-                                                    </>)}
+                                            {<span className="text-secondary">{data?.category[0]}</span>}
+                                            <br></br>
+                                            {<span className="text-secondary">{data?.category[1]}</span>}
+                                                {data.category.length> 2 && <span className="text-secondary">...,</span>}
+
                                             </td>
 
                                             <td>
-                                                {data.sub_category.map((categories) =>
-                                                    <>
-                                                        <span className="text-secondary">{categories}</span> <br></br>
-                                                    </>)}
+                                            {<span className="text-secondary">{data?.sub_category[0]}</span>}
+                                            <br></br>
+                                            {<span className="text-secondary">{data?.sub_category[1]}</span>}
+                                                {data.sub_category.length> 2 && <span className="text-secondary">...,</span>}
+
                                             </td>
                                             <td>
                                                 <span className="text-secondary">
