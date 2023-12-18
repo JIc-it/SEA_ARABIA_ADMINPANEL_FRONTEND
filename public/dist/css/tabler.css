@@ -70,6 +70,11 @@
   --tblr-flickr: #0063dc;
   --tblr-bitbucket: #0052cc;
   --tblr-tabler: #0054a6;
+
+  /* //navcolr */
+  --tblr-primary: #006875;
+  --tblr-navbar-active-border-color: var(--tblr-primary);
+
   --tblr-primary-rgb: 0, 84, 166;
   --tblr-secondary-rgb: 102, 115, 130;
   --tblr-success-rgb: 47, 179, 68;
@@ -16009,6 +16014,7 @@ Navbar
   --tblr-navbar-bg: var(--tblr-bg-surface);
   --tblr-navbar-border-width: var(--tblr-border-width);
   --tblr-navbar-active-border-color: var(--tblr-primary);
+  /* border-color: var(--tblr-navbar-active-border-color); */
   --tblr-navbar-active-bg: rgba(0, 0, 0, 0.06);
   --tblr-navbar-color: var(--tblr-body-color);
   --tblr-navbar-border-color: var(--tblr-border-color);
@@ -16294,6 +16300,7 @@ Navbar
   }
   .navbar-expand-lg .nav-item.active {
     position: relative;
+    color:"#006875"
   }
   .navbar-expand-lg .nav-item.active:after {
     content: "";
@@ -16301,7 +16308,8 @@ Navbar
     left: 0;
     right: 0;
     bottom: -0.25rem;
-    border: 0 var(--tblr-border-style) var(--tblr-navbar-active-border-color);
+    /* border: 0 var(--tblr-border-style) var(--tblr-navbar-active-border-color); */
+    border: 2px #006875;
     border-bottom-width: 2px;
   }
   .navbar-expand-lg.navbar-vertical {
