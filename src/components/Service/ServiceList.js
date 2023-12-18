@@ -7,11 +7,16 @@ import totalVendor from "../../static/img/total-vendor.png"
 import totalMachine from "../../static/img/total-machine.png"
 import ActiveMachine from "../../static/img/active-machine.png"
 import inactiveMachine from "../../static/img/inactive-machine.png"
+import { getServiceListing } from "../../services/service"
+import CircularProgress from "@mui/material/CircularProgress";
+
 // import AddNewService from "./AddNewService";
 function ServiceList() {
     const navigate = useNavigate();
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [selectedValue, setSelectedValue] = useState("New Lead");
+    const [servicelist, setServiceList] = useState([])
+    const [isLoading, setIsLoading] = useState(false)
 
     const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -28,6 +33,19 @@ function ServiceList() {
         setToggled(!isToggled);
     }
     const [isRefetch, setIsRefetch] = useState(false);
+
+    useEffect(() => {
+        setIsLoading(true)
+        getServiceListing()
+            .then((data) => {
+                setServiceList(data?.results);
+                setIsLoading(false)
+            })
+            .catch((error) => {
+                console.error("Error fetching  data:", error);
+            });
+    }, []);
+
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
@@ -234,7 +252,7 @@ function ServiceList() {
                         </button>
                     </div>
                 </div>
-                <div className="card">
+                <div className="card" style={{ backgroundClip: "#F3F9FF" }}>
                     <div className="table-responsive">
                         <table className="table card-table table-vcenter text-nowrap datatable">
                             <thead>
@@ -264,62 +282,88 @@ function ServiceList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <span className="text-secondary">
-                                            Achille Lauro
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Round Trip Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">
-                                            StarLauro Cruises
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Active</span>
-                                    </td>
+                                {!isLoading && servicelist.length > 0 &&
 
-                                    <td>
-                                        <span className="text-secondary">160</span>
-                                    </td>
-                                    <td
-                                        style={{
-                                            display: "flex",
-                                            gap: "10px",
-                                            alignItems: "baseline",
-                                        }}
-                                    >
-                                        <Link
-                                            to={"/service-view"}
-                                            className="btn btn-sm btn-info"
-                                            style={{ padding: "6px 10px", borderRadius: "4px" }}
-                                        >
-                                            View &nbsp;
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="16"
-                                                height="16"
-                                                viewBox="0 0 16 16"
-                                                fill="none"
+                                    servicelist.map((data) =>
+                                        <tr>
+                                            <td>
+                                                <span className="text-secondary">
+                                                    {data.company}
+                                                </span>
+                                            </td>
+
+                                            <td>
+                                            {<span className="text-secondary">{data?.category[0]}</span>}
+                                            <br></br>
+                                            {<span className="text-secondary">{data?.category[1]}</span>}
+                                                {data.category.length> 2 && <span className="text-secondary">...,</span>}
+
+                                            </td>
+
+                                            <td>
+                                            {<span className="text-secondary">{data?.sub_category[0]}</span>}
+                                            <br></br>
+                                            {<span className="text-secondary">{data?.sub_category[1]}</span>}
+                                                {data.sub_category.length> 2 && <span className="text-secondary">...,</span>}
+
+                                            </td>
+                                            <td>
+                                                <span className="text-secondary">
+                                                    {data.name}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className="text-secondary">{data.status === true ? "Active" : "Inactive"}</span>
+                                            </td>
+
+                                            <td>
+                                                <span className="text-secondary">{data.total_booking}</span>
+                                            </td>
+                                            <td
+                                                style={{
+                                                    display: "flex",
+                                                    gap: "10px",
+                                                    alignItems: "baseline",
+                                                }}
                                             >
-                                                <path
-                                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                                    stroke="white"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </Link>
-                                    </td>
-                                </tr>
-                                <tr>
+                                                <Link
+                                                    to={"/service-view/"+data.id}
+                                                    className="btn btn-sm btn-info"
+                                                    style={{ padding: "6px 10px", borderRadius: "4px" }}
+                                                >
+                                                    View &nbsp;
+                                                    <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 16 16"
+                                                        fill="none"
+                                                    >
+                                                        <path
+                                                            d="M4 12L12 4M12 4H6M12 4V10"
+                                                            stroke="white"
+                                                            strokeWidth="1.5"
+                                                            strokeLinecap="round"
+                                                            strokeLinejoin="round"
+                                                        />
+                                                    </svg>
+                                                </Link>
+                                            </td>
+                                        </tr>
+
+                                    )}
+
+
+                                {isLoading &&
+                                    (
+                                        <tr>
+                                            <td colSpan={"8"} align="center">
+                                                <CircularProgress />
+                                            </td>
+                                        </tr>
+                                    )
+                                }
+                                {/* <tr>
                                     <td>
                                         <span className="text-secondary">
                                             Achille Lauro
@@ -373,7 +417,7 @@ function ServiceList() {
                                             </svg>
                                         </Link>
                                     </td>
-                                </tr>
+                                </tr> */}
                             </tbody>
                         </table>
                     </div>

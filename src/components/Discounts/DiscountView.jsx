@@ -84,7 +84,7 @@ export default function DiscountView() {
               </div>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Redemption Type</p>
-                <p style={{ fontWeight: "700", fontSize: "14px" }}>{redemptiontype}</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.redemption_type}</p>
               </div>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Expiration</p>
@@ -110,7 +110,7 @@ export default function DiscountView() {
               </div>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Usage</p>
-                <p style={{ fontWeight: "700", fontSize: "14px" }}>2 / Unlimited</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.specify_no} / {offerview?.redemption_type}</p>
               </div>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Validity Period</p>
@@ -125,7 +125,7 @@ export default function DiscountView() {
           <p style={{ color: "#68727D", fontSize: "16px" }}>Services/Vendors</p>
 
          {offerview?.companies?.map((datas)=>
-          <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px" }}>
+          <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px",marginBottom:"5px" }}>
           <p style={{ fontWeight: "700", fontSize: "14px" }}>{datas.name}</p>
           <p className='typography-dicount-view'>( 1 of 1 Services Selected )</p>
         </div>
@@ -142,13 +142,13 @@ export default function DiscountView() {
             <div className='w-50'>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Purchase Requirements</p>
-                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.min_grand_total > 0 ? "Minimum Requirement" : "No Minimum Requirement"}</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.purchase_requirement === true  ? "Minimum Requirement" : "No Minimum Requirement"}</p>
               </div>
             </div>
             <div className='w-50'>
 
               <p style={{ color: "#68727D", fontSize: "16px" }}>Minimum Purchase Amount</p>
-              <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.min_grand_total}</p>
+              <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.min_purchase_amount}</p>
             </div>
           </div>
         </div>

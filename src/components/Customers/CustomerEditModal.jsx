@@ -56,17 +56,20 @@ function CustomerEditModal({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
+
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      mobile: "",
-      dob: "",
-      location: "",
+      first_name: customerDetails?.first_name || "",
+      last_name: customerDetails?.last_name || "",
+      email: customerDetails?.email || "",
+      mobile: customerDetails?.mobile || "",
+      dob: customerDetails?.profileextra?.dob || "",
+      location: customerDetails?.profileextra?.location || "",
+      gender: customerDetails?.profileextra?.gender || "",
 
       // Add other fields as needed
     },
+    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
@@ -77,12 +80,14 @@ function CustomerEditModal({ show, close }) {
             // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-            role: "customer",
+            role: "User",
             email: values.email,
             mobile: values.mobile,
 
             profileextra: {
               location: values.location,
+              dob: values.dob,
+              gender: values.gender,
             },
           };
 
@@ -107,6 +112,17 @@ function CustomerEditModal({ show, close }) {
       }
     },
   });
+  useEffect(() => {
+    formik.setValues({
+      first_name: customerDetails?.first_name || "",
+      last_name: customerDetails?.last_name || "",
+      email: customerDetails?.email || "",
+      mobile: customerDetails?.mobile || "",
+      location: customerDetails?.profileextra?.location || "",
+      gender: customerDetails?.profileextra?.gender || "",
+      dob: customerDetails?.profileextra?.dob || "",
+    });
+  }, [customerDetails]);
 
   console.log("customer formik data", formik);
   return (
@@ -320,13 +336,12 @@ function CustomerEditModal({ show, close }) {
             Gender
           </label>
           <select
-            name="gender" // Make sure this matches the name used in initialValues and validationSchema
+            name="gender"
             className="form-select"
             value={formik.values.gender}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           >
-            <option value="">Choose Gender</option>
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>
