@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
+import logo from "../../static/img/logo.png"
 function SideBar() {
   const location = useLocation();
   const activeLink = location.pathname;
@@ -40,7 +41,7 @@ function SideBar() {
           <span className="navbar-toggler-icon"></span>
         </button>
         <h1 className="navbar-brand navbar-brand-autodark">
-          <a href=".">Sea Arabia</a>
+          <a href="/dashboard"><img src={logo}/></a>
         </h1>
         {/* <div className="navbar-nav flex-row d-lg-none">
           <div className="nav-item d-none d-lg-flex me-3">
