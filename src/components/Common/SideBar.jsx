@@ -730,6 +730,21 @@ function SideBar() {
                       </svg>
                       &nbsp; Customers
                     </a>
+                    <a className="dropdown-item" href="/guest-user">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                          fill="#68727D"
+                        />
+                      </svg>
+                      &nbsp; Guest User
+                    </a>
                     <a className="dropdown-item" href="/user-vendor">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

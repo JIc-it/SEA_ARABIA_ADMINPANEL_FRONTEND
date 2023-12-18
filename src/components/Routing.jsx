@@ -35,6 +35,7 @@ import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
 import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
 import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 import DashBoard from "../pages/DashBoard";
+import GuestUser from "../pages/Users/GuestUser";
 
 function AllRouting() {
   return (
@@ -87,6 +88,7 @@ function AllRouting() {
       />
       <Route path="/service" element={<ServiceList />} />
       <Route path="/service-view" element={<ServiceView />} />
+      <Route path="/guest-user" element={<GuestUser />} />
     </Routes>
   );
 }
