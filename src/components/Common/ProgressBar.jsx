@@ -12,7 +12,11 @@ import { useContext, useEffect, useState } from "react";
 import { OnboardContext } from "../../Context/OnboardContext";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { decrement, increment } from "../../state/counter/counterSlice";
+import {
+  decrement,
+  increment,
+  setCounter,
+} from "../../state/counter/counterSlice";
 import NegotiationForm from "../Vendor_tabs/NegotiationForm";
 import CharterForm from "../Vendor_tabs/CharterForm";
 import AddVendorInfo from "../Initial_contact/AddVendorForm";
@@ -114,7 +118,11 @@ function ProgressBar() {
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
         formik.setFieldValue("location", data.profileextra?.location);
-        // formik.setFieldValue("idType", data?.useridentificationdata?.id_type);
+        formik.setFieldValue(
+          "idType",
+          data?.useridentificationdata?.id_type?.id || ""
+        );
+
         formik.setFieldValue(
           "idNumber",
           data?.useridentificationdata?.id_number
@@ -140,6 +148,28 @@ function ProgressBar() {
           "thirdPartyService",
           data?.company_company_user?.third_party_ownership
         );
+
+        if (data.status === "New Lead") {
+          dispatch(setCounter(0));
+        }
+        if (data.status === "Initial Contact") {
+          dispatch(setCounter(1));
+        }
+        if (data.status === "Site Visit") {
+          dispatch(setCounter(2));
+        }
+        if (data.status === "Proposal") {
+          dispatch(setCounter(3));
+        }
+        if (data.status === "Negotiation") {
+          dispatch(setCounter(4));
+        }
+        if (data.status === "MOU / Charter") {
+          dispatch(setCounter(5));
+        }
+        if (data.status === "Ready to Onboard") {
+          dispatch(setCounter(6));
+        }
       })
       .catch((error) => {
         console.error("Error fetching  data:", error);
@@ -209,7 +239,7 @@ function ProgressBar() {
     note: "",
     siteVisitTime: "",
     siteVisitDate: "",
-    qualification: qualificationlist,
+    qualification: [],
   };
 
   const validationSchemaForSiteVisit = Yup.object({
@@ -218,7 +248,12 @@ function ProgressBar() {
     note: Yup.string().required("Note is required"),
     siteVisitTime: Yup.string().required("Time is required"),
     siteVisitDate: Yup.string().required("Date is required"),
-    qualification: Yup.array().required("All Qualification"),
+    qualification: Yup.array()
+      .min(6, "All qualifications must be selected")
+      .test("allChecked", "All qualifications must be selected", (value) => {
+        // Check if every item in the array is truthy
+        return Array.isArray(value) && value.every((item) => item);
+      }),
   });
 
   const validationSchemaForProposal = Yup.object({
@@ -313,7 +348,7 @@ function ProgressBar() {
           third_party_ownership: formik.values.thirdPartyService,
         },
       };
-      console.log(passdata, "check");
+
       const response = await UpdateVendorListById(userdata.id, passdata);
       if (response) {
         updateVendorStatus(companyID, "Site Visit")
@@ -486,12 +521,13 @@ function ProgressBar() {
   };
 
   const dispatch = useDispatch();
+
   return (
     <div>
       <div className="col-12">
         <div className="row row-cards">
           <div className="breadcrumbs">
-            <p>Lead Management</p>
+            <p>Vendor Management</p>
             <span>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -572,7 +608,10 @@ function ProgressBar() {
           </div>
           {count === 1 && <AddVendorInfo formik={formik} />}
           {count === 2 && (
-            <AddSiteVisit formik={formik} qualification={qualificationlist} />
+            <AddSiteVisit
+              formik={formik}
+              qualificationlist={qualificationlist}
+            />
           )}
           {count === 3 && (
             <CommonAddDetails title="Add Proposal" formik={formik} />

@@ -8,7 +8,7 @@ const getIndivitualVendorListUrl = "/account/vendor-list-details";
 const getIndivitualVendorUrl = "/account/vendor-details";
 const idTypeUrl = "/account/userid-type";
 const createSiteVist = "company/sitevisit-create/";
-const getSiteVist = "company/sitevisit-list";
+const getSiteVist = "company/sitevisit-list/";
 const getSiteVistQualifications = "/company/qualification-list";
 const createPropsal = "company/proposal-create/";
 const getPropsals = "company/proposal-list";
@@ -120,9 +120,13 @@ export const submitSiteVisit = (data) => {
       throw error;
     });
 };
-export const getSiteVisit = () => {
+export const getSiteVisit = (companyID) => {
   return axiosInstance
-    .get(getSiteVist)
+    .get(getSiteVist, {
+      params: {
+        id: companyID,
+      },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

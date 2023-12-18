@@ -5,12 +5,12 @@ import VendorTabs from "./Vendor_tabs/VendorTabs";
 import ProgressBar from "./Common/ProgressBar";
 import { useParams } from "react-router";
 import { OnboardContext } from "../Context/OnboardContext";
+import { useSelector } from "react-redux";
 
 function OnBoard() {
   const params = useParams();
   const vendorId = params.id;
   const companyID = params.companyID;
-
 
 
   return (

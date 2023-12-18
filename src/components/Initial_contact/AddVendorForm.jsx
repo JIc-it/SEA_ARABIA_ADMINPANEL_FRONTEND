@@ -16,7 +16,7 @@ import { OnboardContext } from "../../Context/OnboardContext";
 const AddVendorInfo = ({ formik }) => {
   const vendorId = useParams()?.id;
 
-  console.log(formik.values);
+  console.log(formik.values.phone, "formik.values.phone");
   //  const vendorId=OnboardContextData.vendorId
   const [showCanvas, setOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setOffcanvas(true);
@@ -77,19 +77,21 @@ const AddVendorInfo = ({ formik }) => {
                   </div>
                   <div className="col-10">
                     <input
-                      type="number"
+                      type="text"
                       className="form-control"
                       placeholder="Phone Number"
                       name="phone"
+                      value={formik.values.phone
+                        .replace(/\D/g, "")
+                        .slice(0, 10)} // Allow only the first 10 numeric characters
                       onChange={(e) => {
                         const inputValue = e.target.value;
-                        if (inputValue.length <= 10) {
-                          const sanitizedValue = inputValue.replace(/\D/g, ""); // Remove non-digit characters
-                          formik.handleChange("phone")(sanitizedValue); // Update the formik field
-                        }
+                        const sanitizedValue = inputValue
+                          .replace(/\D/g, "")
+                          .slice(0, 10); // Remove non-digit characters and limit to 10 digits
+                        formik.setFieldValue("phone", sanitizedValue); // Update the formik field
                       }}
                       onBlur={formik.handleBlur}
-                      value={formik.values.phone}
                     />
                   </div>
                 </div>

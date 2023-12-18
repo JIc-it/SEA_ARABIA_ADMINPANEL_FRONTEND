@@ -1,10 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { getVendorListById } from "../../../services/leadMangement";
 import { OnboardContext } from "../../../Context/OnboardContext";
+import { useNavigate } from "react-router";
 
-export default function LeadDetails() {
+export default function LeadDetails({count}) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [leads, setLeads] = useState();
+  const navigate = useNavigate();
 
   useEffect(() => {
     getVendorListById(vendorId)
@@ -15,7 +17,7 @@ export default function LeadDetails() {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [vendorId]);
+  }, [vendorId,count]);
 
   return (
     <div class="tab-content home">
@@ -33,6 +35,9 @@ export default function LeadDetails() {
                   width: "215px",
                   fontSize: "16px",
                   fontWeight: "700",
+                }}
+                onClick={() => {
+                  navigate(`/vendor-details-edit/${vendorId}/${companyID}`);
                 }}
               >
                 Edit Details &nbsp;

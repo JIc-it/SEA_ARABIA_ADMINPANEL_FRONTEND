@@ -28,13 +28,22 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
     initialValues: initialValues,
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      files: Yup.string().required("Please upload at least one file"),
+      files: Yup.mixed()
+        .required("Please upload at least one file")
+        .test("fileSize", "File size must not exceed 50MB", (value) => {
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
+
+          // Check if the file size is less than or equal to 50MB
+          return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+        }),
       note: Yup.string().required("Note is required"),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values, { resetForm }) => {
-
       setIsLoading(true);
 
       if (!isLoading) {
@@ -70,7 +79,6 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   });
 
   const handleFileChange = (file) => {
-   
     formik.setFieldValue("files", file[0]);
   };
   return (

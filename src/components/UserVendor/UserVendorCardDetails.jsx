@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import Avatars from "../../assets/images/Avatar.png";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import AddSiteVisitModal from "../Modal/AddSiteVisitModal";
+import AddSiteVisitModal from "../Vendor_tabs/SiteVisit/AddSiteVisitModal";
 
 import { getVendorListById } from "../../services/leadMangement";
 

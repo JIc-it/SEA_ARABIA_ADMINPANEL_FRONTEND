@@ -6,34 +6,38 @@ import {
   getVendorServiceTag,
 } from "../../services/leadMangement";
 import { OnboardContext } from "../../Context/OnboardContext";
-
-
-
+import { useSelector } from "react-redux";
 
 function VendorDetailsCard() {
   const { vendorId, isAllowProceed, setIsAllowProceed } =
-  useContext(OnboardContext);
-  const [userdata,setUser]=useState([])
-
-  useEffect(()=>{
+    useContext(OnboardContext);
+  const [userdata, setUser] = useState([]);
+  const count = useSelector((state) => state.counter.value);
+  console.log(count);
+  useEffect(() => {
     getVendorListById(vendorId)
-    .then((data) => {
-      console.log(data);
-     setUser(data)
-    })
-    .catch((error) => {
-      console.error("Error fetching  data:", error);
-    });
-  },[vendorId])
-  
-  console.log(userdata,"user");
+      .then((data) => {
+        console.log(data);
+        setUser(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching  data:", error);
+      });
+  }, [vendorId]);
+
+  console.log(userdata, "user");
   return (
     <div className="col-4">
       <div className="card personal_details">
         <div className="card-body">
           <div className="left_header">
             <div>
-              <p className="card_content" style={{textTransform:"capitalize"}}>{userdata?.first_name}</p>
+              <p
+                className="card_content"
+                style={{ textTransform: "capitalize" }}
+              >
+                {userdata?.first_name}
+              </p>
             </div>
             <div className="card_header_contents">
               <p className="card_content">
@@ -74,7 +78,10 @@ function VendorDetailsCard() {
                 </svg>{" "}
                 &nbsp; {userdata?.role} <span>| &nbsp;</span>
               </p>
-              <p className="card_content" style={{textTransform:"capitalize"}}>
+              <p
+                className="card_content"
+                style={{ textTransform: "capitalize" }}
+              >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="21"
@@ -123,7 +130,9 @@ function VendorDetailsCard() {
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Address</p>
-                <p style={{marginLeft:"5px"}}>{userdata?.company_company_user?.address}</p>
+                <p style={{ marginLeft: "5px" }}>
+                  {userdata?.company_company_user?.address}
+                </p>
               </div>
             </div>
           </div>

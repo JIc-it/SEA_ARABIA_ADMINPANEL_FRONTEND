@@ -35,6 +35,7 @@ import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
 import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
 import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 import DashBoard from "../pages/DashBoard";
+import VenderIndivitualEdit from "./Vendor_tabs/VenderDetailsEdit/VenderIndivitualEdit";
 
 function AllRouting() {
   return (
@@ -42,6 +43,7 @@ function AllRouting() {
       <Route index element={<Login />} />
       <Route path="/dashboard" element={<DashBoard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
+      <Route path="/vendor-details-edit/:id/:companyID" element={<VenderIndivitualEdit />}></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}

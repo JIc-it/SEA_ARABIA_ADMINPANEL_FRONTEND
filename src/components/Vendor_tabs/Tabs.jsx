@@ -1,6 +1,6 @@
 import { TabPanel, useTabs } from "react-headless-tabs";
 import { TabSelector } from "./TabSelector";
-import SiteVisit from "./SiteVisit";
+import SiteVisit from "./SiteVisit/SiteVisit";
 import Notes from "./Miscellaneous/MiscellaneousList";
 import LeadDetails from "./VenderDetailsEdit/leads";
 import Proposal from "./Proposal";
@@ -9,7 +9,7 @@ import MOU from "./MOU";
 import { useSelector } from "react-redux";
 import MiscellaneousList from "./Miscellaneous/MiscellaneousList";
 
-export function Basic({  sitevistview, proposal, negotiations, mou }) {
+export function Basic({  proposal, negotiations, mou }) {
   const [selectedTab, setSelectedTab] = useTabs([
     "Miscellaneous",
     "Vendor Details",
@@ -19,6 +19,7 @@ export function Basic({  sitevistview, proposal, negotiations, mou }) {
     "mou/charter",
   ]);
   const count = useSelector((state) => state.counter.value);
+
   return (
     <div style={{ width: "1060px" }}>
       <div className="vendor_listing">
@@ -96,24 +97,24 @@ export function Basic({  sitevistview, proposal, negotiations, mou }) {
             </div>
             <div className="card-body">
               <TabPanel hidden={selectedTab !== "site visit"}>
-                <SiteVisit sitevistview={sitevistview} />
+                <SiteVisit  count={count} selectedTab={selectedTab}/>
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "Vendor Details"}>
-                <LeadDetails  />
+                <LeadDetails  count={count} />
               </TabPanel>
 
               <TabPanel hidden={selectedTab !== "proposals"}>
-                <Proposal proposal={proposal} />
+                <Proposal proposal={proposal} count={count}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "negotations"}>
-                <Negotations negotiations={negotiations} />
+                <Negotations negotiations={negotiations} count={count}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "mou/charter"}>
-                <MOU mou={mou} />
+                <MOU mou={mou} count={count}/>
               </TabPanel>
               <TabPanel hidden={selectedTab !== "Miscellaneous"}>
-                <MiscellaneousList />
+                <MiscellaneousList count={count} />
               </TabPanel>
             </div>
           </div>

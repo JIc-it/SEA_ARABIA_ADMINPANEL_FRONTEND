@@ -4,7 +4,7 @@ import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-function AddSiteVisit({ formik, qualification }) {
+function AddSiteVisit({ formik, qualificationlist }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -116,8 +116,11 @@ function AddSiteVisit({ formik, qualification }) {
                     <h4>Qualifications</h4>
                     <div className="qualification_list">
                       <div className="qualification_row row">
-                        {qualification.map((data) => (
-                          <div className="qualification_1 col-md-6">
+                        {qualificationlist.map((data) => (
+                          <div
+                            className="qualification_1 col-md-6"
+                            key={data.id}
+                          >
                             <div className="svg_box">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -163,7 +166,7 @@ function AddSiteVisit({ formik, qualification }) {
                                 />
                               </svg>
                             </div>
-                            <div>
+                            <div style={{ flex: 1 }}>
                               <p className="quanlification_heading">
                                 {data.name}
                               </p>
@@ -171,38 +174,33 @@ function AddSiteVisit({ formik, qualification }) {
                                 {data.short_description}
                               </p>
                             </div>
-                            <div className="qualification_checkbox">
-                              <input
-                                type="checkbox"
-                                name="qualification"
-                                id={`qualification_${data.id}`}
-                                className="form-check-input"
-                                onChange={(e) => {
-                                  const isChecked = e.target.checked;
-                                  formik.setFieldValue(
-                                    "qualification",
-                                    isChecked
-                                      ? [
-                                          ...formik.values.qualification,
-                                          data.id,
-                                        ]
-                                      : formik.values.qualification.filter(
-                                          (id) => id !== data.id
-                                        )
-                                  );
-                                }}
-                                onBlur={formik.handleBlur}
-                                checked={formik.values.qualification?.includes(
-                                  data.id
-                                )}
-                              />
-                            </div>
+                            <input
+                              type="checkbox"
+                              name="qualification"
+                              id={`qualification_${data.id}`}
+                              className="form-check-input"
+                              onChange={(e) => {
+                                const isChecked = e.target.checked;
+                                formik.setFieldValue(
+                                  "qualification",
+                                  isChecked
+                                    ? [...formik.values.qualification, data.id]
+                                    : formik.values.qualification.filter(
+                                        (id) => id !== data.id
+                                      )
+                                );
+                              }}
+                              onBlur={formik.handleBlur}
+                              checked={formik.values.qualification?.includes(
+                                data.id
+                              )}
+                            />
                           </div>
                         ))}
-                        {formik.touched.legalLiscence &&
-                        formik.errors.legalLiscence ? (
+                        {formik.touched.qualification &&
+                        formik.errors.qualification ? (
                           <div className="error">
-                            {formik.errors.legalLiscence}
+                            {formik.errors.qualification}
                           </div>
                         ) : null}
                         {/* <div className="qualification_1">

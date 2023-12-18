@@ -2,8 +2,6 @@ import { Basic } from "./Tabs";
 import { useContext, useEffect, useState } from "react";
 import { OnboardContext } from "../../Context/OnboardContext";
 import {
-  getVendorListById,
-  getSiteVisit,
   getPropsal,
   getNegotiation,
   getMOU,
@@ -11,23 +9,10 @@ import {
 
 function VendorTabs() {
   const { vendorId } = useContext(OnboardContext);
-  
-  const [sitevistview, setSiteView] = useState([]);
+
   const [propsals, setPropsals] = useState([]);
   const [negotiations, setNegotiations] = useState([]);
   const [mou, setMOUs] = useState([]);
-
- 
-
-  useEffect(() => {
-    getSiteVisit()
-      .then((data) => {
-        setSiteView(data.results);
-      })
-      .catch((error) => {
-        console.error("Error fetching  data:", error);
-      });
-  }, []);
 
   useEffect(() => {
     getPropsal()
@@ -366,14 +351,7 @@ function VendorTabs() {
     //     </div>
     //   </div>
     // </div>
-    <Basic
-   
-      sitevistview={sitevistview}
-      proposal={propsals}
-      negotiations={negotiations}
-      mou={mou}
-      
-    />
+    <Basic proposal={propsals} negotiations={negotiations} mou={mou} />
   );
 }
 

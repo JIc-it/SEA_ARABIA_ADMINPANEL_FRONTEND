@@ -76,3 +76,27 @@ export function convertHttpToHttps(url) {
     return url;
   }
 }
+
+export const formatDateIncludeMonth = (originalDate) => {
+  // Convert the string to a Date object
+  const dateObject = new Date(originalDate);
+
+  // Define the options for formatting the date
+  const options = { month: "short", day: "numeric", year: "numeric" };
+
+  // Format the date using the options
+  const formattedDate = dateObject.toLocaleDateString("en-US", options);
+  return formattedDate;
+};
+
+export const formatTimeWith12Hour = (time) => {
+  const inputTime = new Date(`2000-01-01 ${time}`);
+
+  // Format the time as '05:49 PM'
+  const formattedTime = inputTime.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+  return formattedTime
+};
