@@ -223,16 +223,21 @@ const convertAndFormatDateTime = (dateTimeString) => {
 };
 
 
-  const updateCompanyIndex = (id,name) => {
+const updateCompanyIndex = (id, name) => {
     formik.setValues((prev) => {
-        const companyExists = (prev?.companies || []).some((company) => company.id === id);
+        const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
 
-        const updatedList = companyExists
-            ? (prev?.companies || []).filter((company) => company.id !== id)
-            : [
-                  ...((prev?.companies || []).map((company) => ({ id:company.id,name:company.name }))), // Clone existing companies
-                  { id: id,  name:name},
-              ];
+        const updatedList =
+            existingCompanyIndex !== -1
+                ? [
+                      ...prev.companies.slice(0, existingCompanyIndex), 
+                      { id: id, name: name }, 
+                      ...prev.companies.slice(existingCompanyIndex + 1), 
+                  ]
+                : [
+                      ...prev.companies,
+                      { id: id, name: name }, 
+                  ];
 
         return {
             ...prev,
@@ -240,16 +245,23 @@ const convertAndFormatDateTime = (dateTimeString) => {
         };
     });
 };
-  const updateServiceIndex = (id,name) => {
-    formik.setValues((prev) => {
-        const companyExists = (prev?.services || []).some((company) => company.id === id);
 
-        const updatedList = companyExists
-            ? (prev?.services || []).filter((company) => company.id !== id)
-            : [
-                  ...((prev?.services || []).map((company) => ({ id:company.id,name:company.name }))), // Clone existing companies
-                  { id: id, name:name},
-              ];
+
+const updateServiceIndex = (id, name, companyid) => {
+    formik.setValues((prev) => {
+        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id);
+
+        const updatedList =
+            existingServiceIndex !== -1
+                ? [
+                      ...prev.services.slice(0, existingServiceIndex), 
+                      { id: id, name: name, company: companyid }, 
+                      ...prev.services.slice(existingServiceIndex + 1),
+                  ]
+                : [
+                      ...prev.services,
+                      { id: id, name: name, company: companyid }, 
+                  ];
 
         return {
             ...prev,
@@ -257,7 +269,21 @@ const convertAndFormatDateTime = (dateTimeString) => {
         };
     });
 };
+;
 
+function companywithservice(companyid){
+ 
+    const serviceCount = formik?.values.services?.map((dat)=>dat.company===companyid) || 0;
+    return serviceCount.length
+
+}
+
+function companywithservicelength(companyid){
+ 
+  const serviceCount = formik?.values.services.filter((dat)=>dat.company===companyid) || 0;
+  return serviceCount.length
+
+}
 
 if(!isLoading){
     return (
@@ -553,7 +579,7 @@ if(!isLoading){
                                     </label>
                                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
-                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex}/>
+                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
                             </div>
                         </div>
 
@@ -579,7 +605,7 @@ if(!isLoading){
 
                                 </div>
                             </div>
-                            <p className='typography-dicount-view'>( 1 of 1 Services Selected )</p>
+                            <p className='typography-dicount-view'>({companywithservice(company.id)} of {companywithservicelength(company.id)} Services Selected )</p>
                         </div>
                        
                        )}
