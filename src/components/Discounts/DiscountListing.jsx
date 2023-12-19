@@ -35,6 +35,7 @@ function DiscountListing() {
         const response = await UpdateStatus(itemId, data);
         if(response){
           setIsLoading(false)
+          window.location.reload()
         }
       } catch (error) {
         console.error("Error updating status:", error);

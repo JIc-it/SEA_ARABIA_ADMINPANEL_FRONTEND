@@ -40,7 +40,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
         const searchTerm = e.target.value;
         setSearch(searchTerm);
     };
-console.log(data.services,"services");
+
     useEffect(() => {
         setIsLoading(true)
         getCompanyListing()

@@ -2,6 +2,7 @@ import axiosInstance from "./authHandle";
 
 const getOfferLists="offer/offers/admin";
 const getOfferViews="offer/offers";
+const getOfferCounts="offer/offer-count/";
 const UpdateOffers="offer/offers";
 const companylisting="company/companycms-list"
 const serviceOnelisting="service/service-filter-list-cms"
@@ -11,6 +12,15 @@ const getcompanylist="offer/offer-service-info"
 export const getCompanyListing = () => {
     return axiosInstance
       .get(companylisting,{params:{is_onboard:true}})
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Error while fetching lead request:", error);
+        throw error;
+      });
+  };
+export const getOfferCount = () => {
+    return axiosInstance
+      .get(getOfferCounts)
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);

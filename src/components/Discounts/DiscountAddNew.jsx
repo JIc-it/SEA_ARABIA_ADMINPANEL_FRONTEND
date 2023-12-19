@@ -206,7 +206,7 @@ export default function DiscountAddNew() {
 
     const navigate = useNavigate();
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-console.log(formik.values,"values get");
+
 
 const convertAndFormatDateTime = (dateTimeString) => {
     const formattedDateTime = moment(dateTimeString).tz('Asia/Kolkata').format('YYYY-MM-DDTHH:mm');

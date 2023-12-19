@@ -64,9 +64,6 @@ export default function DiscountView() {
     handlecheckredemptiontype()
   }, [offerview])
 
-  console.log(offerview,"view");
-
-
 function companywithservice(companyid){
  
     const serviceCount = offerview?.servicelist?.map((dat)=>{if(dat.company_id===companyid){return dat.service_count}}) || 0;
