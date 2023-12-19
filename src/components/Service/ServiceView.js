@@ -207,7 +207,7 @@ const ServiceView = () => {
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
                             <div className='d-flex justify-content-between align-items-center'>
                             <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
-                            <button type="button" className='btn px-2 py-1' style={{backgroundColor:"#187AF7",color:"#ffff",fontSize:"12px"}} >Create Add On</button>
+                            
                             </div>
                            
                             <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
@@ -220,20 +220,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>
@@ -251,20 +240,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>
@@ -282,20 +260,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>
@@ -309,7 +276,7 @@ const ServiceView = () => {
                         <div style={{ backgroundColor: "#F8F8F8", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
                         <div className='d-flex justify-content-between align-items-center'>
                             <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
-                            <button type="button"  className='btn px-2 py-1' style={{backgroundColor:"#187AF7",color:"#ffff",fontSize:"12px"}} >Create Add On</button>
+                            
                             </div>
                             <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
                                 <div>
@@ -321,20 +288,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>
@@ -352,20 +308,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>
@@ -383,20 +328,9 @@ const ServiceView = () => {
                                         <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
                                             <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
                                                 <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
+                                               
                                             </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
+                                           
                                         </div>
                                     </div>
                                     <div style={{color:"#68727D"}} className='mx-2'>

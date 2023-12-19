@@ -218,6 +218,7 @@ const convertAndFormatDateTime = (dateTimeString) => {
     formik.setValues((prev) => ({
         ...prev,
         companies: (prev?.companies || []).filter((company) => company.id !== id),
+        services:(prev?.services || []).filter((service) => service.company !== id)
     }));
 };
 
