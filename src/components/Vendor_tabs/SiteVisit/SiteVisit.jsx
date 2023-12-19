@@ -10,6 +10,8 @@ import { getSiteVisit } from "../../../services/leadMangement";
 import AddSiteVisitModal from "./AddSiteVisitModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import { OnboardContext } from "../../../Context/OnboardContext";
+import ViewSiteVisit from "./ViewSiteVisit";
+import EditSiteVisit from "./EditSiteVisit";
 
 function SiteVisit({ selectedTab }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -21,6 +23,28 @@ function SiteVisit({ selectedTab }) {
     next: null,
     previous: null,
   });
+  const [isViewSiteVisit, setIsViewSiteVisit] = useState(false);
+  const [selectedData, setSelectedData] = useState();
+  const [isEditSiteVisit, setIsEditSiteVisit] = useState(false);
+
+  const handleEditSiteVisit = (data) => {
+    setIsEditSiteVisit(true);
+    setSelectedData(data);
+  };
+
+  const handleCloseViewSiteVisit = () => {
+    setIsViewSiteVisit(false);
+  };
+
+  const handleViewSiteVisit = (data) => {
+    setIsViewSiteVisit(true);
+    setSelectedData(data);
+  };
+
+  const handleCloseEditSiteVisit = () => {
+    setIsEditSiteVisit(false);
+  };
+
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
@@ -129,7 +153,7 @@ function SiteVisit({ selectedTab }) {
                             }}
                           >
                             <div
-                              // onClick={() => handleViewMiscellaneous(item)}
+                              onClick={() => handleViewSiteVisit(item)}
                               className="btn btn-sm btn-info"
                               style={{
                                 padding: "5px",
@@ -160,7 +184,7 @@ function SiteVisit({ selectedTab }) {
                             </div>
                             <div
                               className="edit-icon cursor-pointer"
-                              // onClick={() => handleEditMiscellaneous(item)}
+                              onClick={() => handleEditSiteVisit(item)}
                             >
                               <span
                                 style={{
@@ -281,6 +305,22 @@ function SiteVisit({ selectedTab }) {
           </ul>
         </div>
       </div>
+      {isViewSiteVisit && (
+        <ViewSiteVisit
+          show={isViewSiteVisit}
+          close={handleCloseViewSiteVisit}
+          selectedData={selectedData}
+        />
+      )}
+        {isEditSiteVisit && (
+        <EditSiteVisit
+          show={isEditSiteVisit}
+          close={handleCloseEditSiteVisit}
+          isRefetch={isRefetch}
+          setIsRefetch={setIsRefetch}
+          selectedData={selectedData}
+        />
+      )}
     </div>
   );
 }

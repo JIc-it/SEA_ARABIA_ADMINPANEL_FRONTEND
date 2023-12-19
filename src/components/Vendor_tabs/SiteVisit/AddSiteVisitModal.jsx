@@ -111,7 +111,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
         formik.setFieldValue("time", "");
         formik.setFieldValue("date", "");
         formik.setFieldValue("qualification", []);
-        formik.setFieldValue("note", "");
+
       }}
       placement="end"
       style={{ overflow: "auto" }}

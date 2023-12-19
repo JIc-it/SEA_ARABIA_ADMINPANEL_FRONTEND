@@ -24,6 +24,7 @@ const miscellaneousTypeList = "company/miscellaneoustype-list";
 const miscellaneousUpdateUrl = "company/miscellaneous-update";
 const vendorLeadCountUrl = "account/vendor-leads-count";
 const vendorStatusUrl = "company/change-status";
+const siteVisitUpdateUrl = "company/sitevisit-update";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -284,6 +285,17 @@ export const getVendorLeadCount = () => {
 export const updateVendorStatus = (id, status) => {
   return axiosInstance
     .put(`${vendorStatusUrl}/${id}`, { new_status: status })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+
+export const updateSiteVisitAttachment = (id, data) => {
+  return axiosInstance
+    .put(`${siteVisitUpdateUrl}/${id}`, data)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

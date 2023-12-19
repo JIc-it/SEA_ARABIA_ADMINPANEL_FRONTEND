@@ -7,6 +7,7 @@ import {
   addMiscellaneousAttachment,
   getMiscellaneousTypeList,
   updateMiscellaneousAttachment,
+  updateSiteVisitAttachment,
 } from "../../../services/leadMangement";
 import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
@@ -14,34 +15,41 @@ import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { removeFolderPath } from "../../../helpers";
 
-function EditMiscellaneous({
-  show,
-  close,
-  setIsRefetch,
-  isRefetch,
-  selectedData,
-}) {
+function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-  
+  var substringToRemove =
+    "https://seaarabia.jicitsolution.com/assets/media/company/site_visit/attachment/";
+  const formatedFileName =
+    selectedData && selectedData.attachment.replace(substringToRemove, "");
+
   const formik = useFormik({
     initialValues: {
       title: "",
       type: "",
       files: "",
       note: "",
-      // time: "",
-      // date: "",
+      time: "",
+      date: "",
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      //   files: Yup.string().required("Please upload at least one file"),
+      // files: Yup.mixed()
+      //   .required("Please upload at least one file")
+      //   .test("fileSize", "File size must not exceed 50MB", (value) => {
+      //     if (!value) {
+      //       // Handle the case where no file is provided
+      //       return true;
+      //     }
+
+      //     // Check if the file size is less than or equal to 50MB
+      //     return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+      //   }),
       note: Yup.string().required("Note is required"),
-      // time: Yup.string().required("Time is required"),
-      // date: Yup.string().required("Date is required"),
+      time: Yup.string().required("Time is required"),
+      date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values) => {
-  
       setIsLoading(true);
 
       if (!isLoading) {
@@ -51,24 +59,28 @@ function EditMiscellaneous({
             title: values.title,
             note: values.note,
             attachment: values.files ? values.files : selectedData.attachment,
+            time: values.time,
+            date: values.date,
           };
 
           const adminData =
             selectedData &&
-            (await updateMiscellaneousAttachment(selectedData.id, data));
+            (await updateSiteVisitAttachment(selectedData.id, data));
 
           if (adminData) {
             setIsLoading(false);
             // window.location.reload();
             setIsRefetch(!isRefetch);
-            toast.success("Attachment Added Successfully.");
+            toast.success("Site visit Updated Successfully.");
             close();
           } else {
+            toast.error("Site visit Updation failed.");
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
         } catch (err) {
+          toast.error(err.response.data.error)
           console.log(err);
 
           setIsLoading(false);
@@ -85,10 +97,12 @@ function EditMiscellaneous({
     if (selectedData) {
       formik.setFieldValue("title", selectedData.title);
       formik.setFieldValue("note", selectedData.note);
+      formik.setFieldValue("date", selectedData.date);
+      formik.setFieldValue("time", selectedData.time);
       //   formik.setFieldValue("files", selectedData.attachment);
     }
   }, [selectedData]);
-
+  console.log(formik.errors);
   return (
     <Offcanvas
       show={show}
@@ -97,6 +111,8 @@ function EditMiscellaneous({
         formik.setFieldValue("title", "");
         formik.setFieldValue("files", "");
         formik.setFieldValue("note", "");
+        formik.setFieldValue("time", "");
+        formik.setFieldValue("date", "");
       }}
       placement="end"
       style={{ overflow: "auto" }}
@@ -105,7 +121,7 @@ function EditMiscellaneous({
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Attachment / Notes </Offcanvas.Title>
+        <Offcanvas.Title>Edit Site Visit </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -134,7 +150,7 @@ function EditMiscellaneous({
           <span className="mx-2">
             {formik.values.files
               ? formik.values.files.name
-              : selectedData && removeFolderPath(selectedData.attachment)}
+              : selectedData && formatedFileName}
           </span>
         </div>
         <div style={{ margin: "20px" }}>
@@ -156,6 +172,45 @@ function EditMiscellaneous({
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>
+          ) : null}
+        </div>
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{ paddingBottom: "10px", fontWeight: "500" }}
+          >
+            Date
+          </label>
+          <input
+            type="date"
+            className="form-control"
+            name="date"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.date}
+          />
+          {formik.touched.date && formik.errors.date ? (
+            <div className="error">{formik.errors.date}</div>
+          ) : null}
+        </div>
+
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{ paddingBottom: "10px", fontWeight: "500" }}
+          >
+            Time
+          </label>
+          <input
+            type="time"
+            className="form-control"
+            name="time"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.time}
+          />
+          {formik.touched.time && formik.errors.time ? (
+            <div className="error">{formik.errors.time}</div>
           ) : null}
         </div>
 
@@ -198,4 +253,4 @@ function EditMiscellaneous({
   );
 }
 
-export default EditMiscellaneous;
+export default EditSiteVisit;
