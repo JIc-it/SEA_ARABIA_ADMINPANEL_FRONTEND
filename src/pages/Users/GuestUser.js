@@ -1,11 +1,56 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import guestUserImg from "../../static/img/guest-user.png"
 import filterIcon from "../../static/img/Filter.png"
 import { Link } from "react-router-dom";
-
+import { getGuestUserRequest, getTotalGuestUser } from '../../services/CustomerHandle.jsx'
 const GuestUser = () => {
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const handleOpenOffcanvas = () => setShowOffcanvas(true);
+    const [reward_product_data, setGuestUsertData] = useState(null);
+    const [searchText, setSearchText] = useState("");
+    const [totalGuestUser, setTotalGuestUser] = useState(0);
+
+    useEffect(() => {
+        console.log("Fetching reward product data...");
+
+        getGuestUserRequest()
+            .then((data) => {
+                console.log("Fetched data:", data);
+                setGuestUsertData(data.results);
+            })
+            .catch((error) => {
+                console.error("Error fetching lead data:", error);
+            });
+    }, []);
+
+    useEffect(() => {
+        getTotalGuestUser()
+          .then((data) => {
+            setTotalGuestUser(data.count);
+          })
+          .catch((error) => {
+            console.error("Error fetching total booking data:", error);
+          });
+      }, []);
+
+    const filteredItems =
+        reward_product_data && reward_product_data.length > 0
+            ? reward_product_data.filter((rw_data) => {
+                const searchableFields = [
+                    rw_data.first_name,
+                    rw_data.last_name,
+                    rw_data.mobile,
+                    rw_data.email,
+                    rw_data.location,
+                ];
+                return searchableFields.some(
+                    (field) =>
+                        typeof field === "string" &&
+                        field.toLowerCase().includes(searchText.toLowerCase())
+                );
+            })
+            : [];
+
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
@@ -36,7 +81,7 @@ const GuestUser = () => {
                                             className="text-secondary"
                                             style={{ fontSize: "18px", fontWeight: "700" }}
                                         >
-                                            825
+                                            {totalGuestUser}
                                         </div>
                                     </div>
                                 </div>
@@ -141,24 +186,26 @@ const GuestUser = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <span className="text-secondary">
-                                            User Name
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">user@gmail.com</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">+91 9632587410</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">
-                                            Kuwait
-                                        </span>
-                                    </td>
-                                    <td
+                                {filteredItems.length > 0 ? (
+                                    filteredItems.map((rw_data, i) => (
+                                        <tr key={rw_data.id}>
+                                            <td>
+                                                <span className="text-secondary">
+                                                    {rw_data.first_name} {rw_data.last_name}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <span className="text-secondary">{rw_data.email}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-secondary">{rw_data.mobile}</span>
+                                            </td>
+
+
+                                            <td>
+                                                <span className="text-secondary">{rw_data.location}</span>
+                                            </td>
+                                            <td
                                         style={{
                                             display: "flex",
                                             gap: "10px",
@@ -188,55 +235,14 @@ const GuestUser = () => {
                                             </svg>
                                         </Link>
                                     </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span className="text-secondary">
-                                            User Name
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">user@gmail.com</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">+91 748596310</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">
-                                            Kuwait
-                                        </span>
-                                    </td>
-                                    <td
-                                        style={{
-                                            display: "flex",
-                                            gap: "10px",
-                                            alignItems: "baseline",
-                                        }}
-                                    >
-                                        <Link
-                                            to={""}
-                                            className="btn btn-sm btn-info"
-                                            style={{ padding: "6px 10px", borderRadius: "4px" }}
-                                        >
-                                            Booking &nbsp;
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="16"
-                                                height="16"
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-                                                <path
-                                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                                    stroke="white"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </Link>
-                                    </td>
-                                </tr>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="5">No matching Guest User</td>
+                                    </tr>
+                                )}
+                            
                             </tbody>
                         </table>
                     </div>

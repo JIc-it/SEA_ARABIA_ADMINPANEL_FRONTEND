@@ -6,6 +6,8 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
+import { formatDate,removeBaseUrlFromPath } from "../../helpers";
+import { getListDataInPagination } from "../../services/commonServices";
 
 function DiscountListing() {
   const theme = useTheme();
@@ -13,7 +15,10 @@ function DiscountListing() {
   const navigate=useNavigate();
   const [offerslist,setOffersList]=useState([])
  const [isLoading,setIsLoading]=useState(false)
- const [currentPage, setCurrentPage] = useState(1);
+ const [listPageUrl, setListPageUrl] = useState({
+  next: null,
+  previous: null,
+});
 
   const handleToggle = async (itemId) => {
     
@@ -30,6 +35,7 @@ function DiscountListing() {
         const response = await UpdateStatus(itemId, data);
         if(response){
           setIsLoading(false)
+          window.location.reload()
         }
       } catch (error) {
         console.error("Error updating status:", error);
@@ -44,6 +50,7 @@ function DiscountListing() {
     setIsLoading(true)
     getDiscountOfferList()
       .then((data) => {
+        setListPageUrl({ next: data.next, previous: data.previous });
         setOffersList(data?.results);
         setIsLoading(false)
       })
@@ -52,11 +59,62 @@ function DiscountListing() {
       });
   }, []);
 
-  const itemsPerPage = 10; // Set the number of items to display per page
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = offerslist.slice(indexOfFirstItem, indexOfLastItem);
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setOffersList(data?.results);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
+  };
+
+  const handleExportData = () => {
+    if (offerslist) {
+      const header = [
+        "DISCOUNT CODE",
+        "CAMPAIGN NAME",
+        "USAGE",
+        "LIMIT",
+        "Expiry",
+        "STATUS",
+      ];
+      const csvData = offerslist.map((elem) => {
+        // let formatedDate = formatDate(elem.created_at);
+        return [
+          elem.coupon_code,
+          elem.name,
+          elem.mobile,
+          elem.location,
+          formatDate(elem.end_date) ,
+          `${elem.is_enable===true ? "Active" : "Inactive"} `,
+        ];
+      });
+
+      const csvContent = [header, ...csvData]
+        .map((row) => row.join(","))
+        .join("\n");
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Offer-List.csv";
+      a.click();
+      window.URL.revokeObjectURL(url);
+    }
+  };
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -107,7 +165,7 @@ function DiscountListing() {
         </div>
         <div className="action_buttons col-4">
           
-          <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+          <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
             Export &nbsp;
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -289,7 +347,7 @@ function DiscountListing() {
             <tbody>
               {!isLoading && offerslist && offerslist.length > 0 ? (
                 <>
-                  {currentItems.map((item, index) => {
+                  {offerslist.map((item, index) => {
                     let formatedDate = item.created_at;
                     return (
                       <tr>
@@ -377,28 +435,61 @@ function DiscountListing() {
         <div className="card-footer d-flex align-items-center">
          
         <ul className="pagination m-0 ms-auto">
-        <li className={`page-item ${currentPage === 1 ? 'disabled' : ''}`}>
-          <button
-            className="page-link"
-            onClick={() => paginate(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            prev
-          </button>
-        </li>
+            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                tabIndex="-1"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 6l-6 6l6 6" />
+                </svg>
+                prev
+              </a>
+            </li>
 
-        
-
-        <li className={`page-item ${currentPage === Math.ceil(offerslist.length / itemsPerPage) ? 'disabled' : ''}`}>
-          <button
-            className="page-link"
-            onClick={() => paginate(currentPage + 1)}
-            disabled={currentPage === Math.ceil(offerslist.length / itemsPerPage)}
-          >
-            next
-          </button>
-        </li>
-      </ul>
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
+                next
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M9 6l6 6l-6 6" />
+                </svg>
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
     </div>

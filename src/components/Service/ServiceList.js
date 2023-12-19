@@ -9,12 +9,19 @@ import ActiveMachine from "../../static/img/active-machine.png"
 import inactiveMachine from "../../static/img/inactive-machine.png"
 import { getServiceListing } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
+import {formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { getListDataInPagination } from "../../services/commonServices";
+
 
 // import AddNewService from "./AddNewService";
 function ServiceList() {
     const navigate = useNavigate();
     const [showOffcanvas, setShowOffcanvas] = useState(false);
     const [selectedValue, setSelectedValue] = useState("New Lead");
+    const [listPageUrl, setListPageUrl] = useState({
+        next: null,
+        previous: null,
+      });
     const [servicelist, setServiceList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
 
@@ -46,6 +53,62 @@ function ServiceList() {
             });
     }, []);
 
+    const handlePagination = async (type) => {
+        setIsLoading(true);
+        let convertedUrl =
+          type === "next"
+            ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+            : type === "prev"
+            ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+            : null;
+        convertedUrl &&
+          getListDataInPagination(convertedUrl)
+            .then((data) => {
+              setIsLoading(false);
+              setListPageUrl({ next: data.next, previous: data.previous });
+              setServiceList(data?.results);
+            })
+            .catch((error) => {
+              setIsLoading(false);
+              console.error("Error fetching  data:", error);
+            });
+      };
+
+      const handleExportData = () => {
+        if (servicelist) {
+            const header = [
+                "NAME",
+                "CATEGORY",
+                "SUB CATEGORY",
+                "VENDOR",
+                "STATUS",
+                "BOOKINGS"
+            ];
+            const csvData = servicelist.map((elem) => {
+                return [
+                    elem.company,
+                    elem.category.map((data) => data.name).join(','),
+                    elem.sub_category.map((data) => data.name).join(','),
+                    elem.name,
+                    elem.status === true ? "Active" : "Inactive",
+                    elem.total_booking
+                ];
+            });
+    
+            const csvContent = [header, ...csvData]
+                .map((row) => row.join(","))
+                .join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Service.csv";
+            a.click();
+            window.URL.revokeObjectURL(url);
+        }
+    };
+    
+      
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
@@ -226,7 +289,7 @@ function ServiceList() {
                     </div>
                     <div className="action_buttons col-4">
 
-                        <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+                        <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
                             Export &nbsp;
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -252,7 +315,7 @@ function ServiceList() {
                         </button>
                     </div>
                 </div>
-                <div className="card" style={{ backgroundClip: "#F3F9FF" }}>
+                <div className="card">
                     <div className="table-responsive">
                         <table className="table card-table table-vcenter text-nowrap datatable">
                             <thead>
@@ -421,18 +484,16 @@ function ServiceList() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="card-footer d-flex align-items-center">
-                        {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
+                    <div className="d-flex align-items-center">
                         <ul className="pagination m-0 ms-auto">
-                            <li className="page-item disabled">
+                            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
                                 <a
                                     className="page-link"
                                     href="#"
                                     tabIndex="-1"
-                                    aria-disabled="true"
+                                    onClick={() => {
+                                        handlePagination("prev");
+                                    }}
                                 >
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -452,33 +513,15 @@ function ServiceList() {
                                     prev
                                 </a>
                             </li>
-                            {/* <li className="page-item active">
-              <a className="page-link" href="#">
-                1
-              </a>
-            </li>
-            <li className="page-item ">
-              <a className="page-link" href="#">
-                2
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                3
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                4
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                5
-              </a>
-            </li> */}
-                            <li className="page-item">
-                                <a className="page-link" href="#">
+
+                            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                                <a
+                                    className="page-link"
+                                    href="#"
+                                    onClick={() => {
+                                        handlePagination("next");
+                                    }}
+                                >
                                     next
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -498,7 +541,7 @@ function ServiceList() {
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div >

@@ -31,7 +31,7 @@ const style = {
 };
 
 
-export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd }) {
+export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd,data }) {
     const [companylist,setCompanyList]=useState([])
     const [isLoading,setIsLoading]=useState(false);
     const [search,setSearch]=useState("")
@@ -76,7 +76,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
             console.error("Error fetching data:", error);
         });
     },[idset])
-       
+
     const lowercasedFilter = search.toLowerCase();
     const filteredData = companylist.filter(item => {
       return Object.keys(item).some(key =>
@@ -84,6 +84,13 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
       );
     });
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
+
+    const isChecked = (Id) => {
+        return data.services.some((service) => service.id === Id);
+    };
+    const isCheckedCompany = (Id) => {
+        return data.companies.some((company) => company.id === Id);
+    };
     return (
         <div>
             <Button onClick={handleOpen} style={{ backgroundColor: "#187AF7", color: "white",textTransform:"capitalize" }} size='small'>
@@ -133,7 +140,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
                                         id="panel1a-header"
                                     >
                                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                                    <Checkbox {...label}  size="small" onChange={()=>handleAdd(data.id,data.name)}/>
+                                    <Checkbox {...label}  size="small" onChange={()=>handleAdd(data.id,data.name)} checked={isCheckedCompany(data.id)}/>
                                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
                                         {data.name}
                                     </Typography>
@@ -144,7 +151,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
                                     {
                                         data?.companyData?.map((dat)=>
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                                        <Checkbox {...label}  size="small" onChange={()=>handleServiceAdd(dat.id,dat.name)}/>
+                                        <Checkbox {...label} checkedhecked={isChecked(dat.id)} size="small" onChange={()=>handleServiceAdd(dat.id,dat.name,data.id)}/>
                                         <Typography variant="p" component="p">
                                             {dat.name}
                                         </Typography>

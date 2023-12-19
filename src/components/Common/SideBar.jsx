@@ -984,6 +984,27 @@ function SideBar() {
                     </a>
                     <a
                       style={{
+                        color: activeLink === "/guest-user" ? "#006875" : "",
+                      }}
+                      className="dropdown-item"
+                      href="/guest-user"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="16"
+                        viewBox="0 0 22 16"
+                        fill="none"
+                      >
+                        <path
+                          d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                          fill="#006875"
+                        />
+                      </svg>
+                      &nbsp; Guest User
+                    </a>
+                    <a
+                      style={{
                         color: activeLink === "/user-vendor" ? "#006875" : "",
                       }}
                       className="dropdown-item"

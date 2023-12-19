@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import { getDiscountOfferView } from "../../services/offers"
+import { getDiscountOfferView, getOneCompanyList } from "../../services/offers"
 import { useParams } from 'react-router-dom';
 import CircularProgress from "@mui/material/CircularProgress";
 
@@ -24,6 +24,29 @@ export default function DiscountView() {
       });
   }, [params.id]);
 
+  useEffect(()=>{
+    getOneCompanyList(params.id)
+    .then((data) => {
+        const servicelist=data.results.map((data)=>data.company_service_count)
+        setOfferView((prev) => {
+                if (prev.id === params.id) {
+                    return {
+                        ...prev,
+                        servicelist: servicelist.flat(),
+                    };
+                }
+                else{
+                  return {
+                    ...prev
+                  }
+                }
+        });
+    })
+    .catch((error) => {
+        console.error("Error fetching data:", error);
+    });
+},[params.id])
+
   const navigate = useNavigate()
 
   const handlecheckredemptiontype = () => {
@@ -41,7 +64,20 @@ export default function DiscountView() {
     handlecheckredemptiontype()
   }, [offerview])
 
-  console.log(offerview,"view");
+function companywithservice(companyid){
+ 
+    const serviceCount = offerview?.servicelist?.map((dat)=>{if(dat.company_id===companyid){return dat.service_count}}) || 0;
+    return serviceCount
+
+}
+
+function companywithservicelength(companyid){
+ 
+  const serviceCount = offerview?.servicelist?.map((dat)=>{if(dat.company_id===companyid){return dat.total_services}}) || 0;
+  return serviceCount
+
+}
+
   return (
 
     <>
@@ -51,7 +87,7 @@ export default function DiscountView() {
             <svg  width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <span style={{ color: "#006875" }}>SEAARABIA20</span>
+            <span style={{ color: "#006875" }}>{offerview?.name}</span>
 
           </Breadcrumb.Item>
         </Breadcrumb>
@@ -127,7 +163,8 @@ export default function DiscountView() {
          {offerview?.companies?.map((datas)=>
           <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px",marginBottom:"5px" }}>
           <p style={{ fontWeight: "700", fontSize: "14px" }}>{datas.name}</p>
-          <p className='typography-dicount-view'>( 1 of 1 Services Selected )</p>
+             <p className='typography-dicount-view'>({companywithservice(datas.id)} of {companywithservicelength(datas.id)} Services Selected )</p>
+
         </div>
          )}
           {/* <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
