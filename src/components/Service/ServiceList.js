@@ -76,38 +76,38 @@ function ServiceList() {
 
       const handleExportData = () => {
         if (servicelist) {
-          const header = [
-            "DISCOUNT CODE",
-            "CAMPAIGN NAME",
-            "USAGE",
-            "LIMIT",
-            "Expiry",
-            "STATUS",
-          ];
-          const csvData = servicelist.map((elem) => {
-            // let formatedDate = formatDate(elem.created_at);
-            return [
-              elem.coupon_code,
-              elem.name,
-              elem.mobile,
-              elem.location,
-              formatDate(elem.end_date) ,
-              `${elem.is_enable===true ? "Active" : "Inactive"} `,
+            const header = [
+                "NAME",
+                "CATEGORY",
+                "SUB CATEGORY",
+                "VENDOR",
+                "STATUS",
+                "BOOKINGS"
             ];
-          });
+            const csvData = servicelist.map((elem) => {
+                return [
+                    elem.company,
+                    elem.category.map((data) => data.name).join(','),
+                    elem.sub_category.map((data) => data.name).join(','),
+                    elem.name,
+                    elem.status === true ? "Active" : "Inactive",
+                    elem.total_booking
+                ];
+            });
     
-          const csvContent = [header, ...csvData]
-            .map((row) => row.join(","))
-            .join("\n");
-          const blob = new Blob([csvContent], { type: "text/csv" });
-          const url = window.URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "Offer-List.csv";
-          a.click();
-          window.URL.revokeObjectURL(url);
+            const csvContent = [header, ...csvData]
+                .map((row) => row.join(","))
+                .join("\n");
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Service.csv";
+            a.click();
+            window.URL.revokeObjectURL(url);
         }
-      };
+    };
+    
       
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -289,7 +289,7 @@ function ServiceList() {
                     </div>
                     <div className="action_buttons col-4">
 
-                        <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+                        <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
                             Export &nbsp;
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -315,7 +315,7 @@ function ServiceList() {
                         </button>
                     </div>
                 </div>
-                <div className="card" style={{ backgroundClip: "#F3F9FF" }}>
+                <div className="card">
                     <div className="table-responsive">
                         <table className="table card-table table-vcenter text-nowrap datatable">
                             <thead>
@@ -484,63 +484,63 @@ function ServiceList() {
                             </tbody>
                         </table>
                     </div>
-                    <div className="card-footer d-flex align-items-center">
-                    <ul className="pagination m-0 ms-auto">
-            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                onClick={() => {
-                  handlePagination("prev");
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
+                    <div className="d-flex align-items-center">
+                        <ul className="pagination m-0 ms-auto">
+                            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
+                                <a
+                                    className="page-link"
+                                    href="#"
+                                    tabIndex="-1"
+                                    onClick={() => {
+                                        handlePagination("prev");
+                                    }}
+                                >
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="icon"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="2"
+                                        stroke="currentColor"
+                                        fill="none"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M15 6l-6 6l6 6" />
+                                    </svg>
+                                    prev
+                                </a>
+                            </li>
 
-            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-              <a
-                className="page-link"
-                href="#"
-                onClick={() => {
-                  handlePagination("next");
-                }}
-              >
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
+                            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                                <a
+                                    className="page-link"
+                                    href="#"
+                                    onClick={() => {
+                                        handlePagination("next");
+                                    }}
+                                >
+                                    next
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        className="icon"
+                                        width="24"
+                                        height="24"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="2"
+                                        stroke="currentColor"
+                                        fill="none"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                    >
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M9 6l6 6l-6 6" />
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
                         </div>
                 </div>
             </div>

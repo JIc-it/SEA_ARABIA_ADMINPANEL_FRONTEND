@@ -25,7 +25,7 @@ const style = {
 };
 
 
-export default function UploadPopup({ handleClose, handleOpen, open }) {
+export default function UploadPopup({ handleClose, handleOpen, open,service_image }) {
     const [companylist, setCompanyList] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState("")
@@ -106,7 +106,15 @@ export default function UploadPopup({ handleClose, handleOpen, open }) {
                                 Preview Images
                             </Typography>
                             <div className="d-flex justify-content-between mt-2">
-                                <div>
+                               {service_image.map((data)=>
+                                   <div>
+                                       <div>
+                                           <img src={data.thumbnail}  className='rounded' style={{aspectRatio:"16/9"}} />
+                                       </div>
+                                   </div>
+                               
+                               )}
+                                {/* <div>
                                     <div>
                                         <img src={Thumbnail_1} />
                                     </div>
@@ -120,12 +128,7 @@ export default function UploadPopup({ handleClose, handleOpen, open }) {
                                     <div>
                                         <img src={Thumbnail_1} />
                                     </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <img src={Thumbnail_1} />
-                                    </div>
-                                </div>
+                                </div> */}
                             </div>
                         </Box>
                         <hr></hr>

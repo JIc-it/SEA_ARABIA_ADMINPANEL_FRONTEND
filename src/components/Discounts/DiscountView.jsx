@@ -87,7 +87,7 @@ function companywithservicelength(companyid){
             <svg  width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <span style={{ color: "#006875" }}>SEAARABIA20</span>
+            <span style={{ color: "#006875" }}>{offerview?.name}</span>
 
           </Breadcrumb.Item>
         </Breadcrumb>
