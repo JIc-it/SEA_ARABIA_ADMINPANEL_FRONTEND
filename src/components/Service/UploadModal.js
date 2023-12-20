@@ -45,7 +45,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                 if (!value) {
                   return false;
                 }
-                return value.size <= 50 * 1024 * 1024;
+                return value.size <= 100 * 1024;
               })
               .test('fileType', 'Invalid file format', (value) => {
                 if (!value) {
