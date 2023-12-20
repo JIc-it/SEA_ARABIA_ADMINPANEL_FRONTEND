@@ -7,8 +7,12 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Paper } from '@mui/material';
 import { useState } from 'react';
-import Thumbnail_1 from "../../static/img/Rectangle 995.png"
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import {AddImage} from "../../services/service"
+import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
     position: 'absolute',
@@ -25,7 +29,7 @@ const style = {
 };
 
 
-export default function UploadPopup({ handleClose, handleOpen, open,service_image }) {
+export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated }) {
     const [companylist, setCompanyList] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState("")
@@ -35,12 +39,70 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
         setSearch(searchTerm);
     };
 
+    const validationSchema = Yup.object({
+        image: Yup.mixed()        
+        .test('fileSize', 'File size is too large', (value) => {
+                if (!value) {
+                  return false;
+                }
+                return value.size <= 50 * 1024 * 1024;
+              })
+              .test('fileType', 'Invalid file format', (value) => {
+                if (!value) {
+                  return false;
+                }
+                return /^image\/(jpeg|png|gif)$/i.test(value.type);
+              }),
+    });
 
+    const formik = useFormik({
+        initialValues: {
+            image: null,
+            service: "",
+           
+        },
+        validationSchema,
+        onSubmit: async (values) => {
+        setIsLoading(true);
+    
+       
+        const formdata=new FormData()
+        formdata.append("image",values.image);
+        formdata.append("service",values.service);
 
+            if (!isLoading) {
+              try {
+            const adminData = await AddImage(formdata);
 
+            if (adminData) {
+              setIsLoading(false);
+              handleClose()
+            toast.success("Updated Successfully")
+            setIsUpdated(true)
+
+            } else {
+              console.error("Error while creating Admin:", adminData.error);
+              setIsLoading(false);
+            }
+            setIsLoading(false);
+              }catch (err) {
+                console.log(err);
+                setIsLoading(false);
+              }
+            }
+        },
+    });
+
+    const handleFileChange = (file) => {
+        formik.setFieldValue("image", file);
+        formik.setFieldValue("service", service_image[0]?.service);
+      };
+
+console.log(formik.values);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
-        <div >
+        <>
+       {!isLoading &&  <div >
             
             <Modal style={{width:"100vw"}}
                 keepMounted
@@ -49,7 +111,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                 aria-labelledby="keep-mounted-modal-title"
                 aria-describedby="keep-mounted-modal-description"
             >
-                <Box sx={style}>
+               <Box sx={style}>
                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
                         Upload Image
                     </Typography>
@@ -62,7 +124,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                     >
                         <CloseIcon />
                     </IconButton>
-                    <form >
+                    <form onSubmit={formik.handleSubmit}>
                         <Box textAlign="center" mt={1} style={{ width: "100%", marginBottom: "5px" }}>
                             <label htmlFor="file-input" style={{ width: "100%" }}>
                                 <Paper
@@ -79,11 +141,12 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                                     <input
                                         type="file"
                                         id="file-input"
+                                        name="image"
                                         // required={formik.values?.image?.includes("https://")? false:true}
                                         accept=".jpg, .jpeg, .png"
                                         style={{ display: 'none' }}
-                                    // onBlur={formik.handleBlur}
-                                    // onChange={(e)=>handleFileChange(e.target.files[0])}
+                                    onBlur={formik.handleBlur}
+                                    onChange={(e)=>handleFileChange(e.target.files[0])}
                                     />
                                     <div style={{ marginBottom: "5px" }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
@@ -98,47 +161,39 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                                     <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 100 KB )</Typography>
                                 </Paper>
                             </label>
-                            {/* {formik.touched.image && formik.errors.image ? (
+                            {formik.touched.image && formik.errors.image ? (
                                 <div className="error">{formik.errors.image}</div>
-                            ) : null}  */}
-                            {/* {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>} */}
+                            ) : null} 
+                            {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
                             <Typography variant="p" component="p" sx={{ fontWeight: 800, textAlign: "left", marginTop: "3px" }}>
                                 Preview Images
                             </Typography>
-                            <div className="d-flex justify-content-between mt-2">
+                            <div className="d-flex  mt-2">
                                {service_image.map((data)=>
-                                   <div>
+                                   <div className='mx-1'>
                                        <div>
-                                           <img src={data.thumbnail}  className='rounded' style={{aspectRatio:"16/9"}} />
+                                           <img src={data.image}  className='rounded' style={{ width: "200px",height:"125px" }} />
                                        </div>
                                    </div>
                                
                                )}
-                                {/* <div>
-                                    <div>
-                                        <img src={Thumbnail_1} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <img src={Thumbnail_1} />
-                                    </div>
-                                </div>
-                                <div>
-                                    <div>
-                                        <img src={Thumbnail_1} />
-                                    </div>
-                                </div> */}
                             </div>
                         </Box>
                         <hr></hr>
                         <div className='d-flex justify-content-end'>
                             <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>
-                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }} onClick={handleClose}>Upload</button>
+                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Upload</button>
                         </div>
                     </form>
                 </Box>
+                
             </Modal>
-        </div>
+        </div>}
+        {isLoading && 
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+            <CircularProgress />
+          </div>
+           }
+           </>
     );
 }

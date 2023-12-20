@@ -22,6 +22,7 @@ export default function DiscountEdit() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isupdated,setIsUpdated]=useState(false)
 
     const validationSchema = Yup.object({
         name: Yup.string()
@@ -178,7 +179,7 @@ export default function DiscountEdit() {
             if (adminData) {
               setIsLoading(false);
               toast.success("Updated Successfully")
-                setTimeout(()=>window.location.reload(),500)
+              setIsUpdated(true)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -224,12 +225,13 @@ export default function DiscountEdit() {
             formik.setFieldValue("companies",data.companies);
             formik.setFieldValue("purchase_requirement",data.purchase_requirement);
             formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
+            setIsUpdated(false)
           })
           .catch((error) => {
             console.error("Error fetching  data:", error);
           });
     
-      }, [params.id]);
+      }, [params.id,isupdated]);
 
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
