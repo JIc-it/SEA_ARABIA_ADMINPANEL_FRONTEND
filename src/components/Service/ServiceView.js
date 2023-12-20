@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import {getOneService} from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import { Breadcrumb } from 'react-bootstrap';
+import HTMLParse from 'html-react-parser';
 
 const ServiceView = () => {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ const ServiceView = () => {
                                 <div className="col-12 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Description</p>
-                                        <p>{oneservice?.description}</p>
+                                        <p>{oneservice?.description && HTMLParse(oneservice?.description)}</p>
                                     </div>
                                 </div>
                             </div>

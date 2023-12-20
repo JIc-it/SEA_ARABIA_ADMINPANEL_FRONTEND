@@ -15,6 +15,7 @@ import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist,Up
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
+import TextEditor from './TextEditor';
 
 const ServiceEdit = () => {
     const theme = useTheme();
@@ -91,7 +92,6 @@ const ServiceEdit = () => {
                 sub_category:values.sub_category[0]?.id,
                 amenities:formattedAmenities,
             }
-            console.log(data,"output");
             if (!isLoading) {
               try {
             const adminData = await UpdateService(params.id,data);
@@ -100,7 +100,7 @@ const ServiceEdit = () => {
               setIsLoading(false);
             //   window.location.reload();
             toast.success("Updated Successfully")
-            setIsUpdated(true)
+            // setIsUpdated(true)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -123,8 +123,8 @@ const ServiceEdit = () => {
     const handleHoverEffectTrue = (id) => {
         setHoverEffect(id)
     }
-    const handleHoverEffectFalse = (id) => {
-        setHoverEffect(id)
+    const handleHoverEffectFalse = () => {
+        setHoverEffect("")
     }
 
     const [open, setOpen] = useState(false)
@@ -147,11 +147,42 @@ const ServiceEdit = () => {
         setOpenAddon(true)
     }
 
+    //first load
     useEffect(() => {
         setIsLoading(true)
         getOneService(params.id)
             .then((data) => {
                 setIsLoading(false)
+                formik.setFieldValue("is_verified", data?.is_verified);
+                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
+                formik.setFieldValue("is_premium", data?.is_premium);
+                formik.setFieldValue("type", data?.type);
+                formik.setFieldValue("category", data?.category);
+                formik.setFieldValue("sub_category", data?.sub_category);
+                formik.setFieldValue("name", data?.name);
+                formik.setFieldValue("machine_id", data?.machine_id);
+                formik.setFieldValue("description", data?.description);
+                formik.setFieldValue("lounge", data?.lounge);
+                formik.setFieldValue("bedroom", data?.bedroom);
+                formik.setFieldValue("toilet", data?.toilet);
+                formik.setFieldValue("capacity", data?.capacity);
+                formik.setFieldValue("amenities", data?.amenities);
+                formik.setFieldValue("pickup_point", data?.pickup_point);
+                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
+                formik.setFieldValue("refund_policy", data?.refund_policy);
+                formik.setFieldValue("is_active", data?.is_active);
+                formik.setFieldValue("service_image", data?.service_image);
+                formik.setFieldValue("price", data?.price);
+                setIsUpdated(false)
+            }
+            ).catch((error) =>
+                console.error(error))
+    }, [params.id])
+
+    //update load
+    useEffect(() => {
+        getOneService(params.id)
+            .then((data) => {
                 formik.setFieldValue("is_verified", data?.is_verified);
                 formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
                 formik.setFieldValue("is_premium", data?.is_premium);
@@ -201,9 +232,6 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 console.error(error))
     }, [])
-
-    console.log(formik.values, "all");
-    console.log(amenitieslist, "amenities");
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
@@ -378,7 +406,6 @@ const ServiceEdit = () => {
                                                 onChange={(e) => {
                                                     formik.handleChange(e)
                                                     const selectedCategory = e.target.value;
-                                                    console.log(selectedCategory);
                                                     const selectedCategoryData = subcategorylist.find(category => category.id === selectedCategory);
                                                     if (selectedCategoryData) {
                                                         subcategorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.category);
@@ -432,11 +459,11 @@ const ServiceEdit = () => {
                                 <div className="mt-2">
                                     <label
                                         htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "500" }}
+                                        style={{ paddingBottom: "10px", fontWeight: "600" }}
                                     >
                                         Description
                                     </label>
-                                    <textarea
+                                    {/* <textarea
                                         name="description"
                                         cols="30"
                                         rows="10"
@@ -448,9 +475,11 @@ const ServiceEdit = () => {
                                     ></textarea>
                                     {formik.touched.description && formik.errors.description ? (
                                         <div className="error">{formik.errors.description}</div>
-                                    ) : null}
+                                    ) : null} */}
+                                    <TextEditor formik={formik}/>
                                 </div>
-                                <div className="mt-2">
+                                <br></br>
+                                <div className="mt-5">
                                     <span style={{ fontWeight: "600" }}>Details</span>
                                     <div className="d-flex mt-2">
                                         <div className="mt-1">
@@ -589,7 +618,6 @@ const ServiceEdit = () => {
                                                 onChange={(e) => {
                                                     formik.handleChange(e)
                                                     const selectedCategory = e.target.value;
-                                                    console.log(selectedCategory);
                                                     const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
                                                     if (selectedCategoryData) {
                                                         amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
@@ -814,9 +842,9 @@ const ServiceEdit = () => {
                                         <div className="col-6 mb-3" key={data.id}>
                                             <div style={{ position: "relative" }}
                                                 onMouseEnter={() => handleHoverEffectTrue(data.id)}
-                                                onMouseLeave={()=>handleHoverEffectFalse(data.id)}
+                                                onMouseLeave={()=>handleHoverEffectFalse()}
                                             >
-                                                <img src={data.image} className='rounded' style={{ width: "200px", height: "125px" }} />
+                                                <img src={data.image} className='rounded' style={{ width: "200px", height: "125px",opacity:hovereffect===data.id? 0.5:1}} />
                                                 {hovereffect === data.id &&
                                                     <div style={{ position: "absolute", bottom: "50px", left: "20px",backgroundColor:"lightblack" }}>
                                                         <button type="button" className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={()=>settingthumbnailTrue(data.id,data.service)}>setThumbnail</button>
