@@ -1,18 +1,16 @@
 import React, { useContext, useEffect } from "react";
-// import "../../static/css/add_vendor_details.css";
 import { useState } from "react";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   UpdateVendorListById,
   getUserIdType,
   getVendorListById,
   getVendorServiceTag,
-  siteVisitQualification,
 } from "../../../services/leadMangement";
 import { toast } from "react-toastify";
 
@@ -22,7 +20,6 @@ const VenderIndivitualEdit = () => {
   console.log(params);
   const vendorId = params?.id;
   const companyID = params?.companyID;
-  //  const vendorId=OnboardContextData.vendorId
   const [showCanvas, setOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setOffcanvas(true);
   const [serviceTagList, setServiceTagList] = useState();

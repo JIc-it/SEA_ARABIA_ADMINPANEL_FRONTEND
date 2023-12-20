@@ -3,7 +3,7 @@ import { getVendorListById } from "../../../services/leadMangement";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { useNavigate } from "react-router";
 
-export default function LeadDetails({count}) {
+export default function LeadDetails({ count }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [leads, setLeads] = useState();
   const navigate = useNavigate();
@@ -17,14 +17,13 @@ export default function LeadDetails({count}) {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [vendorId,count]);
+  }, [vendorId, count]);
 
   return (
     <div class="tab-content home">
       {leads && (
         <div class="tab-pane active show" id="tabs-home-7">
           <div>
-            {/* className="home_contents" */}
             <div>
               <button
                 className="btn"
@@ -271,7 +270,9 @@ export default function LeadDetails({count}) {
                   <div className="col-4">
                     <p style={{ color: "#68727D" }}>OwnerShip</p>
                     <p style={{ color: "#323539", fontWeight: "600" }}>
-                      {leads.email}
+                      {leads.company_company_user.third_party_ownership
+                        ? 'Third Party Services'
+                        : "-"}
                     </p>
                   </div>
                   <div className="col-4"></div>

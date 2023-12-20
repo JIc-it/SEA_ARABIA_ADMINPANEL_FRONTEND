@@ -1,13 +1,10 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
 import {
   addMiscellaneousAttachment,
-  getMiscellaneousTypeList,
 } from "../../../services/leadMangement";
-import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
@@ -81,6 +78,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   const handleFileChange = (file) => {
     formik.setFieldValue("files", file[0]);
   };
+  
   return (
     <Offcanvas
       show={show}
@@ -125,29 +123,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
           <label htmlFor="">Uploaded File: </label>
           <span className="mx-2">{formik.values.files?.name}</span>
         </div>
-        {/* <div style={{ margin: "20px" }}>
-          <DropZone formik={formik} />
-        </div> */}
-        {/* <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Files
-          </label>
-          <input
-            type="file"
-            multiple
-            className="form-control"
-            name="files"
-            onChange={handleFileChange}
-            onBlur={formik.handleBlur}
-            // Note: You cannot set the value of a file input programmatically for security reasons
-          />
-          {formik.touched.files && formik.errors.files ? (
-            <div className="error">{formik.errors.files}</div>
-          ) : null}
-        </div> */}
+      
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""

@@ -1,18 +1,15 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
 import {
-  addMiscellaneousAttachment,
-  getMiscellaneousTypeList,
   updateMiscellaneousAttachment,
 } from "../../../services/leadMangement";
-import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { removeFolderPath } from "../../../helpers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EditMiscellaneous({
   show,
@@ -189,7 +186,7 @@ function EditMiscellaneous({
                 backgroundColor: "#006875",
               }}
             >
-              Edit
+               {isLoading ? <CircularProgress /> : "Edit"}
             </button>
           </div>
         </div>

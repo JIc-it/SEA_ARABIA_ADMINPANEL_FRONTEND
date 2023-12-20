@@ -1,5 +1,4 @@
 import { Offcanvas } from "react-bootstrap";
-import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
 import { useContext, useEffect, useState } from "react";
 import { OnboardContext } from "../../../Context/OnboardContext";
@@ -10,6 +9,7 @@ import {
   siteVisitQualification,
   submitSiteVisit,
 } from "../../../services/leadMangement";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -50,12 +50,12 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
       note: Yup.string().required("Note is required"),
       time: Yup.string().required("Time is required"),
       date: Yup.string().required("Date is required"),
-      qualification: Yup.array()
-        .min(6, "All qualifications must be selected")
-        .test("allChecked", "All qualifications must be selected", (value) => {
-          // Check if every item in the array is truthy
-          return Array.isArray(value) && value.every((item) => item);
-        }),
+      // qualification: Yup.array()
+      //   .min(6, "All qualifications must be selected")
+      //   .test("allChecked", "All qualifications must be selected", (value) => {
+      //     // Check if every item in the array is truthy
+      //     return Array.isArray(value) && value.every((item) => item);
+      //   }),
     }),
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
@@ -98,8 +98,6 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
     formik.setFieldValue("files", file[0]);
   };
 
-  
-
   return (
     <Offcanvas
       show={show}
@@ -111,7 +109,6 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
         formik.setFieldValue("time", "");
         formik.setFieldValue("date", "");
         formik.setFieldValue("qualification", []);
-
       }}
       placement="end"
       style={{ overflow: "auto" }}
@@ -208,7 +205,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
             <div className="error">{formik.errors.time}</div>
           ) : null}
         </div>
-        <div className="qualification p-4">
+        {/* <div className="qualification p-4">
           <h4>Qualifications</h4>
           <div className="qualification_list">
             <div className="qualification_row row">
@@ -291,7 +288,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
               ) : null}
             </div>
           </div>
-        </div>
+        </div> */}
         <div
           style={{
             display: "flex",
@@ -321,7 +318,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
                 backgroundColor: "#006875",
               }}
             >
-              Add
+              {isLoading ? <CircularProgress /> : "Add"}
             </button>
           </div>
         </div>

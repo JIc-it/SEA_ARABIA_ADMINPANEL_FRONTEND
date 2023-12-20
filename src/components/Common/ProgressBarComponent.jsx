@@ -361,7 +361,7 @@ const steps = [
   { title: "Initial Contact", label: "Basic Lead Details" },
   { title: "Site Visit", label: "Site Visit Details" },
   { title: "Proposals", label: "Proposal Details" },
-  { title: "Negotiations", label: "Negotation Details" },
+  { title: "Negotiations", label: "Negotiation Details" },
   { title: "MOU / Charter", label: "MOU / Charter Details" },
   { title: "Ready to Onboard", label: "Vendor Onboard" },
 ];

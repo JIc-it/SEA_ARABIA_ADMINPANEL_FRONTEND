@@ -1,18 +1,19 @@
+import { useContext, useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useContext, useEffect, useState } from "react";
-import { updateSiteVisitAttachment } from "../../../services/leadMangement";
+import { updatProposalAttachment } from "../../../services/leadMangement";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
+function EditProposal({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
+
   var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/site_visit/attachment/";
+    "https://seaarabia.jicitsolution.com/assets/media/company/proposal/attachment/";
   const formatedFileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -22,25 +23,15 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
       type: "",
       files: "",
       note: "",
-      time: "",
-      date: "",
+      // time: "",
+      // date: "",
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      // files: Yup.mixed()
-      //   .required("Please upload at least one file")
-      //   .test("fileSize", "File size must not exceed 50MB", (value) => {
-      //     if (!value) {
-      //       // Handle the case where no file is provided
-      //       return true;
-      //     }
-
-      //     // Check if the file size is less than or equal to 50MB
-      //     return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
-      //   }),
+      //   files: Yup.string().required("Please upload at least one file"),
       note: Yup.string().required("Note is required"),
-      time: Yup.string().required("Time is required"),
-      date: Yup.string().required("Date is required"),
+      // time: Yup.string().required("Time is required"),
+      // date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values) => {
       setIsLoading(true);
@@ -52,22 +43,20 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             title: values.title,
             note: values.note,
             attachment: values.files ? values.files : selectedData.attachment,
-            time: values.time,
-            date: values.date,
           };
 
           const adminData =
             selectedData &&
-            (await updateSiteVisitAttachment(selectedData.id, data));
+            (await updatProposalAttachment(selectedData.id, data));
 
           if (adminData) {
             setIsLoading(false);
             // window.location.reload();
             setIsRefetch(!isRefetch);
-            toast.success("Site visit Updated Successfully.");
+            toast.success("Proposal Updated Successfully.");
             close();
           } else {
-            toast.error("Site visit Updation failed.");
+            toast.error("Proposal Updation failed.");
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
@@ -90,8 +79,6 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
     if (selectedData) {
       formik.setFieldValue("title", selectedData.title);
       formik.setFieldValue("note", selectedData.note);
-      formik.setFieldValue("date", selectedData.date);
-      formik.setFieldValue("time", selectedData.time);
       //   formik.setFieldValue("files", selectedData.attachment);
     }
   }, [selectedData]);
@@ -104,8 +91,6 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
         formik.setFieldValue("title", "");
         formik.setFieldValue("files", "");
         formik.setFieldValue("note", "");
-        formik.setFieldValue("time", "");
-        formik.setFieldValue("date", "");
       }}
       placement="end"
       style={{ overflow: "auto" }}
@@ -114,7 +99,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Site Visit </Offcanvas.Title>
+        <Offcanvas.Title>Edit Attachment / Notes </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -167,45 +152,6 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             <div className="error">{formik.errors.note}</div>
           ) : null}
         </div>
-        <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            className="form-control"
-            name="date"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.date}
-          />
-          {formik.touched.date && formik.errors.date ? (
-            <div className="error">{formik.errors.date}</div>
-          ) : null}
-        </div>
-
-        <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Time
-          </label>
-          <input
-            type="time"
-            className="form-control"
-            name="time"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.time}
-          />
-          {formik.touched.time && formik.errors.time ? (
-            <div className="error">{formik.errors.time}</div>
-          ) : null}
-        </div>
 
         <div
           style={{
@@ -237,8 +183,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
                 backgroundColor: "#006875",
               }}
             >
-              {" "}
-              {isLoading ? <CircularProgress /> : " Edit"}
+              {isLoading ? <CircularProgress /> : "Edit"}
             </button>
           </div>
         </div>
@@ -247,4 +192,4 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
   );
 }
 
-export default EditSiteVisit;
+export default EditProposal;
