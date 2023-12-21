@@ -300,6 +300,18 @@ const ServiceEdit = () => {
                 ).catch((error) =>
                     console.error(error))
     }
+    const [validateeditor,setValidateEditor]=useState("")
+
+    function submit(e){
+        e.preventDefault();
+        if(formik.values.description.replace("<p><br></p>","").trim()===""){
+           return  setValidateEditor("Description Required")
+        }
+        else if(formik.values.description.trim()!==""){
+            return formik.handleSubmit()
+        }
+    }
+
     return (
         <>
         {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -325,7 +337,7 @@ const ServiceEdit = () => {
                     </div>
 
                 </div>
-                <form onSubmit={formik.handleSubmit} className='row' style={{ position: "relative" }} >
+                <form onSubmit={submit} className='row' style={{ position: "relative" }} >
                     <div className={!isMobileView ? 'col-8' : "col-12"}>
                         <div className="card mt-2" style={{ width: isMobileView ? "col-12" : "col-8", borderRadius: "8px" }}>
                             <div className="p-5">
@@ -476,7 +488,7 @@ const ServiceEdit = () => {
                                     {formik.touched.description && formik.errors.description ? (
                                         <div className="error">{formik.errors.description}</div>
                                     ) : null} */}
-                                    <TextEditor formik={formik}/>
+                                    <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor}/>
                                 </div>
                                 <br></br>
                                 <div className="mt-5">

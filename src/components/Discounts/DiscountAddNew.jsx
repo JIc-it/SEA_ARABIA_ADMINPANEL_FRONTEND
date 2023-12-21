@@ -159,14 +159,7 @@ export default function DiscountAddNew() {
                    formdata.append("on_checkout",checktrue(values.on_checkout));
                    formdata.append("apply_global",checktrue(values.apply_global));
                    formdata.append(`companies`,companiesId);
-                   formdata.append(`services`,servicesId);
-                //    values.companies.map((data,index)=>{
-                //        return formdata.append(`companies${index}`,data.id);
-                //    })
-                //    values.services.map((data,index)=>{
-                //        return formdata.append(`services${index}`,data.id);
-                //    })
-   
+                   formdata.append(`services`,servicesId);   
                    formdata.append("purchase_requirement",checktrue(values.purchase_requirement));
                    formdata.append("min_purchase_amount",values.min_purchase_amount);
             
