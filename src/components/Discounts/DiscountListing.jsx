@@ -8,6 +8,8 @@ import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
 import { formatDate,removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 function DiscountListing() {
   const theme = useTheme();
@@ -55,7 +57,8 @@ function DiscountListing() {
         setIsLoading(false)
       })
       .catch((error) => {
-        console.error("Error fetching  data:", error);
+        setIsLoading(false)
+        toast.error(error.response.data);
       });
   }, []);
 
@@ -77,7 +80,7 @@ function DiscountListing() {
         })
         .catch((error) => {
           setIsLoading(false);
-          console.error("Error fetching  data:", error);
+          toast.error(error.response.data);
         });
   };
 
