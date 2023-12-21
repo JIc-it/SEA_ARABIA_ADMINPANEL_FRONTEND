@@ -9,6 +9,7 @@ import { useParams } from 'react-router-dom';
 import {getOneService} from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import { Breadcrumb } from 'react-bootstrap';
+import HTMLParse from 'html-react-parser';
 
 const ServiceView = () => {
     const navigate = useNavigate();
@@ -83,7 +84,7 @@ const ServiceView = () => {
                                 <div className="col-12 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Description</p>
-                                        <p>{oneservice?.description}</p>
+                                        <p>{oneservice?.description && HTMLParse(oneservice?.description)}</p>
                                     </div>
                                 </div>
                             </div>
@@ -186,26 +187,44 @@ const ServiceView = () => {
                             <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
                             <p style={{ fontWeight: "700" }}>Thumbnail</p>
                             <div className="row">
-                                <div className="col-6 mb-3">
-                                    {oneservice?.service_image?.map((data)=>
-                                    <div>
-                                    <img src={data.thumbnail}  className='rounded' style={{aspectRatio:"16/9"}}/>
-                                </div>
-                                    )}
-                                </div>
+                                {oneservice?.service_image?.map((data, index) =>
+                                    <div className="col-6 mb-3" key={index}>
+                                        <div >
+                                            <img src={data.image} className='rounded' style={{ width: "200px",height:"125px" }} />
+                                          
+                                        </div>
+                                    </div>)}
                                 {/* <div className="col-6 mb-3">
-                                    <div>
-                                        <img src={Thumbnail_2} />
-                                    </div>
-                                </div>
-                                <div className="col-6 mb-3">
-                                    <div>
+                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
                                         <img src={Thumbnail_1} />
+                                        {hovereffect &&
+                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
+                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
+                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
+                                            </div>
+                                        }
                                     </div>
                                 </div>
                                 <div className="col-6 mb-3">
-                                    <div>
-                                        <img src={Thumbnail_2} />
+                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
+                                        <img src={Thumbnail_1} />
+                                        {hovereffect &&
+                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
+                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
+                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                <div className="col-6 mb-3">
+                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
+                                        <img src={Thumbnail_1} />
+                                        {hovereffect &&
+                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
+                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
+                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
+                                            </div>
+                                        }
                                     </div>
                                 </div> */}
                             </div>

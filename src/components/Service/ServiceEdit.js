@@ -11,93 +11,44 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Food from "../../assets/images/food.png"
 import UploadPopup from './UploadModal';
 import CreateAddon from './CreateAddon';
-import { getOneService,getCategoryList } from "../../services/service"
+import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist,UpdateService,DeleteImage,SetThumbNail } from "../../services/service"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import CircularProgress from "@mui/material/CircularProgress";
+import TextEditor from './TextEditor';
 
 const ServiceEdit = () => {
     const theme = useTheme();
+    const [isLoading,setIsLoading]=useState(false)
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const params = useParams()
+    const [isupdated,setIsUpdated]=useState(false)
+
     const validationSchema = Yup.object({
-        // name: Yup.string()
-        //     .required("Campaign Name is required")
-        //     .max(20, "Campaign Name must be at most 20 characters"),
-        // coupon_code: Yup.string()
-        //     .required("Coupon Code is required"),
-        // discount_type: Yup.string()
-        //     .required("Discount type is required"),
-        // start_date: Yup.string()
-        //     .required("Start Date is required"),
-        // discount_value: Yup.number()
-        //     .required("Value is Required"),
-        // up_to_amount: Yup.number().when("discount_type", ([discount_type], schema) => {
-        //     if (discount_type === "Percentage") {
-        //         return schema
-        //             .required("Upto is Required")
-        //     } else {
-        //         return schema.notRequired();
-        //     }
-        // }),
-
-        // specify_no: Yup.number().when("redemption_type", ([redemption_type], schema) => {
-        //     if (redemption_type === "Limited-Number") {
-        //         return schema
-        //             .typeError("Specify Number  must be a number")
-        //             .required("Specify Number is Required")
-        //             .typeError("Specify Number must be a number");
-        //     }
-        //     else {
-        //         return schema.notRequired();
-        //     }
-        // }),
-
-        // min_purchase_amount: Yup.number().when("purchase_requirement", ([purchase_requirement], schema) => {
-        //     if (purchase_requirement === true) {
-        //         return schema
-        //             .required("Minimum Amount is Required")
-        //     }
-        //     else {
-        //         return schema.notRequired();
-        //     }
-        // }),
-        // multiple_redeem_specify_no: Yup.number().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
-        //     if (allow_multiple_redeem === "Multiple-time") {
-        //         return schema
-        //             .typeError("Specify Number  must be a number")
-        //             .required("Specify Number is Required")
-        //             .typeError("Specify Number must be a number");
-        //     }
-        //     else {
-        //         return schema.notRequired();
-        //     }
-        // }),
-
-        // end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
-        //     if (is_lifetime === false) {
-        //         return schema
-        //             .required("Validity is Required")
-        //     }
-        //     else {
-        //         return schema.notRequired();
-        //     }
-        // }),
-
-        // image: Yup.mixed()        
-        // .test('fileSize', 'File size is too large', (value) => {
-        //         if (!value) {
-        //           return false;
-        //         }
-        //         return value.size <= 50 * 1024 * 1024;
-        //       })
-        //       .test('fileType', 'Invalid file format', (value) => {
-        //         if (!value) {
-        //           return false;
-        //         }
-        //         return /^image\/(jpeg|png|gif)$/i.test(value.type);
-        //       }),
+        name: Yup.string()
+            .required("Name is required")
+            .max(20, "Name must be at most 20 characters"),
+        machine_id: Yup.string()
+            .required("Machine ID is required"),
+        description: Yup.string()
+            .required("Description is required"),
+        capacity: Yup.number()
+            .required("Capacity is required"),
+        pickup_point: Yup.string()
+            .required("Pickup Point is required"),
+        cancellation_policy: Yup.string()
+            .required("Privacy Policy is required"),
+        refund_policy: Yup.string()
+            .required("Refund Policy is required"),
     });
 
     const formik = useFormik({
         initialValues: {
+            is_verified: false,
+            is_active: false,
+            is_top_suggestion: false,
+            is_premium: false,
+            type: "",
             category: [],
             sub_category: [],
             name: "",
@@ -109,78 +60,71 @@ const ServiceEdit = () => {
             capacity: 0,
             amenities: [],
             pickup_point: "",
-            cancellation_policy:"",
-            refund_policy:"",
-            is_active:false,
-            service_image:[],
-            price:{}
+            cancellation_policy: "",
+            refund_policy: "",
+            service_image: [],
+            price: {}
         },
         validationSchema,
-        // onSubmit: async (values) => {
-        // setIsLoading(true);
+        onSubmit: async (values) => {
+        setIsLoading(true);
+    
+        const amenitiesmappedid=values.amenities.map((data)=>{return data.id})
+        const formattedAmenities = amenitiesmappedid.join(', ');
+        
+            const data = {
+                is_verified: values.is_verified,
+                is_active: values.is_active,
+                is_top_suggestion: values.is_top_suggestion,
+                is_premium: values.is_premium,
+                type:values.type,
+                name: values.name,
+                machine_id: values.machine_id,
+                description:values.description,
+                lounge: values.lounge,
+                bedroom:values.bedroom,
+                toilet:values.toilet,
+                capacity:values.capacity,
+                pickup_point:values.pickup_point,
+                cancellation_policy: values.cancellation_policy ,
+                refund_policy:values.refund_policy,
+                category:values.category[0]?.id,
+                sub_category:values.sub_category[0]?.id,
+                amenities:formattedAmenities,
+            }
+            if (!isLoading) {
+              try {
+            const adminData = await UpdateService(params.id,data);
 
-        //     if (!isLoading) {
-        //       try {
-        //         const formdata=new FormData()
-        //    const servicesId=values.services.map((data)=>data.id)
-        //    const CompanyId=values.companies.map((data)=>data.id)
-        //         formdata.append("is_enable",values.is_enable);
-        //         formdata.append("image",values.image);
-        //         formdata.append("name",values.name);
-        //         formdata.append("coupon_code",values.coupon_code);
-        //         formdata.append("discount_type",values.discount_type);
-        //         formdata.append("discount_value",values.discount_value);
-        //         formdata.append("up_to_amount",values.up_to_amount);
-        //         formdata.append("redemption_type",values.redemption_type);
-        //         formdata.append("specify_no",values.specify_no);
-        //         formdata.append("allow_multiple_redeem",values.allow_multiple_redeem);
-        //         formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no);
-        //         formdata.append("start_date",values.start_date);
-        //         formdata.append("is_lifetime",values.is_lifetime);
-        //         formdata.append("end_date",values.end_date);
-        //         formdata.append("on_home_screen",values.on_home_screen);
-        //         formdata.append("on_checkout",values.on_checkout);
-        //         formdata.append("apply_global",values.apply_global);
-
-        //         values.companies.map((data,index)=>{
-        //             formdata.append(`companies${index}`,data.id);
-        //         })
-        //         values.services.map((data,index)=>{
-        //             formdata.append(`services${index}`,data.id);
-        //         })
-
-        //         formdata.append("purchase_requirement",values.purchase_requirement);
-        //         formdata.append("min_purchase_amount",values.min_purchase_amount);
-
-
-        //     const adminData = await UpdateOffer(params.id,formdata);
-
-        //     if (adminData) {
-        //       setIsLoading(false);
-        //       window.location.reload();
-        //     } else {
-        //       console.error("Error while creating Admin:", adminData.error);
-        //       setIsLoading(false);
-        //     }
-        //     setIsLoading(false);
-        //       }catch (err) {
-        //         console.log(err);
-        //         // err.response.data.email && toast.error(err.response.data.email[0]);
-        //         // err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-        //         setIsLoading(false);
-        //       }
-        //     }
-        // },
+            if (adminData) {
+              setIsLoading(false);
+            //   window.location.reload();
+            toast.success("Updated Successfully")
+            // setIsUpdated(true)
+            } else {
+              console.error("Error while creating Admin:", adminData.error);
+              setIsLoading(false);
+            }
+            setIsLoading(false);
+              }catch (err) {
+                console.log(err);
+                setIsLoading(false);
+              }
+            }
+        },
     });
     const navigate = useNavigate()
-    const [hovereffect, setHoverEffect] = useState(false);
-    const [categorylist,setCategoryList]=useState([])
+    const [hovereffect, setHoverEffect] = useState("");
+    const [categorylist, setCategoryList] = useState([])
+    const [categoryId, setCategoryId] = useState("")
+    const [subcategorylist, setSubcategoryList] = useState([])
+    const [amenitieslist, setAmenitiesList] = useState([])
 
-    const handleHoverEffectTrue = () => {
-        setHoverEffect(true)
+    const handleHoverEffectTrue = (id) => {
+        setHoverEffect(id)
     }
     const handleHoverEffectFalse = () => {
-        setHoverEffect(false)
+        setHoverEffect("")
     }
 
     const [open, setOpen] = useState(false)
@@ -203,10 +147,17 @@ const ServiceEdit = () => {
         setOpenAddon(true)
     }
 
+    //first load
     useEffect(() => {
+        setIsLoading(true)
         getOneService(params.id)
-            .then((data) =>
-               { formik.setFieldValue("category", data?.category);
+            .then((data) => {
+                setIsLoading(false)
+                formik.setFieldValue("is_verified", data?.is_verified);
+                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
+                formik.setFieldValue("is_premium", data?.is_premium);
+                formik.setFieldValue("type", data?.type);
+                formik.setFieldValue("category", data?.category);
                 formik.setFieldValue("sub_category", data?.sub_category);
                 formik.setFieldValue("name", data?.name);
                 formik.setFieldValue("machine_id", data?.machine_id);
@@ -222,23 +173,148 @@ const ServiceEdit = () => {
                 formik.setFieldValue("is_active", data?.is_active);
                 formik.setFieldValue("service_image", data?.service_image);
                 formik.setFieldValue("price", data?.price);
-
+                setIsUpdated(false)
             }
             ).catch((error) =>
                 console.error(error))
     }, [params.id])
 
+    //update load
+    useEffect(() => {
+        getOneService(params.id)
+            .then((data) => {
+                formik.setFieldValue("is_verified", data?.is_verified);
+                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
+                formik.setFieldValue("is_premium", data?.is_premium);
+                formik.setFieldValue("type", data?.type);
+                formik.setFieldValue("category", data?.category);
+                formik.setFieldValue("sub_category", data?.sub_category);
+                formik.setFieldValue("name", data?.name);
+                formik.setFieldValue("machine_id", data?.machine_id);
+                formik.setFieldValue("description", data?.description);
+                formik.setFieldValue("lounge", data?.lounge);
+                formik.setFieldValue("bedroom", data?.bedroom);
+                formik.setFieldValue("toilet", data?.toilet);
+                formik.setFieldValue("capacity", data?.capacity);
+                formik.setFieldValue("amenities", data?.amenities);
+                formik.setFieldValue("pickup_point", data?.pickup_point);
+                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
+                formik.setFieldValue("refund_policy", data?.refund_policy);
+                formik.setFieldValue("is_active", data?.is_active);
+                formik.setFieldValue("service_image", data?.service_image);
+                formik.setFieldValue("price", data?.price);
+                setIsUpdated(false)
+            }
+            ).catch((error) =>
+                console.error(error))
+    }, [params.id,isupdated])
+
     useEffect(() => {
         getCategoryList()
             .then((data) =>
-               setCategoryList(data?.results)
+                setCategoryList(data?.results)
             ).catch((error) =>
                 console.error(error))
     }, [])
 
-    console.log(formik.values);
+    useEffect(() => {
+        getsubcategorylist(categoryId)
+            .then((data) =>
+                setSubcategoryList(data?.results)
+            ).catch((error) =>
+                console.error(error))
+    }, [categoryId])
+
+    useEffect(() => {
+        getamenitieslist()
+            .then((data) =>
+                setAmenitiesList(data?.results)
+            ).catch((error) =>
+                console.error(error))
+    }, [])
+
+    const categorystore = (id, name, image) => {
+        formik.setValues((prev) => {
+            const isCategoryExists = prev.category.some((category) => category.id === id);
+
+            if (!isCategoryExists) {
+                return {
+                    ...prev,
+                    category:  [{ id: id, name: name, image: image }]
+                };
+            }
+
+            return prev;
+        });
+    };
+
+    const subcategorystore = (id, name, category) => {
+        formik.setValues((prev) => {
+            const isCategoryExists = prev.sub_category.some((category) => category.id === id);
+
+            if (!isCategoryExists) {
+                return {
+                    ...prev,
+                    sub_category: [{ id: id, name: name, category: category }]
+                };
+            }
+
+            return prev;
+        });
+    };
+    const amenitiesstore = (id, name, image) => {
+        formik.setValues((prev) => {
+            const isCategoryExists = prev.amenities.some((category) => category.id === id);
+
+            if (!isCategoryExists) {
+                return {
+                    ...prev,
+                    amenities: [...prev.amenities, { id: id, name: name, image: image }]
+                };
+            }
+
+            return prev;
+        });
+    };
+
+    const handleIncrement = (fieldName) => {
+        formik.setFieldValue(fieldName, formik.values[fieldName] + 1);
+    };
+
+    const handleDecrement = (fieldName) => {
+        formik.setFieldValue(fieldName, Math.max(0, formik.values[fieldName] - 1));
+    };
+
+    const handleRemoveImage=(id)=>{
+                DeleteImage(id)
+                .then((data) =>
+                  {toast.success(data);setIsUpdated(true)}
+                ).catch((error) =>
+                    console.error(error))      
+    }
+
+    const settingthumbnailTrue=(id,data)=>{
+        SetThumbNail(id,data)
+                .then((datas) =>
+                   toast.success(datas)
+                ).catch((error) =>
+                    console.error(error))
+    }
+    const [validateeditor,setValidateEditor]=useState("")
+
+    function submit(e){
+        e.preventDefault();
+        if(formik.values.description.replace("<p><br></p>","").trim()===""){
+           return  setValidateEditor("Description Required")
+        }
+        else if(formik.values.description.trim()!==""){
+            return formik.handleSubmit()
+        }
+    }
+
     return (
-        <div className="page" style={{ top: 20 }}>
+        <>
+        {!isLoading && <div className="page" style={{ top: 20 }}>
             <div className='container'>
                 <Breadcrumb style={{ marginLeft: "5px" }}>
                     <Breadcrumb.Item href="#">Services
@@ -261,7 +337,7 @@ const ServiceEdit = () => {
                     </div>
 
                 </div>
-                <form className='row' style={{ position: "relative" }} >
+                <form onSubmit={submit} className='row' style={{ position: "relative" }} >
                     <div className={!isMobileView ? 'col-8' : "col-12"}>
                         <div className="card mt-2" style={{ width: isMobileView ? "col-12" : "col-8", borderRadius: "8px" }}>
                             <div className="p-5">
@@ -278,22 +354,33 @@ const ServiceEdit = () => {
                                             <select
                                                 className="form-control"
                                                 name="category"
-                                                value={formik.values.category}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
+                                                onChange={(e) => {
+                                                    formik.handleChange(e)
+                                                    const selectedCategory = e.target.value;
+                                                    setCategoryId(selectedCategory)
+                                                    const selectedCategoryData = categorylist.find(category => category.id === selectedCategory);
+                                                    if (selectedCategoryData) {
+                                                        categorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
+                                                    }
+                                                }}
                                             >
-                                                <option value="">Select a Category</option>
-                                                {formik.values.category?.map((data, index) =>
-                                                    <option key={data.id} value={data.id}>{data.name}</option>
-                                                )}
-                                                {categorylist?.map((data, index) =>
-                                                    <option key={data.id} value={data.id}>{data.name}</option>
-                                                )}
-                                                {/* Add more options as needed */}
+                                                <optgroup label="Selected Category">
+                                                    {/* {formik.values.category?.map((data) => ( */}
+                                                        <option selected key={formik.values.category[0]?.id} value={formik.values.category[0]?.id}>
+                                                            {formik.values.category[0]?.name}
+                                                        </option>
+                                                    {/* ))} */}
+                                                </optgroup>
+
+                                                {/* Options from subcategorylist */}
+                                                <optgroup label="Category List">
+                                                    {categorylist?.map((data) => (
+                                                        <option key={data.id} value={data.id}>
+                                                            {data.name}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
                                             </select>
-                                            {formik.touched.category && formik.errors.category ? (
-                                                    <div className="error">{formik.errors.category}</div>
-                                                ) : null}
                                         </div>
                                         <div className="mt-2">
                                             <label
@@ -307,13 +394,13 @@ const ServiceEdit = () => {
                                                 name="name"
                                                 className="form-control"
                                                 placeholder="Name"
-                                            value={formik.values.name}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
+                                                value={formik.values.name}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
                                             />
-                                            {/* {formik.touched.name && formik.errors.name ? (
-                                                    <div className="error">{formik.errors.name}</div>
-                                                ) : null} */}
+                                            {formik.touched.name && formik.errors.name ? (
+                                                <div className="error">{formik.errors.name}</div>
+                                            ) : null}
                                         </div>
 
                                     </div>
@@ -328,19 +415,32 @@ const ServiceEdit = () => {
                                             <select
                                                 className="form-control"
                                                 name="subcategory"
-                                            // value={formik.values.subcategory}
-                                            // onChange={formik.handleChange}
-                                            // onBlur={formik.handleBlur}
+                                                onChange={(e) => {
+                                                    formik.handleChange(e)
+                                                    const selectedCategory = e.target.value;
+                                                    const selectedCategoryData = subcategorylist.find(category => category.id === selectedCategory);
+                                                    if (selectedCategoryData) {
+                                                        subcategorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.category);
+                                                    }
+                                                }}
                                             >
-                                                <option value="" disabled>Select a Sub Category</option>
-                                                {formik.values.sub_category?.map((data,index)=>
-                                                <option key={data.id} value={data.id}>{data.name}</option>
-                                                )}
-                                                {/* Add more options as needed */}
+                                                <optgroup label="Selected Sub-Category">
+                                                <option selected key={formik.values.sub_category[0]?.id} value={formik.values.sub_category[0]?.id}>
+                                                            {formik.values.sub_category[0]?.name}
+                                                        </option>
+                                                </optgroup>
+
+
+                                                <optgroup label="Subcategory List">
+                                                    {subcategorylist?.map((data) => (
+                                                        <option key={data.id} value={data.id}>
+                                                            {data.name}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+
                                             </select>
-                                            {/* {formik.touched.subcategory && formik.errors.subcategory ? (
-                                                    <div className="error">{formik.errors.subcategory}</div>
-                                                ) : null} */}
+
                                         </div>
                                         <div className="mt-2">
                                             <label
@@ -353,16 +453,15 @@ const ServiceEdit = () => {
                                                 <input
                                                     className="form-control"
                                                     type="text"
-                                                    id=""
-                                                    name="id"
+                                                    name="machine_id"
                                                     placeholder="ID"
-                                                value={formik.values.machine_id}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
+                                                    value={formik.values.machine_id}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                 />
-                                                {/* {formik.touched.id && formik.errors.id ? (
-                                                        <div className="error">{formik.errors.id}</div>
-                                                    ) : null} */}
+                                                {formik.touched.machine_id && formik.errors.machine_id ? (
+                                                    <div className="error">{formik.errors.machine_id}</div>
+                                                ) : null}
 
                                             </div>
                                         </div>
@@ -372,33 +471,39 @@ const ServiceEdit = () => {
                                 <div className="mt-2">
                                     <label
                                         htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "500" }}
+                                        style={{ paddingBottom: "10px", fontWeight: "600" }}
                                     >
                                         Description
                                     </label>
-                                    <textarea
-                                        name=""
-                                        id=""
+                                    {/* <textarea
+                                        name="description"
                                         cols="30"
                                         rows="10"
                                         className="form-control"
-                                        placeholder="Notes"
+                                        placeholder="Description"
                                         value={formik.values.description}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
                                     ></textarea>
+                                    {formik.touched.description && formik.errors.description ? (
+                                        <div className="error">{formik.errors.description}</div>
+                                    ) : null} */}
+                                    <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor}/>
                                 </div>
-                                <div className="mt-2">
+                                <br></br>
+                                <div className="mt-5">
                                     <span style={{ fontWeight: "600" }}>Details</span>
                                     <div className="d-flex mt-2">
                                         <div className="mt-1">
                                             <span style={{ color: "#68727D", fontSize: "15px" }}>Lounge</span>
                                             <div className="mt-2">
-                                                <button className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("lounge")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
                                                 </svg>
 
                                                 </button>
                                                 <span className="mx-1">{formik.values.lounge}</span>
-                                                <button className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" onClick={() => handleIncrement("lounge")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                 </svg></button>
@@ -409,11 +514,11 @@ const ServiceEdit = () => {
                                         <div className="mt-1 ms-4">
                                             <span style={{ color: "#68727D", fontSize: "15px" }}>Bedroom</span>
                                             <div className="mt-2">
-                                                <button className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" onClick={() => handleDecrement("bedroom")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
                                                 </svg></button>
                                                 <span className="mx-1">{formik.values.bedroom}</span>
-                                                <button className="btn px-1 py-1 mx-1">
+                                                <button type="button" onClick={() => handleIncrement("bedroom")} className="btn px-1 py-1 mx-1">
                                                     <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
@@ -428,11 +533,11 @@ const ServiceEdit = () => {
                                         <div className="mt-1 ms-4">
                                             <span style={{ color: "#68727D", fontSize: "15px" }}>Toilet</span>
                                             <div className="mt-2">
-                                                <button className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" onClick={() => handleDecrement("toilet")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
                                                 </svg></button>
                                                 <span className="mx-1">{formik.values.toilet}</span>
-                                                <button className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <button type="button" onClick={() => handleIncrement("toilet")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                     <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                 </svg></button>
@@ -454,13 +559,13 @@ const ServiceEdit = () => {
                                                 name="capacity"
                                                 className="form-control"
                                                 placeholder="0"
-                                            value={formik.values.capacity}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
+                                                value={formik.values.capacity}
+                                                onChange={formik.handleChange}
+                                                onBlur={formik.handleBlur}
                                             />
                                             {formik.touched.capacity && formik.errors.capacity ? (
-                                                    <div className="error">{formik.errors.capacity}</div>
-                                                ) : null}
+                                                <div className="error">{formik.errors.capacity}</div>
+                                            ) : null}
                                         </div>
                                         <div className="mt-2">
                                             <label
@@ -474,14 +579,14 @@ const ServiceEdit = () => {
                                                     type="text"
                                                     placeholder=""
                                                     className="form-control"
-                                                    name="pickuppoint"
-                                                value={formik.values.pickup_point}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
+                                                    name="pickup_point"
+                                                    value={formik.values.pickup_point}
+                                                    onChange={formik.handleChange}
+                                                    onBlur={formik.handleBlur}
                                                 />
                                                 {formik.touched.pickup_point && formik.errors.pickup_point ? (
-                                                        <div className="error">{formik.errors.pickup_point}</div>
-                                                    ) : null}
+                                                    <div className="error">{formik.errors.pickup_point}</div>
+                                                ) : null}
                                                 <svg
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     width="20"
@@ -519,19 +624,36 @@ const ServiceEdit = () => {
                                             <select
                                                 className="form-control"
                                                 name="amenities"
-                                            value={formik.values.amenities}
-                                            onChange={formik.handleChange}
-                                            onBlur={formik.handleBlur}
+                                                // value={formik.values.subcategory}
+                                                // onChange={formik.handleChange}
+                                                // onBlur={formik.handleBlur}
+                                                onChange={(e) => {
+                                                    formik.handleChange(e)
+                                                    const selectedCategory = e.target.value;
+                                                    const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
+                                                    if (selectedCategoryData) {
+                                                        amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
+                                                    }
+                                                }}
                                             >
-                                                <option value="">Select a Amenities</option>
-                                                 {formik.values.amenities?.map((data,index)=>
-                                                <option key={data.id} value={data.id}>{data.name}</option>
-                                                )}
-                                                {/* Add more options as needed */}
+                                                <optgroup label="Selected Amenities">
+                                                    {formik.values.amenities?.map((data) => (
+                                                        <option selected key={data.id} value={data.id}>
+                                                            {data.name}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+
+
+                                                <optgroup label="Amenities List">
+                                                    {amenitieslist?.map((data) => (
+                                                        <option key={data.id} value={data.id}>
+                                                            {data.name}
+                                                        </option>
+                                                    ))}
+                                                </optgroup>
+
                                             </select>
-                                            {formik.touched.amenities && formik.errors.amenities ? (
-                                                    <div className="error">{formik.errors.amenities}</div>
-                                                ) : null}
                                         </div>
 
 
@@ -642,13 +764,13 @@ const ServiceEdit = () => {
                                         placeholder=""
                                         className="form-control"
                                         name="pickuppoint"
-                                    value={formik.values?.price?.duration}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                        value={formik.values?.price?.duration}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
                                     />
                                     {formik.touched.price?.duration && formik.errors.price?.duration ? (
-                                                    <div className="error">{formik.errors.price?.duration}</div>
-                                                ) : null}
+                                        <div className="error">{formik.errors.price?.duration}</div>
+                                    ) : null}
                                 </div>
                                 <div className={isMobileView ? "w-100" : "w-50 mx-2"}>
                                     <label
@@ -662,13 +784,13 @@ const ServiceEdit = () => {
                                         name="name"
                                         className="form-control"
                                         placeholder=""
-                                    value={formik.values.price?.price}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                        value={formik.values.price?.price}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
                                     />
                                     {formik.touched.price?.price && formik.errors.price?.price ? (
-                                                    <div className="error">{formik.errors.price?.price}</div>
-                                                ) : null}
+                                        <div className="error">{formik.errors.price?.price}</div>
+                                    ) : null}
                                 </div>
 
                             </div>
@@ -676,33 +798,43 @@ const ServiceEdit = () => {
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
                             <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy</p>
                             <textarea
-                                name=""
+                                name="cancellation_policy"
                                 id=""
                                 cols="30"
                                 rows="10"
                                 className="form-control"
-                                placeholder="Notes"
+                                placeholder="Privacy Policy"
                                 value={formik.values.cancellation_policy}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             ></textarea>
+                             {formik.touched.cancellation_policy && formik.errors.cancellation_policy ? (
+                                        <div className="error">{formik.errors.cancellation_policy}</div>
+                                    ) : null}
                             <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
                             <textarea
-                                name=""
+                                name="refund_policy"
                                 id=""
                                 cols="30"
                                 rows="10"
                                 className="form-control"
                                 placeholder="Notes"
                                 value={formik.values.refund_policy}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                             ></textarea>
+                             {formik.touched.refund_policy && formik.errors.refund_policy ? (
+                                        <div className="error">{formik.errors.refund_policy}</div>
+                                    ) : null}
                         </div>
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
                             <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Set Status</p>
                             <div className='d-flex justify-content-between align-items-center mx-2'>
                                 <p>Status</p>
                                 <div style={{ display: "flex", alignItems: "center" }}>
-                                    <div style={{ fontSize: "12px" }}>{formik.values.is_active===true?"Active":"Inactive"}</div>
+                                    <div style={{ fontSize: "12px" }}>{formik.values.is_active === true ? "Active" : "Inactive"}</div>
                                     <label class="switch" style={{ marginLeft: "5px" }}>
-                                        <input type="checkbox" name="is_active" checked={formik.values.is_active}  value={formik.values.is_active} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                        <input type="checkbox" name="is_active" checked={formik.values.is_active} value={formik.values.is_active} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                         <span class="slider round"></span>
                                     </label>
                                 </div>
@@ -715,21 +847,25 @@ const ServiceEdit = () => {
                                 <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
                                 <button type='button' onClick={handleOpen} className='btn px-2 py-1' style={{ backgroundColor: "#187AF7", color: "#ffff", fontSize: "12px" }} >Upload</button>
                             </div>
-                            {open && <UploadPopup open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image}/>}
+                            {open && <UploadPopup setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} />}
                             <p style={{ fontWeight: "550", fontSize: "12px" }}>Thumbnail</p>
                             <div className="row">
-                                {formik.values.service_image.map((data,index)=>
-                                <div className="col-6 mb-3" key={index}>
-                                <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                    <img src={data.thumbnail}  className='rounded' style={{aspectRatio:"16/9"}} />
-                                    {hovereffect &&
-                                        <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                            <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                            <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
+                                    {formik.values.service_image.map((data) => (
+                                        <div className="col-6 mb-3" key={data.id}>
+                                            <div style={{ position: "relative" }}
+                                                onMouseEnter={() => handleHoverEffectTrue(data.id)}
+                                                onMouseLeave={()=>handleHoverEffectFalse()}
+                                            >
+                                                <img src={data.image} className='rounded' style={{ width: "200px", height: "125px",opacity:hovereffect===data.id? 0.5:1}} />
+                                                {hovereffect === data.id &&
+                                                    <div style={{ position: "absolute", bottom: "50px", left: "20px",backgroundColor:"lightblack" }}>
+                                                        <button type="button" className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={()=>settingthumbnailTrue(data.id,data.service)}>setThumbnail</button>
+                                                        <button type="button" className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={()=>handleRemoveImage(data.id)}>Remove</button>
+                                                    </div>
+                                                }
+                                            </div>
                                         </div>
-                                    }
-                                </div>
-                            </div>)}
+                                    ))}
                                 {/* <div className="col-6 mb-3">
                                     <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
                                         <img src={Thumbnail_1} />
@@ -970,10 +1106,21 @@ const ServiceEdit = () => {
                             </div>
                         </div>
                     </div> */}
+                     <hr style={{borderBottom:"2px solid black",marginTop:"10px"}}/>
+                    <div className='d-flex justify-content-end'>
+                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Edit Service</button>
+                    </div>
                 </form>
             </div>
             <br /><br />
-        </div>
+        </div>}
+        {isLoading && 
+         <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+         <CircularProgress />
+       </div>
+        }
+        </>
     )
 }
 

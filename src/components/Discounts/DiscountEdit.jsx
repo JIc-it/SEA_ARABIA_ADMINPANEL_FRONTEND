@@ -22,6 +22,7 @@ export default function DiscountEdit() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isupdated,setIsUpdated]=useState(false)
 
     const validationSchema = Yup.object({
         name: Yup.string()
@@ -87,20 +88,20 @@ export default function DiscountEdit() {
                 }
             }),
 
-        // image: Yup.mixed()        
-        // .test('fileSize', 'File size is too large', (value) => {
-        //         if (!value) {
-        //           return false;
-        //         }
-        //         return value.size <= 50 * 1024 * 1024;
-        //       })
-        //       .test('fileType', 'Invalid file format', (value) => {
-        //         if (!value) {
-        //           return false;
-        //         }
-        //         return /^image\/(jpeg|png|gif)$/i.test(value.type);
-        //       }),
-    });
+            image: Yup.mixed()
+            .test('fileSize', 'File size is too large', (value, context) => {
+              if (typeof context.parent.image === 'string') {
+                return true;
+              }
+              return value && value.size <= 1 * 1024 * 1024;
+            })
+            .test('fileType', 'Invalid file format', (value, context) => {
+              if (typeof context.parent.image === 'string') {
+                return true; 
+              }
+              return value && /^image\/(jpeg|png|gif)$/i.test(value.type);
+            }),
+    })  
 
     const formik = useFormik({
         initialValues: {
@@ -178,7 +179,7 @@ export default function DiscountEdit() {
             if (adminData) {
               setIsLoading(false);
               toast.success("Updated Successfully")
-                setTimeout(()=>window.location.reload(),500)
+              setIsUpdated(true)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -198,6 +199,7 @@ export default function DiscountEdit() {
         formik.setFieldValue("image", file);
       };
 
+      //first load
       useEffect(() => {
         setIsLoading(true)
         getDiscountOfferView(params.id)
@@ -224,12 +226,48 @@ export default function DiscountEdit() {
             formik.setFieldValue("companies",data.companies);
             formik.setFieldValue("purchase_requirement",data.purchase_requirement);
             formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
+            setIsUpdated(false)
           })
           .catch((error) => {
             console.error("Error fetching  data:", error);
           });
     
       }, [params.id]);
+
+      //update load
+      useEffect(() => {
+        // setIsLoading(true)
+        getDiscountOfferView(params.id)
+          .then((data) => {
+            // setIsLoading(false)
+            formik.setFieldValue("is_enable", data.is_enable);
+            formik.setFieldValue("image", data.image);
+            formik.setFieldValue("name", data.name);
+            formik.setFieldValue("coupon_code", data.coupon_code);
+            formik.setFieldValue("discount_type", data.discount_type);
+            formik.setFieldValue("discount_value", data.discount_value);
+            formik.setFieldValue("up_to_amount",data.up_to_amount);
+            formik.setFieldValue("specify_no",data.specify_no);
+            formik.setFieldValue("redemption_type",data.redemption_type);
+            formik.setFieldValue("allow_multiple_redeem",data.allow_multiple_redeem);
+            formik.setFieldValue("multiple_redeem_specify_no",data.multiple_redeem_specify_no);
+            formik.setFieldValue("start_date",data.start_date);
+            formik.setFieldValue("is_lifetime",data.is_lifetime);
+            formik.setFieldValue("end_date",data.end_date);
+            formik.setFieldValue("on_home_screen",data.on_home_screen);
+            formik.setFieldValue("on_checkout",data.on_checkout);
+            formik.setFieldValue("apply_global",data.apply_global);
+            formik.setFieldValue("services",data.services);
+            formik.setFieldValue("companies",data.companies);
+            formik.setFieldValue("purchase_requirement",data.purchase_requirement);
+            formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
+            setIsUpdated(false)
+          })
+          .catch((error) => {
+            console.error("Error fetching  data:", error);
+          });
+    
+      }, [params.id,isupdated]);
 
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
@@ -253,7 +291,7 @@ const convertAndFormatDateTime = (dateTimeString) => {
     }));
 };
 
-
+// console.log(formik.values.image.size);
 const updateCompanyIndex = (id, name) => {
     formik.setValues((prev) => {
         const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
@@ -320,6 +358,7 @@ function companywithservicelength(companyid){
 
 }
 
+console.log(typeof formik.values.image);
 if(!isLoading){
     return (
         <>
@@ -743,7 +782,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 50 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 1 MB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (
