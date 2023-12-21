@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../static/img/logo.png";
-import PerfectScrollbar from "perfect-scrollbar";
-import "react-perfect-scrollbar/dist/css/styles.css";
+
 
 import { useNavigate } from "react-router-dom";
 function SideBar() {
