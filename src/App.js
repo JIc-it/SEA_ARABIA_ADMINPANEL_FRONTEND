@@ -7,6 +7,7 @@ import Login from "./pages/Login";
 import EmailVerification from "./pages/EmailVerification";
 import VerificationCode from "./pages/VerificationCode";
 import ResetLoginPassword from "./pages/ResetLoginPassword";
+import { useProSidebar } from "react-pro-sidebar";
 
 function App() {
   return (
@@ -28,7 +29,10 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/email-verification" element={<EmailVerification />} />
-          <Route path="/verification/:id/:userId" element={<VerificationCode />} />
+          <Route
+            path="/verification/:id/:userId"
+            element={<VerificationCode />}
+          />
           <Route path="/resetpassword/:id" element={<ResetLoginPassword />} />
           <Route path="/*" element={<MainPage />} />
         </Routes>
