@@ -89,7 +89,7 @@ export default function DiscountAddNew() {
                 if (!value) {
                   return false;
                 }
-                return value.size <= 50 * 1024 * 1024;
+                return value.size <= 1 * 1024 * 1024;
               })
               .test('fileType', 'Invalid file format', (value) => {
                 if (!value) {
@@ -721,7 +721,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 50 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 1 MB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (

@@ -88,20 +88,20 @@ export default function DiscountEdit() {
                 }
             }),
 
-        image: Yup.mixed()        
-        .test('fileSize', 'File size is too large', (value) => {
-                if (!value) {
-                  return false;
-                }
-                return value.size <= 50 * 1024 * 1024;
-              })
-              .test('fileType', 'Invalid file format', (value) => {
-                if (!value) {
-                  return false;
-                }
-                return /^image\/(jpeg|png|gif)$/i.test(value.type);
-              }),
-    });
+            image: Yup.mixed()
+            .test('fileSize', 'File size is too large', (value, context) => {
+              if (typeof context.parent.image === 'string') {
+                return true;
+              }
+              return value && value.size <= 1 * 1024 * 1024;
+            })
+            .test('fileType', 'Invalid file format', (value, context) => {
+              if (typeof context.parent.image === 'string') {
+                return true; 
+              }
+              return value && /^image\/(jpeg|png|gif)$/i.test(value.type);
+            }),
+    })  
 
     const formik = useFormik({
         initialValues: {
@@ -291,7 +291,7 @@ const convertAndFormatDateTime = (dateTimeString) => {
     }));
 };
 
-
+// console.log(formik.values.image.size);
 const updateCompanyIndex = (id, name) => {
     formik.setValues((prev) => {
         const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
@@ -358,6 +358,7 @@ function companywithservicelength(companyid){
 
 }
 
+console.log(typeof formik.values.image);
 if(!isLoading){
     return (
         <>
@@ -781,7 +782,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 50 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 1 MB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (
