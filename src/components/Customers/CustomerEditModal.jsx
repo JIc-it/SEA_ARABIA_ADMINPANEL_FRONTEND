@@ -84,7 +84,7 @@ function CustomerEditModal({ show, close }) {
             email: values.email,
             mobile: values.mobile,
 
-            profileextra: {
+            profile_extra: {
               location: values.location,
               dob: values.dob,
               gender: values.gender,
@@ -118,9 +118,9 @@ function CustomerEditModal({ show, close }) {
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profileextra?.location || "",
-      gender: customerDetails?.profileextra?.gender || "",
-      dob: customerDetails?.profileextra?.dob || "",
+      location: customerDetails?.profile_extra?.location || "",
+      gender: customerDetails?.profile_extra?.gender || "",
+      dob: customerDetails?.profile_extra?.dob || "",
     });
   }, [customerDetails]);
 
@@ -328,7 +328,7 @@ function CustomerEditModal({ show, close }) {
           ) : null}
         </div>
 
-        <div style={{ margin: "20px" }}>
+        {/* <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "500" }}
@@ -348,8 +348,31 @@ function CustomerEditModal({ show, close }) {
           {formik.touched.gender && formik.errors.gender ? (
             <div className="error">{formik.errors.gender}</div>
           ) : null}
+        </div> */}
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{ paddingBottom: "10px", fontWeight: "500" }}
+          >
+            Gender
+          </label>
+          <select
+            name="gender"
+            className="form-select"
+            value={formik.values.gender}
+            onChange={(e) => {
+              formik.handleChange(e);
+              formik.setFieldValue("gender", e.target.value);
+            }}
+            onBlur={formik.handleBlur}
+          >
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+          </select>
+          {formik.touched.gender && formik.errors.gender ? (
+            <div className="error">{formik.errors.gender}</div>
+          ) : null}
         </div>
-
         <div
           style={{
             display: "flex",

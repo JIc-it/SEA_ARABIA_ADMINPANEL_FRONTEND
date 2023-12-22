@@ -21011,6 +21011,7 @@ body {
   }
 }
 
+
 @media (min-width: 992px) and (prefers-reduced-motion: reduce) {
   .navbar-vertical.navbar-expand-lg {
     transition: none;
@@ -21162,7 +21163,7 @@ body {
     z-index: 1030;
     align-items: flex-start;
     transition: transform 0.3s;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
     padding: 0;
   }
 }

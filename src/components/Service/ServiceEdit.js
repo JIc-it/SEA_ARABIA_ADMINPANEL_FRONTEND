@@ -16,6 +16,17 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
 import TextEditor from './TextEditor';
+import { Radio, Paper, Typography } from '@mui/material';
+import PerDestinationTable from './PerDestinationTable';
+import PerDurationTable from "./PerDurationTable"
+import PerDayTable from './PerDayTable';
+import PerTimeTable from './PerTimeTable';
+import PerDateTable from './PerDateTable';
+import PerDestinationModal from './PerDestinationModal';
+import PerDurationModal from './PerDurationModal ';
+import PerDayModal from './PerDayModal';
+import PerTimeModal from './PerTimeModal';
+import PerDateModal from './PerDateModal';
 
 const ServiceEdit = () => {
     const theme = useTheme();
@@ -63,7 +74,10 @@ const ServiceEdit = () => {
             cancellation_policy: "",
             refund_policy: "",
             service_image: [],
-            price: {}
+            price_cretrion:"Per Destination",
+            booking_type:"Booking Entirely",
+            minimum:0,
+            maximum:0
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -176,7 +190,8 @@ const ServiceEdit = () => {
                 setIsUpdated(false)
             }
             ).catch((error) =>
-                console.error(error))
+            {setIsLoading(false);
+            toast.error(error.response.data)})
     }, [params.id])
 
     //update load
@@ -206,7 +221,8 @@ const ServiceEdit = () => {
                 setIsUpdated(false)
             }
             ).catch((error) =>
-                console.error(error))
+            {setIsLoading(false);
+            toast.error(error.response.data)})
     }, [params.id,isupdated])
 
     useEffect(() => {
@@ -290,16 +306,86 @@ const ServiceEdit = () => {
                 .then((data) =>
                   {toast.success(data);setIsUpdated(true)}
                 ).catch((error) =>
-                    console.error(error))      
+                toast.error(error.response.data))    
     }
 
     const settingthumbnailTrue=(id,data)=>{
         SetThumbNail(id,data)
                 .then((datas) =>
-                   toast.success(datas)
+                  { toast.success(datas);
+                   toast.error(datas)}
                 ).catch((error) =>
-                    console.error(error))
+                    toast.error(error.response.data))
     }
+    const [validateeditor,setValidateEditor]=useState("")
+
+    function submit(e){
+        e.preventDefault();
+        if(formik.values.description.replace("<p><br></p>","").trim()===""){
+           return  setValidateEditor("Description Required")
+        }
+        else if(formik.values.description.trim()!==""){
+            return formik.handleSubmit()
+        }
+    }
+const [PerDestinationopen,setPerDestinationopen]=useState(false)
+
+const handleopendestination=()=>{
+    setPerDestinationopen(true)
+}
+const handleclosedestination=()=>{
+    setPerDestinationopen(false)
+}
+const [PerDurationopen,setPerDurationopen]=useState(false)
+
+const handleopenduration=()=>{
+    setPerDurationopen(true)
+}
+const handlecloseduration=()=>{
+    setPerDurationopen(false)
+}
+const [PerDayopen,setPerDayopen]=useState(false)
+
+const handleopenday=()=>{
+    setPerDayopen(true)
+}
+const handlecloseday=()=>{
+    setPerDayopen(false)
+}
+const [PerTimeopen,setPerTimeopen]=useState(false)
+
+const handleopentime=()=>{
+    setPerTimeopen(true)
+}
+const handleclosetime=()=>{
+    setPerTimeopen(false)
+}
+const [PerDateopen,setPerDateopen]=useState(false)
+
+const handleopenDate=()=>{
+    setPerDateopen(true)
+}
+const handlecloseDate=()=>{
+    setPerDateopen(false)
+}
+
+const handleModalOpens=()=>{
+    if(formik.values.price_cretrion==="Per Destination"){
+        setPerDestinationopen(true)
+    }
+    if(formik.values.price_cretrion==="Per Duration"){
+        setPerDurationopen(true)
+    }
+    if(formik.values.price_cretrion==="Per Day"){
+        setPerDayopen(true)
+    }
+    if(formik.values.price_cretrion==="Per Time"){
+        setPerTimeopen(true)
+    }
+    if(formik.values.price_cretrion==="Per Date"){
+        setPerDateopen(true)
+    }
+}
     return (
         <>
         {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -325,7 +411,7 @@ const ServiceEdit = () => {
                     </div>
 
                 </div>
-                <form onSubmit={formik.handleSubmit} className='row' style={{ position: "relative" }} >
+                <form onSubmit={submit} className='row' style={{ position: "relative" }} >
                     <div className={!isMobileView ? 'col-8' : "col-12"}>
                         <div className="card mt-2" style={{ width: isMobileView ? "col-12" : "col-8", borderRadius: "8px" }}>
                             <div className="p-5">
@@ -476,7 +562,7 @@ const ServiceEdit = () => {
                                     {formik.touched.description && formik.errors.description ? (
                                         <div className="error">{formik.errors.description}</div>
                                     ) : null} */}
-                                    <TextEditor formik={formik}/>
+                                    <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor}/>
                                 </div>
                                 <br></br>
                                 <div className="mt-5">
@@ -739,50 +825,204 @@ const ServiceEdit = () => {
 
                             </div>
 
-                            <div className={isMobileView ? "d-flex flex-column p-4" : " p-4 d-flex"} style={{ width: isMobileView ? "80vw" : "50vw" }}>
-                                <div className={isMobileView ? "w-100" : 'w-50 mx-2'}>
-                                    <label
-                                        htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                    >
-                                        Duration <span style={{ color: "red" }}>*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder=""
-                                        className="form-control"
-                                        name="pickuppoint"
-                                        value={formik.values?.price?.duration}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                    />
-                                    {formik.touched.price?.duration && formik.errors.price?.duration ? (
-                                        <div className="error">{formik.errors.price?.duration}</div>
-                                    ) : null}
-                                </div>
-                                <div className={isMobileView ? "w-100" : "w-50 mx-2"}>
-                                    <label
-                                        htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                    >
-                                        Price <span style={{ color: "red" }}>*</span>
-                                    </label>
-                                    <input
-                                        type="number"
-                                        name="name"
-                                        className="form-control"
-                                        placeholder=""
-                                        value={formik.values.price?.price}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                    />
-                                    {formik.touched.price?.price && formik.errors.price?.price ? (
-                                        <div className="error">{formik.errors.price?.price}</div>
-                                    ) : null}
-                                </div>
-
+                            <div>
+                            
+                            {/* <div className="px-5"> */}
+                        <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px", }} className='ms-5'>Pricing Critreion</p>
+                            <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-center'}>
+                                <Paper 
+                                onClick={() => formik.setFieldValue("price_cretrion","Per Destination")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        border: '1px solid lightgray',
+                                        width: isMobileView?"100%":"17%",
+                                        border: formik.values.price_cretrion === "Per Destination" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Destination</Typography>
+                                    <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Destination"} />
+                                </Paper>
+                                <Paper
+                                 onClick={() => formik.setFieldValue("price_cretrion","Per Duration")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
+                                        alignItems: 'center',
+                                        border: formik.values.price_cretrion === "Per Duration" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        width: isMobileView?"100%":"17%",
+                                        borderRadius: '5px',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Duration</Typography>
+                                    <Radio  name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Duration"} />
+                                </Paper>
+                                <Paper 
+                                 onClick={() => formik.setFieldValue("price_cretrion","Per Day")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
+                                        alignItems: 'center',
+                                        border: formik.values.price_cretrion === "Per Day" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        width: isMobileView?"100%":"17%",
+                                        borderRadius: '5px',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Day</Typography>
+                                    <Radio  name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Day"} />
+                                </Paper>
+                                <Paper 
+                                 onClick={() => formik.setFieldValue("price_cretrion","Per Time")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
+                                        alignItems: 'center',
+                                        border: formik.values.price_cretrion === "Per Time" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        width: isMobileView?"100%":"17%",
+                                        borderRadius: '5px',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Time</Typography>
+                                    <Radio  name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Time"} />
+                                </Paper>
+                                <Paper 
+                                 onClick={() => formik.setFieldValue("price_cretrion","Per Date")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
+                                        alignItems: 'center',
+                                        border: formik.values.price_cretrion === "Per Date" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        width: isMobileView?"100%":"17%",
+                                        borderRadius: '5px',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Date</Typography>
+                                    <Radio  name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Date"} />
+                                </Paper>
+                            </div>
+                            {/* </div> */}
+                            <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px", }} className='ms-5'>Booking type</p>
+                            <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-start ms-5'}>
+                                <Paper 
+                                onClick={() =>formik.setFieldValue("booking_type","Booking Entirely")}
+                                    style={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        border: '1px solid lightgray',
+                                        width: isMobileView?"100%":"45%",
+                                        border: formik.values.booking_type === "Booking Entirely" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Booking Entirely</Typography>
+                                    <Radio name={formik.values.booking_type} checked={formik.values.booking_type === "Booking Entirely"} />
+                                </Paper>
+                                 <Paper
+                                 onClick={() =>formik.setFieldValue("booking_type","Per Head Booking")}
+                                    style={{
+                                        display:formik.values.price_cretrion.trim() ==="Per Destination" || formik.values.price_cretrion.trim() ==="Per Duration" ?'none': 'flex',
+                                        justifyContent: 'space-between',
+                                        marginTop:isMobileView?"5px":"",
+                                        alignItems: 'center',
+                                        border: formik.values.booking_type === "Per Head Booking" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                        width: isMobileView?"100%":"45%",
+                                        borderRadius: '5px',
+                                        padding: '5px',
+                                        margin:"5px"
+                                    }}
+                                >
+                                    <Typography variant="body1" sx={{fontSize:"12px",fontWeight:"550"}}>Per Head Booking</Typography>
+                                    <Radio  name={formik.values.booking_type} checked={formik.values.booking_type === "Per Head Booking"} />
+                                </Paper>
                             </div>
                         </div>
+                        {formik.values.booking_type==="Per Head Booking" && <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-start mx-5 mt-5'} >
+                        <div  style={{border:"1px solid lightgray"}} className="px-3 py-3 rounded">
+                                    <span style={{ fontWeight: "600" }}>Set Purchase Limits</span>
+                                    <div className="d-flex mt-2">
+                                        <div className="mt-1">
+                                            <span style={{ color: "#68727D", fontSize: "15px" }}>Minimum</span>
+                                            <div className="mt-2">
+                                                <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("minimum")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
+                                                </svg>
+
+                                                </button>
+                                                <span className="mx-1">{formik.values.minimum}</span>
+                                                <button type="button" onClick={() => handleIncrement("minimum")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
+                                                    <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
+                                                </svg></button>
+                                            </div>
+                                        </div>
+
+
+                                        <div className="mt-1 ms-4">
+                                            <span style={{ color: "#68727D", fontSize: "15px" }}>Maximum</span>
+                                            <div className="mt-2">
+                                                <button type="button" onClick={() => handleDecrement("maximum")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
+                                                </svg></button>
+                                                <span className="mx-1">{formik.values.maximum}</span>
+                                                <button type="button" onClick={() => handleIncrement("maximum")} className="btn px-1 py-1 mx-1">
+                                                    <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
+                                                        <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
+                                                    </svg>
+
+
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                       
+                                    </div>
+                                </div>
+</div>}
+                            <div className={isMobileView ? "d-flex flex-column p-4" : " p-4 d-flex"} >
+                                <div style={{width:"100%"}} >
+                                   <div className='d-flex justify-content-between mb-2'>
+                                   <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Price 
+                                    </label>
+                                    <button type="button" className='btn btn-blue' style={{backgroundColor:"#187AF7",padding:"1px 3px"}} onClick={handleModalOpens}>Add Price</button>
+                                   </div>
+                                   {formik.values.price_cretrion==="Per Destination" && <PerDestinationTable/>}
+                                   {formik.values.price_cretrion==="Per Duration" && <PerDurationTable/>}
+                                   {formik.values.price_cretrion==="Per Day" && <PerDayTable/>}
+                                   {formik.values.price_cretrion==="Per Time" && <PerTimeTable/>}
+                                   {formik.values.price_cretrion==="Per Date" && <PerDateTable/>}
+                                </div>
+                            </div>
+                        </div>
+
+                        {formik.values.price_cretrion==="Per Destination" && PerDestinationopen && <PerDestinationModal handleClose={handleclosedestination} handleOpen={handleopendestination} open={PerDestinationopen}/>}
+                        {formik.values.price_cretrion==="Per Duration" && PerDurationopen && <PerDurationModal handleClose={handlecloseduration} handleOpen={handleopenduration} open={PerDurationopen}/>}
+                        {formik.values.price_cretrion==="Per Day" && PerDayopen && <PerDayModal handleClose={handlecloseday} handleOpen={handleopenday} open={PerDayopen}/>}
+                        {formik.values.price_cretrion==="Per Time" && PerTimeopen && <PerTimeModal handleClose={handleclosetime} handleOpen={handleopentime} open={PerTimeopen}/>}
+                        {formik.values.price_cretrion==="Per Date" && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen}/>}
+                        
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
                             <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy</p>
                             <textarea

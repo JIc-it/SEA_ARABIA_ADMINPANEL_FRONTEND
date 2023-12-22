@@ -8,6 +8,9 @@ import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
 import { formatDate,removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+import PopupFilter from "./PopupFilter";
 
 function DiscountListing() {
   const theme = useTheme();
@@ -15,11 +18,20 @@ function DiscountListing() {
   const navigate=useNavigate();
   const [offerslist,setOffersList]=useState([])
  const [isLoading,setIsLoading]=useState(false)
+ const [search,setSearch]=useState("")
  const [listPageUrl, setListPageUrl] = useState({
   next: null,
   previous: null,
 });
+const [openfilter,setOpenfilter]=useState(false);
 
+const handleclosefilter=()=>{
+  setOpenfilter(false)
+}
+
+const handleopenfilter=()=>{
+  setOpenfilter(true)
+}
   const handleToggle = async (itemId) => {
     
     setOffersList((prevItems) =>
@@ -48,16 +60,17 @@ function DiscountListing() {
 
   useEffect(() => {
     setIsLoading(true)
-    getDiscountOfferList()
+    getDiscountOfferList(search)
       .then((data) => {
         setListPageUrl({ next: data.next, previous: data.previous });
         setOffersList(data?.results);
         setIsLoading(false)
       })
       .catch((error) => {
-        console.error("Error fetching  data:", error);
+        setIsLoading(false)
+        toast.error(error.response.data);
       });
-  }, []);
+  }, [search]);
 
   
   const handlePagination = async (type) => {
@@ -77,7 +90,7 @@ function DiscountListing() {
         })
         .catch((error) => {
           setIsLoading(false);
-          console.error("Error fetching  data:", error);
+          toast.error(error.response.data);
         });
   };
 
@@ -120,7 +133,7 @@ function DiscountListing() {
       <div className="col-12 actions_menu my-2">
         <div className="action_menu_left col-8">
           <div>
-            <form action="" method="post" autocomplete="off">
+            <>
              <div style={{display:"flex"}}>
              <div className="input-icon" style={{width:isMobileView?"50%":""}}>
                 <span className="input-icon-addon">
@@ -146,6 +159,7 @@ function DiscountListing() {
                   type="text"
                   className="form-control"
                   placeholder="Input search term"
+                  onChange={(e)=>setSearch(e.target.value)}
                 />
                 <button
                   type="button"
@@ -155,11 +169,12 @@ function DiscountListing() {
                   Search
                 </button>
               </div>
-              <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}}>
+              <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}} onClick={handleopenfilter} type="button">
               <img src={filterIcon} alt="filter" width={isMobileView?15:20}/>
                 </button>
+                {openfilter && <PopupFilter open={openfilter} handleOpen={handleopenfilter} handleClose={handleclosefilter}/>}
              </div>
-            </form>
+            </>
           </div>
           
         </div>

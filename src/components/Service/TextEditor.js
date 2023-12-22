@@ -2,7 +2,7 @@ import React from "react";
 import ReactQuill from "react-quill";
 import 'react-quill/dist/quill.snow.css';
 
-export default function TextEditor({formik}){
+export default function TextEditor({formik,validateeditor,setValidateEditor}){
     const modules = {
         toolbar: [
         //   [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -33,13 +33,22 @@ export default function TextEditor({formik}){
     
 
     return (
+      <>
         <ReactQuill
         theme="snow"
         className="mt-1 p-1"
+        name="description"
         value={formik.values.description} 
-        onChange={(value) => formik.setFieldValue('description', value)}
+        onChange={(value) => {formik.setFieldValue('description', value);setValidateEditor("")}}
         modules={modules}
         style={{ height: "15vh" }}
       />
+       {validateeditor.trim()!=="" ? (
+        <>
+        <br></br>
+        <div className="error mt-5">{validateeditor}</div>
+        </>
+        ) : null}
+      </>
     )
 }

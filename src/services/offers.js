@@ -46,9 +46,9 @@ export const getOneCompanyList = (id) => {
         throw error;
       });
   };
-export const getDiscountOfferList = () => {
+export const getDiscountOfferList = (search) => {
     return axiosInstance
-      .get(getOfferLists)
+      .get(getOfferLists,{params:{search:search}})
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);
