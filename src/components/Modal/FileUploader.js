@@ -1,7 +1,7 @@
 import { useRef } from "react";
 
-export const FileUploader = ({ handleFileChange, formik }) => {
-  // REVISED
+export const FileUploader = ({ handleFileChange, formik, className }) => {
+
   const hiddenFileInput = useRef(null);
 
   const handleClick = (event) => {
@@ -22,7 +22,7 @@ export const FileUploader = ({ handleFileChange, formik }) => {
           justifyContent: "center",
           flexDirection: "column",
         }}
-        className="file-container "
+        className={`file-container ${className}`}
         onClick={handleClick}
       >
         <svg
@@ -49,7 +49,6 @@ export const FileUploader = ({ handleFileChange, formik }) => {
         onChange={handleChange}
         ref={hiddenFileInput}
         style={{ display: "none" }}
-        
       />
       {formik.touched.files && formik.errors.files ? (
         <div className="error mx-4">{formik.errors.files}</div>

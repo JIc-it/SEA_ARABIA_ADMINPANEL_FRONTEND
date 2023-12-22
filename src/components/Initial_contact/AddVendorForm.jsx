@@ -81,9 +81,10 @@ const AddVendorInfo = ({ formik }) => {
                       className="form-control"
                       placeholder="Phone Number"
                       name="phone"
-                      value={formik.values.phone
-                        .replace(/\D/g, "")
-                        .slice(0, 10)} // Allow only the first 10 numeric characters
+                      value={
+                        formik.values.phone &&
+                        formik.values.phone.replace(/\D/g, "").slice(0, 10)
+                      } // Allow only the first 10 numeric characters
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         const sanitizedValue = inputValue

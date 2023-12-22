@@ -235,7 +235,7 @@ function ProgressBar() {
 
   const initialValueForSiteVisit = {
     title: "",
-    files: [],
+    files: "",
     note: "",
     siteVisitTime: "",
     siteVisitDate: "",
@@ -244,7 +244,17 @@ function ProgressBar() {
 
   const validationSchemaForSiteVisit = Yup.object({
     title: Yup.string().required("Title is required"),
-    files: Yup.array().required("Please upload at least one file"),
+    files: Yup.mixed()
+      .required("Please upload at least one file")
+      .test("fileSize", "File size must not exceed 50MB", (value) => {
+        if (!value) {
+          // Handle the case where no file is provided
+          return true;
+        }
+
+        // Check if the file size is less than or equal to 50MB
+        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+      }),
     note: Yup.string().required("Note is required"),
     siteVisitTime: Yup.string().required("Time is required"),
     siteVisitDate: Yup.string().required("Date is required"),
@@ -312,6 +322,9 @@ function ProgressBar() {
     onSubmit: async (values) => {
       setIsOpen(true);
     },
+    validateOnChange: true,
+    validateOnBlur: true,
+    enableReinitialize: true,
   });
 
   useEffect(() => {
@@ -364,7 +377,7 @@ function ProgressBar() {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      toast.error(error.response.data.error);
       // Handle error
     }
   };
@@ -520,6 +533,10 @@ function ProgressBar() {
     }
   };
 
+  const handleFileChange = (file) => {
+    formik.setFieldValue("files", file[0]);
+  };
+
   const dispatch = useDispatch();
 
   return (
@@ -611,6 +628,7 @@ function ProgressBar() {
             <AddSiteVisit
               formik={formik}
               qualificationlist={qualificationlist}
+              handleFileChange={handleFileChange}
             />
           )}
           {count === 3 && (
@@ -654,6 +672,7 @@ function ProgressBar() {
                     width: "120px",
                   }}
                   onClick={() => {
+                    formik.submitForm();
                     count === 0 && setIsOpen(true);
                   }}
                 >
