@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import logo from "../../static/img/logo.png";
 
-
 import { useNavigate } from "react-router-dom";
 function SideBar() {
   const location = useLocation();
@@ -75,11 +74,9 @@ function SideBar() {
   };
 
   const [openDropdown, setOpenDropdown] = useState(null);
-  console.log(openDropdown, "index");
-  const handleDropdownToggle = (index) => {
-    // If the clicked dropdown is already open, close it
 
-    setOpenDropdown(index);
+  const handleDropdownToggle = (link) => {
+    setOpenDropdown(openDropdown === link ? null : link);
   };
 
   return (
@@ -569,7 +566,8 @@ function SideBar() {
                     <div className="dropdown-menu-column">
                       <a
                         className={`dropdown-item ${
-                          activeLink === "/booking" ? "active" : ""
+                          activeLink === "/booking" ? "active" : "",
+                          openDropdown === "/booking" ? "active" : ""
                         }`}
                         style={{
                           color: activeLink === "/booking" ? "#006875" : "",
