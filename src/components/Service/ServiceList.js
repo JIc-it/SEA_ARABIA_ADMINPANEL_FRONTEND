@@ -11,6 +11,8 @@ import { getServiceListing } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import {formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 
 // import AddNewService from "./AddNewService";
@@ -49,7 +51,8 @@ function ServiceList() {
                 setIsLoading(false)
             })
             .catch((error) => {
-                console.error("Error fetching  data:", error);
+                {setIsLoading(false);
+                    toast.error(error.response.data)};
             });
     }, []);
 
@@ -69,9 +72,8 @@ function ServiceList() {
               setServiceList(data?.results);
             })
             .catch((error) => {
-              setIsLoading(false);
-              console.error("Error fetching  data:", error);
-            });
+                setIsLoading(false);
+                toast.error(error.response.data)});
       };
 
       const handleExportData = () => {

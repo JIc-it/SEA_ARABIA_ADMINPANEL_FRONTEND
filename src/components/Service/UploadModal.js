@@ -81,13 +81,15 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
             setIsUpdated(true)
 
             } else {
+                setIsLoading(false);
+                toast.error(adminData.error.response.data)
               console.error("Error while creating Admin:", adminData.error);
-              setIsLoading(false);
             }
             setIsLoading(false);
               }catch (err) {
+                  setIsLoading(false);
+                toast.error(err.response.data)
                 console.log(err);
-                setIsLoading(false);
               }
             }
         },

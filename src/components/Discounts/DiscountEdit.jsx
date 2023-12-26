@@ -187,9 +187,8 @@ export default function DiscountEdit() {
             setIsLoading(false);
               }catch (err) {
                 console.log(err);
-                // err.response.data.email && toast.error(err.response.data.email[0]);
-                // err.response.data.mobile && toast.error(err.response.data.mobile[0]);
                 setIsLoading(false);
+                toast.error(err.response.data)
               }
             }
         },
@@ -229,7 +228,8 @@ export default function DiscountEdit() {
             setIsUpdated(false)
           })
           .catch((error) => {
-            console.error("Error fetching  data:", error);
+            setIsLoading(false)
+            toast.error(error.response.data);
           });
     
       }, [params.id]);
@@ -264,7 +264,8 @@ export default function DiscountEdit() {
             setIsUpdated(false)
           })
           .catch((error) => {
-            console.error("Error fetching  data:", error);
+            setIsLoading(false)
+            toast.error(error.response.data);
           });
     
       }, [params.id,isupdated]);

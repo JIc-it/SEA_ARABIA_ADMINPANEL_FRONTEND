@@ -10,6 +10,8 @@ import {getOneService} from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import { Breadcrumb } from 'react-bootstrap';
 import HTMLParse from 'html-react-parser';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 const ServiceView = () => {
     const navigate = useNavigate();
@@ -27,7 +29,8 @@ const ServiceView = () => {
                 setIsLoading(false)
             })
             .catch((error) => {
-                console.error("Error fetching  data:", error);
+                setIsLoading(false);
+                toast.error(error.response.data)
             });
     }, [params.id]);
 
@@ -50,17 +53,20 @@ const ServiceView = () => {
                             <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg> &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
                     </div>
-                    <button
-                        className="btn btn-info vendor_button"
-                        style={{ borderRadius: "6px" }}
-                        type="button"
-                        onClick={() => navigate(`/service-edit/${oneservice?.id}`)}
-                    >
-                        Edit Service &nbsp;
-                        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M5 15L15 5M15 5H7.5M15 5V12.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                    </button>
+                        <div className='d-flex'>
+                            <div class="px-3 py-2 mx-2 rounded" style={{ textAlign: "center", color:oneservice.is_active==true? "#13b370":"red", background:oneservice.is_active==true? "rgba(19, 179, 112, 0.2)":"#ff9999" }}>{oneservice.is_active==true?"Active":"Inactive"}</div>
+                            <button
+                                className="btn btn-info vendor_button"
+                                style={{ borderRadius: "6px" }}
+                                type="button"
+                                onClick={() => navigate(`/service-edit/${oneservice?.id}`)}
+                            >
+                                Edit Service &nbsp;
+                                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M5 15L15 5M15 5H7.5M15 5V12.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
                 </div>
                 <div className='row' style={{position:"relative"}}>
                     <div className='col-lg-8'>

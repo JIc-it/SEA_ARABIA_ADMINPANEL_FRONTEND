@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { getDiscountOfferView, getOneCompanyList } from "../../services/offers"
 import { useParams } from 'react-router-dom';
 import CircularProgress from "@mui/material/CircularProgress";
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountView() {
   const [offerview, setOfferView] = useState([])
@@ -20,7 +22,8 @@ export default function DiscountView() {
         setIsLoading(false)
       })
       .catch((error) => {
-        console.error("Error fetching  data:", error);
+        setIsLoading(false)
+        toast.error(error.response.data)
       });
   }, [params.id]);
 
