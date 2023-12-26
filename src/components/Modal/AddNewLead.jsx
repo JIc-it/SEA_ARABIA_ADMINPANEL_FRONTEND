@@ -95,6 +95,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             name="name"
             value={formik.values.name}
             onChange={formik.handleChange}
+            maxLength={20}
             onBlur={formik.handleBlur}
           />
           {formik.touched.name && formik.errors.name ? (
@@ -115,6 +116,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             placeholder="Email"
             value={formik.values.email}
             onChange={formik.handleChange}
+            maxLength={20}
             onBlur={formik.handleBlur}
           />
           {formik.touched.email && formik.errors.email ? (
@@ -173,6 +175,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
               id=""
               name="location"
               placeholder="Location"
+              maxLength={20}
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

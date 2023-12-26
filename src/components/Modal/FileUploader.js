@@ -1,6 +1,6 @@
 import { useRef } from "react";
 
-export const FileUploader = ({ handleFileChange, formik, className }) => {
+export const FileUploader = ({ handleFileChange, formik, className,errorClass }) => {
 
   const hiddenFileInput = useRef(null);
 
@@ -51,7 +51,7 @@ export const FileUploader = ({ handleFileChange, formik, className }) => {
         style={{ display: "none" }}
       />
       {formik.touched.files && formik.errors.files ? (
-        <div className="error mx-4">{formik.errors.files}</div>
+        <div className={`error mx-4 ${errorClass}`}>{formik.errors.files}</div>
       ) : null}
     </>
   );

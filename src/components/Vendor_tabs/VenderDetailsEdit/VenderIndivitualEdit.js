@@ -98,7 +98,8 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("fullName", data.first_name);
         // formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
-        formik.setFieldValue("phone", data.mobile);
+        const formattedPhoneNumber = data.mobile.replace(/\D/g, "");
+        formik.setFieldValue("phone", formattedPhoneNumber);
         formik.setFieldValue("location", data.profileextra?.location);
         formik.setFieldValue(
           "idType",
@@ -237,6 +238,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.fullName}
+                        maxLength={20}
                       />
                       {formik.touched.fullName && formik.errors.fullName ? (
                         <div className="error">{formik.errors.fullName}</div>
@@ -260,18 +262,20 @@ const VenderIndivitualEdit = () => {
                             className="form-control"
                             placeholder="Phone Number"
                             name="phone"
+                            value={
+                              formik.values.phone &&
+                              formik.values.phone
+                                .replace(/\D/g, "")
+                                .slice(0, 10)
+                            }
                             onChange={(e) => {
                               const inputValue = e.target.value;
-                              if (inputValue.length <= 10) {
-                                const sanitizedValue = inputValue.replace(
-                                  /\D/g,
-                                  ""
-                                ); // Remove non-digit characters
-                                formik.handleChange("phone")(sanitizedValue); // Update the formik field
-                              }
+                              const sanitizedValue = inputValue
+                                .replace(/\D/g, "")
+                                .slice(0, 10); // Remove non-digit characters and limit to 10 digits
+                              formik.setFieldValue("phone", sanitizedValue); // Update the formik field
                             }}
                             onBlur={formik.handleBlur}
-                            value={formik.values.phone}
                           />
                         </div>
                       </div>
@@ -293,6 +297,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        maxLength={20}
                       />
                       {formik.touched.email && formik.errors.email ? (
                         <div className="error">{formik.errors.email}</div>
@@ -310,6 +315,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.location}
+                        maxLength={20}
                       />
                       {formik.touched.location && formik.errors.location ? (
                         <div className="error">{formik.errors.location}</div>
@@ -393,6 +399,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyName}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyName &&
                                 formik.errors.companyName ? (
@@ -415,6 +422,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyAddress}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyAddress &&
                                 formik.errors.companyAddress ? (
@@ -438,6 +446,7 @@ const VenderIndivitualEdit = () => {
                                   name="companyRegistrationNumber"
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
+                                  maxLength={20}
                                   value={
                                     formik.values.companyRegistrationNumber
                                   }
@@ -463,6 +472,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyWebsite}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyWebsite &&
                                 formik.errors.companyWebsite ? (

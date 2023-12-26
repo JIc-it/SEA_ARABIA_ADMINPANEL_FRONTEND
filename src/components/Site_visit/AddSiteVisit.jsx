@@ -6,7 +6,7 @@ import * as Yup from "yup";
 import { FileUploader } from "../Modal/FileUploader";
 
 function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
-  console.log(formik);
+
   return (
     <div className="card col-11 add_details">
       <div className="card-body">
@@ -31,6 +31,7 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                         value={formik.values.title || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        maxLength={20}
                       />
                       {formik.touched.title && formik.errors.title ? (
                         <div className="error">{formik.errors.title}</div>
@@ -40,6 +41,7 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                       formik={formik}
                       handleFileChange={handleFileChange}
                       className="vendor-form-file"
+                      errorClass='error-vendor-form-file'
                     />
                     <div
                       className="upload-filename"
@@ -69,6 +71,7 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                       value={formik.values.note || ""}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      // maxLength={20}
                     ></textarea>
                     {formik.touched.note && formik.errors.note ? (
                       <div className="error">{formik.errors.note}</div>

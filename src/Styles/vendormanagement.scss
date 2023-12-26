@@ -3,7 +3,7 @@
     border-radius: 12px !important;
     background: #f3f9ff !important;
   }
- 
+
   .card-footer {
     border-radius: 12px !important;
     background: #f3f9ff !important;
@@ -11,6 +11,12 @@
   }
 }
 
-.vendor-form-file{
-  margin: 1rem 8px  !important;
+.vendor-form-file {
+  margin: 1rem 8px !important;
+}
+
+.error-vendor-form-file {
+  margin: 0 !important;
+  position: relative;
+  bottom: 12px;
 }

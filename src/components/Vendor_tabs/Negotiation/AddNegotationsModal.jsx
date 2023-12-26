@@ -5,9 +5,7 @@ import * as Yup from "yup";
 import { useContext, useState } from "react";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { toast } from "react-toastify";
-import {
-  submitNegotiation,
-} from "../../../services/leadMangement";
+import { submitNegotiation } from "../../../services/leadMangement";
 import CircularProgress from "@mui/material/CircularProgress";
 
 export default function AddNegotationsModal({
@@ -32,7 +30,7 @@ export default function AddNegotationsModal({
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       files: Yup.mixed()
-        .required("Please upload at least one file")
+        .required("Please upload  file")
         .test("fileSize", "File size must not exceed 50MB", (value) => {
           if (!value) {
             // Handle the case where no file is provided
@@ -116,12 +114,17 @@ export default function AddNegotationsModal({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.title}
+            maxLength={20}
           />
           {formik.touched.title && formik.errors.title ? (
             <div className="error">{formik.errors.title}</div>
           ) : null}
         </div>
         <FileUploader formik={formik} handleFileChange={handleFileChange} />
+        <div className="upload-filename">
+          <label htmlFor="">Uploaded File: </label>
+          <span className="mx-2">{formik.values.files?.name}</span>
+        </div>
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
@@ -138,6 +141,7 @@ export default function AddNegotationsModal({
             rows="5"
             placeholder="Notes"
             className="form-control"
+            // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>
@@ -191,7 +195,7 @@ export default function AddNegotationsModal({
               }}
               type="submit"
             >
-           {isLoading ? <CircularProgress /> : "Add"}
+              {isLoading ? <CircularProgress /> : "Add"}
             </button>
           </div>
         </div>

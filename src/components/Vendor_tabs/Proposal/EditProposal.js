@@ -28,7 +28,7 @@ function EditProposal({ show, close, setIsRefetch, isRefetch, selectedData }) {
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      //   files: Yup.string().required("Please upload at least one file"),
+      //   files: Yup.string().required("Please upload  file"),
       note: Yup.string().required("Note is required"),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
@@ -117,6 +117,7 @@ function EditProposal({ show, close, setIsRefetch, isRefetch, selectedData }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.title}
+            maxLength={20}
           />
           {formik.touched.title && formik.errors.title ? (
             <div className="error">{formik.errors.title}</div>
@@ -147,6 +148,7 @@ function EditProposal({ show, close, setIsRefetch, isRefetch, selectedData }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.note}
+            // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>

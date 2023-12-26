@@ -24,7 +24,7 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch }) {
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       files: Yup.mixed()
-        .required("Please upload at least one file")
+        .required("Please upload  file")
         .test("fileSize", "File size must not exceed 50MB", (value) => {
           if (!value) {
             // Handle the case where no file is provided
@@ -111,6 +111,7 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.title}
+            maxLength={20}
           />
           {formik.touched.title && formik.errors.title ? (
             <div className="error">{formik.errors.title}</div>
@@ -139,6 +140,7 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch }) {
             rows="5"
             placeholder="Notes"
             className="form-control"
+            // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>

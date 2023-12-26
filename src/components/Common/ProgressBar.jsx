@@ -189,7 +189,7 @@ function ProgressBar() {
 
   const initialValueForProposals = {
     proposalTitle: "",
-    files: [],
+    files: "",
     proposalNote: "",
     // proposalTime: "",
     // proposalDate: "",
@@ -197,7 +197,7 @@ function ProgressBar() {
 
   const initialValueForNegotiation = {
     negotiationTitle: "",
-    files: [],
+    files: "",
     negotiationNote: "",
     // negotiationTime: "",
     // negotiationDate: "",
@@ -205,7 +205,7 @@ function ProgressBar() {
 
   const initialValueForCharter = {
     charterTitle: "",
-    files: [],
+    files: "",
     charterNote: "",
     // charterTime: "",
     // charterDate: "",
@@ -245,7 +245,7 @@ function ProgressBar() {
   const validationSchemaForSiteVisit = Yup.object({
     title: Yup.string().required("Title is required"),
     files: Yup.mixed()
-      .required("Please upload at least one file")
+      .required("Please upload file")
       .test("fileSize", "File size must not exceed 50MB", (value) => {
         if (!value) {
           // Handle the case where no file is provided
@@ -268,7 +268,17 @@ function ProgressBar() {
 
   const validationSchemaForProposal = Yup.object({
     proposalTitle: Yup.string().required("Title is required"),
-    files: Yup.array().required("Please upload at least one file"),
+    files: Yup.mixed()
+      .required("Please upload file")
+      .test("fileSize", "File size must not exceed 50MB", (value) => {
+        if (!value) {
+          // Handle the case where no file is provided
+          return true;
+        }
+
+        // Check if the file size is less than or equal to 50MB
+        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+      }),
     proposalNote: Yup.string().required("Note is required"),
     // proposalTime: Yup.string().required("Time is required"),
     // proposalDate: Yup.string().required("Date is required"),
@@ -276,7 +286,17 @@ function ProgressBar() {
 
   const validationSchemaForNegotiation = Yup.object({
     negotiationTitle: Yup.string().required("Title is required"),
-    files: Yup.array().required("Please upload at least one file"),
+    files: Yup.mixed()
+      .required("Please upload file")
+      .test("fileSize", "File size must not exceed 50MB", (value) => {
+        if (!value) {
+          // Handle the case where no file is provided
+          return true;
+        }
+
+        // Check if the file size is less than or equal to 50MB
+        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+      }),
     negotiationNote: Yup.string().required("Note is required"),
     // negotiationTime: Yup.string().required("Time is required"),
     // negotiationDate: Yup.string().required("Date is required"),
@@ -284,7 +304,17 @@ function ProgressBar() {
 
   const validationSchemaForCharter = Yup.object({
     charterTitle: Yup.string().required("Title is required"),
-    files: Yup.array().required("Please upload at least one file"),
+    files: Yup.mixed()
+      .required("Please upload file")
+      .test("fileSize", "File size must not exceed 50MB", (value) => {
+        if (!value) {
+          // Handle the case where no file is provided
+          return true;
+        }
+
+        // Check if the file size is less than or equal to 50MB
+        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+      }),
     charterNote: Yup.string().required("Note is required"),
     // charterTime: Yup.string().required("Time is required"),
     // charterDate: Yup.string().required("Date is required"),
@@ -370,8 +400,13 @@ function ProgressBar() {
             dispatch(increment());
           })
           .catch((error) => {
+            toast.error("Failed to toggle vendor status. Please try again.");
             console.error("Error fetching  data:", error);
           });
+      } else {
+        toast.error(
+          "Failed to initiate contact with the vendor. Please check contact information."
+        );
       }
       console.log("Update API response :", response);
       // Handle success or error
@@ -387,7 +422,7 @@ function ProgressBar() {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
       formdata.append("title", formik.values.title);
-      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("attachment", formik.values.files);
       formdata.append("note", formik.values.note);
       formdata.append("date", formik.values.siteVisitDate);
       formdata.append("time", formik.values.siteVisitTime);
@@ -420,7 +455,7 @@ function ProgressBar() {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
       formdata.append("title", formik.values.proposalTitle);
-      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("attachment", formik.values.files);
       formdata.append("note", formik.values.proposalNote);
       const response = await submitProposal(formdata);
       console.log("API response:", response);
@@ -431,10 +466,11 @@ function ProgressBar() {
             dispatch(increment());
           })
           .catch((error) => {
+            toast.error("Failed to toggle vendor status. Please try again.");
             console.error("Error fetching  data:", error);
           });
       } else {
-        toast.error("propsal adding failed ");
+        toast.error("Failed to add the proposal. Please try again.");
       }
       // Handle success or error
     } catch (error) {
@@ -449,7 +485,7 @@ function ProgressBar() {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
       formdata.append("title", formik.values.negotiationTitle);
-      formdata.append("attachment", formik.values?.files[0]);
+      formdata.append("attachment", formik.values.files);
       formdata.append("note", formik.values.negotiationNote);
       const response = await submitNegotiation(formdata);
       console.log("API response:", response);
@@ -478,7 +514,7 @@ function ProgressBar() {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
       formdata.append("title", formik.values.charterTitle);
-      formdata.append("attachment", formik.values.files[0]);
+      formdata.append("attachment", formik.values.files);
       formdata.append("note", formik.values.charterNote);
       const response = await submitCharter(formdata);
       console.log("API response:", response);
@@ -489,10 +525,13 @@ function ProgressBar() {
             dispatch(increment());
           })
           .catch((error) => {
+            toast.error("Failed to toggle vendor status. Please try again.");
             console.error("Error fetching  data:", error);
           });
       } else {
-        toast.error("Charter adding failed ");
+        toast.error(
+          "Failed to submit MOU/Charter details. Please check your input and try again."
+        );
       }
       // Handle success or error
     } catch (error) {
@@ -632,15 +671,29 @@ function ProgressBar() {
             />
           )}
           {count === 3 && (
-            <CommonAddDetails title="Add Proposal" formik={formik} />
+            <CommonAddDetails
+              title="Add Proposal"
+              formik={formik}
+              handleFileChange={handleFileChange}
+            />
           )}
           {count === 4 && (
-            <NegotiationForm title="Add Negotation" formik={formik} />
+            <NegotiationForm
+              title="Add Negotation"
+              formik={formik}
+              handleFileChange={handleFileChange}
+            />
           )}
           {count === 5 && (
-            <CharterForm title="Add MOU / Charter" formik={formik} />
+            <CharterForm
+              title="Add MOU / Charter"
+              formik={formik}
+              handleFileChange={handleFileChange}
+            />
           )}
-          {count === 6 && <GoLive userData={userdata} />}
+          {count === 6 && (
+            <GoLive userData={userdata} handleFileChange={handleFileChange} />
+          )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           {count != 6 && (
             <div className="col-12 actions_menu my-4">

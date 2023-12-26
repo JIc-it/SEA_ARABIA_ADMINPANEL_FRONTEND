@@ -104,7 +104,7 @@ export default function LeadDetails({ count }) {
                   <div className="col-4">
                     <p style={{ color: "#68727D" }}>Phone</p>
                     <p style={{ color: "#323539", fontWeight: "600" }}>
-                      {leads.mobile}
+                      {leads && leads.mobile}
                     </p>
                   </div>
                 </div>
@@ -271,7 +271,7 @@ export default function LeadDetails({ count }) {
                     <p style={{ color: "#68727D" }}>OwnerShip</p>
                     <p style={{ color: "#323539", fontWeight: "600" }}>
                       {leads.company_company_user.third_party_ownership
-                        ? 'Third Party Services'
+                        ? "Third Party Services"
                         : "-"}
                     </p>
                   </div>
