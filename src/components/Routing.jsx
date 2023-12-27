@@ -17,7 +17,7 @@ import Payments from "../pages/Payments";
 import DiscountOffer from "../pages/DiscountOffer";
 import Analytics from "../pages/Analytics";
 import Customers from "../pages/Users/Customers";
-import UserVendors from "../pages/Users/UserVendors";
+import UserVendors from "../pages/Users/Vendors/UserVendors";
 import SalesRepresentatives from "../pages/Users/SalesRepresentatives";
 import Admin from "../pages/Users/Admin";
 import Review from "../pages/Review";

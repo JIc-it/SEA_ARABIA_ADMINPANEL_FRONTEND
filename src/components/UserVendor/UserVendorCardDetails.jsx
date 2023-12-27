@@ -9,11 +9,9 @@ import { useNavigate } from "react-router-dom";
 import AddSiteVisitModal from "../Vendor_tabs/SiteVisit/AddSiteVisitModal";
 
 import { getVendorListById } from "../../services/leadMangement";
-import {
-  
-} from "../../services/CustomerHandle";
+import {} from "../../services/CustomerHandle";
 
-function UserVendorCardDetails() {
+function UserVendorCardDetails({ venderDetails }) {
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -33,7 +31,7 @@ function UserVendorCardDetails() {
     setToggled(!isToggled);
   };
 
-  const [vendorDetails, setvendorDetails] = useState([]);
+  // const [venderDetails, setvenderDetails] = useState([]);
 
   const [serviceData, setServiceData] = useState();
 
@@ -48,16 +46,16 @@ function UserVendorCardDetails() {
   //     });
   // }, [vendorId]);
 
-  useEffect(() => {
-    getVendorListById(vendorId)
-      .then((data) => {
-        setvendorDetails(data);
-        console.log(" card details getVendorListById==", data);
-      })
-      .catch((error) => {
-        console.error("Error fetching customer data:", error);
-      });
-  }, [vendorId]);
+  // useEffect(() => {
+  //   getVendorListById(vendorId)
+  //     .then((data) => {
+  //       setvenderDetails(data);
+  //       console.log(" card details getVendorListById==", data);
+  //     })
+  //     .catch((error) => {
+  //       console.error("Error fetching customer data:", error);
+  //     });
+  // }, [vendorId]);
 
   return (
     <div
@@ -74,10 +72,10 @@ function UserVendorCardDetails() {
           <div className="card-body">
             <div className="left_header_new">
               <div>
-                <p className="card_content">{vendorDetails?.first_name}</p>
+                <p className="card_content">{venderDetails?.first_name}</p>
               </div>
               <div className="card_header_contents">
-                <p className="card_content">
+                <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="21"
@@ -96,10 +94,10 @@ function UserVendorCardDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {vendorDetails?.useridentificationdata?.id_number}{" "}
-                  <p>| &nbsp;</p>
+                  &nbsp; {venderDetails?.account_id}{" "}
+                  <p style={{ marginLeft: "5px" }}>| &nbsp;</p>
                 </p>
-                <p className="card_content">
+                <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="21"
@@ -114,9 +112,10 @@ function UserVendorCardDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {vendorDetails?.role} <p>| &nbsp;</p>
+                  &nbsp; {venderDetails?.role}{" "}
+                  <p style={{ marginLeft: "5px" }}>| &nbsp;</p>
                 </p>
-                <p className="card_content">
+                <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="21"
@@ -131,7 +130,7 @@ function UserVendorCardDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {vendorDetails?.profileextra?.location}
+                  &nbsp; {venderDetails?.location}
                 </p>
               </div>
             </div>
@@ -148,16 +147,16 @@ function UserVendorCardDetails() {
               <div className="col-12">
                 <div className="vendor_info_new">
                   <span className="heading_name">Email</span>
-                  <span> {vendorDetails?.email} </span>
+                  <span> {venderDetails?.email} </span>
                 </div>
               </div>
               <div className="vendor_info_new">
                 <span className="heading_name">Phone</span>
-                <span>{vendorDetails?.mobile}</span>
+                <span>{venderDetails?.mobile}</span>
               </div>
               <div className="vendor_info_new">
                 <span className="heading_name pb-2">ID Number</span>
-                <span>45646546545659</span>
+                <span>{venderDetails?.id_number}</span>
               </div>
             </div>
             <div
@@ -173,20 +172,18 @@ function UserVendorCardDetails() {
               <div className="col-12">
                 <div className="vendor_info_new">
                   <span className="heading_name">Name</span>
-                  <span>{vendorDetails?.company_company_user?.name}</span>
+                  <span>{venderDetails?.company_name}</span>
                 </div>
                 <div className="vendor_info_new">
                   <span className="heading_name">
                     Company Registration Number
                   </span>
-                  <span>
-                    {vendorDetails?.company_company_user?.registration_number}
-                  </span>
+                  <span>{venderDetails?.registration_number}</span>
                 </div>
                 <div className="vendor_info_new">
                   <span className="heading_name pb-2">Address</span>
                   <span>
-                    {vendorDetails?.company_company_user?.address} &nbsp;
+                    {venderDetails?.company_address} &nbsp;
                     <svg
                       width={22}
                       height={22}
@@ -232,34 +229,67 @@ function UserVendorCardDetails() {
                 </div>
               </div>
             </div>
-            <button
-              className="btn  mt-2 px-4 py-2 mt-4 mb-2"
-              style={{
-                backgroundColor: "#187AF7",
-                color: "white",
-                width: "100%",
-              }}
-            >
-              Bookings &nbsp;
-              <svg
-                width={20}
-                height={20}
-                viewBox="0 0 20 20"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+            <div style={{ display: "flex", padding: "10px 0" }}>
+              <a
+                className="mail_vendor_button btn btn-outline mx-1"
+                style={{ backgroundColor: "#187AF7", color: "white" }}
               >
-                <path
-                  d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-
-            <div className="bottom_button">
-              <a className="call_vendor_button btn ">
+                Bookings &nbsp;
+                <svg
+                  width={20}
+                  height={20}
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
+                    stroke="white"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </a>
+              <a className="mail_vendor_button btn btn-outline mx-1">
+                Activity Log &nbsp;
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <g clip-path="url(#clip0_4495_25266)">
+                    <path
+                      d="M9.05761 17.9252L9.91816 18.4345V18.4345L9.05761 17.9252ZM9.2738 17.5599L8.41325 17.0506L8.41325 17.0506L9.2738 17.5599ZM7.39251 17.5599L8.25307 17.0506L8.25306 17.0506L7.39251 17.5599ZM7.60871 17.9252L6.74815 18.4345L6.74815 18.4345L7.60871 17.9252ZM1.92024 14.2757L2.84412 13.893V13.893L1.92024 14.2757ZM5.24092 16.3208L5.27289 15.3213H5.27289L5.24092 16.3208ZM3.72423 16.0796L3.34154 17.0035H3.34154L3.72423 16.0796ZM14.7461 14.2757L15.67 14.6583L15.67 14.6583L14.7461 14.2757ZM11.4254 16.3208L11.3934 15.3213L11.4254 16.3208ZM12.9421 16.0796L13.3248 17.0035L12.9421 16.0796ZM13.4082 5.4912L13.9307 4.63856V4.63856L13.4082 5.4912ZM14.5086 6.59168L15.3613 6.06918L15.3613 6.06918L14.5086 6.59168ZM3.25818 5.4912L2.73567 4.63856H2.73567L3.25818 5.4912ZM2.1577 6.59168L1.30506 6.06918L1.30506 6.06918L2.1577 6.59168ZM6.59682 16.5186L6.08769 17.3793L6.08769 17.3793L6.59682 16.5186ZM9.91816 18.4345L10.1344 18.0693L8.41325 17.0506L8.19705 17.4158L9.91816 18.4345ZM6.53196 18.0693L6.74815 18.4345L8.46926 17.4158L8.25307 17.0506L6.53196 18.0693ZM8.19705 17.4158C8.23314 17.3548 8.29646 17.3333 8.33316 17.3333C8.36986 17.3333 8.43317 17.3548 8.46926 17.4158L6.74815 18.4345C7.45748 19.6329 9.20884 19.6329 9.91816 18.4345L8.19705 17.4158ZM7.33317 6H9.33317V4H7.33317V6ZM13.9998 10.6667V11.3334H15.9998V10.6667H13.9998ZM2.6665 11.3334V10.6667H0.666504V11.3334H2.6665ZM0.666504 11.3334C0.666504 12.0963 0.665962 12.7185 0.70054 13.2253C0.735731 13.7411 0.810608 14.2099 0.996359 14.6583L2.84412 13.893C2.77613 13.7288 2.72414 13.5031 2.6959 13.0891C2.66705 12.6662 2.6665 12.1236 2.6665 11.3334H0.666504ZM5.27289 15.3213C4.62158 15.3005 4.31973 15.2439 4.10691 15.1558L3.34154 17.0035C3.9046 17.2368 4.51015 17.298 5.20896 17.3203L5.27289 15.3213ZM0.996359 14.6583C1.43617 15.7201 2.27975 16.5637 3.34154 17.0035L4.10691 15.1558C3.53518 14.9189 3.08094 14.4647 2.84412 13.893L0.996359 14.6583ZM13.9998 11.3334C13.9998 12.1236 13.9993 12.6662 13.9704 13.0891C13.9422 13.5031 13.8902 13.7288 13.8222 13.893L15.67 14.6583C15.8557 14.2099 15.9306 13.7411 15.9658 13.2253C16.0004 12.7185 15.9998 12.0963 15.9998 11.3334H13.9998ZM11.4574 17.3203C12.1562 17.298 12.7617 17.2368 13.3248 17.0035L12.5594 15.1558C12.3466 15.2439 12.0448 15.3005 11.3934 15.3213L11.4574 17.3203ZM13.8222 13.893C13.5854 14.4647 13.1312 14.9189 12.5594 15.1558L13.3248 17.0035C14.3866 16.5637 15.2302 15.7201 15.67 14.6583L13.8222 13.893ZM9.33317 6C10.4437 6 11.2063 6.00106 11.7938 6.05691C12.3664 6.11135 12.6684 6.21071 12.8857 6.34384L13.9307 4.63856C13.3464 4.28049 12.7021 4.13425 11.9831 4.06589C11.279 3.99894 10.405 4 9.33317 4V6ZM15.9998 10.6667C15.9998 9.59491 16.0009 8.72084 15.9339 8.01676C15.8656 7.29779 15.7193 6.6535 15.3613 6.06918L13.656 7.11417C13.7891 7.33143 13.8885 7.63349 13.9429 8.20606C13.9988 8.79352 13.9998 9.55618 13.9998 10.6667H15.9998ZM12.8857 6.34384C13.1996 6.53624 13.4636 6.80021 13.656 7.11418L15.3613 6.06918C15.004 5.48611 14.5137 4.99587 13.9307 4.63856L12.8857 6.34384ZM7.33317 4C6.26139 4 5.38733 3.99894 4.68325 4.06589C3.96428 4.13425 3.31999 4.28049 2.73567 4.63856L3.78068 6.34384C3.99793 6.21071 4.29999 6.11135 4.87256 6.05691C5.46001 6.00106 6.22266 6 7.33317 6V4ZM2.6665 10.6667C2.6665 9.55618 2.66756 8.79352 2.72341 8.20606C2.77785 7.63349 2.87721 7.33143 3.01034 7.11418L1.30506 6.06918C0.946996 6.6535 0.800753 7.29779 0.732394 8.01676C0.665449 8.72084 0.666504 9.59491 0.666504 10.6667H2.6665ZM2.73567 4.63856C2.1526 4.99587 1.66237 5.48611 1.30506 6.06918L3.01034 7.11418C3.20274 6.80021 3.46671 6.53624 3.78068 6.34384L2.73567 4.63856ZM8.25306 17.0506C8.08927 16.7738 7.93239 16.5068 7.77732 16.2933C7.61037 16.0634 7.40322 15.8338 7.10594 15.6579L6.08769 17.3793C6.06638 17.3667 6.08384 17.365 6.15913 17.4686C6.24629 17.5886 6.34927 17.7606 6.53196 18.0693L8.25306 17.0506ZM5.20896 17.3203C5.5869 17.3324 5.80457 17.3403 5.96428 17.3598C6.10825 17.3773 6.11518 17.3956 6.08769 17.3793L7.10594 15.6579C6.80249 15.4784 6.49144 15.4093 6.20644 15.3745C5.93719 15.3417 5.6149 15.3323 5.27289 15.3213L5.20896 17.3203ZM10.1344 18.0693C10.317 17.7606 10.42 17.5886 10.5072 17.4686C10.5825 17.365 10.5999 17.3667 10.5786 17.3793L9.56038 15.6579C9.26309 15.8338 9.05595 16.0634 8.889 16.2933C8.73392 16.5068 8.57704 16.7738 8.41325 17.0506L10.1344 18.0693ZM11.3934 15.3213C11.0514 15.3323 10.7291 15.3417 10.4599 15.3745C10.1749 15.4093 9.86383 15.4784 9.56038 15.6579L10.5786 17.3793C10.5511 17.3956 10.5581 17.3773 10.702 17.3598C10.8617 17.3403 11.0794 17.3324 11.4574 17.3203L11.3934 15.3213Z"
+                      fill="#252525"
+                    />
+                    <path
+                      d="M18.0952 10.3629L19.0191 10.7456L19.0191 10.7456L18.0952 10.3629ZM16.404 12.0542L16.7867 12.978L16.7867 12.978L16.404 12.0542ZM16.8409 2.12749L16.3184 2.98013L16.8409 2.12749ZM17.8726 3.15919L18.7253 2.63669V2.63669L17.8726 3.15919ZM7.32532 2.12749L6.80282 1.27485L6.80282 1.27485L7.32532 2.12749ZM6.29363 3.15919L5.44098 2.63669V2.63669L6.29363 3.15919ZM11.1456 2.66699H13.0206V0.666992H11.1456V2.66699ZM17.3331 6.97951V7.60452H19.3331V6.97951H17.3331ZM17.3331 7.60452C17.3331 8.34624 17.3326 8.85244 17.3057 9.24631C17.2794 9.6312 17.2314 9.83525 17.1714 9.98023L19.0191 10.7456C19.1969 10.3163 19.2679 9.86917 19.3011 9.38246C19.3337 8.90472 19.3331 8.31887 19.3331 7.60452H17.3331ZM17.1714 9.98023C16.9557 10.5009 16.542 10.9146 16.0213 11.1303L16.7867 12.978C17.7974 12.5594 18.6005 11.7563 19.0191 10.7456L17.1714 9.98023ZM13.0206 2.66699C14.0629 2.66699 14.7744 2.66805 15.3215 2.72007C15.8537 2.77067 16.1262 2.86235 16.3184 2.98013L17.3634 1.27485C16.8042 0.932136 16.1895 0.793567 15.5108 0.729045C14.8471 0.665937 14.0242 0.666992 13.0206 0.666992V2.66699ZM19.3331 6.97951C19.3331 5.97593 19.3342 5.15301 19.2711 4.48929C19.2066 3.81068 19.068 3.19596 18.7253 2.63669L17.02 3.68169C17.1378 3.87389 17.2295 4.14638 17.2801 4.67859C17.3321 5.22569 17.3331 5.9372 17.3331 6.97951H19.3331ZM16.3184 2.98013C16.6044 3.15535 16.8448 3.39576 17.02 3.68169L18.7253 2.63669C18.3851 2.08165 17.9185 1.61499 17.3634 1.27485L16.3184 2.98013ZM11.1456 0.666992C10.142 0.666992 9.31913 0.665937 8.65541 0.729045C7.9768 0.793567 7.36208 0.932136 6.80282 1.27485L7.84782 2.98013C8.04002 2.86235 8.31251 2.77067 8.84472 2.72007C9.39181 2.66805 10.1033 2.66699 11.1456 2.66699V0.666992ZM6.80282 1.27485C6.24778 1.61499 5.78111 2.08165 5.44098 2.63669L7.14627 3.68169C7.32149 3.39576 7.56189 3.15535 7.84782 2.98013L6.80282 1.27485ZM6.85949 5.05227C6.90029 4.26783 7.001 3.91874 7.14627 3.68169L5.44098 2.63669C5.02617 3.31361 4.9074 4.07928 4.86219 4.94838L6.85949 5.05227ZM15.0331 13.2791C15.6814 13.2576 16.2526 13.1993 16.7867 12.978L16.0213 11.1303C15.8348 11.2075 15.5645 11.2604 14.9666 11.2802L15.0331 13.2791Z"
+                      fill="#252525"
+                    />
+                    <path
+                      d="M5.42432 10.833H5.43182M8.33325 10.833H8.34075M11.2424 10.833H11.2499"
+                      stroke="#252525"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_4495_25266">
+                      <rect width="20" height="20" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </a>
+            </div>
+            <div style={{ display: "flex", padding: "10px 0" }}>
+              <a
+                className="mail_vendor_button btn btn-outline mx-1"
+                style={{ backgroundColor: "#252525", color: "white" }}
+              >
                 Call Vendor &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -284,7 +314,7 @@ function UserVendorCardDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a className="mail_vendor_button btn btn-outline mx-1">
                 Mail Vendor &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -494,7 +524,7 @@ function UserVendorCardDetails() {
               <div>
                 <button
                   onClick={() =>
-                    navigate(`/user-vendor/edit/${vendorDetails?.id}`)
+                    navigate(`/user-vendor/edit/${venderDetails?.id}`)
                   }
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
@@ -535,8 +565,8 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Full Name</p>
                         <p style={{ fontWeight: "700" }}>
-                          {vendorDetails?.first_name}
-                          {vendorDetails?.last_name}
+                          {venderDetails?.first_name}
+                          {venderDetails?.last_name}
                         </p>
                       </div>
                       <div>
@@ -544,7 +574,7 @@ function UserVendorCardDetails() {
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
                             {" "}
-                            {vendorDetails?.profileextra?.location}
+                            {venderDetails?.profileextra?.location}
                           </p>
                           <p>
                             <svg
@@ -569,7 +599,7 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Email</p>
                         <p style={{ fontWeight: "700" }}>
-                          {vendorDetails?.email}
+                          {venderDetails?.email}
                         </p>
                       </div>
                       <div>
@@ -582,7 +612,7 @@ function UserVendorCardDetails() {
                         <p style={{ color: "#68727D" }}>Phone</p>
                         <p style={{ fontWeight: "700" }}>
                           {" "}
-                          {vendorDetails?.mobile}
+                          {venderDetails?.mobile}
                         </p>
                       </div>
 
@@ -590,7 +620,7 @@ function UserVendorCardDetails() {
                         <p style={{ color: "#68727D" }}>ID Number</p>
                         <p style={{ fontWeight: "700" }}>
                           {" "}
-                          {vendorDetails?.company_company_user?.id_number}
+                          {venderDetails?.company_company_user?.id_number}
                         </p>
                       </div>
                     </div>
@@ -609,14 +639,14 @@ function UserVendorCardDetails() {
                         <p style={{ color: "#68727D" }}>Company Name</p>
                         <p style={{ fontWeight: "700" }}>
                           {" "}
-                          {vendorDetails?.company_company_user?.name}
+                          {venderDetails?.company_company_user?.name}
                         </p>
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Company Website</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            {vendorDetails?.company_company_user?.website}
+                            {venderDetails?.company_company_user?.website}
                           </p>
                           <p>
                             <svg
@@ -643,7 +673,7 @@ function UserVendorCardDetails() {
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
                             {" "}
-                            {vendorDetails?.company_company_user?.address}
+                            {venderDetails?.company_company_user?.address}
                           </p>
                           <p>
                             <svg
@@ -672,7 +702,7 @@ function UserVendorCardDetails() {
                         <p style={{ fontWeight: "700" }}>
                           {" "}
                           {
-                            vendorDetails?.company_company_user
+                            venderDetails?.company_company_user
                               ?.registration_number
                           }
                         </p>
@@ -699,7 +729,7 @@ function UserVendorCardDetails() {
                       <div>
                         <p style={{ color: "#68727D" }}>Ownership</p>
                         <p style={{ fontWeight: "700" }}>
-                          {vendorDetails?.company_company_user
+                          {venderDetails?.company_company_user
                             ?.third_party_ownership ? (
                             <>Third Party Ownership</>
                           ) : (
