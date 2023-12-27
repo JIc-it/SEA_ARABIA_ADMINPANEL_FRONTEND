@@ -18,8 +18,8 @@ import DiscountOffer from "../pages/DiscountOffer";
 import Analytics from "../pages/Analytics";
 import Customers from "../pages/Users/Customers";
 import UserVendors from "../pages/Users/UserVendors";
-import SalesRepresentatives from "../pages/Users/SalesRepresentatives";
-import Admin from "../pages/Users/Admin";
+import SalesRepresentatives from "../pages/Users/sales/SalesRepresentatives";
+import Admin from "../pages/Users/Admin/Admin";
 import Review from "../pages/Review";
 import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
@@ -38,6 +38,8 @@ import DashBoard from "../pages/DashBoard";
 import VenderIndivitualEdit from "./Vendor_tabs/VenderDetailsEdit/VenderIndivitualEdit";
 import GuestUser from "../pages/Users/GuestUser";
 import ServiceEdit from "./Service/ServiceEdit";
+import AdminView from "../pages/Users/Admin/AdminView";
+import SalesRepView from "../pages/Users/sales/SalesRepView";
 
 function AllRouting() {
   return (
@@ -45,7 +47,10 @@ function AllRouting() {
       <Route index element={<Login />} />
       <Route path="/dashboard" element={<DashBoard />}></Route>
       <Route path="/vendor-management" element={<LeadManagement />}></Route>
-      <Route path="/vendor-details-edit/:id/:companyID" element={<VenderIndivitualEdit />}></Route>
+      <Route
+        path="/vendor-details-edit/:id/:companyID"
+        element={<VenderIndivitualEdit />}
+      ></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
@@ -80,7 +85,13 @@ function AllRouting() {
         element={<UserVendorAddService />}
       />
       <Route path="/sales-representatives" element={<SalesRepresentatives />} />
+      <Route
+        path="/sales-representatives/:salesRepId"
+        element={<SalesRepView />}
+      />
+
       <Route path="/admin" element={<Admin />} />
+      <Route path="/admin/:adminId" element={<AdminView />} />
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
