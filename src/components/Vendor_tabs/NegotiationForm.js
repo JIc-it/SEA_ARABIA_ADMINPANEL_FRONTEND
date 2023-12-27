@@ -1,7 +1,8 @@
 import React from "react";
 import DropZone from "../Common/DropZone";
+import { FileUploader } from "../Modal/FileUploader";
 
-function NegotiationForm({ title, formik }) {
+function NegotiationForm({ title, formik,handleFileChange }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -27,6 +28,7 @@ function NegotiationForm({ title, formik }) {
                           value={formik.values.negotiationTitle || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
+                          maxLength={20}
                         />
                         {formik.touched.negotiationTitle &&
                         formik.errors.negotiationTitle ? (
@@ -35,8 +37,17 @@ function NegotiationForm({ title, formik }) {
                           </div>
                         ) : null}
                       </div>
-                      <div className="col-lg-12">
-                        <DropZone formik={formik} />
+                      <FileUploader
+                        formik={formik}
+                        handleFileChange={handleFileChange}
+                        className="vendor-form-file"
+                        errorClass="error-vendor-form-file"
+                      />
+                      <div className="upload-filename" style={{ margin: "0 " }}>
+                        <label htmlFor="">Uploaded File: </label>
+                        <span className="mx-2">
+                          {formik.values.files?.name}
+                        </span>
                       </div>
                     </div>
                     <div className="summary">
@@ -53,6 +64,7 @@ function NegotiationForm({ title, formik }) {
                         rows="10"
                         placeholder="Notes"
                         className="form-control"
+                        // maxLength={20}
                       ></textarea>
                       {formik.touched.negotiationNote &&
                       formik.errors.negotiationNote ? (

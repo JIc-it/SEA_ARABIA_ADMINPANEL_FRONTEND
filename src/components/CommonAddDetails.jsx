@@ -1,7 +1,8 @@
 import React from "react";
 import "../static/css/site_visit.css";
 import DropZone from "./Common/DropZone";
-function CommonAddDetails({ title, formik }) {
+import { FileUploader } from "./Modal/FileUploader";
+function CommonAddDetails({ title, formik, handleFileChange }) {
   console.log(formik);
   return (
     <div className="card col-11 add_details">
@@ -27,6 +28,7 @@ function CommonAddDetails({ title, formik }) {
                           value={formik.values.proposalTitle || ""}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
+                          maxLength={20}
                         />
                         {formik.touched.proposalTitle &&
                         formik.errors.proposalTitle ? (
@@ -35,8 +37,17 @@ function CommonAddDetails({ title, formik }) {
                           </div>
                         ) : null}
                       </div>
-                      <div className="col-lg-12">
-                        <DropZone formik={formik} />
+                      <FileUploader
+                        formik={formik}
+                        handleFileChange={handleFileChange}
+                        className="vendor-form-file"
+                        errorClass="error-vendor-form-file"
+                      />
+                      <div className="upload-filename" style={{ margin: "0 " }}>
+                        <label htmlFor="">Uploaded File: </label>
+                        <span className="mx-2">
+                          {formik.values.files?.name}
+                        </span>
                       </div>
                     </div>
                     <div className="summary">
@@ -53,6 +64,7 @@ function CommonAddDetails({ title, formik }) {
                         rows="10"
                         placeholder="Notes"
                         className="form-control"
+                        // maxLength={20}
                       ></textarea>
                       {formik.touched.proposalNote &&
                       formik.errors.proposalNote ? (

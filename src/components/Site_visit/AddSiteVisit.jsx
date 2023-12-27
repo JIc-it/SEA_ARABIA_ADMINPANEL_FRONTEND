@@ -3,9 +3,10 @@ import "../../static/css/site_visit.css";
 import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { FileUploader } from "../Modal/FileUploader";
 
-function AddSiteVisit({ formik, qualificationlist }) {
-  console.log(formik);
+function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
+
   return (
     <div className="card col-11 add_details">
       <div className="card-body">
@@ -30,17 +31,31 @@ function AddSiteVisit({ formik, qualificationlist }) {
                         value={formik.values.title || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        maxLength={20}
                       />
                       {formik.touched.title && formik.errors.title ? (
                         <div className="error">{formik.errors.title}</div>
                       ) : null}
                     </div>
-                    <div className="col-lg-12">
+                    <FileUploader
+                      formik={formik}
+                      handleFileChange={handleFileChange}
+                      className="vendor-form-file"
+                      errorClass='error-vendor-form-file'
+                    />
+                    <div
+                      className="upload-filename"
+                      style={{ margin: "0 " }}
+                    >
+                      <label htmlFor="">Uploaded File: </label>
+                      <span className="mx-2">{formik.values.files?.name}</span>
+                    </div>
+                    {/* <div className="col-lg-12">
                       <DropZone formik={formik} />
                       {formik.touched.files && formik.errors.files ? (
                         <div className="error">{formik.errors.files}</div>
                       ) : null}
-                    </div>
+                    </div> */}
                   </div>
                   <div className="summary">
                     <label htmlFor="" className="form-label">
@@ -56,6 +71,7 @@ function AddSiteVisit({ formik, qualificationlist }) {
                       value={formik.values.note || ""}
                       onChange={formik.handleChange}
                       onBlur={formik.handleBlur}
+                      // maxLength={20}
                     ></textarea>
                     {formik.touched.note && formik.errors.note ? (
                       <div className="error">{formik.errors.note}</div>

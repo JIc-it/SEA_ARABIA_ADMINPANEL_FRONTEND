@@ -1,62 +1,48 @@
-import { OnboardContext } from "../../../Context/OnboardContext";
-import { getMiscellaneousList } from "../../../services/leadMangement";
-import AddOthersModal from "./AddMiscellaneous";
 import { useContext, useEffect, useState } from "react";
-import CircularProgress from "@mui/material/CircularProgress";
+import { OnboardContext } from "../../../Context/OnboardContext";
 import { convertedDateAndTime, removeBaseUrlFromPath } from "../../../helpers";
-import ViewMiscellaneous from "./ViewMiscellaneous";
 import { getListDataInPagination } from "../../../services/commonServices";
-import EditMiscellaneous from "./EditMiscellaneous";
+import { getMOU } from "../../../services/leadMangement";
+import AddMouModal from "./AddMouModal";
+import CircularProgress from "@mui/material/CircularProgress";
+import ViewCharter from "./ViewCharter";
+import EditCharter from "./EditCharter";
 
-export default function MiscellaneousList() {
+function MOU() {
   const { vendorId, companyID } = useContext(OnboardContext);
-  const [isRefetch, setIsRefetch] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [isViewMiscellaneous, setIsViewMiscellaneous] = useState(false);
-  const [isEditMiscellaneous, setIsEditMiscellaneous] = useState(false);
+  const [mou, setMOUs] = useState([]);
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isViewNegotiation, setIsViewNegotiation] = useState(false);
+  const [isEditNegotiation, setIsEditNegotiation] = useState(false);
   const [selectedData, setSelectedData] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
-
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
   const handleCloseViewMiscellaneous = () => {
-    setIsViewMiscellaneous(false);
+    setIsViewNegotiation(false);
   };
   
   const handleViewMiscellaneous = (data) => {
-    setIsViewMiscellaneous(true);
+    setIsViewNegotiation(true);
     setSelectedData(data);
   };
-
-  const handleCloseEditMiscellaneous = () => {
-    setIsEditMiscellaneous(false);
-  };
-
-  const handleEditMiscellaneous = (data) => {
-    setIsEditMiscellaneous(true);
-    setSelectedData(data);
-  };
-
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-  const [miscellaneousList, setMiscellaneousList] = useState();
-
   useEffect(() => {
-    setIsLoading(true);
-    getMiscellaneousList(companyID)
+    getMOU(companyID)
       .then((data) => {
-        setMiscellaneousList(data.results);
+        setMOUs(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-    setIsLoading(false);
   }, [isRefetch]);
+
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -71,7 +57,7 @@ export default function MiscellaneousList() {
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
-          setMiscellaneousList(data?.results);
+          setMOUs(data?.results);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -79,20 +65,29 @@ export default function MiscellaneousList() {
         });
   };
 
+  const handleCloseEditNegotiation = () => {
+    setIsEditNegotiation(false);
+  };
+
+  const handleEditNegotiation = (data) => {
+    setIsEditNegotiation(true);
+    setSelectedData(data);
+  };
+
   return (
-    <div class="tab-content note">
-      <div class="tab-pane active show" id="tabs-home-7">
+    <div className="tab-content site">
+      <div className="tab-pane active show" id="tabs-home-7">
         <div>
           <div style={{ paddingBottom: "20px" }}>
-            <AddOthersModal
+            <AddMouModal
               show={showOffcanvas}
               close={handleCloseOffcanvas}
-              isRefetch={isRefetch}
               setIsRefetch={setIsRefetch}
+              isRefetch={isRefetch}
             />
             <button
               onClick={handleOpenOffcanvas}
-              class="btn"
+              className="btn"
               style={{
                 backgroundColor: "#187AF7",
                 color: "white",
@@ -102,22 +97,22 @@ export default function MiscellaneousList() {
                 width: "215px",
               }}
             >
-              Add Attachment &nbsp;
+              Add MOU / Charter &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
+                width="21"
                 height="20"
-                viewBox="0 0 20 20"
+                viewBox="0 0 21 20"
                 fill="none"
               >
                 <path
-                  d="M10 3L10 17"
+                  d="M10.5 3L10.5 17"
                   stroke="white"
                   stroke-width="2"
                   stroke-linecap="round"
                 />
                 <path
-                  d="M3 10H17"
+                  d="M3.5 10H17.5"
                   stroke="white"
                   stroke-width="2"
                   stroke-linecap="round"
@@ -126,12 +121,11 @@ export default function MiscellaneousList() {
             </button>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table card-table table-vcenter text-nowrap datatable">
+        <div className="table-responsive">
+          <table className="table card-table table-vcenter text-nowrap datatable">
             <thead>
               <tr>
-                <th> Title</th>
-                {/* <th>Note</th> */}
+                <th>Title</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Action</th>
@@ -140,8 +134,8 @@ export default function MiscellaneousList() {
             <tbody>
               {!isLoading ? (
                 <>
-                  {miscellaneousList && miscellaneousList.length > 0 ? (
-                    miscellaneousList.map((item, i) => {
+                  {mou && mou.length > 0 ? (
+                    mou.map((item, i) => {
                       let formatedTime = convertedDateAndTime(item.datetime);
                       return (
                         <tr>
@@ -188,7 +182,7 @@ export default function MiscellaneousList() {
                             </div>
                             <div
                               className="edit-icon cursor-pointer"
-                              onClick={() => handleEditMiscellaneous(item)}
+                              onClick={() => handleEditNegotiation(item)}
                             >
                               <span
                                 style={{
@@ -229,10 +223,10 @@ export default function MiscellaneousList() {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No Miscellaneous Found
+                              No MOU / Charter Found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
-                              Add Your Miscellaneous here
+                              Add Your MOU / Charter here
                             </p>
                           </div>
                         </div>
@@ -309,17 +303,17 @@ export default function MiscellaneousList() {
           </ul>
         </div>
       </div>
-      {isViewMiscellaneous && (
-        <ViewMiscellaneous
-          show={isViewMiscellaneous}
+      {isViewNegotiation && (
+        <ViewCharter
+          show={isViewNegotiation}
           close={handleCloseViewMiscellaneous}
           selectedData={selectedData}
         />
       )}
-      {isEditMiscellaneous && (
-        <EditMiscellaneous
-          show={isEditMiscellaneous}
-          close={handleCloseEditMiscellaneous}
+      {isEditNegotiation && (
+        <EditCharter
+          show={isEditNegotiation}
+          close={handleCloseEditNegotiation}
           isRefetch={isRefetch}
           setIsRefetch={setIsRefetch}
           selectedData={selectedData}
@@ -328,3 +322,5 @@ export default function MiscellaneousList() {
     </div>
   );
 }
+
+export default MOU;

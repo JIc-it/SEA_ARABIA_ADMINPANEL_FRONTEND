@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import {
-
   formatDateIncludeMonth,
   formatTimeWith12Hour,
   removeBaseUrlFromPath,
@@ -82,6 +81,7 @@ function SiteVisit({ selectedTab }) {
           console.error("Error fetching  data:", error);
         });
   };
+  
   return (
     <div className="tab-content site">
       <div className="tab-pane active show" id="tabs-home-7">
@@ -127,6 +127,7 @@ function SiteVisit({ selectedTab }) {
               <tr>
                 <th>Title</th>
                 <th>Date</th>
+                {/* <th>Note</th> */}
                 <th>Time</th>
                 <th>Action</th>
               </tr>
@@ -142,7 +143,7 @@ function SiteVisit({ selectedTab }) {
                       return (
                         <tr>
                           <td>{item.title}</td>
-                          
+                          {/* <td>{item.note}</td> */}
                           <td>{convertedDate}</td>
                           <td>{formatedTime}</td>
                           <td
@@ -225,10 +226,10 @@ function SiteVisit({ selectedTab }) {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No Attachment / Note Found
+                              No Site Visit Found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
-                              Add Your Attachment / Note here
+                              Add Your Site Visit here
                             </p>
                           </div>
                         </div>
@@ -312,7 +313,7 @@ function SiteVisit({ selectedTab }) {
           selectedData={selectedData}
         />
       )}
-        {isEditSiteVisit && (
+      {isEditSiteVisit && (
         <EditSiteVisit
           show={isEditSiteVisit}
           close={handleCloseEditSiteVisit}

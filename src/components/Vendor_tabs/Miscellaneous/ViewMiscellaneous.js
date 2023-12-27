@@ -1,19 +1,7 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
-
-import * as Yup from "yup";
-import { useContext, useEffect, useState } from "react";
-import {
-  addMiscellaneousAttachment,
-  getMiscellaneousTypeList,
-} from "../../../services/leadMangement";
-import DropZone from "../../Common/DropZone";
-import { FileUploader } from "../../Modal/FileUploader";
-import { toast } from "react-toastify";
-import { OnboardContext } from "../../../Context/OnboardContext";
+import { useState } from "react";
 import { convertedDateAndTime, removeFolderPath } from "../../../helpers";
 import FileViewer from "../FileViewer";
-
 
 function ViewMiscellaneous({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);

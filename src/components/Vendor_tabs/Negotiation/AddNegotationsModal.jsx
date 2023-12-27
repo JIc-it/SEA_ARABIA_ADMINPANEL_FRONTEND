@@ -1,16 +1,19 @@
 import { Offcanvas } from "react-bootstrap";
+import { FileUploader } from "../../Modal/FileUploader";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useContext, useEffect, useState } from "react";
-import {
-  addMiscellaneousAttachment,
-} from "../../../services/leadMangement";
-import { FileUploader } from "../../Modal/FileUploader";
-import { toast } from "react-toastify";
+import { useContext, useState } from "react";
 import { OnboardContext } from "../../../Context/OnboardContext";
+import { toast } from "react-toastify";
+import { submitNegotiation } from "../../../services/leadMangement";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
+export default function AddNegotationsModal({
+  show,
+  close,
+  isRefetch,
+  setIsRefetch,
+}) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
   const initialValues = {
@@ -21,6 +24,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
     // time: "",
     // date: "",
   };
+
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: Yup.object({
@@ -52,21 +56,23 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
             attachment: values.files,
           };
 
-          const adminData = await addMiscellaneousAttachment(data);
+          const adminData = await submitNegotiation(data);
 
           if (adminData) {
             setIsLoading(false);
             // window.location.reload();
             setIsRefetch(!isRefetch);
-            toast.success("Attachment Added Successfully.");
+            toast.success("Negotiation Added Successfully.");
             close();
             resetForm();
           } else {
+            toast.error("Negotiation add failed!.");
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
         } catch (err) {
+          toast.error(err.response.data.error);
           console.log(err);
 
           setIsLoading(false);
@@ -78,16 +84,11 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   const handleFileChange = (file) => {
     formik.setFieldValue("files", file[0]);
   };
-  
+
   return (
     <Offcanvas
       show={show}
-      onHide={() => {
-        close();
-        formik.setFieldValue("title", "");
-        formik.setFieldValue("files", "");
-        formik.setFieldValue("note", "");
-      }}
+      onHide={close}
       placement="end"
       style={{ overflow: "auto" }}
     >
@@ -95,7 +96,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Attachment / Notes </Offcanvas.Title>
+        <Offcanvas.Title>Add Negotiation </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -124,7 +125,6 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
           <label htmlFor="">Uploaded File: </label>
           <span className="mx-2">{formik.values.files?.name}</span>
         </div>
-      
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
@@ -133,14 +133,14 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
             Notes
           </label>
           <textarea
-            cols="30"
-            rows="5"
-            placeholder="Notes"
-            className="form-control"
             name="note"
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.note}
+            cols="30"
+            rows="5"
+            placeholder="Notes"
+            className="form-control"
             // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
@@ -154,17 +154,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
           >
             Date
           </label>
-          <input
-            type="date"
-            className="form-control"
-            name="date"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.date}
-          />
-          {formik.touched.date && formik.errors.date ? (
-            <div className="error">{formik.errors.date}</div>
-          ) : null}
+          <input type="date" name="" id="" className="form-control" />
         </div>
         <div style={{ margin: "20px" }}>
           <label
@@ -173,23 +163,13 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
           >
             Time
           </label>
-          <input
-            type="time"
-            className="form-control"
-            name="time"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.time}
-          />
-          {formik.touched.time && formik.errors.time ? (
-            <div className="error">{formik.errors.time}</div>
-          ) : null}
+          <input type="time" name="" id="" className="form-control" />
         </div> */}
         <div
           style={{
             display: "flex",
             flexDirection: "row",
-            height: "192px",
+            height: "282px",
             justifyContent: "center",
             alignItems: "end",
           }}
@@ -207,13 +187,13 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
           >
             <button
               className="btn btn-success"
-              type="submit"
               style={{
                 flex: 1,
                 margin: "0 5px",
                 width: "calc(50% - 5px)",
                 backgroundColor: "#006875",
               }}
+              type="submit"
             >
               {isLoading ? <CircularProgress /> : "Add"}
             </button>
@@ -223,5 +203,3 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
     </Offcanvas>
   );
 }
-
-export default AddMiscellaneous;

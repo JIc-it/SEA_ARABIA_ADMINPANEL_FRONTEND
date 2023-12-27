@@ -1,18 +1,16 @@
 import React, { useContext, useEffect } from "react";
-// import "../../static/css/add_vendor_details.css";
 import { useState } from "react";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   UpdateVendorListById,
   getUserIdType,
   getVendorListById,
   getVendorServiceTag,
-  siteVisitQualification,
 } from "../../../services/leadMangement";
 import { toast } from "react-toastify";
 
@@ -22,7 +20,6 @@ const VenderIndivitualEdit = () => {
   console.log(params);
   const vendorId = params?.id;
   const companyID = params?.companyID;
-  //  const vendorId=OnboardContextData.vendorId
   const [showCanvas, setOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setOffcanvas(true);
   const [serviceTagList, setServiceTagList] = useState();
@@ -101,7 +98,8 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("fullName", data.first_name);
         // formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
-        formik.setFieldValue("phone", data.mobile);
+        const formattedPhoneNumber = data.mobile.replace(/\D/g, "");
+        formik.setFieldValue("phone", formattedPhoneNumber);
         formik.setFieldValue("location", data.profileextra?.location);
         formik.setFieldValue(
           "idType",
@@ -240,6 +238,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.fullName}
+                        maxLength={20}
                       />
                       {formik.touched.fullName && formik.errors.fullName ? (
                         <div className="error">{formik.errors.fullName}</div>
@@ -263,18 +262,20 @@ const VenderIndivitualEdit = () => {
                             className="form-control"
                             placeholder="Phone Number"
                             name="phone"
+                            value={
+                              formik.values.phone &&
+                              formik.values.phone
+                                .replace(/\D/g, "")
+                                .slice(0, 10)
+                            }
                             onChange={(e) => {
                               const inputValue = e.target.value;
-                              if (inputValue.length <= 10) {
-                                const sanitizedValue = inputValue.replace(
-                                  /\D/g,
-                                  ""
-                                ); // Remove non-digit characters
-                                formik.handleChange("phone")(sanitizedValue); // Update the formik field
-                              }
+                              const sanitizedValue = inputValue
+                                .replace(/\D/g, "")
+                                .slice(0, 10); // Remove non-digit characters and limit to 10 digits
+                              formik.setFieldValue("phone", sanitizedValue); // Update the formik field
                             }}
                             onBlur={formik.handleBlur}
-                            value={formik.values.phone}
                           />
                         </div>
                       </div>
@@ -296,6 +297,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
+                        maxLength={20}
                       />
                       {formik.touched.email && formik.errors.email ? (
                         <div className="error">{formik.errors.email}</div>
@@ -313,6 +315,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.location}
+                        maxLength={20}
                       />
                       {formik.touched.location && formik.errors.location ? (
                         <div className="error">{formik.errors.location}</div>
@@ -396,6 +399,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyName}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyName &&
                                 formik.errors.companyName ? (
@@ -418,6 +422,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyAddress}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyAddress &&
                                 formik.errors.companyAddress ? (
@@ -441,6 +446,7 @@ const VenderIndivitualEdit = () => {
                                   name="companyRegistrationNumber"
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
+                                  maxLength={20}
                                   value={
                                     formik.values.companyRegistrationNumber
                                   }
@@ -466,6 +472,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyWebsite}
+                                  maxLength={20}
                                 />
                                 {formik.touched.companyWebsite &&
                                 formik.errors.companyWebsite ? (

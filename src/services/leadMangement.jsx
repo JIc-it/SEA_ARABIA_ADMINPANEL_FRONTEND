@@ -25,6 +25,9 @@ const miscellaneousUpdateUrl = "company/miscellaneous-update";
 const vendorLeadCountUrl = "account/vendor-leads-count";
 const vendorStatusUrl = "company/change-status";
 const siteVisitUpdateUrl = "company/sitevisit-update";
+const proposalUpdateUrl = "company/proposal-update";
+const negotiationUpdateUrl = "company/negotation-update";
+const charterUpdateUrl = "company/mou-update";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -160,9 +163,9 @@ export const submitProposal = (data) => {
     });
 };
 
-export const getPropsal = () => {
+export const getPropsal = (companyID) => {
   return axiosInstance
-    .get(getPropsals)
+    .get(getPropsals, { params: { id: companyID } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -186,9 +189,9 @@ export const submitNegotiation = (data) => {
     });
 };
 
-export const getNegotiation = () => {
+export const getNegotiation = (companyID) => {
   return axiosInstance
-    .get(getNegotiations)
+    .get(getNegotiations, { params: { id: companyID } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -212,9 +215,9 @@ export const submitCharter = (data) => {
     });
 };
 
-export const getMOU = () => {
+export const getMOU = (companyID) => {
   return axiosInstance
-    .get(getMOUs)
+    .get(getMOUs, { params: { id: companyID } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -292,10 +295,39 @@ export const updateVendorStatus = (id, status) => {
     });
 };
 
-
 export const updateSiteVisitAttachment = (id, data) => {
   return axiosInstance
     .put(`${siteVisitUpdateUrl}/${id}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const updatProposalAttachment = (id, data) => {
+  return axiosInstance
+    .put(`${proposalUpdateUrl}/${id}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const updateNegotiationAttachment = (id, data) => {
+  return axiosInstance
+    .put(`${negotiationUpdateUrl}/${id}`, data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const updateCharterAttachment = (id, data) => {
+  return axiosInstance
+    .put(`${charterUpdateUrl}/${id}`, data)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -1,55 +1,51 @@
-import { OnboardContext } from "../../../Context/OnboardContext";
-import { getMiscellaneousList } from "../../../services/leadMangement";
-import AddOthersModal from "./AddMiscellaneous";
+import { convertedDateAndTime, removeBaseUrlFromPath } from "../../../helpers";
+import { getListDataInPagination } from "../../../services/commonServices";
+import { getPropsal } from "../../../services/leadMangement";
+import AddProposalModal from "./AddProposalModal";
 import { useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import { convertedDateAndTime, removeBaseUrlFromPath } from "../../../helpers";
-import ViewMiscellaneous from "./ViewMiscellaneous";
-import { getListDataInPagination } from "../../../services/commonServices";
-import EditMiscellaneous from "./EditMiscellaneous";
+import { OnboardContext } from "../../../Context/OnboardContext";
+import EditProposal from "./EditProposal";
+import ViewProposal from "./ViewProposal";
 
-export default function MiscellaneousList() {
+function Proposal() {
   const { vendorId, companyID } = useContext(OnboardContext);
-  const [isRefetch, setIsRefetch] = useState(false);
+  const [proposalList, setProposalList] = useState([]);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [isViewMiscellaneous, setIsViewMiscellaneous] = useState(false);
-  const [isEditMiscellaneous, setIsEditMiscellaneous] = useState(false);
-  const [selectedData, setSelectedData] = useState();
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
-
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-  const handleCloseViewMiscellaneous = () => {
-    setIsViewMiscellaneous(false);
-  };
-  
-  const handleViewMiscellaneous = (data) => {
-    setIsViewMiscellaneous(true);
+  const [isEditProposal, setIsEditProposal] = useState(false);
+  const [selectedData, setSelectedData] = useState();
+  const [isViewProposal, setIsViewProposal] = useState(false);
+  const handleEditProposal = (data) => {
+    setIsEditProposal(true);
     setSelectedData(data);
   };
-
-  const handleCloseEditMiscellaneous = () => {
-    setIsEditMiscellaneous(false);
-  };
-
-  const handleEditMiscellaneous = (data) => {
-    setIsEditMiscellaneous(true);
-    setSelectedData(data);
+  const handleCloseEditProposal = () => {
+    setIsEditProposal(false);
   };
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
-  const [miscellaneousList, setMiscellaneousList] = useState();
+  const handleCloseViewProposal = () => {
+    setIsViewProposal(false);
+  };
+  
+  const handleViewProposal = (data) => {
+    setIsViewProposal(true);
+    setSelectedData(data);
+  };
 
   useEffect(() => {
     setIsLoading(true);
-    getMiscellaneousList(companyID)
+    getPropsal(companyID)
       .then((data) => {
-        setMiscellaneousList(data.results);
+        setProposalList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })
       .catch((error) => {
@@ -71,7 +67,7 @@ export default function MiscellaneousList() {
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
-          setMiscellaneousList(data?.results);
+          setProposalList(data?.results);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -80,11 +76,11 @@ export default function MiscellaneousList() {
   };
 
   return (
-    <div class="tab-content note">
-      <div class="tab-pane active show" id="tabs-home-7">
+    <div className="tab-content site">
+      <div className="tab-pane active show" id="tabs-home-7">
         <div>
           <div style={{ paddingBottom: "20px" }}>
-            <AddOthersModal
+            <AddProposalModal
               show={showOffcanvas}
               close={handleCloseOffcanvas}
               isRefetch={isRefetch}
@@ -92,7 +88,7 @@ export default function MiscellaneousList() {
             />
             <button
               onClick={handleOpenOffcanvas}
-              class="btn"
+              className="btn"
               style={{
                 backgroundColor: "#187AF7",
                 color: "white",
@@ -102,22 +98,22 @@ export default function MiscellaneousList() {
                 width: "215px",
               }}
             >
-              Add Attachment &nbsp;
+              Add Proposal &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
+                width="21"
                 height="20"
-                viewBox="0 0 20 20"
+                viewBox="0 0 21 20"
                 fill="none"
               >
                 <path
-                  d="M10 3L10 17"
+                  d="M10.5 3L10.5 17"
                   stroke="white"
                   stroke-width="2"
                   stroke-linecap="round"
                 />
                 <path
-                  d="M3 10H17"
+                  d="M3.5 10H17.5"
                   stroke="white"
                   stroke-width="2"
                   stroke-linecap="round"
@@ -126,13 +122,13 @@ export default function MiscellaneousList() {
             </button>
           </div>
         </div>
-        <div class="table-responsive">
-          <table class="table card-table table-vcenter text-nowrap datatable">
+        <div className="table-responsive">
+          <table className="table card-table table-vcenter text-nowrap datatable">
             <thead>
               <tr>
-                <th> Title</th>
-                {/* <th>Note</th> */}
+                <th>Title</th>
                 <th>Date</th>
+                {/* <th>Note</th> */}
                 <th>Time</th>
                 <th>Action</th>
               </tr>
@@ -140,8 +136,8 @@ export default function MiscellaneousList() {
             <tbody>
               {!isLoading ? (
                 <>
-                  {miscellaneousList && miscellaneousList.length > 0 ? (
-                    miscellaneousList.map((item, i) => {
+                  {proposalList && proposalList.length > 0 ? (
+                    proposalList.map((item, i) => {
                       let formatedTime = convertedDateAndTime(item.datetime);
                       return (
                         <tr>
@@ -157,7 +153,7 @@ export default function MiscellaneousList() {
                             }}
                           >
                             <div
-                              onClick={() => handleViewMiscellaneous(item)}
+                              onClick={() => handleViewProposal(item)}
                               className="btn btn-sm btn-info"
                               style={{
                                 padding: "5px",
@@ -188,7 +184,7 @@ export default function MiscellaneousList() {
                             </div>
                             <div
                               className="edit-icon cursor-pointer"
-                              onClick={() => handleEditMiscellaneous(item)}
+                              onClick={() => handleEditProposal(item)}
                             >
                               <span
                                 style={{
@@ -229,10 +225,10 @@ export default function MiscellaneousList() {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No Miscellaneous Found
+                              No Proposal Found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
-                              Add Your Miscellaneous here
+                              Add Your Proposal here
                             </p>
                           </div>
                         </div>
@@ -309,22 +305,24 @@ export default function MiscellaneousList() {
           </ul>
         </div>
       </div>
-      {isViewMiscellaneous && (
-        <ViewMiscellaneous
-          show={isViewMiscellaneous}
-          close={handleCloseViewMiscellaneous}
+      {isEditProposal && (
+        <EditProposal
+          show={isEditProposal}
+          close={handleCloseEditProposal}
+          isRefetch={isRefetch}
+          setIsRefetch={setIsRefetch}
           selectedData={selectedData}
         />
       )}
-      {isEditMiscellaneous && (
-        <EditMiscellaneous
-          show={isEditMiscellaneous}
-          close={handleCloseEditMiscellaneous}
-          isRefetch={isRefetch}
-          setIsRefetch={setIsRefetch}
+      {isViewProposal && (
+        <ViewProposal
+          show={isViewProposal}
+          close={handleCloseViewProposal}
           selectedData={selectedData}
         />
       )}
     </div>
   );
 }
+
+export default Proposal;

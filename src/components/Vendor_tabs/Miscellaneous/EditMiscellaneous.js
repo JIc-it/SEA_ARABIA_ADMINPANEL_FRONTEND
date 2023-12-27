@@ -1,18 +1,15 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
 import {
-  addMiscellaneousAttachment,
-  getMiscellaneousTypeList,
   updateMiscellaneousAttachment,
 } from "../../../services/leadMangement";
-import DropZone from "../../Common/DropZone";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { removeFolderPath } from "../../../helpers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EditMiscellaneous({
   show,
@@ -35,7 +32,7 @@ function EditMiscellaneous({
     },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      //   files: Yup.string().required("Please upload at least one file"),
+      //   files: Yup.string().required("Please upload  file"),
       note: Yup.string().required("Note is required"),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
@@ -123,6 +120,7 @@ function EditMiscellaneous({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.title}
+            maxLength={20}
           />
           {formik.touched.title && formik.errors.title ? (
             <div className="error">{formik.errors.title}</div>
@@ -153,6 +151,7 @@ function EditMiscellaneous({
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.note}
+            // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>
@@ -189,7 +188,7 @@ function EditMiscellaneous({
                 backgroundColor: "#006875",
               }}
             >
-              Edit
+               {isLoading ? <CircularProgress /> : "Edit"}
             </button>
           </div>
         </div>

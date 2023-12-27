@@ -1,19 +1,12 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
-import {
-  addMiscellaneousAttachment,
-  getMiscellaneousTypeList,
-  updateMiscellaneousAttachment,
-  updateSiteVisitAttachment,
-} from "../../../services/leadMangement";
-import DropZone from "../../Common/DropZone";
+import { updateSiteVisitAttachment } from "../../../services/leadMangement";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
-import { removeFolderPath } from "../../../helpers";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -35,7 +28,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
       // files: Yup.mixed()
-      //   .required("Please upload at least one file")
+      //   .required("Please upload  file")
       //   .test("fileSize", "File size must not exceed 50MB", (value) => {
       //     if (!value) {
       //       // Handle the case where no file is provided
@@ -80,7 +73,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
           }
           setIsLoading(false);
         } catch (err) {
-          toast.error(err.response.data.error)
+          toast.error(err.response.data.error);
           console.log(err);
 
           setIsLoading(false);
@@ -102,7 +95,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
       //   formik.setFieldValue("files", selectedData.attachment);
     }
   }, [selectedData]);
-  console.log(formik.errors);
+
   return (
     <Offcanvas
       show={show}
@@ -139,6 +132,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.title}
+            maxLength={20}
           />
           {formik.touched.title && formik.errors.title ? (
             <div className="error">{formik.errors.title}</div>
@@ -169,6 +163,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.note}
+            // maxLength={20}
           ></textarea>
           {formik.touched.note && formik.errors.note ? (
             <div className="error">{formik.errors.note}</div>
@@ -244,7 +239,8 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
                 backgroundColor: "#006875",
               }}
             >
-              Edit
+              {" "}
+              {isLoading ? <CircularProgress /> : " Edit"}
             </button>
           </div>
         </div>

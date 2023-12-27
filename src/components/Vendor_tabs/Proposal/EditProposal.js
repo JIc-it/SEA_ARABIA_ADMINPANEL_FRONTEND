@@ -1,46 +1,39 @@
+import { useContext, useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useContext, useEffect, useState } from "react";
-import {
-  addMiscellaneousAttachment,
-} from "../../../services/leadMangement";
+import { updatProposalAttachment } from "../../../services/leadMangement";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
+function EditProposal({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-  const initialValues = {
-    title: "",
-    // type: "",
-    files: "",
-    note: "",
-    // time: "",
-    // date: "",
-  };
+
+  var substringToRemove =
+    "https://seaarabia.jicitsolution.com/assets/media/company/proposal/attachment/";
+  const formatedFileName =
+    selectedData && selectedData.attachment.replace(substringToRemove, "");
+
   const formik = useFormik({
-    initialValues: initialValues,
+    initialValues: {
+      title: "",
+      type: "",
+      files: "",
+      note: "",
+      // time: "",
+      // date: "",
+    },
     validationSchema: Yup.object({
       title: Yup.string().required("Title is required"),
-      files: Yup.mixed()
-        .required("Please upload  file")
-        .test("fileSize", "File size must not exceed 50MB", (value) => {
-          if (!value) {
-            // Handle the case where no file is provided
-            return true;
-          }
-
-          // Check if the file size is less than or equal to 50MB
-          return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
-        }),
+      //   files: Yup.string().required("Please upload  file"),
       note: Yup.string().required("Note is required"),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),
-    onSubmit: async (values, { resetForm }) => {
+    onSubmit: async (values) => {
       setIsLoading(true);
 
       if (!isLoading) {
@@ -49,24 +42,27 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
             company: companyID,
             title: values.title,
             note: values.note,
-            attachment: values.files,
+            attachment: values.files ? values.files : selectedData.attachment,
           };
 
-          const adminData = await addMiscellaneousAttachment(data);
+          const adminData =
+            selectedData &&
+            (await updatProposalAttachment(selectedData.id, data));
 
           if (adminData) {
             setIsLoading(false);
             // window.location.reload();
             setIsRefetch(!isRefetch);
-            toast.success("Attachment Added Successfully.");
+            toast.success("Proposal Updated Successfully.");
             close();
-            resetForm();
           } else {
+            toast.error("Proposal Updation failed.");
             console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
         } catch (err) {
+          toast.error(err.response.data.error);
           console.log(err);
 
           setIsLoading(false);
@@ -78,7 +74,15 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   const handleFileChange = (file) => {
     formik.setFieldValue("files", file[0]);
   };
-  
+
+  useEffect(() => {
+    if (selectedData) {
+      formik.setFieldValue("title", selectedData.title);
+      formik.setFieldValue("note", selectedData.note);
+      //   formik.setFieldValue("files", selectedData.attachment);
+    }
+  }, [selectedData]);
+
   return (
     <Offcanvas
       show={show}
@@ -95,7 +99,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Attachment / Notes </Offcanvas.Title>
+        <Offcanvas.Title>Edit Attachment / Notes </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -122,9 +126,12 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
         <FileUploader formik={formik} handleFileChange={handleFileChange} />
         <div className="upload-filename">
           <label htmlFor="">Uploaded File: </label>
-          <span className="mx-2">{formik.values.files?.name}</span>
+          <span className="mx-2">
+            {formik.values.files
+              ? formik.values.files.name
+              : selectedData && formatedFileName}
+          </span>
         </div>
-      
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
@@ -147,44 +154,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
             <div className="error">{formik.errors.note}</div>
           ) : null}
         </div>
-        {/* <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Date
-          </label>
-          <input
-            type="date"
-            className="form-control"
-            name="date"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.date}
-          />
-          {formik.touched.date && formik.errors.date ? (
-            <div className="error">{formik.errors.date}</div>
-          ) : null}
-        </div>
-        <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Time
-          </label>
-          <input
-            type="time"
-            className="form-control"
-            name="time"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.time}
-          />
-          {formik.touched.time && formik.errors.time ? (
-            <div className="error">{formik.errors.time}</div>
-          ) : null}
-        </div> */}
+
         <div
           style={{
             display: "flex",
@@ -215,7 +185,7 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
                 backgroundColor: "#006875",
               }}
             >
-              {isLoading ? <CircularProgress /> : "Add"}
+              {isLoading ? <CircularProgress /> : "Edit"}
             </button>
           </div>
         </div>
@@ -224,4 +194,4 @@ function AddMiscellaneous({ show, close, setIsRefetch, isRefetch }) {
   );
 }
 
-export default AddMiscellaneous;
+export default EditProposal;

@@ -62,6 +62,7 @@ const AddVendorInfo = ({ formik }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.fullName}
+                  maxLength={20}
                 />
                 {formik.touched.fullName && formik.errors.fullName ? (
                   <div className="error">{formik.errors.fullName}</div>
@@ -81,9 +82,10 @@ const AddVendorInfo = ({ formik }) => {
                       className="form-control"
                       placeholder="Phone Number"
                       name="phone"
-                      value={formik.values.phone
-                        .replace(/\D/g, "")
-                        .slice(0, 10)} // Allow only the first 10 numeric characters
+                      value={
+                        formik.values.phone &&
+                        formik.values.phone.replace(/\D/g, "").slice(0, 10)
+                      } // Allow only the first 10 numeric characters
                       onChange={(e) => {
                         const inputValue = e.target.value;
                         const sanitizedValue = inputValue
@@ -113,6 +115,7 @@ const AddVendorInfo = ({ formik }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
+                  maxLength={20}
                 />
                 {formik.touched.email && formik.errors.email ? (
                   <div className="error">{formik.errors.email}</div>
@@ -130,6 +133,7 @@ const AddVendorInfo = ({ formik }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.location}
+                  maxLength={20}
                 />
                 {formik.touched.location && formik.errors.location ? (
                   <div className="error">{formik.errors.location}</div>
@@ -139,7 +143,7 @@ const AddVendorInfo = ({ formik }) => {
           </div>
           <div className="row row-cards">
             <div className="col-sm-6">
-              <label className="form-label">ID Type</label>
+              <label className="form-label">ID Type</label> ``
               <select
                 type="text"
                 className="form-select mb-3 status_selector"
@@ -174,9 +178,22 @@ const AddVendorInfo = ({ formik }) => {
                   className="form-control"
                   placeholder="ID Number"
                   name="idNumber"
-                  onChange={formik.handleChange}
+                  onChange={(e) => {           
+                    // Ensure the input value is a number
+                    const inputValue = parseInt(e.target.value, 10);
+
+                    // Check if the input is a number and not NaN
+                    if (!isNaN(inputValue)) {
+                      // Truncate to a maximum of 5 digits
+                      const truncatedValue = inputValue.toString().slice(0, 20);
+
+                      // Update the formik values
+                      formik.setFieldValue("idNumber", truncatedValue);
+                    }
+                  }}
                   onBlur={formik.handleBlur}
                   value={formik.values.idNumber}
+                  max={99}
                 />
                 {formik.touched.idNumber && formik.errors.idNumber ? (
                   <div className="error">{formik.errors.idNumber}</div>
@@ -208,6 +225,7 @@ const AddVendorInfo = ({ formik }) => {
                             name="companyName"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            maxLength={20}
                             value={formik.values.companyName}
                           />
                           {formik.touched.companyName &&
@@ -228,6 +246,7 @@ const AddVendorInfo = ({ formik }) => {
                             name="companyAddress"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
+                            maxLength={20}
                             value={formik.values.companyAddress}
                           />
                           {formik.touched.companyAddress &&
@@ -250,6 +269,7 @@ const AddVendorInfo = ({ formik }) => {
                             className="form-control"
                             placeholder="Company Registration Number"
                             name="companyRegistrationNumber"
+                            maxLength={20}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.companyRegistrationNumber}
@@ -270,6 +290,7 @@ const AddVendorInfo = ({ formik }) => {
                             className="form-control"
                             placeholder="Company Website"
                             name="companyWebsite"
+                            maxLength={20}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.companyWebsite}

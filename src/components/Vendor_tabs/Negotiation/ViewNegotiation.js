@@ -1,14 +1,19 @@
 import { Offcanvas } from "react-bootstrap";
 import { useState } from "react";
-import { formatDateIncludeMonth, formatTimeWith12Hour } from "../../../helpers";
+import { convertedDateAndTime } from "../../../helpers";
 import FileViewer from "../FileViewer";
 
-function ViewSiteVisit({ show, close, selectedData }) {
+function ViewNegotiation({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
+  
   var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/site_visit/attachment/";
+    "https://seaarabia.jicitsolution.com/assets/media/company/negotiation/attachment/";
+
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
+
+  const formatedDate =
+    selectedData && convertedDateAndTime(selectedData && selectedData.datetime);
 
   return (
     <Offcanvas
@@ -21,7 +26,7 @@ function ViewSiteVisit({ show, close, selectedData }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title> Site Visit Details</Offcanvas.Title>
+        <Offcanvas.Title>Negotiation Details</Offcanvas.Title>
       </Offcanvas.Header>
       <div>
         <div style={{ margin: "20px" }}>
@@ -74,9 +79,7 @@ function ViewSiteVisit({ show, close, selectedData }) {
             Date
           </label>
           <br />
-          <span>
-            {selectedData && formatDateIncludeMonth(selectedData.date)}
-          </span>
+          <span>{formatedDate?.fullDate}</span>
         </div>
         <div style={{ margin: "20px" }}>
           <label
@@ -86,7 +89,7 @@ function ViewSiteVisit({ show, close, selectedData }) {
             Time
           </label>
           <br />
-          <span>{selectedData && formatTimeWith12Hour(selectedData.time)}</span>
+          <span>{formatedDate?.formattedTime}</span>
         </div>
 
         {isViewFile && (
@@ -101,4 +104,4 @@ function ViewSiteVisit({ show, close, selectedData }) {
   );
 }
 
-export default ViewSiteVisit;
+export default ViewNegotiation;
