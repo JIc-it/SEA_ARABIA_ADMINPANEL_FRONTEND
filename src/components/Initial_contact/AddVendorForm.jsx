@@ -9,6 +9,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   getUserIdType,
+  getVendorListById,
   getVendorServiceTag,
 } from "../../services/leadMangement";
 import { OnboardContext } from "../../Context/OnboardContext";
@@ -24,6 +25,16 @@ const AddVendorInfo = ({ formik }) => {
   const handleCloseOffcanvas = () => setOffcanvas(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [idTypeList, setIdTypeList] = useState();
+
+  useEffect(() => {
+    getVendorListById(vendorId).then((data) => {
+      formik.setFieldValue("fullName", data.first_name);
+      formik.setFieldValue("last_name", data.last_name);
+      formik.setFieldValue("email", data.email);
+      formik.setFieldValue("phone", data.mobile);
+      formik.setFieldValue("location", data.profileextra?.location);
+    });
+  }, [vendorId]);
 
   useEffect(() => {
     getVendorServiceTag()
@@ -143,7 +154,7 @@ const AddVendorInfo = ({ formik }) => {
           </div>
           <div className="row row-cards">
             <div className="col-sm-6">
-              <label className="form-label">ID Type</label> ``
+              <label className="form-label">ID Type</label>
               <select
                 type="text"
                 className="form-select mb-3 status_selector"
@@ -178,7 +189,7 @@ const AddVendorInfo = ({ formik }) => {
                   className="form-control"
                   placeholder="ID Number"
                   name="idNumber"
-                  onChange={(e) => {           
+                  onChange={(e) => {
                     // Ensure the input value is a number
                     const inputValue = parseInt(e.target.value, 10);
 
@@ -236,6 +247,7 @@ const AddVendorInfo = ({ formik }) => {
                           ) : null}
                         </div>
                       </div>
+
                       <div className="col-sm-6 ">
                         <div className="mb-3">
                           <label className="form-label">Company Address</label>

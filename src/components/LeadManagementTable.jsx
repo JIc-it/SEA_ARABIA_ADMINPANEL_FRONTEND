@@ -2,7 +2,11 @@ import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import AddNewLead from "./Modal/AddNewLead";
 import { useEffect, useState } from "react";
-import { getVendorList, getVendorStatus } from "../services/leadMangement";
+import {
+  getVendorList,
+  getVendorStatus,
+  handleVendorExport,
+} from "../services/leadMangement";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
@@ -59,44 +63,6 @@ function Table() {
   useEffect(() => {
     getVendorListData();
   }, [selectedValue, isRefetch]);
-
-  const handleExportData = () => {
-    if (listVendor) {
-      const header = [
-        "NAME",
-        "EMAIL",
-        "PHONE",
-        "LOCATION",
-        "CREATED ON",
-        "CREATED BY",
-        "STATUS",
-      ];
-      const csvData = listVendor.map((elem) => {
-        let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.first_name,
-          elem.email,
-          elem.mobile,
-          elem.location,
-          elem.state?.state,
-          formatedDate,
-          elem.created_by,
-          `${elem.status ? elem.status : "-"} `,
-        ];
-      });
-
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Vendor-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -214,35 +180,38 @@ function Table() {
               />
             </svg>
           </button>
-
-          <button
-            className="btn btn-outline"
-            style={{ borderRadius: "6px" }}
-            onClick={handleExportData}
+          <a
+            href="https://seaarabia.jicitsolution.com/account/vendor-list-export/"
+            download="vendor_list.csv"
           >
-            Export &nbsp;
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
+            <button
+              className="btn btn-outline"
+              style={{ borderRadius: "6px" }}
             >
-              <path
-                d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+              Export &nbsp;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
       <div className="card">

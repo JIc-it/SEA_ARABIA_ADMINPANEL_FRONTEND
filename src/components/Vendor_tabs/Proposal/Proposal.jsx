@@ -8,7 +8,7 @@ import { OnboardContext } from "../../../Context/OnboardContext";
 import EditProposal from "./EditProposal";
 import ViewProposal from "./ViewProposal";
 
-function Proposal() {
+function Proposal({count}) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [proposalList, setProposalList] = useState([]);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -52,7 +52,7 @@ function Proposal() {
         console.error("Error fetching  data:", error);
       });
     setIsLoading(false);
-  }, [isRefetch]);
+  }, [isRefetch,count]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);

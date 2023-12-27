@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import EditNegotiation from "./EditNegotiation";
 import ViewNegotiation from "./ViewNegotiation";
 
-function NegotationsList() {
+function NegotationsList({count}) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [negotiations, setNegotiations] = useState([]);
@@ -31,7 +31,7 @@ function NegotationsList() {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [isRefetch]);
+  }, [isRefetch,count]);
 
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 

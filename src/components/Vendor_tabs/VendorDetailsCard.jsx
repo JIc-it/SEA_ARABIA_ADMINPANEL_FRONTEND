@@ -23,7 +23,7 @@ function VendorDetailsCard() {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [vendorId]);
+  }, [vendorId, count]);
 
   console.log(userdata, "user");
   return (
@@ -113,7 +113,7 @@ function VendorDetailsCard() {
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Id Number</p>
-                <p>-</p>
+                <p>{userdata.useridentificationdata?.id_number}</p>
               </div>
             </div>
           </div>
