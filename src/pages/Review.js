@@ -16,10 +16,10 @@ const Review = () => {
   const [filterdataid, setfilterid] = useState("")
   const [filterdataidData, setfilteridData] = useState([])
   const [filtering, setFiltering] = useState({
-    search: "",
-    categoryid: "",
-    subcategoryid: "",
-    rating:0
+    search: null,
+    categoryid: null,
+    subcategoryid: null,
+    rating:null
   })
 
   const handlefiltering = (fields) => {
@@ -72,14 +72,14 @@ const Review = () => {
   }, [filtering]);
 
   useEffect(() => {
-    getServiceReviewFilter(filterdataid)
+    getServiceReviewFilter(filterdataid,filtering.rating)
       .then((data) => {
         setfilteridData(data.results);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
-  }, [filterdataid]);
+  }, [filterdataid,filtering.rating]);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
@@ -112,7 +112,7 @@ const Review = () => {
                     value={selectedValue}
                     onChange={handleSelectChange}
                   >
-                    <option value="All">All</option>
+                    <option value={null}>All</option>
                     {companyList.map((data, index) =>
                       <option key={data.id} value={data.name}>{data.name}</option>
                     )}
@@ -126,9 +126,13 @@ const Review = () => {
                     type="text"
                     className="form-select mb-3 status_selector"
                     value={categorychoose}
-                    onChange={(e)=>{setCategoryChoose(e.target.value);handlefiltering({categoryid:e.target.value})}}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      setCategoryChoose(selectedValue);
+                      handlefiltering({ categoryid: selectedValue });
+                    }}
                   >
-                    <option value="">All</option>
+                    <option value={null}>All</option>
                     {categorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
@@ -145,9 +149,13 @@ const Review = () => {
                     type="text"
                     className="form-select mb-3 status_selector"
                     value={subcategorychoose}
-                    onChange={(e)=>{setSubcategoryChoose(e.target.value);handlefiltering({subcategoryid:e.target.value})}}
+                    onChange={(e) => {
+                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      setSubcategoryChoose(selectedValue);
+                      handlefiltering({ subcategoryid: selectedValue });
+                    }}
                   >
-                    <option value="">All</option>
+                    <option value={null}>All</option>
                     {subcategorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
@@ -177,7 +185,7 @@ const Review = () => {
             </div>
           </div>
           <div className='col-lg-8 mx-1'>
-            {filterdataidData.length>0 && 
+            { 
             <div className='d-flex justify-content-between align-items-center'>
               <p>Review</p>
               <div className='d-flex align-items-center'>
@@ -185,22 +193,27 @@ const Review = () => {
                 <div className="status_dropdown">
                   <select
                     type="text"
-                    className="form-control px-3"
+                    className=""
                     value={filtering.rating}
                     onChange={(e)=>{handlefiltering({rating:e.target.value})}}
                   >
+                    <optgroup label="Rating">
+                    <option value={""}>All</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
                     <option value={4}>4</option>
                     <option value={5}>5</option>
-                    
+                    </optgroup>
                   </select>
                 </div>
             </div>
             </div>
             }
             <div className='row'>
+              {filterdataidData.length===0 &&
+              <div className='text-center' style={{fontWeight:"600",transform:"translateY(30vh)"}}>No Review Found</div>
+              }
               {filterdataidData.map((data) =>
                 <div key={data.id} className='col-lg-4'>
                   <div class="card">

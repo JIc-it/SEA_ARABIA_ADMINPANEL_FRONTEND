@@ -29,16 +29,16 @@ export const getSubCategoryist = (id) => {
 };
 export const getServiceFilterList = (data) => {
   return axiosInstance
-    .get("service/service-filter-list-cms",{params:{search:data.search,category:data?.categoryid,sub_category:data?.subcategoryid,rating:data?.rating}})
+    .get("service/service-filter-list-cms",{params:{search:data.search,category:data?.categoryid,sub_category:data?.subcategoryid}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
       throw error;
     });
 };
-export const getServiceReviewFilter = (id) => {
+export const getServiceReviewFilter = (id,rating) => {
   return axiosInstance
-    .get(`service/service-review-list/${id}`)
+    .get(`service/service-review-list/${id}`,{params:{rating:rating}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
