@@ -18,7 +18,8 @@ const Review = () => {
   const [filtering, setFiltering] = useState({
     search: "",
     categoryid: "",
-    subcategoryid: ""
+    subcategoryid: "",
+    rating:0
   })
 
   const handlefiltering = (fields) => {
@@ -115,9 +116,6 @@ const Review = () => {
                     {companyList.map((data, index) =>
                       <option key={data.id} value={data.name}>{data.name}</option>
                     )}
-                    {/* <option value="New Lead">All</option>
-                                        <option value="Yatch">Yatch</option>
-                                        <option value="Boat">Boat</option> */}
                   </select>
                 </div>
               </div>
@@ -178,7 +176,30 @@ const Review = () => {
               </div>
             </div>
           </div>
-          <div className='col-lg-9'>
+          <div className='col-lg-8 mx-1'>
+            {filterdataidData.length>0 && 
+            <div className='d-flex justify-content-between align-items-center'>
+              <p>Review</p>
+              <div className='d-flex align-items-center'>
+                <div>Sort by &nbsp;</div>
+                <div className="status_dropdown">
+                  <select
+                    type="text"
+                    className="form-control px-3"
+                    value={filtering.rating}
+                    onChange={(e)=>{handlefiltering({rating:e.target.value})}}
+                  >
+                    <option value={1}>1</option>
+                    <option value={2}>2</option>
+                    <option value={3}>3</option>
+                    <option value={4}>4</option>
+                    <option value={5}>5</option>
+                    
+                  </select>
+                </div>
+            </div>
+            </div>
+            }
             <div className='row'>
               {filterdataidData.map((data) =>
                 <div key={data.id} className='col-lg-4'>
