@@ -2,7 +2,7 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { passwordRegex } from "../../../helpers";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
@@ -11,28 +11,32 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateAdminListById,
   createAdmin,
+  getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
+import { passwordRegex } from "../../../helpers";
 
-function CreateNewAdmin({ show, close }) {
+function UpdateAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
+  console.log("admin id ===", adminId);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
+
   useEffect(() => {
-    getSalesRepListById(salesRepId)
+    getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin by id==", data);
+        console.log(" admin by id------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
-  }, [salesRepId]);
+  }, [adminId]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -63,41 +67,48 @@ function CreateNewAdmin({ show, close }) {
 
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      location: "",
-      mobile: "",
+      first_name: adminDetails?.first_name || "",
+      last_name: adminDetails?.last_name || "",
+      email: adminDetails?.email || "",
+      password: adminDetails?.password || "",
       confirmPassword: "",
+      mobile: adminDetails?.mobile || "",
+      location: adminDetails?.profileextra?.location || "",
+
+      // Add other fields as needed
     },
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
+
       if (!isLoading) {
         try {
           const data = {
+            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
             role: "Admin",
             email: values.email,
             password: values.password,
+            confirmPassword: values.confirmPassword,
             mobile: `+965 ${values.mobile}`,
-            location: values.location,
+            profileextra: {
+              location: values.location,
+            },
           };
 
-          const adminData = await createAdmin(data);
-          console.log("createAdmin", createAdmin);
+          const adminData = await UpdateAdminListById(adminId, data);
+          console.log("Admin updated detail is ---", adminDetails?.email);
           if (adminData) {
-            setIsRefetch(!isRefetch);
-            toast.success("Admin Added Successfully.");
-            close();
             setIsLoading(false);
+            // window.location.reload();
+            // setIsRefetch(!isRefetch);
+            toast.success(" Admin updated Successfully.");
+            close();
           } else {
-            console.error("Error while creating Admin:", adminData.error);
+            console.error("Error while updating Admin:", adminData.error);
             setIsLoading(false);
           }
-          setIsLoading(false);
         } catch (err) {
           console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
@@ -107,6 +118,22 @@ function CreateNewAdmin({ show, close }) {
       }
     },
   });
+  console.log("admin formik update data", formik);
+
+  useEffect(() => {
+    formik.setValues({
+      first_name: adminDetails?.first_name || "",
+      last_name: adminDetails?.last_name || "",
+      password: adminDetails?.password || "",
+
+      email: adminDetails?.email || "",
+      mobile: adminDetails?.mobile || "",
+      location: adminDetails?.profileextra?.location || "",
+
+      // defineservice: adminDetails?.useridentificationdata?.,
+      // Add other fields as needed
+    });
+  }, [adminDetails]);
 
   return (
     <Offcanvas
@@ -680,4 +707,4 @@ function CreateNewAdmin({ show, close }) {
   );
 }
 
-export default CreateNewAdmin;
+export default UpdateAdmin;

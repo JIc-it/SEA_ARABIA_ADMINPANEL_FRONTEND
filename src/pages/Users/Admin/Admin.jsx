@@ -19,7 +19,7 @@ const Admin = () => {
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        console.log("GUEST-list", data.results);
+        console.log("ADMIN-list", data.results);
         // setListDiscount(data.results);
         const filteredResults = data.results.filter(
           (item) => item.role === "Admin"

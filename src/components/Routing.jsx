@@ -26,7 +26,7 @@ import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
 import DiscountAddNew from "./Discounts/DiscountAddNew";
 import CustomerView from "./Customers/CustomerView";
-import CustomerEdit from "./Customers/CustomerEdit";
+
 import CustomersBookingView from "./Customers/CustomersBookingView";
 import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
@@ -76,7 +76,7 @@ function AllRouting() {
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
       <Route path="/customers/:customerId" element={<CustomerView />} />
-      <Route path="/customers-edit/:id" element={<CustomerEdit />} />
+      {/* <Route path="/customers-edit/:id" element={<CustomerEdit />} /> */}
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
