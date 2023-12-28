@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { getCustomerListById } from "../../../services/CustomerHandle";
 import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getSalesRepListById } from "../../../services/GuestHandle";
+import CreateSalesRep from "./CreateSalesRep";
 
 function SalesRepDetails() {
   const theme = useTheme();
@@ -31,7 +32,6 @@ function SalesRepDetails() {
         console.error("Error fetching customer data:", error);
       });
   }, [salesRepId]);
-
 
   return (
     <div
@@ -108,8 +108,6 @@ function SalesRepDetails() {
                 </p>
               </div>
             </div>
-
-           
 
             <div className="card_personal_details">
               <h5 className="personal_details_header">Details</h5>
@@ -248,7 +246,7 @@ function SalesRepDetails() {
 
             {active === "Details" && (
               <>
-                <CustomerEditModal
+                <CreateSalesRep
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
@@ -283,10 +281,12 @@ function SalesRepDetails() {
                         <p style={{ color: "#68727D" }}>First Name</p>
                         <p style={{ fontWeight: "700" }}>
                           {salesRepDetails?.first_name}
+                          {console.log(
+                            "first name",
+                            salesRepDetails?.first_name
+                          )}
                         </p>
                       </div>
-
-                    
 
                       <div>
                         <p style={{ color: "#68727D" }}>Location</p>
@@ -332,8 +332,6 @@ function SalesRepDetails() {
                           {salesRepDetails?.email}
                         </p>
                       </div>
-
-                     
                     </div>
                   </div>
                 </div>

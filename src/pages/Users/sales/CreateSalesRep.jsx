@@ -13,7 +13,7 @@ import {
 } from "../../../services/CustomerHandle";
 import { Link, useParams } from "react-router-dom";
 
-function CreateNewAdmin({ show, close }) {
+function CreateSalesRep({ show, close }) {
   const theme = useTheme();
   const customerId = useParams()?.customerId;
   console.log("c-id==", customerId);
@@ -643,4 +643,4 @@ function CreateNewAdmin({ show, close }) {
   );
 }
 
-export default CreateNewAdmin;
+export default CreateSalesRep;
