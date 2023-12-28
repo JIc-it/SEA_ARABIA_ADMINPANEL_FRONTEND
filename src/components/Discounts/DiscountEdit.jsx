@@ -348,18 +348,19 @@ const CouponCode = (data) => {
 function companywithservice(companyid){
  
     const serviceCount = formik?.values.services?.map((dat)=>dat.company===companyid) || 0;
-    return serviceCount
+    return serviceCount.length
 
 }
 
 function companywithservicelength(companyid){
  
-  const serviceCount = formik?.values.services.filter((dat)=>dat.company===companyid) || 0;
+  const serviceCount = servicelisting.filter((dat)=>dat.company===companyid) || 0;
   return serviceCount.length
 
 }
+const [servicelisting,setServiceListing]=useState([])
 
-console.log(typeof formik.values.image);
+
 if(!isLoading){
     return (
         <>
@@ -654,7 +655,7 @@ if(!isLoading){
                                     </label>
                                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
-                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
+                                <AddMorePopup setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
                             </div>
                         </div>
 

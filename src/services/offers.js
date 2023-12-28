@@ -7,6 +7,7 @@ const UpdateOffers="offer/offers";
 const companylisting="company/companycms-list"
 const serviceOnelisting="service/service-filter-list-cms"
 const getcompanylist="offer/offer-service-info"
+const exportdataURL="offer/export-offer-list/"
 
 
 export const getCompanyListing = () => {
@@ -46,9 +47,9 @@ export const getOneCompanyList = (id) => {
         throw error;
       });
   };
-export const getDiscountOfferList = (search) => {
+export const getDiscountOfferList = (search,data) => {
     return axiosInstance
-      .get(getOfferLists,{params:{search:search}})
+      .get(getOfferLists,{params:{search:search,is_enable:data?.status,expiry_start_date:data?.startdate,expiry_end_date:data?.enddate}})
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);
@@ -97,6 +98,16 @@ export const CreateOffer = (data) => {
 export const getDiscountOfferView = (id) => {
     return axiosInstance
       .get(`${getOfferViews}/${id}/`)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Error while fetching lead request:", error);
+        throw error;
+      });
+  };
+
+  export const getExportdata = () => {
+    return axiosInstance
+      .get(exportdataURL)
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);

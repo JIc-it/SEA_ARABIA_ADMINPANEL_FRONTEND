@@ -3,9 +3,14 @@ import { useState, useEffect } from "react";
 import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList } from "../services/review"
 
 const Review = () => {
-  const [categorylist, setCategorylist] = useState([])
+  const [categorylist, setCategorylist] = useState([]);
+  const [categorychoose,setCategoryChoose]=useState("")
+
+  const [subcategorychoose,setSubcategoryChoose]=useState("")
   const [subcategorylist, setSubCategorylist] = useState([])
+
   const [servicefilterlist, setserviceFilterList] = useState([])
+  
   const [companyList,setCompanyList]=useState([])
   const [selectedValue, setSelectedValue] = useState("New Lead");
   const [filterdataid, setfilterid] = useState("")
@@ -47,7 +52,7 @@ const Review = () => {
   }, []);
 
   useEffect(() => {
-    getSubCategoryist()
+    getSubCategoryist(categorychoose)
       .then((data) => {
         console.log(data);
         setSubCategorylist(data.results);
@@ -55,7 +60,8 @@ const Review = () => {
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
-  }, []);
+  }, [categorychoose]);
+
 
   useEffect(() => {
     getServiceFilterList(filtering)
@@ -82,6 +88,8 @@ const Review = () => {
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
+
+ console.log(categorychoose,subcategorychoose);
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className='container'>
@@ -124,12 +132,12 @@ const Review = () => {
                   <select
                     type="text"
                     className="form-select mb-3 status_selector"
-                    value={selectedValue}
-                    onChange={handleSelectChange}
+                    value={categorychoose}
+                    onChange={(e)=>{setCategoryChoose(e.target.value);handlefiltering({categoryid:e.target.value})}}
                   >
-                    <option value="All">All</option>
+                    <option value="">All</option>
                     {categorylist.map((data, index) =>
-                      <option key={data.id} value={data.name}>{data.name}</option>
+                      <option key={data.id} value={data.id}>{data.name}</option>
                     )}
                     {/* <option value="New Lead">All</option>
                                         <option value="Yatch">Yatch</option>
@@ -138,25 +146,22 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12'>
-                <label className="form-label">Sub Category : :</label>
+                <label className="form-label">Sub Category :</label>
                 <div className="status_dropdown">
                   <select
                     type="text"
                     className="form-select mb-3 status_selector"
-                    value={selectedValue}
-                    onChange={handleSelectChange}
+                    value={subcategorychoose}
+                    onChange={(e)=>{setSubcategoryChoose(e.target.value);handlefiltering({subcategoryid:e.target.value})}}
                   >
-                    <option value="All">All</option>
+                    <option value="">All</option>
                     {subcategorylist.map((data, index) =>
-                      <option key={data.id} value={data.name}>{data.name}</option>
+                      <option key={data.id} value={data.id}>{data.name}</option>
                     )}
-                    {/* <option value="New Lead">All</option>
-                                        <option value="Yatch">Yatch</option>
-                                        <option value="Boat">Boat</option> */}
                   </select>
                 </div>
               </div>
-              <div className='col-lg-12'>
+              <div className='col-lg-12' style={{height:"60vh",overflowY:"scroll"}}>
                 {servicefilterlist?.map((data) =>
                   <label key={data.id} class="card mb-4" style={{ display: 'flex' }} onClick={() => setfilterid(data.id)}>
                     <input name="plan" class="radio" type="radio" checked={data.id === filterdataid} />

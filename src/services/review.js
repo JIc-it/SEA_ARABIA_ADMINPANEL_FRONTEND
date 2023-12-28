@@ -11,16 +11,16 @@ export const getCompanyList = () => {
 };
 export const getCategoryist = () => {
   return axiosInstance
-    .get("service/category-list")
+    .get("main/category-list")
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
       throw error;
     });
 };
-export const getSubCategoryist = () => {
+export const getSubCategoryist = (id) => {
   return axiosInstance
-    .get("service/subcategory-list")
+    .get("main/subcategory-list",{params:{category:id}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
