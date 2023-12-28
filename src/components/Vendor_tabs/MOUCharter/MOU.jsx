@@ -8,7 +8,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ViewCharter from "./ViewCharter";
 import EditCharter from "./EditCharter";
 
-function MOU() {
+function MOU({count}) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [mou, setMOUs] = useState([]);
@@ -38,7 +38,7 @@ function MOU() {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [isRefetch]);
+  }, [isRefetch,count]);
 
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 

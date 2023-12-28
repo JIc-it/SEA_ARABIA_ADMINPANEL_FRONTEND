@@ -7,7 +7,7 @@ export default function LeadDetails({ count }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [leads, setLeads] = useState();
   const navigate = useNavigate();
-
+console.log(leads);
   useEffect(() => {
     getVendorListById(vendorId)
       .then((data) => {
@@ -122,7 +122,7 @@ export default function LeadDetails({ count }) {
                           textTransform: "capitalize",
                         }}
                       >
-                        {leads.location}
+                        {leads.profileextra?.location}
                       </p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

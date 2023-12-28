@@ -3,11 +3,11 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import { getVendorStatus } from "../../services/leadMangement";
-import {
-  getCustomerSearch,
-  getCustomerlist,
-} from "../../services/CustomerHandle";
+import { getCustomerSearch } from "../../services/CustomerHandle";
 import VendorList from "../Initial_contact/VendorList";
+import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { getListDataInPagination } from "../../services/commonServices";
+import CircularProgress from "@mui/material/CircularProgress";
 
 export default function Listing() {
   const navigate = useNavigate();
@@ -27,21 +27,8 @@ export default function Listing() {
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
-  useEffect(() => {
-    getCustomerlist()
-      .then((data) => {
-        const vendorList = data.results.filter(
-          (item) => item.role === "Vendor"
-        );
-        setVendor(vendorList); 
-        // console.log("Vendor list =====:", vendorList); // Fix the variable name here
-      })
-      .catch((error) => {
-        console.error("Error fetching distributor data:", error);
-      });
-  }, []);
 
-  const [statusList, setStatusList] = useState([]);
+  // const [statusList, setStatusList] = useState([]);
 
   const getVendorListData = async () => {
     setIsLoading(true);
@@ -50,7 +37,10 @@ export default function Listing() {
         console.log("Search ---:", data);
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
-        setVendor(data?.results);
+        const vendorList = data.results.filter(
+          (item) => item.role === "Vendor"
+        );
+        setVendor(vendorList);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -59,24 +49,36 @@ export default function Listing() {
   };
 
   useEffect(() => {
-    setIsLoading(true);
-    getVendorStatus()
-      .then((data) => {
-        setIsLoading(false);
-        setStatusList(data.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("Error fetching  data:", error);
-      });
-  }, []);
-  useEffect(() => {
     getVendorListData(search, selectedValue);
-  }, [search, selectedValue, isRefetch]);
+  }, [selectedValue, isRefetch]);
+
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          const vendorList = data.results.filter(
+            (item) => item.role === "Vendor"
+          );
+          setVendor(vendorList);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
+  };
 
   return (
     <div style={{ height: "100vh" }}>
-      <div className="col-12 actions_menu my-2 px-3">
+      <div className="col-12 actions_menu  ">
         <div className="action_menu_left col-8">
           <div>
             <form action="" method="post" autocomplete="off">
@@ -126,26 +128,6 @@ export default function Listing() {
               </div>
             </form>
           </div>
-          <div className="status_dropdown">
-            <label className="form-label">Status</label>
-            <select
-              type="text"
-              className="form-select mb-3 status_selector"
-              value={selectedValue}
-              onChange={handleSelectChange}
-            >
-              <option value="">All</option>
-              {statusList &&
-                statusList.length > 0 &&
-                statusList.map((item, i) => {
-                  return (
-                    <option value={item.name} key={`statusList-${i}`}>
-                      {item.name}
-                    </option>
-                  );
-                })}
-            </select>
-          </div>
         </div>
         <div className="action_buttons col-4">
           <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
@@ -174,7 +156,7 @@ export default function Listing() {
           </button>
         </div>
       </div>
-      <div className="card mx-3">
+      <div className="card my-3 ">
         <div className="table-responsive">
           <table
             className="table card-table table-vcenter text-nowrap datatable"
@@ -184,315 +166,188 @@ export default function Listing() {
               <tr>
                 <th className="w-1">
                   <span>Name</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Email</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   {" "}
                   <span>Phone</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Location</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Joined On</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Total Booking</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Status</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Action</span>
                 </th>
               </tr>
             </thead>
+
             <tbody>
-              {vendor && vendor.length > 0 ? (
+              {!isLoading ? (
                 <>
-                  {vendor.map((item, index) => {
-                    let formattedDate = item.created_at;
-
-                    // Create a Date object from the date string
-                    let dateObject = new Date(formattedDate);
-
-                    // Options for formatting the date
-                    let options = {
-                      year: "numeric",
-                      month: "numeric",
-                      day: "numeric",
-                    };
-
-                    // Convert the date to the desired format
-                    let formattedDateString = dateObject.toLocaleDateString(
-                      "en-US",
-                      options
-                    );
-
-                    // Replace slashes with hyphens in the formatted date string
-                    formattedDateString = formattedDateString.replace(
-                      /\//g,
-                      "-"
-                    );
-
-                    console.log(formattedDateString);
-
-                    return (
-                      <tr>
-                        {console.log("item-vendor-list", vendor)}
-                        <td>
-                          <span className="text-secondary">
-                            {item?.first_name}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">{item?.email}</span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">{item?.mobile}</span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {item?.location}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {formattedDateString}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {item.total_booking}
-                          </span>
-                        </td>
-                        <td>
-                          <span className="text-secondary">
-                            {item.is_active ? <>Active</> : <>InActive</>}
-                          </span>
-                        </td>
-                        <td
-                          style={{
-                            display: "flex",
-                            gap: "5px",
-                            alignItems: "baseline",
-                          }}
-                        >
-                          <Link
-                            to={`/user-vendor/${item?.id}`}
-                            className="btn btn-sm btn-info"
-                            style={{
-                              padding: "3px 6px",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            View &nbsp;
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 16 16"
-                              fill="none"
+                  {vendor && vendor.length > 0 ? (
+                    <>
+                      {vendor.map((item, index) => {
+                        const [day, month, year] = item.created_at.split("-");
+                        const formattedDate = new Date(
+                          `${year}-${month}-${day}`
+                        ).toLocaleDateString("en-GB", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                        });
+                        return (
+                          <tr>
+                            <td>
+                              <span className="text-secondary">
+                                {item.first_name}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.email}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.mobile}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.location}
+                              </span>
+                            </td>{" "}
+                            <td>
+                              <span className="text-secondary">
+                                {formattedDate}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item.total_booking}
+                              </span>
+                            </td>
+                            <td>
+                              <span
+                                className={`text-secondary ${
+                                  item.is_active
+                                    ? "active-button"
+                                    : "inActive-button "
+                                }`}
+                              >
+                                {item.is_active ? <>Active</> : <>InActive</>}
+                              </span>
+                            </td>
+                            <td
+                              style={{
+                                display: "flex",
+                                gap: "5px",
+                                alignItems: "baseline",
+                              }}
                             >
-                              <path
-                                d="M4 12L12 4M12 4H6M12 4V10"
-                                stroke="white"
-                                strokeWidth="1.5"
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                              />
-                            </svg>
-                          </Link>
-                        </td>
-                        <td>
-                          <button
-                            className="btn btn-dark "
-                            style={{
-                              fontSize: "12px",
-                              padding: "3px 6px",
-                              borderRadius: "4px",
-                            }}
-                          >
-                            Add Service &nbsp;
-                            <svg
-                              width={16}
-                              height={16}
-                              viewBox="0 0 16 16"
-                              fill="none"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                d="M8 2.40039L8 13.6004"
-                                stroke="white"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                              />
-                              <path
-                                d="M2.3999 8H13.5999"
-                                stroke="white"
-                                strokeWidth={2}
-                                strokeLinecap="round"
-                              />
-                            </svg>
-                          </button>
-                        </td>
-                        <td>
-                          <svg
-                            width={20}
-                            height={20}
-                            viewBox="0 0 20 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              d="M5.83333 9.99967C5.83333 10.9201 5.08714 11.6663 4.16667 11.6663C3.24619 11.6663 2.5 10.9201 2.5 9.99967C2.5 9.0792 3.24619 8.33301 4.16667 8.33301C5.08714 8.33301 5.83333 9.0792 5.83333 9.99967Z"
-                              fill="#2E3030"
-                            />
-                            <path
-                              d="M11.6667 9.99967C11.6667 10.9201 10.9205 11.6663 10 11.6663C9.07952 11.6663 8.33333 10.9201 8.33333 9.99967C8.33333 9.0792 9.07952 8.33301 10 8.33301C10.9205 8.33301 11.6667 9.0792 11.6667 9.99967Z"
-                              fill="#2E3030"
-                            />
-                            <path
-                              d="M17.5 9.99967C17.5 10.9201 16.7538 11.6663 15.8333 11.6663C14.9129 11.6663 14.1667 10.9201 14.1667 9.99967C14.1667 9.0792 14.9129 8.33301 15.8333 8.33301C16.7538 8.33301 17.5 9.0792 17.5 9.99967Z"
-                              fill="#2E3030"
-                            />
-                          </svg>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              <Link
+                                to={`/user-vendor/${item?.id}`}
+                                className="btn btn-sm btn-info"
+                                style={{
+                                  padding: "3px 6px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                View &nbsp;
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Link>
+                            </td>
+                            <td>
+                              <button
+                                className="btn btn-dark "
+                                style={{
+                                  fontSize: "12px",
+                                  padding: "3px 6px",
+                                  borderRadius: "4px",
+                                }}
+                              >
+                                Add Service &nbsp;
+                                <svg
+                                  width={16}
+                                  height={16}
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                >
+                                  <path
+                                    d="M8 2.40039L8 13.6004"
+                                    stroke="white"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                  />
+                                  <path
+                                    d="M2.3999 8H13.5999"
+                                    stroke="white"
+                                    strokeWidth={2}
+                                    strokeLinecap="round"
+                                  />
+                                </svg>
+                              </button>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </>
+                  ) : (
+                    <tr>
+                      <td className="error">No Records Found</td>
+                    </tr>
+                  )}
                 </>
               ) : (
                 <tr>
-                  <td className="error">No Records Found</td>
+                  <td colSpan={"8"} align="center">
+                    <CircularProgress />
+                  </td>
                 </tr>
               )}
             </tbody>
           </table>
         </div>
-        {/* <div className="card-footer d-flex align-items-center">
-         
+        <div className="card-footer d-flex align-items-center">
+          {/* <p className="m-0 text-secondary">
+            Showing <span>1</span> to <span>8</span> of
+            <span>16</span> entries
+          </p> */}
           <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
+            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
               <a
                 className="page-link"
                 href="#"
                 tabIndex="-1"
-                aria-disabled="true"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -512,8 +367,15 @@ export default function Listing() {
                 prev
               </a>
             </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
+
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
                 next
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -533,7 +395,7 @@ export default function Listing() {
               </a>
             </li>
           </ul>
-        </div> */}
+        </div>
       </div>
       ;
     </div>
