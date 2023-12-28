@@ -11,6 +11,7 @@ import {
 } from "../../../services/CustomerHandle";
 import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getAdminListById } from "../../../services/GuestHandle";
+import CreateNewAdmin from "./CreateNewAdmin";
 
 function AdminDetails() {
   const theme = useTheme();
@@ -253,7 +254,7 @@ function AdminDetails() {
 
             {active === "Details" && (
               <>
-                <CustomerEditModal
+                <CreateNewAdmin
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
