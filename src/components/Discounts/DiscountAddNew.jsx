@@ -272,10 +272,12 @@ function companywithservice(companyid){
 
 function companywithservicelength(companyid){
  
-  const serviceCount = formik?.values.services.filter((dat)=>dat.company===companyid) || 0;
+  const serviceCount = servicelisting.filter((dat)=>dat.company===companyid) || 0;
   return serviceCount.length
 
 }
+
+const [servicelisting,setServiceListing]=useState([])
 
 if(!isLoading){
     return (
@@ -571,7 +573,7 @@ if(!isLoading){
                                     </label>
                                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
-                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
+                                <AddMorePopup setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
                             </div>
                         </div>
 

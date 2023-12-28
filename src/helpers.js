@@ -6,6 +6,13 @@ export function formatDate(date) {
 
   return formatted_date;
 }
+export function PassingformatDate(date) {
+  const created_at_str = date;
+  const created_at_date = new Date(created_at_str);
+  const formatted_date = `${created_at_date.getFullYear()}-${created_at_date.getMonth()+1}-${created_at_date.getDate()}`
+
+  return formatted_date;
+}
 
 export const passwordRegex =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;

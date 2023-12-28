@@ -31,7 +31,7 @@ const style = {
 };
 
 
-export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd,data }) {
+export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,handleServiceAdd,data,setServiceListing }) {
     const [companylist,setCompanyList]=useState([])
     const [isLoading,setIsLoading]=useState(false);
     const [search,setSearch]=useState("")
@@ -71,6 +71,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
 
                 return updatedList;
             });
+            setServiceListing(data.results)
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -86,6 +87,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
     const isChecked = (Id) => {
+        console.log(data.services.some((service) => service.id === Id));
         return data.services.some((service) => service.id === Id);
     };
     const isCheckedCompany = (Id) => {
@@ -151,7 +153,7 @@ export default function AddMorePopup({ handleClose, handleOpen, open,handleAdd,h
                                     {
                                         data?.companyData?.map((dat)=>
                                         <Box sx={{ display: "flex", alignItems: "center" }}>
-                                        <Checkbox {...label} checkedhecked={isChecked(dat.id)} size="small" onChange={()=>handleServiceAdd(dat.id,dat.name,data.id)}/>
+                                        <Checkbox {...label} checked={isChecked(dat.id)} size="small" onChange={()=>handleServiceAdd(dat.id,dat.name,data.id)}/>
                                         <Typography variant="p" component="p">
                                             {dat.name}
                                         </Typography>
