@@ -11,7 +11,7 @@ import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import PopupFilter from "./PopupFilter";
-import { CSVLink } from 'react-csv';
+// import { CSVLink } from 'react-csv';
 
 function DiscountListing() {
   const theme = useTheme();
@@ -208,9 +208,9 @@ const handleopenfilter=()=>{
         <div className="action_buttons col-4">
           
           <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-            <CSVLink style={{textDecorationLine:"none",color:"black"}} data={exportdata} filename={"coupon_data.csv"}>
+            {/* <CSVLink style={{textDecorationLine:"none",color:"black"}} data={exportdata} filename={"coupon_data.csv"}>
               Export 
-            </CSVLink>
+            </CSVLink> */}
             {/* Export &nbsp; */}
             <svg
               xmlns="http://www.w3.org/2000/svg"

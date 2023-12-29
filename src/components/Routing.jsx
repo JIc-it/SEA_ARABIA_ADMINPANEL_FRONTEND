@@ -43,6 +43,7 @@ import AdminView from "../pages/Users/Admin/AdminView";
 import SalesRepView from "../pages/Users/sales/SalesRepView";
 import CancellationBooking from "./Booking/CancellationBooking";
 import CancellationHistory from "./Booking/CancellationHistory";
+import BookingView from "./Booking/BookingView";
 
 function AllRouting() {
   return (
@@ -109,6 +110,7 @@ function AllRouting() {
       <Route path="/guest-user" element={<GuestUser />} />
       <Route path="/cancellation-booking" element={<CancellationBooking />} />
       <Route path="/cancellation-history" element={<CancellationHistory />} />
+      <Route path="/booking-view" element={<BookingView />} />
     </Routes>
   );
 }
