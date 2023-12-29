@@ -281,7 +281,7 @@ function AdminDetails() {
                   className="mt-4 w-100 px-2"
                 >
                   <p className="p-2" style={{ fontWeight: "700" }}>
-                    Details
+                    Details  
                   </p>
 
                   <div className="d-flex">

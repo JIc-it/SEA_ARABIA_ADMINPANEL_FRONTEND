@@ -83,7 +83,9 @@ function CreateNewAdmin({ show, close }) {
             email: values.email,
             password: values.password,
             mobile: `+965 ${values.mobile}`,
-            location: values.location,
+            profileextra: {
+              location: values.location,
+            },
           };
 
           const adminData = await createAdmin(data);

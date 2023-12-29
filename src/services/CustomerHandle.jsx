@@ -22,7 +22,7 @@ export const getCustomerSearch = (search, status) => {
     .get("account/user-list", { params: { search: search, status: status } })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };
@@ -31,7 +31,7 @@ export const getCustomerListById = (customerId) => {
     .get(`${getIndivitualVendorListUrl}/${customerId}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };
@@ -43,7 +43,7 @@ export const UpdateVendorListById = (vendorId, data) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching vendor request:", error);
       throw error;
     });
 };
@@ -55,7 +55,7 @@ export const UpdateCustomerListById = (customerId, data) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };

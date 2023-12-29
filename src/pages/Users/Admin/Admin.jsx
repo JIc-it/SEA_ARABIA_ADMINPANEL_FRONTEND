@@ -7,31 +7,89 @@ import cancelBooking from "../../../static/img/cancel-booking.png";
 import filterIcon from "../../../static/img/Filter.png";
 import { Link } from "react-router-dom";
 import CreateSalesRep from "../sales/CreateSalesRep";
-import { getGuestUserList } from "../../../services/GuestHandle";
+import {
+  getAdminSearch,
+  getGuestUserList,
+} from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 import { getCustomerlist } from "../../../services/CustomerHandle";
+import { removeBaseUrlFromPath } from "../../../helpers";
+import { getListDataInPagination } from "../../../services/commonServices";
 
 const Admin = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [admin, setAdmin] = useState();
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [search, setSearch] = useState();
+  const [selectedValue, setSelectedValue] = useState("");
 
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        console.log("ADMIN-list", data.results);
-        // setListDiscount(data.results);
+        console.log("ADMIN-list", data);
         const filteredResults = data.results.filter(
           (item) => item.role === "Admin"
         );
-
+        console.log("filtered Admin", filteredResults);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
         setAdmin(filteredResults);
+        console.log("filtered Admin", filteredResults);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
-  }, []);
+  }, []); // Add dependencies if needed
+
+  const getAdminData = async () => {
+    getAdminSearch(search, selectedValue)
+      .then((data) => {
+        console.log("search", data);
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        const filteredResults = data.results.filter(
+          (item) => item.role === "Admin"
+        );
+        setAdmin(filteredResults);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("failed to search error", error);
+      });
+  };
+
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          const filteredResults = data.results.filter(
+            (item) => item.role === "Admin"
+          );
+          setAdmin(filteredResults);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
+  };
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -161,11 +219,15 @@ const Admin = () => {
                       type="text"
                       className="form-control"
                       placeholder="Input search term"
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
                     />
                     <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
+                      onClick={getAdminData}
                     >
                       Search
                     </button>
@@ -238,7 +300,7 @@ const Admin = () => {
         </div>
         <div className="card mx-3">
           <div className="table-responsive">
-            <table className="table card-table table-vcenter text-nowrap datatable text-center">
+            <table className="table card-table table-vcenter text-nowrap datatable ">
               <thead>
                 <tr>
                   <th className="w-1">
@@ -399,56 +461,70 @@ const Admin = () => {
               )}
             </table>
           </div>
-          {/* <div className="card-footer d-flex align-items-center">
-         
-          <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                aria-disabled="true"
+          <div className="card-footer d-flex align-items-center">
+            {/* <p className="m-0 text-secondary">
+            Showing <span>1</span> to <span>8</span> of
+            <span>16</span> entries
+          </p> */}
+            <ul className="pagination m-0 ms-auto">
+              <li
+                className={`page-item  ${!listPageUrl.previous && "disabled"}`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <a
+                  className="page-link"
+                  href="#"
+                  tabIndex="-1"
+                  onClick={() => {
+                    handlePagination("prev");
+                  }}
                 >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                  </svg>
+                  prev
+                </a>
+              </li>
+
+              <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => {
+                    handlePagination("next");
+                  }}
                 >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
-        </div> */}
+                  next
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l6 6l-6 6" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
         {/* //modal */}
       </div>

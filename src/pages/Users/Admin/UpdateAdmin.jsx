@@ -92,7 +92,7 @@ function UpdateAdmin({ show, close }) {
             password: values.password,
             confirmPassword: values.confirmPassword,
             mobile: `+965 ${values.mobile}`,
-            profileextra: {
+            profile_extra: {
               location: values.location,
             },
           };

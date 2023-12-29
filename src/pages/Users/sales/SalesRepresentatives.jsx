@@ -240,7 +240,7 @@ const SalesRepresentatives = () => {
         </div>
         <div className="card mx-3">
           <div className="table-responsive">
-            <table className="table card-table table-vcenter text-nowrap datatable text-center">
+            <table className="table card-table table-vcenter text-nowrap datatable ">
               <thead>
                 <tr>
                   <th className="w-1">
