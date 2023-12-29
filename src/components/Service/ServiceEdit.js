@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react'
-import Thumbnail_1 from "../../static/img/Rectangle 995.png"
+// import Thumbnail_1 from "../../static/img/Rectangle 995.png"
 import { Breadcrumb } from 'react-bootstrap';
-import Thumbnail_2 from "../../static/img/Image Hover.png"
+// import Thumbnail_2 from "../../static/img/Image Hover.png"
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Food from "../../assets/images/food.png"
+// import Food from "../../assets/images/food.png"
 import UploadPopup from './UploadModal';
-import CreateAddon from './CreateAddon';
+// import CreateAddon from './CreateAddon';
 import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist, UpdateService, DeleteImage, SetThumbNail } from "../../services/service"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -81,10 +81,13 @@ const ServiceEdit = () => {
             service_image: [],
 
             profit_method:"",
-            price_cretrion: "Per Destination",
-            booking_type: "Booking Entirely",
-            minimum: 0,
-            maximum: 0
+            markup_fee:0,
+            vendor_percentage: 0,
+            sea_arabia_percentage: 0,
+            per_head_booking:false,
+            purchase_limit_min: 0,
+            purchase_limit_max: 0,
+            service_price_service:[]
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -98,6 +101,11 @@ const ServiceEdit = () => {
                 is_active: values.is_active,
                 is_top_suggestion: values.is_top_suggestion,
                 is_premium: values.is_premium,
+                is_destination: values.is_destination,
+                is_duration: values.is_duration,
+                is_date: values.is_date,
+                is_day: values.is_day,
+                is_time: values.is_time,
                 type: values.type,
                 name: values.name,
                 machine_id: values.machine_id,
@@ -158,15 +166,15 @@ const ServiceEdit = () => {
         setOpen(true)
     }
 
-    const [openAddon, setOpenAddon] = useState(false)
+    // const [openAddon, setOpenAddon] = useState(false)
 
-    const handleCloseAddon = () => {
-        setOpenAddon(false)
-    }
+    // const handleCloseAddon = () => {
+    //     setOpenAddon(false)
+    // }
 
-    const handleOpenAddon = () => {
-        setOpenAddon(true)
-    }
+    // const handleOpenAddon = () => {
+    //     setOpenAddon(true)
+    // }
 
     //first load
     useEffect(() => {
@@ -202,6 +210,13 @@ const ServiceEdit = () => {
                 
                 // formik.setFieldValue("price", data?.price);
                 formik.setFieldValue("profit_method", data?.profit_method);
+                formik.setFieldValue("markup_fee", data?.markup_fee);
+                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
+                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
+                formik.setFieldValue("per_head_booking", data?.per_head_booking);
+                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
+                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
+                formik.setFieldValue("service_price_service", data?.service_price_service);
 
                 setIsUpdated(false)
             }
@@ -847,7 +862,73 @@ const ServiceEdit = () => {
                                     </div>
 
                                 </div>
-
+                                {formik.values.profit_method === "Upselling With Markup" &&
+                                    <div className='w-50 mx-5'>
+                                        <label
+                                            htmlFor=""
+                                            style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                        >
+                                            Markup Fee <span style={{ color: "red" }}>*</span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="markup_fee"
+                                            className="form-control"
+                                            placeholder="0"
+                                            value={formik.values.markup_fee}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                        />
+                                        {formik.touched.capacity && formik.errors.markup_fee ? (
+                                            <div className="error">{formik.errors.markup_fee}</div>
+                                        ) : null}
+                                    </div>
+                                }
+                                {formik.values.profit_method==="Revenue Sharing" &&
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <div className='w-50 mx-5'>
+                                        <label
+                                            htmlFor=""
+                                            style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                        >
+                                            Vendor Percentage <span style={{ color: "red" }}>*</span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="vendor_percentage"
+                                            className="form-control"
+                                            placeholder="0"
+                                            value={formik.values.vendor_percentage}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                        />
+                                        {formik.touched.vendor_percentage && formik.errors.vendor_percentage ? (
+                                            <div className="error">{formik.errors.vendor_percentage}</div>
+                                        ) : null}
+                                    </div>
+                                
+                                    <div className='w-50 mx-5'>
+                                        <label
+                                            htmlFor=""
+                                            style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                        >
+                                            Sea Arabia Percentage <span style={{ color: "red" }}>*</span>
+                                        </label>
+                                        <input
+                                            type="number"
+                                            name="sea_arabia_percentage"
+                                            className="form-control"
+                                            placeholder="0"
+                                            value={formik.values.sea_arabia_percentage}
+                                            onChange={formik.handleChange}
+                                            onBlur={formik.handleBlur}
+                                        />
+                                        {formik.touched.sea_arabia_percentage && formik.errors.sea_arabia_percentage ? (
+                                            <div className="error">{formik.errors.sea_arabia_percentage}</div>
+                                        ) : null}
+                                    </div>
+                                    </div>
+                                }
                                 <div>
 
                                     {/* <div className="px-5"> */}
@@ -942,29 +1023,29 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Booking type</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-start ms-5'}>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("booking_type", "Booking Entirely")}
+                                            onClick={() => formik.setFieldValue("per_head_booking", false)}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "45%",
-                                                border: formik.values.booking_type === "Booking Entirely" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: !formik.values.per_head_booking ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 padding: '5px',
                                                 margin: "5px"
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Booking Entirely</Typography>
-                                            <Radio name={formik.values.booking_type} checked={formik.values.booking_type === "Booking Entirely"} />
+                                            <Radio name={formik.values.per_head_booking} checked={!formik.values.per_head_booking} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("booking_type", "Per Head Booking")}
+                                            onClick={() => formik.setFieldValue("per_head_booking",true)}
                                             style={{
                                                 display: formik.values.is_destination || formik.values.is_duration ? 'none' : 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.booking_type === "Per Head Booking" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.booking_type ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "45%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -972,24 +1053,24 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Head Booking</Typography>
-                                            <Radio name={formik.values.booking_type} checked={formik.values.booking_type === "Per Head Booking"} />
+                                            <Radio name={formik.values.per_head_booking} checked={formik.values.booking_type} />
                                         </Paper>
                                     </div>
                                 </div>
-                                {formik.values.booking_type === "Per Head Booking" && <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-start mx-5 mt-5'} >
+                                {formik.values.per_head_booking && <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-start mx-5 mt-5'} >
                                     <div style={{ border: "1px solid lightgray" }} className="px-3 py-3 rounded">
                                         <span style={{ fontWeight: "600" }}>Set Purchase Limits</span>
                                         <div className="d-flex mt-2">
                                             <div className="mt-1">
                                                 <span style={{ color: "#68727D", fontSize: "15px" }}>Minimum</span>
                                                 <div className="mt-2">
-                                                    <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("minimum")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("purchase_limit_min")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
                                                     </svg>
 
                                                     </button>
-                                                    <span className="mx-1">{formik.values.minimum}</span>
-                                                    <button type="button" onClick={() => handleIncrement("minimum")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <span className="mx-1">{formik.values.purchase_limit_min}</span>
+                                                    <button type="button" onClick={() => handleIncrement("purchase_limit_min")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
@@ -1000,11 +1081,11 @@ const ServiceEdit = () => {
                                             <div className="mt-1 ms-4">
                                                 <span style={{ color: "#68727D", fontSize: "15px" }}>Maximum</span>
                                                 <div className="mt-2">
-                                                    <button type="button" onClick={() => handleDecrement("maximum")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                    <button type="button" onClick={() => handleDecrement("purchase_limit_max")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
-                                                    <span className="mx-1">{formik.values.maximum}</span>
-                                                    <button type="button" onClick={() => handleIncrement("maximum")} className="btn px-1 py-1 mx-1">
+                                                    <span className="mx-1">{formik.values.purchase_limit_max}</span>
+                                                    <button type="button" onClick={() => handleIncrement("purchase_limit_max")} className="btn px-1 py-1 mx-1">
                                                         <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                             <path d="M10 3L10 17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                             <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
@@ -1031,7 +1112,7 @@ const ServiceEdit = () => {
                                             </label>
                                             <button type="button" className='btn btn-blue' style={{ backgroundColor: "#187AF7", padding: "1px 3px" }} onClick={handleModalOpens}>Add Price</button>
                                         </div>
-                                        {formik.values.is_destination && <PerDestinationTable />}
+                                        {formik.values.is_destination && <PerDestinationTable data={formik.values.service_price_service} formik={formik.setValues}/>}
                                         {formik.values.is_duration && <PerDurationTable />}
                                         {formik.values.is_day && <PerDayTable />}
                                         {formik.values.is_time && <PerTimeTable />}

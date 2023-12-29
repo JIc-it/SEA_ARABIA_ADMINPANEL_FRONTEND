@@ -9,10 +9,21 @@ const UpdateServiceURL = "service/service-update"
 const addImageURl = "service/service-image/create"
 const removeImageURL = "service/service-image/delete"
 const SetThumbnailURl="service/service-image/status"
+const locationlistURl="service/destination-list"
 
 export const getServiceListing = () => {
   return axiosInstance
     .get(ServicelistURL)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getLocationListing = () => {
+  return axiosInstance
+    .get(locationlistURl)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
