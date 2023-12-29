@@ -18,7 +18,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 import { getDiscountOfferList } from '../../services/offers';
 
-export default function PopupFilter({ open, handleClose, handleOpen }) {
+export default function PopupFilter({ open, handleClose, handleOpen,setListPageUrl,setOffersList}) {
     const [startDate, setStartDate] = useState(new Date());
     const style = {
         position: 'absolute',
@@ -77,7 +77,8 @@ export default function PopupFilter({ open, handleClose, handleOpen }) {
                     if (adminData) {
                         setIsLoading(false);
                         handleClose()
-
+                        setOffersList(adminData?.results);
+                        setListPageUrl({ next: adminData.next, previous: adminData.previous });
                     } else {
                         setIsLoading(false);
                         toast.error(adminData.error.response.data)
@@ -104,7 +105,9 @@ export default function PopupFilter({ open, handleClose, handleOpen }) {
 
                 if (adminData) {
                     setIsLoading(false);
-                    handleClose()
+                    handleClose();
+                    setOffersList(adminData?.results);
+                    setListPageUrl({ next: adminData.next, previous: adminData.previous });
 
                 } else {
                     setIsLoading(false);

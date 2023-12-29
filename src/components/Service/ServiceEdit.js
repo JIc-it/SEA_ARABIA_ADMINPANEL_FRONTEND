@@ -45,7 +45,7 @@ const ServiceEdit = () => {
             .required("Description is required"),
         capacity: Yup.number()
             .required("Capacity is required"),
-        pickup_point: Yup.string()
+        pickup_point_or_address: Yup.string()
             .required("Pickup Point is required"),
         cancellation_policy: Yup.string()
             .required("Privacy Policy is required"),
@@ -59,6 +59,11 @@ const ServiceEdit = () => {
             is_active: false,
             is_top_suggestion: false,
             is_premium: false,
+            is_destination:false,
+            is_duration:false,
+            is_date: false,
+            is_day: false,
+            is_time: false,
             type: "",
             category: [],
             sub_category: [],
@@ -70,10 +75,12 @@ const ServiceEdit = () => {
             toilet: 0,
             capacity: 0,
             amenities: [],
-            pickup_point: "",
+            pickup_point_or_address: "",
             cancellation_policy: "",
             refund_policy: "",
             service_image: [],
+
+            profit_method:"",
             price_cretrion: "Per Destination",
             booking_type: "Booking Entirely",
             minimum: 0,
@@ -99,7 +106,7 @@ const ServiceEdit = () => {
                 bedroom: values.bedroom,
                 toilet: values.toilet,
                 capacity: values.capacity,
-                pickup_point: values.pickup_point,
+                pickup_point_or_address: values.pickup_point_or_address,
                 cancellation_policy: values.cancellation_policy,
                 refund_policy: values.refund_policy,
                 category: values.category[0]?.id,
@@ -171,6 +178,11 @@ const ServiceEdit = () => {
                 formik.setFieldValue("is_verified", data?.is_verified);
                 formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
                 formik.setFieldValue("is_premium", data?.is_premium);
+                formik.setFieldValue("is_destination", data?.is_destination);
+                formik.setFieldValue("is_duration", data?.is_duration);
+                formik.setFieldValue("is_day", data?.is_day);
+                formik.setFieldValue("is_time", data?.is_time);
+                formik.setFieldValue("is_date", data?.is_date);
                 formik.setFieldValue("type", data?.type);
                 formik.setFieldValue("category", data?.category);
                 formik.setFieldValue("sub_category", data?.sub_category);
@@ -182,12 +194,15 @@ const ServiceEdit = () => {
                 formik.setFieldValue("toilet", data?.toilet);
                 formik.setFieldValue("capacity", data?.capacity);
                 formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point", data?.pickup_point);
+                formik.setFieldValue("pickup_point_or_address", data?.pickup_point_or_address);
                 formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
                 formik.setFieldValue("refund_policy", data?.refund_policy);
                 formik.setFieldValue("is_active", data?.is_active);
                 formik.setFieldValue("service_image", data?.service_image);
-                formik.setFieldValue("price", data?.price);
+                
+                // formik.setFieldValue("price", data?.price);
+                formik.setFieldValue("profit_method", data?.profit_method);
+
                 setIsUpdated(false)
             }
             ).catch((error) => {
@@ -214,12 +229,12 @@ const ServiceEdit = () => {
                 formik.setFieldValue("toilet", data?.toilet);
                 formik.setFieldValue("capacity", data?.capacity);
                 formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point", data?.pickup_point);
+                formik.setFieldValue("pickup_point_or_address", data?.pickup_point_or_address);
                 formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
                 formik.setFieldValue("refund_policy", data?.refund_policy);
                 formik.setFieldValue("is_active", data?.is_active);
                 formik.setFieldValue("service_image", data?.service_image);
-                formik.setFieldValue("price", data?.price);
+                formik.setFieldValue("profit_method", data?.profit_method);
                 setIsUpdated(false)
             }
             ).catch((error) => {
@@ -373,22 +388,27 @@ const ServiceEdit = () => {
     }
 
     const handleModalOpens = () => {
-        if (formik.values.price_cretrion === "Per Destination") {
+        if (formik.values.is_destination) {
             setPerDestinationopen(true)
         }
-        if (formik.values.price_cretrion === "Per Duration") {
+        if (formik.values.is_duration) {
             setPerDurationopen(true)
         }
-        if (formik.values.price_cretrion === "Per Day") {
+        if (formik.values.is_day) {
             setPerDayopen(true)
         }
-        if (formik.values.price_cretrion === "Per Time") {
+        if (formik.values.is_time) {
             setPerTimeopen(true)
         }
-        if (formik.values.price_cretrion === "Per Date") {
+        if (formik.values.is_date) {
             setPerDateopen(true)
         }
     }
+
+    const updateFormValues = (fields) => {
+        formik.setValues((prev) => { return { ...prev, ...fields } });
+    };
+    console.log(formik.values,"result");
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -656,13 +676,13 @@ const ServiceEdit = () => {
                                                         type="text"
                                                         placeholder=""
                                                         className="form-control"
-                                                        name="pickup_point"
-                                                        value={formik.values.pickup_point}
+                                                        name="pickup_point_or_address"
+                                                        value={formik.values.pickup_point_or_address}
                                                         onChange={formik.handleChange}
                                                         onBlur={formik.handleBlur}
                                                     />
-                                                    {formik.touched.pickup_point && formik.errors.pickup_point ? (
-                                                        <div className="error">{formik.errors.pickup_point}</div>
+                                                    {formik.touched.pickup_point_or_address && formik.errors.pickup_point_or_address ? (
+                                                        <div className="error">{formik.errors.pickup_point_or_address}</div>
                                                     ) : null}
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
@@ -743,7 +763,7 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
                                     <p style={{ fontWeight: "550" }}>Profit Method</p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
-                                        <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }}>
+                                        <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Ownership" }))}>
                                             <div className="card p-2">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div>
@@ -768,14 +788,14 @@ const ServiceEdit = () => {
                                                         </span>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox" value="" id="defaultCheck1" defaultChecked />
+                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Ownership"}/>
                                                     </div>
                                                 </div>
 
 
                                             </div>
                                         </div>
-                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }}>
+                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Upselling With Markup" }))}>
                                             <div className="card p-2">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div>
@@ -791,14 +811,14 @@ const ServiceEdit = () => {
                                                         </span>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox" value="" id="defaultCheck1" defaultChecked />
+                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Upselling With Markup"} />
                                                     </div>
                                                 </div>
 
 
                                             </div>
                                         </div>
-                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`}>
+                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Revenue Sharing" }))}>
                                             <div className="card p-2">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div>
@@ -817,7 +837,7 @@ const ServiceEdit = () => {
                                                         </span>
                                                     </div>
                                                     <div class="form-check">
-                                                        <input class="form-check-input" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox" value="" id="defaultCheck1" defaultChecked />
+                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Revenue Sharing"}/>
                                                     </div>
                                                 </div>
 
@@ -834,29 +854,29 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Critreion</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-center'}>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("price_cretrion", "Per Destination")}
+                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: true,is_duration:false,is_day:false,is_time:false,is_date:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "17%",
-                                                border: formik.values.price_cretrion === "Per Destination" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.is_destination ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 padding: '5px',
                                                 margin: "5px"
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Destination</Typography>
-                                            <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Destination"} />
+                                            <Radio name={formik.values.price_cretrion} checked={formik.values.is_destination} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("price_cretrion", "Per Duration")}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:true,is_day:false,is_time:false,is_date:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.price_cretrion === "Per Duration" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.is_duration ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "17%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -864,16 +884,16 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Duration</Typography>
-                                            <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Duration"} />
+                                            <Radio name={formik.values.price_cretrion} checked={formik.values.is_duration} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("price_cretrion", "Per Day")}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:true,is_time:false,is_date:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.price_cretrion === "Per Day" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.is_day ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "17%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -881,16 +901,16 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Day</Typography>
-                                            <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Day"} />
+                                            <Radio name={formik.values.price_cretrion} checked={formik.values.is_day} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("price_cretrion", "Per Time")}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:true,is_date:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.price_cretrion === "Per Time" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.is_time ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "17%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -898,16 +918,16 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Time</Typography>
-                                            <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Time"} />
+                                            <Radio name={formik.values.price_cretrion} checked={formik.values.is_time} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("price_cretrion", "Per Date")}
+                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:false,is_date:true }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.price_cretrion === "Per Date" ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.is_date ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "17%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -915,7 +935,7 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Date</Typography>
-                                            <Radio name={formik.values.price_cretrion} checked={formik.values.price_cretrion === "Per Date"} />
+                                            <Radio name={formik.values.price_cretrion} checked={formik.values.is_date} />
                                         </Paper>
                                     </div>
                                     {/* </div> */}
@@ -940,7 +960,7 @@ const ServiceEdit = () => {
                                         <Paper
                                             onClick={() => formik.setFieldValue("booking_type", "Per Head Booking")}
                                             style={{
-                                                display: formik.values.price_cretrion.trim() === "Per Destination" || formik.values.price_cretrion.trim() === "Per Duration" ? 'none' : 'flex',
+                                                display: formik.values.is_destination || formik.values.is_duration ? 'none' : 'flex',
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1011,20 +1031,20 @@ const ServiceEdit = () => {
                                             </label>
                                             <button type="button" className='btn btn-blue' style={{ backgroundColor: "#187AF7", padding: "1px 3px" }} onClick={handleModalOpens}>Add Price</button>
                                         </div>
-                                        {formik.values.price_cretrion === "Per Destination" && <PerDestinationTable />}
-                                        {formik.values.price_cretrion === "Per Duration" && <PerDurationTable />}
-                                        {formik.values.price_cretrion === "Per Day" && <PerDayTable />}
-                                        {formik.values.price_cretrion === "Per Time" && <PerTimeTable />}
-                                        {formik.values.price_cretrion === "Per Date" && <PerDateTable />}
+                                        {formik.values.is_destination && <PerDestinationTable />}
+                                        {formik.values.is_duration && <PerDurationTable />}
+                                        {formik.values.is_day && <PerDayTable />}
+                                        {formik.values.is_time && <PerTimeTable />}
+                                        {formik.values.is_date && <PerDateTable />}
                                     </div>
                                 </div>
                             </div>
 
-                            {formik.values.price_cretrion === "Per Destination" && PerDestinationopen && <PerDestinationModal handleClose={handleclosedestination} handleOpen={handleopendestination} open={PerDestinationopen} />}
-                            {formik.values.price_cretrion === "Per Duration" && PerDurationopen && <PerDurationModal handleClose={handlecloseduration} handleOpen={handleopenduration} open={PerDurationopen} />}
-                            {formik.values.price_cretrion === "Per Day" && PerDayopen && <PerDayModal handleClose={handlecloseday} handleOpen={handleopenday} open={PerDayopen} />}
-                            {formik.values.price_cretrion === "Per Time" && PerTimeopen && <PerTimeModal handleClose={handleclosetime} handleOpen={handleopentime} open={PerTimeopen} />}
-                            {formik.values.price_cretrion === "Per Date" && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen} />}
+                            {formik.values.is_destination && PerDestinationopen && <PerDestinationModal handleClose={handleclosedestination} handleOpen={handleopendestination} open={PerDestinationopen} />}
+                            {formik.values.is_duration && PerDurationopen && <PerDurationModal handleClose={handlecloseduration} handleOpen={handleopenduration} open={PerDurationopen} />}
+                            {formik.values.is_day && PerDayopen && <PerDayModal handleClose={handlecloseday} handleOpen={handleopenday} open={PerDayopen} />}
+                            {formik.values.is_time && PerTimeopen && <PerTimeModal handleClose={handleclosetime} handleOpen={handleopentime} open={PerTimeopen} />}
+                            {formik.values.is_date && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen} />}
 
                             <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
                                 <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy</p>
