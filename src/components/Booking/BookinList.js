@@ -9,29 +9,28 @@ import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 600,
-  bgcolor: 'background.paper',
+  bgcolor: "background.paper",
   // border: '2px solid #000',
   boxShadow: 24,
   p: 4,
 };
 
 const BookinList = () => {
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
+ 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
@@ -126,8 +125,8 @@ const BookinList = () => {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-          : null;
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -470,7 +469,8 @@ const BookinList = () => {
                               }}
                             >
                               <Link
-                                // to={"/onboard"}
+                                to={`/booking-view/1234`}
+                               
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "7px 10px 5px 10px",
@@ -693,8 +693,9 @@ const BookinList = () => {
           </p> */}
                   <ul className="pagination m-0 ms-auto">
                     <li
-                      className={`page-item  ${!listPageUrl.previous && "disabled"
-                        }`}
+                      className={`page-item  ${
+                        !listPageUrl.previous && "disabled"
+                      }`}
                     >
                       <a
                         className="page-link"
@@ -724,8 +725,9 @@ const BookinList = () => {
                     </li>
 
                     <li
-                      className={`page-item  ${!listPageUrl.next && "disabled"
-                        }`}
+                      className={`page-item  ${
+                        !listPageUrl.next && "disabled"
+                      }`}
                     >
                       <a
                         className="page-link"
@@ -775,7 +777,9 @@ const BookinList = () => {
                           <div class="category">Category</div>
                           <div class="div">:</div>
                         </div>
-                        <div class="yacht-boat-heli-tour">Yacht, Boat, Heli Tour</div>
+                        <div class="yacht-boat-heli-tour">
+                          Yacht, Boat, Heli Tour
+                        </div>
                       </div>
                       <div class="icon-wrapper">
                         <div class="width-change-size-here">
@@ -839,7 +843,8 @@ const BookinList = () => {
                           <div class="div">:</div>
                         </div>
                         <div class="salma-international-uber-marine-company-ghanayem-el-khair">
-                          Salma international, Uber Marine Company, Ghanayem El-Khair
+                          Salma international, Uber Marine Company, Ghanayem
+                          El-Khair
                         </div>
                       </div>
                       <div class="icon-wrapper">
@@ -903,7 +908,9 @@ const BookinList = () => {
                           <div class="status">Status</div>
                           <div class="div">:</div>
                         </div>
-                        <div class="completed-unsuccessful">Completed, Unsuccessful</div>
+                        <div class="completed-unsuccessful">
+                          Completed, Unsuccessful
+                        </div>
                       </div>
                       <div class="icon-wrapper">
                         <div class="width-change-size-here">
@@ -961,27 +968,118 @@ const BookinList = () => {
                       </div>
                     </div>
                   </div>
-                  <br /><br />
+                  <br />
+                  <br />
                   <div class="d-flex align-items-start">
                     <div class="frame-427319790">
-                      <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                      <div
+                        class="nav flex-column nav-pills me-3"
+                        id="v-pills-tab"
+                        role="tablist"
+                        aria-orientation="vertical"
+                      >
                         <small>Service</small>
-                        <button class="nav-link active" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Category</button>
-                        <button class="nav-link" id="v-pills-profile-tab" data-bs-toggle="pill" data-bs-target="#v-pills-profile" type="button" role="tab" aria-controls="v-pills-profile" aria-selected="false">Vendor</button>
+                        <button
+                          class="nav-link active"
+                          id="v-pills-home-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-home"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-home"
+                          aria-selected="true"
+                        >
+                          Category
+                        </button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-profile-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-profile"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-profile"
+                          aria-selected="false"
+                        >
+                          Vendor
+                        </button>
                         <small>Customer</small>
-                        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Customer</button>
-                        <button class="nav-link" id="v-pills-settings-tab" data-bs-toggle="pill" data-bs-target="#v-pills-settings" type="button" role="tab" aria-controls="v-pills-settings" aria-selected="false">Customer Type</button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-messages-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-messages"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-messages"
+                          aria-selected="false"
+                        >
+                          Customer
+                        </button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-settings-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-settings"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-settings"
+                          aria-selected="false"
+                        >
+                          Customer Type
+                        </button>
                         <small>Booking</small>
-                        <button class="nav-link" id="v-pills-status-tab" data-bs-toggle="pill" data-bs-target="#v-pills-status" type="button" role="tab" aria-controls="v-pills-status" aria-selected="false">Status</button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-status-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-status"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-status"
+                          aria-selected="false"
+                        >
+                          Status
+                        </button>
                         <small>Date</small>
-                        <button class="nav-link" id="v-pills-creationDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-creationDate" type="button" role="tab" aria-controls="v-pills-creationDate" aria-selected="false">Creation Date</button>
-                        <button class="nav-link" id="v-pills-commencementDate-tab" data-bs-toggle="pill" data-bs-target="#v-pills-commencementDate" type="button" role="tab" aria-controls="v-pills-commencementDate" aria-selected="false">Commencement Date</button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-creationDate-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-creationDate"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-creationDate"
+                          aria-selected="false"
+                        >
+                          Creation Date
+                        </button>
+                        <button
+                          class="nav-link"
+                          id="v-pills-commencementDate-tab"
+                          data-bs-toggle="pill"
+                          data-bs-target="#v-pills-commencementDate"
+                          type="button"
+                          role="tab"
+                          aria-controls="v-pills-commencementDate"
+                          aria-selected="false"
+                        >
+                          Commencement Date
+                        </button>
                       </div>
                     </div>
 
-
-                    <div class="tab-content" id="v-pills-tabContent" style={{ position: "relative", left: 20 }}>
-                      <div class="tab-pane fade show active" id="v-pills-home" role="tabpanel" aria-labelledby="v-pills-home-tab">
+                    <div
+                      class="tab-content"
+                      id="v-pills-tabContent"
+                      style={{ position: "relative", left: 20 }}
+                    >
+                      <div
+                        class="tab-pane fade show active"
+                        id="v-pills-home"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-home-tab"
+                      >
                         <h4>Category</h4>
                         <input
                           type="text"
@@ -991,37 +1089,72 @@ const BookinList = () => {
                         />
                         <br />
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Boat
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Yatch
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             JAt Ski
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Hot air Balloon
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Desert Safari
                           </label>
                         </div>
                       </div>
-                      <div class="tab-pane fade" id="v-pills-profile" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-profile"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-profile-tab"
+                      >
                         <h4>Vendor</h4>
                         <input
                           type="text"
@@ -1031,37 +1164,72 @@ const BookinList = () => {
                         />
                         <br />
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Salma international
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Uber Marine Company
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Ghanayem El-Khair
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Flyworld
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Vanuatu
                           </label>
                         </div>
                       </div>
-                      <div class="tab-pane fade" id="v-pills-messages" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-messages"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-messages-tab"
+                      >
                         <h4>Customer</h4>
                         <input
                           type="text"
@@ -1070,40 +1238,98 @@ const BookinList = () => {
                         />
                         <br />
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Shaheel Arham
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Jane Cooper
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Esther Howard
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Cobi Keller
                           </label>
                         </div>
                         <div class="form-check">
-                          <input class="form-check-input" type="checkbox" value="" id="Boat" style={{ width: 20, height: 20 }} />
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value=""
+                            id="Boat"
+                            style={{ width: 20, height: 20 }}
+                          />
                           <label class="form-check-label" for="Boat">
                             Manolo Cannon
                           </label>
                         </div>
                       </div>
-                      <div class="tab-pane fade" id="v-pills-settings" role="tabpanel" aria-labelledby="v-pills-settings-tab">Customer Type</div>
-                      <div class="tab-pane fade" id="v-pills-status" role="tabpanel" aria-labelledby="v-pills-settings-tab">Status</div>
-                      <div class="tab-pane fade" id="v-pills-creationDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Creation Date</div>
-                      <div class="tab-pane fade" id="v-pills-commencementDate" role="tabpanel" aria-labelledby="v-pills-settings-tab">Commencement Date</div>
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-settings"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-settings-tab"
+                      >
+                        Customer Type
+                      </div>
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-status"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-settings-tab"
+                      >
+                        Status
+                      </div>
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-creationDate"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-settings-tab"
+                      >
+                        Creation Date
+                      </div>
+                      <div
+                        class="tab-pane fade"
+                        id="v-pills-commencementDate"
+                        role="tabpanel"
+                        aria-labelledby="v-pills-settings-tab"
+                      >
+                        Commencement Date
+                      </div>
                     </div>
                   </div>
                 </Box>

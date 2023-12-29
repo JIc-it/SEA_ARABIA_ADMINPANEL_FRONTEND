@@ -32,7 +32,7 @@ export default function Listing() {
 
   const getVendorListData = async () => {
     setIsLoading(true);
-    getCustomerSearch(search, selectedValue)
+    getCustomerSearch(search, selectedValue, "Vendor")
       .then((data) => {
         console.log("Search ---:", data);
         setIsLoading(false);
@@ -130,30 +130,35 @@ export default function Listing() {
           </div>
         </div>
         <div className="action_buttons col-4">
-          <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-            Export &nbsp;
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          <a
+            href="https://seaarabia.jicitsolution.com/account/onboard-vendors-list-export/"
+            download="vendor_list.csv"
+          >
+            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+              Export &nbsp;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </button>
+          </a>
         </div>
       </div>
       <div className="card my-3 ">

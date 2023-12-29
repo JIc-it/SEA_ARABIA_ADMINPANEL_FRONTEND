@@ -25,13 +25,15 @@ export default function CustomerListing() {
     previous: null,
   });
   useEffect(() => {
-    getCustomerlist()
+    getCustomerSearch("", "", "User")
       .then((data) => {
         console.log("customer-list", data.results);
         // setListDiscount(data.results);
-        const filteredResults = data.results.filter((item) => item.role === 'User');
+        // const filteredResults = data.results.filter(
+        //   (item) => item.role === "User"
+        // );
 
-        setListDiscount(filteredResults);
+        setListDiscount(data.results);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
@@ -41,7 +43,7 @@ export default function CustomerListing() {
 
   const getVendorListData = async () => {
     setIsLoading(true);
-    getCustomerSearch(search, selectedValue)
+    getCustomerSearch(search, selectedValue, "User")
       .then((data) => {
         console.log("Search ---:", data);
         setIsLoading(false);

@@ -4,8 +4,7 @@ const updateVendorDetails = "account/vendor-add-details";
 const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
 const serviceDetails = "main/category-list";
-const guestUserURL = "account/guest-user/list"
-
+const guestUserURL = "account/guest-user/list";
 
 export const getCustomerlist = () => {
   return axiosInstance
@@ -17,9 +16,11 @@ export const getCustomerlist = () => {
     });
 };
 
-export const getCustomerSearch = (search, status) => {
+export const getCustomerSearch = (search, status, role) => {
   return axiosInstance
-    .get("account/user-list", { params: { search: search, status: status } })
+    .get("account/user-list", {
+      params: { search: search, status: status, role: role },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -85,7 +86,6 @@ export const getGuestUserRequest = () => {
       throw error;
     });
 };
-
 
 export const getTotalGuestUser = () => {
   return axiosInstance

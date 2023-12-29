@@ -32,7 +32,7 @@ import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
 import ServiceList from "./Service/ServiceList";
 import ServiceView from "./Service/ServiceView";
-import UserVendorEdit from "../components/UserVendor/UserVendorEdit";
+import UserVendorEdit from "./UserVendor/UserVendorTabs/VenderDetails/UserVendorEdit";
 import UserVendorAddService from "../components/UserVendor/UserVendorAddService";
 import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 import DashBoard from "../pages/DashBoard";
@@ -41,6 +41,7 @@ import GuestUser from "../pages/Users/GuestUser";
 import ServiceEdit from "./Service/ServiceEdit";
 import AdminView from "../pages/Users/Admin/AdminView";
 import SalesRepView from "../pages/Users/sales/SalesRepView";
+import InviVitualBookingView from "./Booking/InviVitualBookingView";
 
 function AllRouting() {
   return (
@@ -53,6 +54,7 @@ function AllRouting() {
         element={<VenderIndivitualEdit />}
       ></Route>
       <Route path="/booking" element={<Bookings />} />
+      <Route path="/booking-view/:id" element={<InviVitualBookingView />} />
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
       <Route path="/refunds-request" element={<RefundsRequest />} />

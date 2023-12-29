@@ -98,7 +98,7 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("fullName", data.first_name);
         // formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
-        const formattedPhoneNumber = data.mobile.replace(/\D/g, "");
+        const formattedPhoneNumber = data.mobile.replace(/\D/g, "").replace(/^965/, "");
         formik.setFieldValue("phone", formattedPhoneNumber);
         formik.setFieldValue("location", data.profileextra?.location);
         formik.setFieldValue(
