@@ -11,6 +11,8 @@ import {
 } from "../../../services/CustomerHandle";
 import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getAdminListById } from "../../../services/GuestHandle";
+import CreateNewAdmin from "./CreateNewAdmin";
+import UpdateAdmin from "./UpdateAdmin";
 
 function AdminDetails() {
   const theme = useTheme();
@@ -30,7 +32,7 @@ function AdminDetails() {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin by id==", data);
+        // console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -253,7 +255,7 @@ function AdminDetails() {
 
             {active === "Details" && (
               <>
-                <CustomerEditModal
+                <UpdateAdmin
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
@@ -286,7 +288,7 @@ function AdminDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>First Name</p>
-                        <p style={{ fontWeight: "700" }}>{admin?.first_name}</p>
+                        <p style={{ fontWeight: "700" }}>{adminDetails?.first_name}</p>
                       </div>
 
                       <div>

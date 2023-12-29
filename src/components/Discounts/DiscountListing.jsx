@@ -4,19 +4,21 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
+import {getDiscountOfferList,UpdateStatus,getExportdata} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
 import { formatDate,removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import PopupFilter from "./PopupFilter";
+import { CSVLink } from 'react-csv';
 
 function DiscountListing() {
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate=useNavigate();
   const [offerslist,setOffersList]=useState([])
+  const [exportdata, setExportdata]=useState([])
  const [isLoading,setIsLoading]=useState(false)
  const [search,setSearch]=useState("")
  const [listPageUrl, setListPageUrl] = useState({
@@ -60,7 +62,7 @@ const handleopenfilter=()=>{
 
   useEffect(() => {
     setIsLoading(true)
-    getDiscountOfferList(search)
+    getDiscountOfferList()
       .then((data) => {
         setListPageUrl({ next: data.next, previous: data.previous });
         setOffersList(data?.results);
@@ -70,7 +72,31 @@ const handleopenfilter=()=>{
         setIsLoading(false)
         toast.error(error.response.data);
       });
+  }, []);
+
+  useEffect(() => {
+    // setIsLoading(true)
+    getDiscountOfferList(search)
+      .then((data) => {
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setOffersList(data?.results);
+        // setIsLoading(false)
+      })
+      .catch((error) => {
+        // setIsLoading(false)
+        toast.error(error.response.data);
+      });
   }, [search]);
+
+  useEffect(() => {
+    getExportdata()
+      .then((data) => {
+        setExportdata(data);
+      })
+      .catch((error) => {
+        toast.error(error.response.data);
+      });
+  }, []);
 
   
   const handlePagination = async (type) => {
@@ -94,40 +120,41 @@ const handleopenfilter=()=>{
         });
   };
 
-  const handleExportData = () => {
-    if (offerslist) {
-      const header = [
-        "DISCOUNT CODE",
-        "CAMPAIGN NAME",
-        "USAGE",
-        "LIMIT",
-        "Expiry",
-        "STATUS",
-      ];
-      const csvData = offerslist.map((elem) => {
-        // let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.coupon_code,
-          elem.name,
-          elem.mobile,
-          elem.location,
-          formatDate(elem.end_date) ,
-          `${elem.is_enable===true ? "Active" : "Inactive"} `,
-        ];
-      });
+  
+  // const handleExportData = () => {
+  //   if (offerslist) {
+  //     const header = [
+  //       "DISCOUNT CODE",
+  //       "CAMPAIGN NAME",
+  //       "USAGE",
+  //       "LIMIT",
+  //       "Expiry",
+  //       "STATUS",
+  //     ];
+  //     const csvData = offerslist.map((elem) => {
+  //       // let formatedDate = formatDate(elem.created_at);
+  //       return [
+  //         elem.coupon_code,
+  //         elem.name,
+  //         elem.mobile,
+  //         elem.location,
+  //         formatDate(elem.end_date) ,
+  //         `${elem.is_enable===true ? "Active" : "Inactive"} `,
+  //       ];
+  //     });
 
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Offer-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
+  //     const csvContent = [header, ...csvData]
+  //       .map((row) => row.join(","))
+  //       .join("\n");
+  //     const blob = new Blob([csvContent], { type: "text/csv" });
+  //     const url = window.URL.createObjectURL(blob);
+  //     const a = document.createElement("a");
+  //     a.href = url;
+  //     a.download = "Offer-List.csv";
+  //     a.click();
+  //     window.URL.revokeObjectURL(url);
+  //   }
+  // };
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -172,7 +199,8 @@ const handleopenfilter=()=>{
               <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}} onClick={handleopenfilter} type="button">
               <img src={filterIcon} alt="filter" width={isMobileView?15:20}/>
                 </button>
-                {openfilter && <PopupFilter open={openfilter} handleOpen={handleopenfilter} handleClose={handleclosefilter}/>}
+                {openfilter && <PopupFilter setListPageUrl={setListPageUrl}
+        setOffersList={setOffersList} open={openfilter} handleOpen={handleopenfilter} handleClose={handleclosefilter}/>}
              </div>
             </>
           </div>
@@ -180,8 +208,11 @@ const handleopenfilter=()=>{
         </div>
         <div className="action_buttons col-4">
           
-          <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
-            Export &nbsp;
+          <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+            <CSVLink style={{textDecorationLine:"none",color:"black"}} data={exportdata} filename={"coupon_data.csv"}>
+              Export 
+            </CSVLink>
+            {/* Export &nbsp; */}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

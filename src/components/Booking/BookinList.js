@@ -471,6 +471,7 @@ const BookinList = () => {
                               <Link
                                 to={`/booking-view/1234`}
                                
+
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "7px 10px 5px 10px",
@@ -478,8 +479,6 @@ const BookinList = () => {
                                   borderRadius:
                                     "var(--roundness-round-inside, 6px)",
                                   background: "#187AF7",
-
-                                  /* Shadow/XSM */
                                   boxSShadow:
                                     "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                                 }}

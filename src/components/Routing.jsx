@@ -26,7 +26,7 @@ import DiscountView from "./Discounts/DiscountView";
 import DiscountEdit from "./Discounts/DiscountEdit";
 import DiscountAddNew from "./Discounts/DiscountAddNew";
 import CustomerView from "./Customers/CustomerView";
-import CustomerEdit from "./Customers/CustomerEdit";
+
 import CustomersBookingView from "./Customers/CustomersBookingView";
 import AddOnServiceList from "./AddOnService/AddOnServiceList";
 import UserVendorView from "./UserVendor/UserVendorView";
@@ -42,6 +42,9 @@ import ServiceEdit from "./Service/ServiceEdit";
 import AdminView from "../pages/Users/Admin/AdminView";
 import SalesRepView from "../pages/Users/sales/SalesRepView";
 import InviVitualBookingView from "./Booking/InviVitualBookingView";
+import CancellationBooking from "./Booking/CancellationBooking";
+import CancellationHistory from "./Booking/CancellationHistory";
+import BookingView from "./Booking/BookingView";
 
 function AllRouting() {
   return (
@@ -78,7 +81,7 @@ function AllRouting() {
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
       <Route path="/customers/:customerId" element={<CustomerView />} />
-      <Route path="/customers-edit/:id" element={<CustomerEdit />} />
+      {/* <Route path="/customers-edit/:id" element={<CustomerEdit />} /> */}
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
@@ -107,6 +110,9 @@ function AllRouting() {
       <Route path="/service-view/:id" element={<ServiceView />} />
       <Route path="/service-edit/:id" element={<ServiceEdit />} />
       <Route path="/guest-user" element={<GuestUser />} />
+      <Route path="/cancellation-booking" element={<CancellationBooking />} />
+      <Route path="/cancellation-history" element={<CancellationHistory />} />
+      <Route path="/booking-view" element={<BookingView />} />
     </Routes>
   );
 }

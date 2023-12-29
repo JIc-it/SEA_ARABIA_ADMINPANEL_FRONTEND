@@ -2,8 +2,8 @@ import React from 'react'
 
 const RefundHistory = () => {
   return (
-    <div>
-      Refund History
+    <div className="page" style={{ height: "80vh" }}>
+      <h1 className="comingSoon">Coming Soon</h1>
     </div>
   )
 }

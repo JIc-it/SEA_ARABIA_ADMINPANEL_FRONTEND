@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Ship from "../../assets/images/jean-cloete-gX_04X-_GbQ-unsplash 1.png"
 import tick from "../../assets/images/uil_check.png"
 
-export default function CustomersBookingView() {
+export default function BookingView() {
     const theme = useTheme();
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const navigate = useNavigate()

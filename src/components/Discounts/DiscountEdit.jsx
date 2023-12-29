@@ -292,55 +292,74 @@ const convertAndFormatDateTime = (dateTimeString) => {
     }));
 };
 
-// console.log(formik.values.image.size);
-const updateCompanyIndex = (id, name) => {
+const updateServiceIndex = (id, name,servid, companyData) => {
     formik.setValues((prev) => {
         const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
+        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company === id);
 
-        const updatedList =
+        // Update companies list
+        const updatedCompanyList =
             existingCompanyIndex !== -1
                 ? [
                       ...prev.companies.slice(0, existingCompanyIndex),
                       { id: id, name: name },
-                      ...prev.companies.slice(existingCompanyIndex + 1), 
+                      ...prev.companies.slice(existingCompanyIndex + 1),
                   ]
                 : [
                       ...prev.companies,
-                      { id: id, name: name }, 
+                      { id: id, name: name },
                   ];
 
-        return {
-            ...prev,
-            companies: updatedList,
-        };
-    });
-};
-
-
-const updateServiceIndex = (id, name, companyid) => {
-    formik.setValues((prev) => {
-        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id);
-
+        // Update services list
         const updatedList =
             existingServiceIndex !== -1
                 ? [
-                      ...prev.services.slice(0, existingServiceIndex), 
-                      { id: id, name: name, company: companyid }, 
-                      ...prev.services.slice(existingServiceIndex + 1), 
+                      ...prev.services.slice(0, existingServiceIndex),
+                      ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
+                      ...prev.services.slice(existingServiceIndex + 1),
                   ]
                 : [
                       ...prev.services,
-                      { id: id, name: name, company: companyid }, 
+                      ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
                   ];
 
         return {
             ...prev,
             services: updatedList,
+            companies: updatedCompanyList,
         };
     });
 };
 
 
+
+const updateOneServiceIndex = (id, name, companyid, companyName) => {
+    formik.setValues((prev) => {
+        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company === companyid);
+        const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === companyid);
+
+        // Update companies list
+        const updatedCompanyList =
+            existingCompanyIndex === -1
+                ? [...(prev.companies || []), { id: companyid, name: companyName }]
+                : prev.companies;
+
+        // Update services list
+        const updatedList =
+            existingServiceIndex === -1
+                ? [...prev.services, { id: id, name: name, company: companyid }]
+                : prev.services;
+
+        return {
+            ...prev,
+            services: updatedList,
+            companies: updatedCompanyList,
+        };
+    });
+};
+
+
+console.log(formik.values);
 const CouponCode = (data) => {
     formik.setValues((prev) => { return { ...prev,coupon_code:data.toUpperCase()  } });
 };
@@ -348,18 +367,19 @@ const CouponCode = (data) => {
 function companywithservice(companyid){
  
     const serviceCount = formik?.values.services?.map((dat)=>dat.company===companyid) || 0;
-    return serviceCount
+    return serviceCount.length
 
 }
 
 function companywithservicelength(companyid){
  
-  const serviceCount = formik?.values.services.filter((dat)=>dat.company===companyid) || 0;
+  const serviceCount = servicelisting.filter((dat)=>dat.company===companyid) || 0;
   return serviceCount.length
 
 }
+const [servicelisting,setServiceListing]=useState([])
 
-console.log(typeof formik.values.image);
+
 if(!isLoading){
     return (
         <>
@@ -654,10 +674,12 @@ if(!isLoading){
                                     </label>
                                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
-                                <AddMorePopup handleClose={handleClose} handleOpen={handleOpen} open={open} handleAdd={updateCompanyIndex} handleServiceAdd={updateServiceIndex} data={formik.values}/>
-                            </div>
+                                <AddMorePopup service={formik.values.services} companies={formik.values.companies} setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} updateOneServiceIndex={updateOneServiceIndex} handleServiceAdd={updateServiceIndex}/>                            </div>
                         </div>
 
+                        {formik.values.companies.length === 0 &&
+                                <div style={{ fontWeight: 550, textAlign: "center" }}> No Service/Vendor Found</div>
+                            }
                        {formik?.values?.companies &&
                        
                        formik?.values?.companies.map((company)=>

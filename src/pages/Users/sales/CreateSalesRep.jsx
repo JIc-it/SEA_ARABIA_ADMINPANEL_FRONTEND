@@ -12,12 +12,12 @@ import {
   getCustomerListById,
 } from "../../../services/CustomerHandle";
 import { Link, useParams } from "react-router-dom";
+import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
 
-function CreateNewAdmin({ show, close }) {
+function CreateSalesRep({ show, close }) {
   const theme = useTheme();
-  const customerId = useParams()?.customerId;
-  console.log("c-id==", customerId);
 
+  const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
@@ -36,73 +36,46 @@ function CreateNewAdmin({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
+
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
-
-    dob: Yup.date()
-      .required("Date of Birth is required")
-      .max(new Date(), "Date of Birth cannot be in the future"),
-
-    gender: Yup.string().required("Gender is required"),
   });
-
-  useEffect(() => {
-    getCustomerListById(customerId)
-      .then((data) => {
-        console.log("cus detail is ---", data);
-        setCustomerDetails(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching customer data:", error);
-      });
-  }, [customerId]);
 
   const formik = useFormik({
     initialValues: {
-      first_name: customerDetails?.first_name || "",
-      last_name: customerDetails?.last_name || "",
-      email: customerDetails?.email || "",
-      mobile: customerDetails?.mobile || "",
-      dob: customerDetails?.profileextra?.dob || "",
-      location: customerDetails?.profileextra?.location || "",
-      gender: customerDetails?.profileextra?.gender || "",
-
-      // Add other fields as needed
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      location: "",
+      mobile: "",
     },
-    enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-            role: "User",
+            role: "Staff",
             email: values.email,
-            mobile: values.mobile,
 
-            profile_extra: {
-              location: values.location,
-              dob: values.dob,
-              gender: values.gender,
-            },
+            mobile: values.mobile,
+            location: values.location,
           };
 
-          const customerData = await UpdateCustomerListById(customerId, data);
-          console.log("customer updated detail is ---", customerData);
-          if (customerData) {
-            setIsLoading(false);
-            window.location.reload();
-            // setIsRefetch(!isRefetch);
-            toast.success("customer updated Successfully.");
+          const adminData = await createSalesRep(data);
+          if (adminData) {
+            setIsRefetch(!isRefetch);
+            toast.success("Staff Added Successfully.");
             close();
+            setIsLoading(false);
           } else {
-            console.error("Error while updating Vendor:", customerData.error);
+            console.error("Error while creating staff:", adminData.error);
             setIsLoading(false);
           }
+          setIsLoading(false);
         } catch (err) {
           console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
@@ -112,19 +85,64 @@ function CreateNewAdmin({ show, close }) {
       }
     },
   });
-  useEffect(() => {
-    formik.setValues({
-      first_name: customerDetails?.first_name || "",
-      last_name: customerDetails?.last_name || "",
-      email: customerDetails?.email || "",
-      mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profile_extra?.location || "",
-      gender: customerDetails?.profile_extra?.gender || "",
-      dob: customerDetails?.profile_extra?.dob || "",
-    });
-  }, [customerDetails]);
 
-  console.log("customer formik data", formik);
+  // const formik = useFormik({
+  //   initialValues: {
+  //     first_name: customerDetails?.first_name || "",
+  //     last_name: customerDetails?.last_name || "",
+  //     email: customerDetails?.email || "",
+  //     mobile: customerDetails?.mobile || "",
+  //     dob: customerDetails?.profileextra?.dob || "",
+  //     location: customerDetails?.profileextra?.location || "",
+  //     gender: customerDetails?.profileextra?.gender || "",
+
+  //     // Add other fields as needed
+  //   },
+  //   enableReinitialize: true,
+  //   validationSchema,
+  //   onSubmit: async (values) => {
+  //     setIsLoading(true);
+
+  //     if (!isLoading) {
+  //       try {
+  //         const data = {
+  //           // Assuming vendorId is a constant or variable defined earlier
+  //           first_name: values.first_name,
+  //           last_name: values.last_name,
+  //           role: "User",
+  //           email: values.email,
+  //           mobile: values.mobile,
+
+  //           profile_extra: {
+  //             location: values.location,
+  //             dob: values.dob,
+  //             gender: values.gender,
+  //           },
+  //         };
+
+  //         const customerData = await UpdateCustomerListById(customerId, data);
+  //         console.log("customer updated detail is ---", customerData);
+  //         if (customerData) {
+  //           setIsLoading(false);
+  //           window.location.reload();
+  //           // setIsRefetch(!isRefetch);
+  //           toast.success("customer updated Successfully.");
+  //           close();
+  //         } else {
+  //           console.error("Error while updating Vendor:", customerData.error);
+  //           setIsLoading(false);
+  //         }
+  //       } catch (err) {
+  //         console.log(err);
+  //         err.response.data.email && toast.error(err.response.data.email[0]);
+  //         err.response.data.mobile && toast.error(err.response.data.mobile[0]);
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //   },
+  // });
+
+  console.log("admin formik data", formik);
   return (
     <Offcanvas
       show={show}
@@ -643,4 +661,4 @@ function CreateNewAdmin({ show, close }) {
   );
 }
 
-export default CreateNewAdmin;
+export default CreateSalesRep;
