@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import UserVendorCardDetails from "./UserVendorCardDetails";
 import { getIndivitualUserVendorListById } from "../../services/userVendorsServices";
+import { getCustomerListById } from "../../services/CustomerHandle";
 
 export default function UserVendorView() {
   const params = useParams();
@@ -10,7 +11,7 @@ export default function UserVendorView() {
   const [venderDetails, setVenderDetails] = useState();
 
   useEffect(() => {
-    getIndivitualUserVendorListById(vendorId)
+    getCustomerListById(vendorId)
       .then((data) => {
         setVenderDetails(data);
         // console.log("Vendor list =====:", vendorList); // Fix the variable name here
@@ -21,7 +22,7 @@ export default function UserVendorView() {
   }, [vendorId]);
 
   return (
-    <div className="page">
+    <div className="page-wrapper">
       <div className="page-body">
         <div className="container-xl">
           <div>

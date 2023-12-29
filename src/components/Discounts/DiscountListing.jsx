@@ -199,7 +199,8 @@ const handleopenfilter=()=>{
               <button className="bg-black" style={{borderRadius:"5px",marginLeft:"5px"}} onClick={handleopenfilter} type="button">
               <img src={filterIcon} alt="filter" width={isMobileView?15:20}/>
                 </button>
-                {openfilter && <PopupFilter open={openfilter} handleOpen={handleopenfilter} handleClose={handleclosefilter}/>}
+                {openfilter && <PopupFilter setListPageUrl={setListPageUrl}
+        setOffersList={setOffersList} open={openfilter} handleOpen={handleopenfilter} handleClose={handleclosefilter}/>}
              </div>
             </>
           </div>

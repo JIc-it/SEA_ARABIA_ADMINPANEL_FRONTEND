@@ -443,8 +443,9 @@ const CancellationBooking = () => {
                                   boxSShadow:
                                     "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                                 }}
+                                data-bs-toggle="modal" data-bs-target="#exampleModal"
                               >
-                                View &nbsp;
+                                View Request &nbsp;
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width="16"
@@ -461,9 +462,9 @@ const CancellationBooking = () => {
                                   />
                                 </svg>
                               </Link>
-                              <button type="button" className="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                              {/* <button type="button" className="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Launch demo modal
-                              </button>
+                              </button> */}
                             </td>
                           </tr>
                           <tr>
@@ -520,7 +521,7 @@ const CancellationBooking = () => {
                                     "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                                 }}
                               >
-                                View &nbsp;
+                                View Request &nbsp;
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width="16"
@@ -593,7 +594,7 @@ const CancellationBooking = () => {
                                     "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                                 }}
                               >
-                                View &nbsp;
+                                View Request &nbsp;
                                 <svg
                                   xmlns="http://www.w3.org/2000/svg"
                                   width="16"
@@ -632,19 +633,186 @@ const CancellationBooking = () => {
       {/* View Model */}
       <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
+          {/* <div class="modal-content"> */}
+            {/* <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+            </div> */}
             <div class="modal-body">
-              ...
+              <div class="frame-11232">
+                <div class="frame-11251">
+                  <div class="checkbox-group-base">
+                    <div class="frame-11191">
+                      <div class="subtitle">Name</div>
+                      <div class="headline">Shaheel Arham</div>
+                    </div>
+                    <div class="frame-11248">
+                      <div class="frame-11220">
+                        <div class="subtitle2">Refund Status</div>
+                        <div class="status-requests">
+                          <div class="text">Pending</div>
+                        </div>
+                      </div>
+                      <div class="frame-11230">
+                        <div class="subtitle2">Transaction ID</div>
+                        <div class="sa-65-sfg-56-f-2">SA65SFG56F2</div>
+                      </div>
+                      <div class="frame-112322">
+                        <div class="subtitle2">Date &amp; Time</div>
+                        <div class="_08-oct-2022-08-20-am">08 OCT, 2022 08:20 AM</div>
+                      </div>
+                    </div>
+                    <svg
+                      class="vector-6"
+                      width="600"
+                      height="2"
+                      viewBox="0 0 600 2"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 1H600" stroke="#EAEBF0" />
+                    </svg>
+
+                    <div class="frame-11249">
+                      <div class="frame-11224">
+                        <div class="subtitle2">User Type</div>
+                        <div class="registered">Registered</div>
+                      </div>
+                      <div class="frame-11226">
+                        <div class="phone">Phone</div>
+                        <div class="_97455682545">+97455682545</div>
+                      </div>
+                      <div class="frame-11227">
+                        <div class="subtitle2">Email</div>
+                        <div class="shaheel-098-gmail-com">shaheel098@gmail.com</div>
+                      </div>
+                    </div>
+                    <svg
+                      class="vector-9"
+                      width="600"
+                      height="2"
+                      viewBox="0 0 600 2"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 1H600" stroke="#EAEBF0" />
+                    </svg>
+
+                    <div class="frame-11250">
+                      <div class="frame-11228">
+                        <div class="subtitle2">Booking Type</div>
+                        <div class="hot-air-balloon">Hot Air Balloon</div>
+                      </div>
+                      <div class="frame-11231">
+                        <div class="subtitle2">Location</div>
+                        <div class="kuwait">Kuwait</div>
+                      </div>
+                      <div class="frame-11233">
+                        <div class="subtitle2">Booking Date</div>
+                        <div class="_08-oct-2022">08 OCT, 2022</div>
+                      </div>
+                      <div class="frame-11234">
+                        <div class="subtitle2">Time Slot</div>
+                        <div class="_08-00-09-30">08:00 - 09:30</div>
+                      </div>
+                      <div class="frame-11235">
+                        <div class="subtitle2">Duration</div>
+                        <div class="_1-5-hrs">1.5 Hrs</div>
+                      </div>
+                    </div>
+                    <svg
+                      class="vector-8"
+                      width="600"
+                      height="2"
+                      viewBox="0 0 600 2"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 1H600" stroke="#EAEBF0" />
+                    </svg>
+
+                    <div class="text-container">
+                      <div class="frame-11189">
+                        <div class="frame-11187">
+                          <div class="total">Total</div>
+                          <div class="_2-50-kwd">2.50 KWD</div>
+                        </div>
+                        <div class="frame-11188">
+                          <div class="service-fee">Service Fee</div>
+                          <div class="_0-50-kwd">0.50 KWD</div>
+                        </div>
+                        <div class="frame-111892">
+                          <div class="collection-delivery">Collection &amp; Delivery</div>
+                          <div class="_1-50-kwd">1.50 KWD</div>
+                        </div>
+                      </div>
+                      <div class="frame-11186">
+                        <div class="paid">Paid</div>
+                        <div class="_4-50-kwd">4.50 KWD</div>
+                      </div>
+                    </div>
+                    <svg
+                      class="vector-10"
+                      width="600"
+                      height="2"
+                      viewBox="0 0 600 2"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path d="M0 1H600" stroke="#EAEBF0" />
+                    </svg>
+                    <div class="checkbox-text">
+                      <div class="checkbox-text2">
+                        <div class="text-container2">
+                          <div class="payment-method">Payment Method</div>
+                          <div class="frame-11184">
+                            <div class="master-card">Master Card</div>
+                            <div class="xxxx-9299">XXXXXX 9299</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="frame-11252">
+                    <div class="button">
+                      <div class="text2">Reject</div>
+                    </div>
+                    <div class="button2">
+                      <div class="text2">Accept</div>
+                    </div>
+                  </div>
+                </div>
+                <svg
+                  class="close-icon"
+                  width="26"
+                  height="26"
+                  viewBox="0 0 26 26"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <g clip-path="url(#clip0_226_3915)">
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M10.7024 12.9992L0.476289 2.77306C-0.157461 2.13931 -0.157461 1.10906 0.476289 0.475312C1.11004 -0.158437 2.14029 -0.158437 2.77404 0.475312L13.0002 10.7014L23.2263 0.475312C23.86 -0.158437 24.8903 -0.158437 25.524 0.475312C26.1578 1.10906 26.1578 2.13931 25.524 2.77306L15.2979 12.9992L25.524 23.2253C26.1578 23.8591 26.1578 24.8893 25.524 25.5231C24.8903 26.1568 23.86 26.1568 23.2263 25.5231L13.0002 15.2969L2.77404 25.5231C2.14029 26.1568 1.11004 26.1568 0.476289 25.5231C-0.157461 24.8893 -0.157461 23.8591 0.476289 23.2253L10.7024 12.9992Z"
+                      fill="black"
+                    />
+                  </g>
+                  <defs>
+                    <clipPath id="clip0_226_3915">
+                      <rect width="26" height="26" fill="white" />
+                    </clipPath>
+                  </defs>
+                </svg>
+              </div>
+
+
             </div>
-            <div class="modal-footer">
+            {/* <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Save changes</button>
-            </div>
-          </div>
+            </div> */}
+          {/* </div> */}
         </div>
       </div>
     </div>
