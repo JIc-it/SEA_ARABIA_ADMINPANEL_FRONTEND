@@ -1,16 +1,19 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
+import { Paper } from '@mui/material';
 import { useState } from 'react';
+import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { AddImage } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
-import { v4 as uuidv4 } from 'uuid';
-import { useParams } from 'react-router-dom';
+
 
 const style = {
     position: 'absolute',
@@ -22,15 +25,13 @@ const style = {
     borderRadius: "5px",
     boxShadow: 24,
     p: 4,
-    overflowY: 'auto', 
-    maxHeight: '90vh', 
+    overflowY: 'auto', // Add this line for vertical scroll
+    maxHeight: '90vh', // Adjust the maximum height if needed
 };
 
 
-export default function PerDateModal({ handleClose, handleOpen, open, formiks }) {
-    const Params = useParams()
-    const [startdate,setStartDate]=useState("")
-    const [enddate,setEndDate]=useState("")
+export default function PerDayEditModal({handleClose, handleOpen, open,data,formiks }) {
+
     const [isLoading, setIsLoading] = useState(false);
 
     const validationSchema = Yup.object({
@@ -39,12 +40,12 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
             .required("Price is required"),
-        date: Yup.string()
-            .required("Date is required"),
-        end_date: Yup.string().when("is_range", ([is_range], schema) => {
+        day: Yup.string()
+            .required("Day is required"),
+        end_day: Yup.string().when("is_range", ([is_range], schema) => {
                 if (is_range ===true) {
                     return schema
-                        .required("End Date is Required")
+                        .required("End Day is Required")
                 }
                 else {
                     return schema.notRequired();
@@ -54,14 +55,14 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
     const formik = useFormik({
         initialValues: {
-            id: uuidv4(),
-            service: Params.id,
-            is_active: false,
-            name: "",
-            price: null,
-            is_range: false,
-            date: null,
-            end_date: null
+            id: data.id,
+            // service: data.service,
+            is_active: data.is_active,
+            name: data.name,
+            price: data.price,
+            is_range: data.is_range,
+            day: data.day,
+            end_day: data.end_day
 
         },
         validationSchema,
@@ -70,38 +71,43 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             formiks((prev) => {
                 const datas = {
                     id: values.id,
-                    service: Params.id,
+                    // service: values.service,
                     is_active: values.is_active,
                     is_range: values.is_range,
                     name: values.name,
                     price: values.price,
-                    date: values.date,
-                    end_date: values.end_date
+                    day: values.day,
+                    end_day: values.end_day
                 }
 
 
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
+
+                
+                if (findIndex !== -1) {
+                    let updatedServicePriceService = [...prev.service_price_service];
+                    updatedServicePriceService[findIndex] = datas;
+
+                    return {
+                        ...prev,
+                        service_price_service: updatedServicePriceService
+                    };
+                } else {
+                    
+                    return {
+                        ...prev,
+                        service_price_service: [...prev.service_price_service, datas]
+                    };
                 }
-            })
-            handleClose()
+            });
 
-
-
+            handleClose();
         },
     });
 
 
 
-    let startdates=[]
-    for(let i=1;i<=31;i++){
-        startdates.push(i)
-    }
-    let enddates=[]
-    for(let i=1;i<=31;i++){
-        enddates.push(i)
-    }
-
+ 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -186,7 +192,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                         value={formik.values.is_range}
                                         onChange={()=>{
                                             formik.setFieldValue("is_range",!formik.values.is_range);
-                                            formik.setFieldValue("end_date",null)
+                                            formik.setFieldValue("end_day",null)
                                         }}
                                         onBlur={formik.handleBlur}
                                         style={{ width: "15px", height: "15px" }}
@@ -205,63 +211,74 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                 ) : null}
                             </div>
 
-                             <div className='d-flex  align-items-center mt-2'>
-                                    
-                                    <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Date <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.date}
-                                                onChange={(e) => formik.setFieldValue('date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                            {startdates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
+                            <div className='d-flex  align-items-center mt-2'>
 
-                                            </select>
-                                            {formik.touched.date && formik.errors.date ? (
-                                                <div className="error">{formik.errors.date}</div>
-                                            ) : null}
-                                        </div>
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Day <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <select
 
-                                        <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                 <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="end_date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.end_date}
-                                                onChange={(e) => formik.setFieldValue('end_date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                             {enddates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
-                                            </select>
-                                            {formik.touched.end_date && formik.errors.end_date ? (
-                                                <div className="error">{formik.errors.end_date}</div>
-                                            ) : null}
-                                        </div>
+                                        name="day"
+                                        className="form-control"
+                                        placeholder="Day"
+                                        value={formik.values.day}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        <option value="Sunday">Sunday</option>
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
 
-                                   
-                        </div>
+
+                                    </select>
+                                    {formik.touched.day && formik.errors.day ? (
+                                        <div className="error">{formik.errors.day}</div>
+                                    ) : null}
+                                </div>
+
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        End Day<span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <select
+
+                                        name="end_day"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.end_day}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        disabled={formik.values.is_range===false}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        <option value="Sunday">Sunday</option>
+                                        <option value="Monday">Monday</option>
+                                        <option value="Tuesday">Tuesday</option>
+                                        <option value="Wednesday">Wednesday</option>
+                                        <option value="Thursday">Thursday</option>
+                                        <option value="Friday">Friday</option>
+                                        <option value="Saturday">Saturday</option>
+
+                                    </select>
+                                    {formik.touched.end_day && formik.errors.end_day ? (
+                                        <div className="error">{formik.errors.end_day}</div>
+                                    ) : null}
+                                </div>
+
+
+                            </div>
 
                             <div className='d-flex justify-content-end mt-3'>
                                 <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>

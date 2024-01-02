@@ -4,14 +4,11 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
-import {getLocationListing} from "../../services/service"
-import { v4 as uuidv4 } from 'uuid';
-import { useParams } from 'react-router-dom';
 
 
 const style = {
@@ -29,25 +26,9 @@ const style = {
 };
 
 
-export default function PerDestinationModal({ handleClose, handleOpen, open,formiks }) {
-    const [locationlist, setLocationList] = useState([])
+export default function PerDurationEditModal ({ handleClose, handleOpen, open,data,formiks }) {
     const [isLoading, setIsLoading] = useState(false);
-    const [search, setSearch] = useState("")
-    const [idset, setIdSet] = useState("")
-    const handleSearchChange = (e) => {
-        const searchTerm = e.target.value;
-        setSearch(searchTerm);
-    };
-    const Params=useParams()
-
-    useEffect(() => {
-        getLocationListing()
-            .then((data) =>
-                setLocationList(data?.results)
-            ).catch((error) =>
-                console.error(error))
-    }, [])
-
+ 
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Name is required")
@@ -58,19 +39,17 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
             .required("Duration is required"),
             duration_minute: Yup.number()
             .required("Minute is required"),
-        location: Yup.string().required("Location is required"),
     });
 
     const formik = useFormik({
         initialValues: {
-            id:uuidv4(),
-            service: Params.id,
-            is_active: false,
-            location: "",
-            name: "",
-            price:null,
-            duration_hour: null,
-            duration_minute: null
+            id:data.id,
+            service: data.service,
+            is_active: data.is_active,
+            name:data.name,
+            price:data.price,
+            duration_hour: data.duration_hour,
+            duration_minute: data.duration_minute
            
         },
         validationSchema,
@@ -78,28 +57,40 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
         
             formiks((prev)=>{
                 const datas={
-                    id:values.id,
-                    service: Params.id,
+                    id: values.id,
+                    service: values.service,
                     is_active: values.is_active,
                     location: values.location,
                     name: values.name,
                     price: values.price,
-                    duration_hour:values.duration_hour,
-                    duration_minute:values.duration_minute
+                    duration_hour: values.duration_hour,
+                    duration_minute: values.duration_minute
                 }
-               
+                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
 
-                return {
-                    ...prev,service_price_service:[...prev.service_price_service,datas]
+                
+                if (findIndex !== -1) {
+                    let updatedServicePriceService = [...prev.service_price_service];
+                    updatedServicePriceService[findIndex] = datas;
+
+                    return {
+                        ...prev,
+                        service_price_service: updatedServicePriceService
+                    };
+                } else {
+                    
+                    return {
+                        ...prev,
+                        service_price_service: [...prev.service_price_service, datas]
+                    };
                 }
-            })
-            handleClose()
-    
-       
+            });
 
+            handleClose();
         },
     });
 
+ 
     let duration=[]
     for(let i=1;i<=23;i++){
         duration.push(i)
@@ -182,32 +173,8 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
 
                                    
                         </div>          
-                            <div className='w-50 mx-1 mt-2'>
-                                <label
-                                    htmlFor=""
-                                    style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                >
-                                    Destination <span style={{ color: "red" }}>*</span>
-                                </label>
-                                <select
-                                    
-                                    name="location"
-                                    className="form-control"
-                                    placeholder=""
-                                    value={formik.values.location}
-                                    onChange={(e) => formik.setFieldValue('location', e.target.value)}
-                                    onBlur={formik.handleBlur}
-                                >
-                                    <option value={null}>Choose</option>
-                                    {locationlist.map((dat,i)=>
-                                    <option key={i} value={dat.id}>{dat.name}</option>
-                                    )}
-                                </select>
-                                {formik.touched.location && formik.errors.location ? (
-                                    <div className="error">{formik.errors.location}</div>
-                                ) : null}
-                            </div>        
-                            <div className='d-flex  align-items-center mt-2'>
+                            
+                        <div className='d-flex  align-items-center mt-2'>
                                     
                                     <div className='w-50 mx-1'>
                                             <label

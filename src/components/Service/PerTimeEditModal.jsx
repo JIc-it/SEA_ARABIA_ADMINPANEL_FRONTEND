@@ -27,10 +27,8 @@ const style = {
 };
 
 
-export default function PerDateModal({ handleClose, handleOpen, open, formiks }) {
+export default function PerTimeEditModal({ handleClose, handleOpen, open,data, formiks }) {
     const Params = useParams()
-    const [startdate,setStartDate]=useState("")
-    const [enddate,setEndDate]=useState("")
     const [isLoading, setIsLoading] = useState(false);
 
     const validationSchema = Yup.object({
@@ -39,12 +37,12 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
             .required("Price is required"),
-        date: Yup.string()
-            .required("Date is required"),
-        end_date: Yup.string().when("is_range", ([is_range], schema) => {
+        time: Yup.string()
+            .required("Time is required"),
+        end_time: Yup.string().when("is_range", ([is_range], schema) => {
                 if (is_range ===true) {
                     return schema
-                        .required("End Date is Required")
+                        .required("End Time is Required")
                 }
                 else {
                     return schema.notRequired();
@@ -54,14 +52,14 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
     const formik = useFormik({
         initialValues: {
-            id: uuidv4(),
-            service: Params.id,
-            is_active: false,
-            name: "",
-            price: null,
-            is_range: false,
-            date: null,
-            end_date: null
+            id: data.id,
+            service: data.service,
+            is_active: data.is_active,
+            name: data.name,
+            price: data.price,
+            is_range: data.is_range,
+            time: data.time,
+            end_time: data.end_time
 
         },
         validationSchema,
@@ -70,20 +68,35 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             formiks((prev) => {
                 const datas = {
                     id: values.id,
-                    service: Params.id,
+                    service: values.service,
                     is_active: values.is_active,
                     is_range: values.is_range,
                     name: values.name,
                     price: values.price,
-                    date: values.date,
-                    end_date: values.end_date
+                    time: values.time,
+                    end_time: values.end_time
                 }
 
 
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
+
+                
+                if (findIndex !== -1) {
+                    let updatedServicePriceService = [...prev.service_price_service];
+                    updatedServicePriceService[findIndex] = datas;
+
+                    return {
+                        ...prev,
+                        service_price_service: updatedServicePriceService
+                    };
+                } else {
+                    
+                    return {
+                        ...prev,
+                        service_price_service: [...prev.service_price_service, datas]
+                    };
                 }
-            })
+            });
             handleClose()
 
 
@@ -93,15 +106,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
 
 
-    let startdates=[]
-    for(let i=1;i<=31;i++){
-        startdates.push(i)
-    }
-    let enddates=[]
-    for(let i=1;i<=31;i++){
-        enddates.push(i)
-    }
-
+    
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -186,7 +191,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                         value={formik.values.is_range}
                                         onChange={()=>{
                                             formik.setFieldValue("is_range",!formik.values.is_range);
-                                            formik.setFieldValue("end_date",null)
+                                            formik.setFieldValue("end_time",null)
                                         }}
                                         onBlur={formik.handleBlur}
                                         style={{ width: "15px", height: "15px" }}
@@ -205,63 +210,58 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                 ) : null}
                             </div>
 
-                             <div className='d-flex  align-items-center mt-2'>
-                                    
-                                    <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Date <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.date}
-                                                onChange={(e) => formik.setFieldValue('date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                            {startdates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
+                            <div className='d-flex  align-items-center mt-2'>
 
-                                            </select>
-                                            {formik.touched.date && formik.errors.date ? (
-                                                <div className="error">{formik.errors.date}</div>
-                                            ) : null}
-                                        </div>
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Time <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <input
+                                        type="time"
+                                        name="time"
+                                        className="form-control"
+                                        placeholder=""
+                                        value={formik.values.time}
+                                        onChange={(e)=>{
+                                            formik.setFieldValue("time",e.target.value);
+                                        }}
+                                        onBlur={formik.handleBlur}
+                                        
+                                    />
+                                    {formik.touched.time && formik.errors.time ? (
+                                        <div className="error">{formik.errors.time}</div>
+                                    ) : null}
+                                </div>
 
-                                        <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                 <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="end_date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.end_date}
-                                                onChange={(e) => formik.setFieldValue('end_date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                             {enddates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
-                                            </select>
-                                            {formik.touched.end_date && formik.errors.end_date ? (
-                                                <div className="error">{formik.errors.end_date}</div>
-                                            ) : null}
-                                        </div>
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        End Time<span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <input
+                                        type="time"
+                                        name="end_time"
+                                        className="form-control"
+                                        placeholder=""
+                                        value={formik.values.end_time}
+                                        onChange={(e)=>{
+                                            formik.setFieldValue("end_time",e.target.value);
+                                        }}
+                                        onBlur={formik.handleBlur}
+                                        disabled={formik.values.is_range===false}
+                                    />
+                                    {formik.touched.end_time && formik.errors.end_time ? (
+                                        <div className="error">{formik.errors.end_time}</div>
+                                    ) : null}
+                                </div>
 
-                                   
-                        </div>
+
+                            </div>
 
                             <div className='d-flex justify-content-end mt-3'>
                                 <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>

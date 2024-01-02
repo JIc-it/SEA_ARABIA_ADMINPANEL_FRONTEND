@@ -27,7 +27,7 @@ const style = {
 };
 
 
-export default function PerDateModal({ handleClose, handleOpen, open, formiks }) {
+export default function PerDateEditModal({ handleClose, handleOpen, open,data, formiks }) {
     const Params = useParams()
     const [startdate,setStartDate]=useState("")
     const [enddate,setEndDate]=useState("")
@@ -54,14 +54,14 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
     const formik = useFormik({
         initialValues: {
-            id: uuidv4(),
-            service: Params.id,
-            is_active: false,
-            name: "",
-            price: null,
-            is_range: false,
-            date: null,
-            end_date: null
+            id: data.id,
+            service: data.service,
+            is_active: data.is_active,
+            name: data.name,
+            price: data.price,
+            is_range: data.is_range,
+            date: data.date,
+            end_date: data.end_date
 
         },
         validationSchema,
@@ -80,17 +80,31 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                 }
 
 
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
+
+                
+                if (findIndex !== -1) {
+                    let updatedServicePriceService = [...prev.service_price_service];
+                    updatedServicePriceService[findIndex] = datas;
+
+                    return {
+                        ...prev,
+                        service_price_service: updatedServicePriceService
+                    };
+                } else {
+                    
+                    return {
+                        ...prev,
+                        service_price_service: [...prev.service_price_service, datas]
+                    };
                 }
-            })
+            });
             handleClose()
 
 
 
         },
     });
-
 
 
     let startdates=[]
@@ -101,7 +115,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
     for(let i=1;i<=31;i++){
         enddates.push(i)
     }
-
+    
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -205,7 +219,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                 ) : null}
                             </div>
 
-                             <div className='d-flex  align-items-center mt-2'>
+                            <div className='d-flex  align-items-center mt-2'>
                                     
                                     <div className='w-50 mx-1'>
                                             <label
