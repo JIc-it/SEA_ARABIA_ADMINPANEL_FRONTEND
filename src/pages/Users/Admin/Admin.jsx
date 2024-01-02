@@ -232,12 +232,6 @@ const Admin = () => {
                       Search
                     </button>
                   </div>
-                  <button
-                    className="bg-black"
-                    style={{ borderRadius: "5px", marginLeft: "5px" }}
-                  >
-                    <img src={filterIcon} alt="filter" width={25} />
-                  </button>
                 </div>
               </form>
             </div>

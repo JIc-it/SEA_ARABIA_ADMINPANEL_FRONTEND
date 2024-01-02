@@ -9,6 +9,7 @@ import { getCustomerListById } from "../../../services/CustomerHandle";
 import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getSalesRepListById } from "../../../services/GuestHandle";
 import CreateSalesRep from "./CreateSalesRep";
+import UpdateSalesRep from "./UpdateSalesRep";
 
 function SalesRepDetails() {
   const theme = useTheme();
@@ -70,8 +71,8 @@ function SalesRepDetails() {
                     />
                   </svg>{" "}
                   &nbsp; {salesRepDetails?.useridentificationdata?.id_number}
-                  <p>| &nbsp;</p>
                 </p>
+                <p className="card_content">| &nbsp;</p>
                 <p className="card_content">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -87,9 +88,9 @@ function SalesRepDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {salesRepDetails?.role} <p>| &nbsp;</p>
+                  &nbsp; {salesRepDetails?.role}
                 </p>
-                <p className="card_content">
+                {/* <p className="card_content">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="21"
@@ -105,7 +106,7 @@ function SalesRepDetails() {
                     />
                   </svg>{" "}
                   &nbsp; kuwait
-                </p>
+                </p> */}
               </div>
             </div>
 
@@ -246,7 +247,7 @@ function SalesRepDetails() {
 
             {active === "Details" && (
               <>
-                <CreateSalesRep
+                <UpdateSalesRep
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />

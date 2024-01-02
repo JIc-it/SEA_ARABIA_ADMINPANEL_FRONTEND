@@ -41,7 +41,7 @@ export default function CustomerListing() {
       });
   }, []);
 
-  const getVendorListData = async () => {
+  const getCustomerListData = async () => {
     setIsLoading(true);
     getCustomerSearch(search, selectedValue, "User")
       .then((data) => {
@@ -133,7 +133,7 @@ export default function CustomerListing() {
                     type="button"
                     className="btn search_button"
                     style={{ background: "#006875" }}
-                    onClick={getVendorListData}
+                    onClick={getCustomerListData}
                   >
                     Search
                   </button>
@@ -360,7 +360,7 @@ export default function CustomerListing() {
                         <td>
                           <span className="text-secondary">80</span>
                         </td>
-                       
+
                         <td
                           style={{
                             display: "flex",

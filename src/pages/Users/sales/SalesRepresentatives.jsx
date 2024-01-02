@@ -25,27 +25,27 @@ const SalesRepresentatives = () => {
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  
+
   useEffect(() => {
-    getCustomerlist()
+    const role = "Staff";
+    getCustomerlist(role)
       .then((data) => {
         console.log("salesRep-list", data);
         // setListDiscount(data.results);
-        const filteredResults = data.results.filter(
-          (item) => item.role === "Staff"
-        );
+        // const filteredResults = data.results.filter(
+        //   (item) => item.role === "Staff"
+        // );
         setListPageUrl({
           next: data.next,
           previous: data.previous,
         });
-        setsalesRep(filteredResults);
+        setsalesRep(data.results);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
   }, []);
-
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -70,7 +70,6 @@ const SalesRepresentatives = () => {
           console.error("Error fetching  data:", error);
         });
   };
-
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -210,12 +209,7 @@ const SalesRepresentatives = () => {
                       Search
                     </button>
                   </div>
-                  <button
-                    className="bg-black"
-                    style={{ borderRadius: "5px", marginLeft: "5px" }}
-                  >
-                    <img src={filterIcon} alt="filter" width={25} />
-                  </button>
+                  
                 </div>
               </form>
             </div>

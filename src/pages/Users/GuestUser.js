@@ -54,41 +54,7 @@ const GuestUser = () => {
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
-                <div className="row">
-                    <div className="col-sm-6 col-lg-12">
-                        <div className="card card-sm" style={{ borderRadius: "12px" }}>
-                            <div className="card-body">
-                                <div className="row align-items-center">
-                                    <div className="col-auto">
-                                        <span
-                                            className="bg-primary text-white avatar"
-                                            style={{
-                                                borderRadius: "8px",
-                                                width: "50px",
-                                                height: "50px",
-                                                background:
-                                                    "linear-gradient(135deg, #5C4AF2 0%, #988DF5 100%)",
-                                            }}
-                                        >
-                                            <img src={guestUserImg} />
-                                        </span>
-                                    </div>
-                                    <div className="col">
-                                        <div className="font-weight-medium count_card_heading">
-                                            Total Guest User
-                                        </div>
-                                        <div
-                                            className="text-secondary"
-                                            style={{ fontSize: "18px", fontWeight: "700" }}
-                                        >
-                                            {totalGuestUser}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
                 <div className="col-12 actions_menu my-2">
                     <div className="action_menu_left col-8">
                         <div>
@@ -127,9 +93,7 @@ const GuestUser = () => {
                                             Search
                                         </button>
                                     </div>
-                                    <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px" }}>
-                                        <img src={filterIcon} alt="filter" width={25} />
-                                    </button>
+                                   
                                 </div>
                             </form>
                         </div>

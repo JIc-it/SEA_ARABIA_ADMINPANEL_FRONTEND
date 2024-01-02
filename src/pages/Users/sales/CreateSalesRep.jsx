@@ -10,18 +10,34 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateCustomerListById,
   getCustomerListById,
+  getLocation,
 } from "../../../services/CustomerHandle";
 import { Link, useParams } from "react-router-dom";
 import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
+import { passwordRegex } from "../../../helpers";
 
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
-
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
+  const [location, setLocation] = useState([]);
 
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
   const validationSchema = Yup.object({
     // name: Yup.string()
     //   .required("Name is required")
@@ -36,9 +52,20 @@ function CreateSalesRep({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-
+    password: Yup.string()
+      .min(6, "Password should be at least 6 characters")
+      .required("Password is required"),
+    confirmPassword: Yup.string()
+      .max(50)
+      .required("Confirm Password is required")
+      .matches(
+        passwordRegex,
+        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+      )
+      .oneOf([Yup.ref("password")], "Passwords must match"),
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
+    gender: Yup.string().required("Gender is required"),
   });
 
   const formik = useFormik({
@@ -47,9 +74,9 @@ function CreateSalesRep({ show, close }) {
       last_name: "",
       email: "",
       password: "",
-
       location: "",
       mobile: "",
+      gender: ",",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -64,6 +91,7 @@ function CreateSalesRep({ show, close }) {
             password: values.password,
             mobile: values.mobile,
             location: values.location,
+            gender: values.gender,
           };
 
           const staffData = await createSalesRep(data);
@@ -89,61 +117,6 @@ function CreateSalesRep({ show, close }) {
     },
   });
 
-  // const formik = useFormik({
-  //   initialValues: {
-  //     first_name: customerDetails?.first_name || "",
-  //     last_name: customerDetails?.last_name || "",
-  //     email: customerDetails?.email || "",
-  //     mobile: customerDetails?.mobile || "",
-  //     dob: customerDetails?.profileextra?.dob || "",
-  //     location: customerDetails?.profileextra?.location || "",
-  //     gender: customerDetails?.profileextra?.gender || "",
-
-  //     // Add other fields as needed
-  //   },
-  //   enableReinitialize: true,
-  //   validationSchema,
-  //   onSubmit: async (values) => {
-  //     setIsLoading(true);
-
-  //     if (!isLoading) {
-  //       try {
-  //         const data = {
-  //           // Assuming vendorId is a constant or variable defined earlier
-  //           first_name: values.first_name,
-  //           last_name: values.last_name,
-  //           role: "User",
-  //           email: values.email,
-  //           mobile: values.mobile,
-
-  //           profile_extra: {
-  //             location: values.location,
-  //             dob: values.dob,
-  //             gender: values.gender,
-  //           },
-  //         };
-
-  //         const customerData = await UpdateCustomerListById(customerId, data);
-  //         console.log("customer updated detail is ---", customerData);
-  //         if (customerData) {
-  //           setIsLoading(false);
-  //           window.location.reload();
-  //           // setIsRefetch(!isRefetch);
-  //           toast.success("customer updated Successfully.");
-  //           close();
-  //         } else {
-  //           console.error("Error while updating Vendor:", customerData.error);
-  //           setIsLoading(false);
-  //         }
-  //       } catch (err) {
-  //         console.log(err);
-  //         err.response.data.email && toast.error(err.response.data.email[0]);
-  //         err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   },
-  // });
 
   console.log("sales formik data", formik);
   return (
@@ -275,6 +248,67 @@ function CreateSalesRep({ show, close }) {
             ) : null}
           </div>
         </div>
+
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Gender <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <select
+              className="form-control"
+              id=""
+              name="gender"
+              value={formik.values.gender}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <option value="" label="Select a gender" />
+              {gender.map((item) => (
+                <option key={item.id} value={item.id} label={item.label}>
+                  {item.label}
+                </option>
+              ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.gender && formik.errors.gender ? (
+              <div className="error">{formik.errors.gender}</div>
+            ) : null}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              style={{
+                top: "10px",
+                right: "5px",
+                position: "absolute",
+              }}
+            >
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
+        </div>
+
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
@@ -287,16 +321,22 @@ function CreateSalesRep({ show, close }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <input
+            {" "}
+            <select
               className="form-control"
-              type="text"
               id=""
               name="location"
-              placeholder="Location"
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
+            >
+              <option value="" label="Select a location" />
+              {location &&
+                location.map((item) => (
+                  <option key={item.id} value={item.id} label={item.location} />
+                ))}
+              {/* Add more options as needed */}
+            </select>
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
@@ -315,7 +355,7 @@ function CreateSalesRep({ show, close }) {
               <path
                 d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
                 stroke="#68727D"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
               <ellipse
                 cx="10"
@@ -323,7 +363,7 @@ function CreateSalesRep({ show, close }) {
                 rx="2.5"
                 ry="2.5"
                 stroke="#68727D"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
             </svg>
           </div>

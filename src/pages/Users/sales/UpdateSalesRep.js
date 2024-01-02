@@ -7,36 +7,54 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+// import ReactFlagsSelect from 'react-flags-select';
+// import 'react-flags-select/css/react-flags-select.css';
 import {
   UpdateAdminListById,
+  UpdateSalesRepListById,
   createAdmin,
   getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
+import { getLocation } from "../../../services/CustomerHandle";
 
-function UpdateAdmin({ show, close }) {
+function UpdateSalesRep({ show, close }) {
   const theme = useTheme();
-  const adminId = useParams()?.adminId;
-  console.log("admin id ===", adminId);
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
-  const [adminDetails, setAdminDetails] = useState();
+  const [salesDetails, setSalesDetails] = useState();
+  const [location, setLocation] = useState([]);
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
 
   useEffect(() => {
-    getAdminListById(adminId)
+    getSalesRepListById(salesRepId)
       .then((data) => {
-        setAdminDetails(data);
+        setSalesDetails(data);
         console.log(" admin by id------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
-  }, [adminId]);
+  }, [salesRepId]);
+
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -62,17 +80,19 @@ function UpdateAdmin({ show, close }) {
 
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
+    gender: Yup.string().required("Gender is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      email: adminDetails?.email || "",
-      password: adminDetails?.password || "",
-      confirmPassword: adminDetails?.confirmPassword || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      first_name: salesDetails?.first_name || "",
+      last_name: salesDetails?.last_name || "",
+      email: salesDetails?.email || "",
+      password: salesDetails?.password || "",
+      confirmPassword: salesDetails?.confirmPassword || "",
+      mobile: salesDetails?.mobile || "",
+      location: salesDetails?.profileextra?.location || "",
+      gender: salesDetails?.profileextra?.gender || "",
 
       // Add other fields as needed
     },
@@ -96,16 +116,16 @@ function UpdateAdmin({ show, close }) {
             },
           };
 
-          const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminData);
-          if (adminData) {
+          const salesData = await UpdateSalesRepListById(salesRepId, data);
+          console.log("Admin updated detail is ---", salesData);
+          if (salesData) {
             setIsLoading(false);
-            // window.location.reload();
+            window.location.reload();
             // setIsRefetch(!isRefetch);
             toast.success(" Admin updated Successfully.");
             close();
           } else {
-            console.error("Error while updating Admin:", adminData.error);
+            console.error("Error while updating Admin:", salesData.error);
             setIsLoading(false);
           }
         } catch (err) {
@@ -117,22 +137,22 @@ function UpdateAdmin({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
+  console.log("sales edit formik update data", formik);
 
   useEffect(() => {
     formik.setValues({
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      password: adminDetails?.password || "",
+      first_name: salesDetails?.first_name || "",
+      last_name: salesDetails?.last_name || "",
+      password: salesDetails?.password || "",
 
-      email: adminDetails?.email || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      email: salesDetails?.email || "",
+      mobile: salesDetails?.mobile || "",
+      location: salesDetails?.profileextra?.location || "",
 
-      // defineservice: adminDetails?.useridentificationdata?.,
+      // defineservice: salesDetails?.useridentificationdata?.,
       // Add other fields as needed
     });
-  }, [adminDetails]);
+  }, [salesDetails]);
 
   return (
     <Offcanvas
@@ -145,7 +165,7 @@ function UpdateAdmin({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Details </Offcanvas.Title>
+        <Offcanvas.Title> Edit Details </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -272,6 +292,65 @@ function UpdateAdmin({ show, close }) {
               fontSize: "13px",
             }}
           >
+            Gender <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <select
+              className="form-control"
+              id=""
+              name="gender"
+              value={formik.values.gender}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <option value="" label="Select a gender" />
+              {gender.map((item) => (
+                <option key={item.id} value={item.id} label={item.label}>
+                  {item.label}
+                </option>
+              ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.gender && formik.errors.gender ? (
+              <div className="error">{formik.errors.gender}</div>
+            ) : null}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              style={{
+                top: "10px",
+                right: "5px",
+                position: "absolute",
+              }}
+            >
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
+        </div>
+        {/* <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
@@ -315,7 +394,67 @@ function UpdateAdmin({ show, close }) {
               />
             </svg>
           </div>
+        </div> */}
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Location <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            {" "}
+            <select
+              className="form-control"
+              id=""
+              name="location"
+              value={formik.values.location}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <option value="" label="Select a location" />
+              {location &&
+                location.map((item) => (
+                  <option key={item.id} value={item.id} label={item.location} />
+                ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              style={{
+                top: "10px",
+                right: "5px",
+                position: "absolute",
+              }}
+            >
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
         </div>
+
         <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
@@ -707,4 +846,4 @@ function UpdateAdmin({ show, close }) {
   );
 }
 
-export default UpdateAdmin;
+export default UpdateSalesRep;

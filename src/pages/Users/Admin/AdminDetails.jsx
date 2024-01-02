@@ -77,8 +77,8 @@ function AdminDetails() {
                     />
                   </svg>{" "}
                   &nbsp; {adminDetails?.useridentificationdata?.id_number}
-                  <p>| &nbsp;</p>
                 </p>
+                <p className="card_content">| &nbsp;</p>
                 <p className="card_content">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -94,24 +94,7 @@ function AdminDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {adminDetails?.role} <p>| &nbsp;</p>
-                </p>
-                <p className="card_content">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="21"
-                    height="20"
-                    viewBox="0 0 21 20"
-                    fill="none"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M10.4997 1.66602C6.81778 1.66602 3.83301 5.0015 3.83301 8.74935C3.83301 12.4678 5.96078 16.5097 9.28056 18.0614C10.0545 18.4231 10.9449 18.4231 11.7188 18.0614C15.0386 16.5097 17.1663 12.4678 17.1663 8.74935C17.1663 5.0015 14.1816 1.66602 10.4997 1.66602ZM10.4997 9.99935C11.4201 9.99935 12.1663 9.25316 12.1663 8.33268C12.1663 7.41221 11.4201 6.66602 10.4997 6.66602C9.5792 6.66602 8.83301 7.41221 8.83301 8.33268C8.83301 9.25316 9.5792 9.99935 10.4997 9.99935Z"
-                      fill="white"
-                    />
-                  </svg>{" "}
-                  &nbsp; {adminDetails?.profileextra?.location}
+                  &nbsp; {adminDetails?.role}
                 </p>
               </div>
             </div>
