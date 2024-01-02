@@ -11,7 +11,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 // import Food from "../../assets/images/food.png"
 import UploadPopup from './UploadModal';
 // import CreateAddon from './CreateAddon';
-import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist, UpdateService, DeleteImage, SetThumbNail } from "../../services/service"
+import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist, UpdateService, DeleteImage, SetThumbNail,getProfitMethod } from "../../services/service"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
@@ -33,7 +33,7 @@ const ServiceEdit = () => {
     const [isLoading, setIsLoading] = useState(false)
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const params = useParams()
-    const [isupdated, setIsUpdated] = useState(false)
+    const [isupdated, setIsUpdated] = useState(false);
 
     const validationSchema = Yup.object({
         name: Yup.string()
@@ -51,6 +51,33 @@ const ServiceEdit = () => {
             .required("Privacy Policy is required"),
         refund_policy: Yup.string()
             .required("Refund Policy is required"),
+        markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
+                if (profit_method.name ==="Upselling With Markup") {
+                    return schema
+                        .required("Markup Fee is Required")
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
+        vendor_percentage: Yup.number().when("profit_method", ([profit_method], schema) => {
+                if (profit_method.name ==="Revenue Sharing") {
+                    return schema
+                        .required("Vendor Percentage is Required")
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
+        sea_arabia_percentage: Yup.number().when("profit_method", ([profit_method], schema) => {
+                if (profit_method.name ==="Revenue Sharing") {
+                    return schema
+                        .required("Sea Arbia Percentage is Required")
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
     });
 
     const formik = useFormik({
@@ -80,7 +107,10 @@ const ServiceEdit = () => {
             refund_policy: "",
             service_image: [],
 
-            profit_method:"",
+            profit_method:{
+                id:"",
+                name:""
+            },
             markup_fee:0,
             vendor_percentage: 0,
             sea_arabia_percentage: 0,
@@ -120,7 +150,17 @@ const ServiceEdit = () => {
                 category: values.category[0]?.id,
                 sub_category: values.sub_category[0]?.id,
                 amenities: formattedAmenities,
+                profit_method:values.profit_method.id,
+                markup_fee: values.markup_fee,
+                vendor_percentage: values.vendor_percentage,
+                sea_arabia_percentage: values.sea_arabia_percentage,
+                per_head_booking: values.per_head_booking,
+                purchase_limit_min: values.purchase_limit_min,
+                purchase_limit_max: values.purchase_limit_max,
+                service_price_service:values.service_price_service
             }
+
+            console.log(data,"created_data");
             if (!isLoading) {
                 try {
                     const adminData = await UpdateService(params.id, data);
@@ -144,7 +184,8 @@ const ServiceEdit = () => {
     });
     const navigate = useNavigate()
     const [hovereffect, setHoverEffect] = useState("");
-    const [categorylist, setCategoryList] = useState([])
+    const [categorylist, setCategoryList] = useState([]);
+    const [ProfitMethods,setProfitMethods]=useState([])
     const [categoryId, setCategoryId] = useState("")
     const [subcategorylist, setSubcategoryList] = useState([])
     const [amenitieslist, setAmenitiesList] = useState([])
@@ -181,8 +222,58 @@ const ServiceEdit = () => {
         setIsLoading(true)
         getOneService(params.id)
             .then((data) => {
-                console.log(data,"all");
+              
                 setIsLoading(false)
+                formik.setFieldValue("is_verified", data?.is_verified);
+                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
+                formik.setFieldValue("is_premium", data?.is_premium);
+                formik.setFieldValue("is_destination", data?.is_destination);
+                formik.setFieldValue("is_duration", data?.is_duration);
+                formik.setFieldValue("is_day", data?.is_day);
+                formik.setFieldValue("is_time", data?.is_time);
+                formik.setFieldValue("is_date", data?.is_date);
+                formik.setFieldValue("type", data?.type);
+                formik.setFieldValue("category", data?.category);
+                formik.setFieldValue("sub_category", data?.sub_category);
+                formik.setFieldValue("name", data?.name);
+                formik.setFieldValue("machine_id", data?.machine_id);
+                formik.setFieldValue("description", data?.description);
+                formik.setFieldValue("lounge", data?.lounge);
+                formik.setFieldValue("bedroom", data?.bedroom);
+                formik.setFieldValue("toilet", data?.toilet);
+                formik.setFieldValue("capacity", data?.capacity);
+                formik.setFieldValue("amenities", data?.amenities);
+                formik.setFieldValue("pickup_point_or_address", data?.pickup_point_or_address);
+                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
+                formik.setFieldValue("refund_policy", data?.refund_policy);
+                formik.setFieldValue("is_active", data?.is_active);
+                formik.setFieldValue("service_image", data?.service_image);
+                
+                // formik.setFieldValue("price", data?.price);
+                formik.setFieldValue('profit_method', {
+                    id: data?.profit_method?.id,
+                    name: data?.profit_method?.name,
+                  });
+                formik.setFieldValue("markup_fee", data?.markup_fee);
+                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
+                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
+                formik.setFieldValue("per_head_booking", data?.per_head_booking);
+                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
+                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
+                formik.setFieldValue("service_price_service", data?.service_price_service);
+
+                setIsUpdated(false)
+            }
+            ).catch((error) => {
+                setIsLoading(false);
+                toast.error(error.response.data)
+            })
+    }, [params.id])
+
+    //update load
+    useEffect(() => {
+        getOneService(params.id)
+            .then((data) => {
                 formik.setFieldValue("is_verified", data?.is_verified);
                 formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
                 formik.setFieldValue("is_premium", data?.is_premium);
@@ -217,39 +308,6 @@ const ServiceEdit = () => {
                 formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
                 formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
                 formik.setFieldValue("service_price_service", data?.service_price_service);
-
-                setIsUpdated(false)
-            }
-            ).catch((error) => {
-                setIsLoading(false);
-                toast.error(error.response.data)
-            })
-    }, [params.id])
-
-    //update load
-    useEffect(() => {
-        getOneService(params.id)
-            .then((data) => {
-                formik.setFieldValue("is_verified", data?.is_verified);
-                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
-                formik.setFieldValue("is_premium", data?.is_premium);
-                formik.setFieldValue("type", data?.type);
-                formik.setFieldValue("category", data?.category);
-                formik.setFieldValue("sub_category", data?.sub_category);
-                formik.setFieldValue("name", data?.name);
-                formik.setFieldValue("machine_id", data?.machine_id);
-                formik.setFieldValue("description", data?.description);
-                formik.setFieldValue("lounge", data?.lounge);
-                formik.setFieldValue("bedroom", data?.bedroom);
-                formik.setFieldValue("toilet", data?.toilet);
-                formik.setFieldValue("capacity", data?.capacity);
-                formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point_or_address", data?.pickup_point_or_address);
-                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
-                formik.setFieldValue("refund_policy", data?.refund_policy);
-                formik.setFieldValue("is_active", data?.is_active);
-                formik.setFieldValue("service_image", data?.service_image);
-                formik.setFieldValue("profit_method", data?.profit_method);
                 setIsUpdated(false)
             }
             ).catch((error) => {
@@ -257,6 +315,14 @@ const ServiceEdit = () => {
                 toast.error(error.response.data)
             })
     }, [params.id, isupdated])
+
+    useEffect(() => {
+        getProfitMethod()
+            .then((data) =>
+                setProfitMethods(data?.results)
+            ).catch((error) =>
+                console.error(error))
+    }, [])
 
     useEffect(() => {
         getCategoryList()
@@ -423,7 +489,7 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    console.log(formik.values,"result");
+    console.log(formik.values);
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -778,39 +844,41 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
                                     <p style={{ fontWeight: "550" }}>Profit Method</p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
-                                        <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Ownership" }))}>
-                                            <div className="card p-2">
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <svg width={40} height={40} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="#ECF4FF" />
-                                                            <path d="M14.667 27.9987C14.667 22.9704 14.667 20.4562 16.2291 18.8941C17.7912 17.332 20.3053 17.332 25.3337 17.332H30.667C35.6953 17.332 38.2095 17.332 39.7716 18.8941C41.3337 20.4562 41.3337 22.9704 41.3337 27.9987V30.6654C41.3337 35.6937 41.3337 38.2078 39.7716 39.7699C38.2095 41.332 35.6953 41.332 30.667 41.332H25.3337C20.3053 41.332 17.7912 41.332 16.2291 39.7699C14.667 38.2078 14.667 35.6937 14.667 30.6654V27.9987Z" stroke="#252525" strokeWidth="1.5" />
-                                                            <path d="M21.333 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                            <path d="M34.667 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                            <path d="M15.333 24H40.6663" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                            <path d="M35.9997 34.6667C35.9997 35.403 35.4027 36 34.6663 36C33.93 36 33.333 35.403 33.333 34.6667C33.333 33.9303 33.93 33.3333 34.6663 33.3333C35.4027 33.3333 35.9997 33.9303 35.9997 34.6667Z" fill="#252525" />
-                                                            <path d="M35.9997 29.3333C35.9997 30.0697 35.4027 30.6667 34.6663 30.6667C33.93 30.6667 33.333 30.0697 33.333 29.3333C33.333 28.597 33.93 28 34.6663 28C35.4027 28 35.9997 28.597 35.9997 29.3333Z" fill="#252525" />
-                                                            <path d="M29.3337 34.6667C29.3337 35.403 28.7367 36 28.0003 36C27.2639 36 26.667 35.403 26.667 34.6667C26.667 33.9303 27.2639 33.3333 28.0003 33.3333C28.7367 33.3333 29.3337 33.9303 29.3337 34.6667Z" fill="#252525" />
-                                                            <path d="M29.3337 29.3333C29.3337 30.0697 28.7367 30.6667 28.0003 30.6667C27.2639 30.6667 26.667 30.0697 26.667 29.3333C26.667 28.597 27.2639 28 28.0003 28C28.7367 28 29.3337 28.597 29.3337 29.3333Z" fill="#252525" />
-                                                            <path d="M22.6667 34.6667C22.6667 35.403 22.0697 36 21.3333 36C20.597 36 20 35.403 20 34.6667C20 33.9303 20.597 33.3333 21.3333 33.3333C22.0697 33.3333 22.6667 33.9303 22.6667 34.6667Z" fill="#252525" />
-                                                            <path d="M22.6667 29.3333C22.6667 30.0697 22.0697 30.6667 21.3333 30.6667C20.597 30.6667 20 30.0697 20 29.3333C20 28.597 20.597 28 21.3333 28C22.0697 28 22.6667 28.597 22.6667 29.3333Z" fill="#252525" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p style={{ fontWeight: "550" }}>Ownership</p>
-                                                        <span className="text-wrap" style={{ fontSize: "12px" }}>
-                                                            The vendor gets a fixed amount monthly from the platform. The customers pay extra as service fee.
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Ownership"}/>
-                                                    </div>
+                                        {ProfitMethods && ProfitMethods.map((data)=>
+                                        <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => {updateFormValues(({ ...formik.values, profit_method:{id:data.id,name: data.name},markup_fee:null,sea_arabia_percentage:null,vendor_percentage:null }))}}>
+                                        <div className="card p-2">
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <svg width={40} height={40} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="#ECF4FF" />
+                                                        <path d="M14.667 27.9987C14.667 22.9704 14.667 20.4562 16.2291 18.8941C17.7912 17.332 20.3053 17.332 25.3337 17.332H30.667C35.6953 17.332 38.2095 17.332 39.7716 18.8941C41.3337 20.4562 41.3337 22.9704 41.3337 27.9987V30.6654C41.3337 35.6937 41.3337 38.2078 39.7716 39.7699C38.2095 41.332 35.6953 41.332 30.667 41.332H25.3337C20.3053 41.332 17.7912 41.332 16.2291 39.7699C14.667 38.2078 14.667 35.6937 14.667 30.6654V27.9987Z" stroke="#252525" strokeWidth="1.5" />
+                                                        <path d="M21.333 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
+                                                        <path d="M34.667 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
+                                                        <path d="M15.333 24H40.6663" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
+                                                        <path d="M35.9997 34.6667C35.9997 35.403 35.4027 36 34.6663 36C33.93 36 33.333 35.403 33.333 34.6667C33.333 33.9303 33.93 33.3333 34.6663 33.3333C35.4027 33.3333 35.9997 33.9303 35.9997 34.6667Z" fill="#252525" />
+                                                        <path d="M35.9997 29.3333C35.9997 30.0697 35.4027 30.6667 34.6663 30.6667C33.93 30.6667 33.333 30.0697 33.333 29.3333C33.333 28.597 33.93 28 34.6663 28C35.4027 28 35.9997 28.597 35.9997 29.3333Z" fill="#252525" />
+                                                        <path d="M29.3337 34.6667C29.3337 35.403 28.7367 36 28.0003 36C27.2639 36 26.667 35.403 26.667 34.6667C26.667 33.9303 27.2639 33.3333 28.0003 33.3333C28.7367 33.3333 29.3337 33.9303 29.3337 34.6667Z" fill="#252525" />
+                                                        <path d="M29.3337 29.3333C29.3337 30.0697 28.7367 30.6667 28.0003 30.6667C27.2639 30.6667 26.667 30.0697 26.667 29.3333C26.667 28.597 27.2639 28 28.0003 28C28.7367 28 29.3337 28.597 29.3337 29.3333Z" fill="#252525" />
+                                                        <path d="M22.6667 34.6667C22.6667 35.403 22.0697 36 21.3333 36C20.597 36 20 35.403 20 34.6667C20 33.9303 20.597 33.3333 21.3333 33.3333C22.0697 33.3333 22.6667 33.9303 22.6667 34.6667Z" fill="#252525" />
+                                                        <path d="M22.6667 29.3333C22.6667 30.0697 22.0697 30.6667 21.3333 30.6667C20.597 30.6667 20 30.0697 20 29.3333C20 28.597 20.597 28 21.3333 28C22.0697 28 22.6667 28.597 22.6667 29.3333Z" fill="#252525" />
+                                                    </svg>
                                                 </div>
-
-
+                                                <div>
+                                                    <p style={{ fontWeight: "550" }}>{data.name}</p>
+                                                    <span className="text-wrap" style={{ fontSize: "12px" }}>
+                                                        The vendor gets a fixed amount monthly from the platform. The customers pay extra as service fee.
+                                                    </span>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method.id===data.id}/>
+                                                </div>
                                             </div>
+
+
                                         </div>
-                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Upselling With Markup" }))}>
+                                    </div>
+                                        )}
+                                        {/* <div className={`${isMobileView}?"col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Upselling With Markup" }))}>
                                             <div className="card p-2">
                                                 <div className="d-flex justify-content-between align-items-center">
                                                     <div>
@@ -858,11 +926,11 @@ const ServiceEdit = () => {
 
 
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
 
                                 </div>
-                                {formik.values.profit_method === "Upselling With Markup" &&
+                                {formik.values.profit_method.name === "Upselling With Markup" &&
                                     <div className='w-50 mx-5'>
                                         <label
                                             htmlFor=""
@@ -884,7 +952,7 @@ const ServiceEdit = () => {
                                         ) : null}
                                     </div>
                                 }
-                                {formik.values.profit_method==="Revenue Sharing" &&
+                                {formik.values.profit_method.name==="Revenue Sharing" &&
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div className='w-50 mx-5'>
                                         <label
@@ -935,7 +1003,7 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Critreion</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-center'}>
                                         <Paper
-                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: true,is_duration:false,is_day:false,is_time:false,is_date:false }))}
+                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: true,is_duration:false,is_day:false,is_time:false,is_date:false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -951,7 +1019,7 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_destination} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:true,is_day:false,is_time:false,is_date:false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:true,is_day:false,is_time:false,is_date:false,service_price_service:[],per_head_booking:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -968,7 +1036,7 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_duration} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:true,is_time:false,is_date:false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:true,is_time:false,is_date:false,service_price_service:[],per_head_booking:false }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -985,7 +1053,7 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_day} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:true,is_date:false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:true,is_date:false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -1002,7 +1070,7 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_time} />
                                         </Paper>
                                         <Paper
-                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:false,is_date:true }))}
+                                           onClick={() => updateFormValues(({ ...formik.values, is_destination: false,is_duration:false,is_day:false,is_time:false,is_date:true,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
@@ -1023,21 +1091,22 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Booking type</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-start ms-5'}>
                                         <Paper
-                                            onClick={() => formik.setFieldValue("per_head_booking", false)}
+                                            onClick={() => {formik.setFieldValue("per_head_booking", false);formik.setFieldValue("purchase_limit_min", 0);formik.setFieldValue("purchase_limit_max", 0);}}
                                             style={{
                                                 display: 'flex',
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "45%",
-                                                border: !formik.values.per_head_booking ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.per_head_booking===false ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 padding: '5px',
                                                 margin: "5px"
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Booking Entirely</Typography>
-                                            <Radio name={formik.values.per_head_booking} checked={!formik.values.per_head_booking} />
+                                            <Radio  checked={formik.values.per_head_booking===false} />
                                         </Paper>
+
                                         <Paper
                                             onClick={() => formik.setFieldValue("per_head_booking",true)}
                                             style={{
@@ -1045,7 +1114,7 @@ const ServiceEdit = () => {
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
-                                                border: formik.values.booking_type ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
+                                                border: formik.values.per_head_booking===true ? '2px solid rgb(112, 112, 241)' : '1px solid lightgray',
                                                 width: isMobileView ? "100%" : "45%",
                                                 borderRadius: '5px',
                                                 padding: '5px',
@@ -1053,7 +1122,7 @@ const ServiceEdit = () => {
                                             }}
                                         >
                                             <Typography variant="body1" sx={{ fontSize: "12px", fontWeight: "550" }}>Per Head Booking</Typography>
-                                            <Radio name={formik.values.per_head_booking} checked={formik.values.booking_type} />
+                                            <Radio  checked={formik.values.per_head_booking===true} />
                                         </Paper>
                                     </div>
                                 </div>
@@ -1113,19 +1182,19 @@ const ServiceEdit = () => {
                                             <button type="button" className='btn btn-blue' style={{ backgroundColor: "#187AF7", padding: "1px 3px" }} onClick={handleModalOpens}>Add Price</button>
                                         </div>
                                         {formik.values.is_destination && <PerDestinationTable data={formik.values.service_price_service} formik={formik.setValues}/>}
-                                        {formik.values.is_duration && <PerDurationTable />}
-                                        {formik.values.is_day && <PerDayTable />}
-                                        {formik.values.is_time && <PerTimeTable />}
-                                        {formik.values.is_date && <PerDateTable />}
+                                        {formik.values.is_duration && <PerDurationTable data={formik.values.service_price_service} formik={formik.setValues}/>}
+                                        {formik.values.is_day && <PerDayTable data={formik.values.service_price_service} formik={formik.setValues}/>}
+                                        {formik.values.is_time && <PerTimeTable data={formik.values.service_price_service} formik={formik.setValues}/>}
+                                        {formik.values.is_date && <PerDateTable data={formik.values.service_price_service} formik={formik.setValues}/>}
                                     </div>
                                 </div>
                             </div>
 
-                            {formik.values.is_destination && PerDestinationopen && <PerDestinationModal handleClose={handleclosedestination} handleOpen={handleopendestination} open={PerDestinationopen} />}
-                            {formik.values.is_duration && PerDurationopen && <PerDurationModal handleClose={handlecloseduration} handleOpen={handleopenduration} open={PerDurationopen} />}
-                            {formik.values.is_day && PerDayopen && <PerDayModal handleClose={handlecloseday} handleOpen={handleopenday} open={PerDayopen} />}
-                            {formik.values.is_time && PerTimeopen && <PerTimeModal handleClose={handleclosetime} handleOpen={handleopentime} open={PerTimeopen} />}
-                            {formik.values.is_date && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen} />}
+                            {formik.values.is_destination && PerDestinationopen && <PerDestinationModal handleClose={handleclosedestination} handleOpen={handleopendestination} open={PerDestinationopen} formiks={formik.setValues}/>}
+                            {formik.values.is_duration && PerDurationopen && <PerDurationModal handleClose={handlecloseduration} handleOpen={handleopenduration} open={PerDurationopen} formiks={formik.setValues}/>}
+                            {formik.values.is_day && PerDayopen && <PerDayModal handleClose={handlecloseday} handleOpen={handleopenday} open={PerDayopen} formiks={formik.setValues}/>}
+                            {formik.values.is_time && PerTimeopen && <PerTimeModal handleClose={handleclosetime} handleOpen={handleopentime} open={PerTimeopen} formiks={formik.setValues}/>}
+                            {formik.values.is_date && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen} formiks={formik.setValues}/>}
 
                             <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
                                 <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy</p>
