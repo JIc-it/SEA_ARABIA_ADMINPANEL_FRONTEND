@@ -32,7 +32,7 @@ const Admin = () => {
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        console.log("ADMIN-list", data);
+        // console.log("ADMIN-list", data);
         const filteredResults = data.results.filter(
           (item) => item.role === "Admin"
         );
@@ -53,7 +53,7 @@ const Admin = () => {
   const getAdminData = async () => {
     getAdminSearch(search, selectedValue)
       .then((data) => {
-        console.log("search", data);
+        // console.log("search", data);
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
         const filteredResults = data.results.filter(

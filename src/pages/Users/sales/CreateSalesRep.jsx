@@ -47,6 +47,7 @@ function CreateSalesRep({ show, close }) {
       last_name: "",
       email: "",
       password: "",
+
       location: "",
       mobile: "",
     },
@@ -60,19 +61,21 @@ function CreateSalesRep({ show, close }) {
             last_name: values.last_name,
             role: "Staff",
             email: values.email,
-
+            password: values.password,
             mobile: values.mobile,
             location: values.location,
           };
 
-          const adminData = await createSalesRep(data);
-          if (adminData) {
+          const staffData = await createSalesRep(data);
+
+          console.log("sales rep -- console", staffData);
+          if (staffData) {
             setIsRefetch(!isRefetch);
             toast.success("Staff Added Successfully.");
             close();
             setIsLoading(false);
           } else {
-            console.error("Error while creating staff:", adminData.error);
+            console.error("Error while creating staff:", staffData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
@@ -142,7 +145,7 @@ function CreateSalesRep({ show, close }) {
   //   },
   // });
 
-  console.log("admin formik data", formik);
+  console.log("sales formik data", formik);
   return (
     <Offcanvas
       show={show}
@@ -323,6 +326,60 @@ function CreateSalesRep({ show, close }) {
                 stroke-width="1.5"
               />
             </svg>
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="Password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              Confirm Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="Password"
+              name="confirmPassword"
+              className="form-control"
+              placeholder="confirmPassword"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+              <div className="error">{formik.errors.confirmPassword}</div>
+            ) : null}
           </div>
         </div>
         {/* table */}

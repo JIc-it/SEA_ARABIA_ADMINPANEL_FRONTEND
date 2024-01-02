@@ -5,7 +5,7 @@ import totalBooking from "../../../static/img/total-booking.png";
 import confirmBooking from "../../../static/img/confirm-booking.png";
 import cancelBooking from "../../../static/img/cancel-booking.png";
 // import filterIcon from "../../../static/img/Filter.png";
-import filterIcon from "../../../static/img/Filter.png"
+import filterIcon from "../../../static/img/Filter.png";
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 import { getGuestUserList } from "../../../services/GuestHandle";
@@ -13,26 +13,64 @@ import {
   getCustomerlist,
   getCustomerSearch,
 } from "../../../services/CustomerHandle";
+import { removeBaseUrlFromPath } from "../../../helpers";
+import { getListDataInPagination } from "../../../services/commonServices";
 const SalesRepresentatives = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [salesRep, setsalesRep] = useState();
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
+  const [isRefetch, setIsRefetch] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        // console.log("salesRep-list", data.results);
+        console.log("salesRep-list", data);
         // setListDiscount(data.results);
         const filteredResults = data.results.filter(
           (item) => item.role === "Staff"
         );
-
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
         setsalesRep(filteredResults);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
-        console.error("Error fetching Customer List data:", error);
+        console.error("Error fetching sales rep List data:", error);
       });
   }, []);
+
+
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          const filteredResults = data.results.filter(
+            (item) => item?.role === "Staff"
+          );
+          setsalesRep(filteredResults);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
+  };
+
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -213,7 +251,7 @@ const SalesRepresentatives = () => {
               style={{ borderRadius: "6px" }}
               type="button"
             >
-              Create New Admin &nbsp;
+              Create New Sales Rep &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -331,6 +369,7 @@ const SalesRepresentatives = () => {
                   {salesRep.map((item) => {
                     return (
                       <tbody>
+                        {console.log("sles map", salesRep)}
                         <tr>
                           <td>
                             <span className="text-secondary">
@@ -340,14 +379,18 @@ const SalesRepresentatives = () => {
                           </td>
                           <td>
                             <span className="text-secondary">
-                              test@gmail.com
+                              {item?.email}
                             </span>
                           </td>
                           <td>
-                            <span className="text-secondary">9989876656</span>
+                            <span className="text-secondary">
+                              {item?.mobile}
+                            </span>
                           </td>
                           <td>
-                            <span className="text-secondary">India</span>
+                            <span className="text-secondary">
+                              {item?.profileextra?.location}
+                            </span>
                           </td>
 
                           <td
@@ -396,56 +439,66 @@ const SalesRepresentatives = () => {
               )}
             </table>
           </div>
-          {/* <div className="card-footer d-flex align-items-center">
-         
-          <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                aria-disabled="true"
+          <div className="card-footer d-flex align-items-center">
+            <ul className="pagination m-0 ms-auto">
+              <li
+                className={`page-item  ${!listPageUrl.previous && "disabled"}`}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                <a
+                  className="page-link"
+                  href="#"
+                  tabIndex="-1"
+                  onClick={() => {
+                    handlePagination("prev");
+                  }}
                 >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M15 6l-6 6l6 6" />
+                  </svg>
+                  prev
+                </a>
+              </li>
+
+              <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                <a
+                  className="page-link"
+                  href="#"
+                  onClick={() => {
+                    handlePagination("next");
+                  }}
                 >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
-        </div> */}
+                  next
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="icon"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    strokeWidth="2"
+                    stroke="currentColor"
+                    fill="none"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 6l6 6l-6 6" />
+                  </svg>
+                </a>
+              </li>
+            </ul>
+          </div>
         </div>
         {/* //modal */}
       </div>

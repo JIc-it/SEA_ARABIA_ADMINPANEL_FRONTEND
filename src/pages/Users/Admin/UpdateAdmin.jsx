@@ -49,12 +49,11 @@ function UpdateAdmin({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
+    password: Yup.string().min(6, "Password should be at least 6 characters"),
+    // .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
-      .required("Confirm Password is required")
+      // .required("Confirm Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
@@ -71,7 +70,7 @@ function UpdateAdmin({ show, close }) {
       last_name: adminDetails?.last_name || "",
       email: adminDetails?.email || "",
       password: adminDetails?.password || "",
-      confirmPassword: "",
+      confirmPassword: adminDetails?.confirmPassword || "",
       mobile: adminDetails?.mobile || "",
       location: adminDetails?.profileextra?.location || "",
 
@@ -87,18 +86,18 @@ function UpdateAdmin({ show, close }) {
             // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-            role: "Admin",
+
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            mobile: `+965 ${values.mobile}`,
-            profile_extra: {
+            mobile: values.mobile,
+            profileextra: {
               location: values.location,
             },
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminDetails?.email);
+          console.log("Admin updated detail is ---", adminData);
           if (adminData) {
             setIsLoading(false);
             // window.location.reload();
@@ -265,6 +264,59 @@ function UpdateAdmin({ show, close }) {
           </div>
         </div>
         <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Location <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <input
+              className="form-control"
+              type="text"
+              id=""
+              name="location"
+              placeholder="Location"
+              value={formik.values.location}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              style={{
+                top: "10px",
+                right: "5px",
+                position: "absolute",
+              }}
+            >
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                stroke-width="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                stroke-width="1.5"
+              />
+            </svg>
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
             <label
@@ -318,59 +370,7 @@ function UpdateAdmin({ show, close }) {
             ) : null}
           </div>
         </div>
-        <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{
-              paddingBottom: "10px",
-              fontWeight: "600",
-              fontSize: "13px",
-            }}
-          >
-            Location <span style={{ color: "red" }}>*</span>
-          </label>
-          <div style={{ position: "relative" }}>
-            <input
-              className="form-control"
-              type="text"
-              id=""
-              name="location"
-              placeholder="Location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-            </svg>
-          </div>
-        </div>
+
         {/* table */}
         <table class="table table-hover">
           <thead>

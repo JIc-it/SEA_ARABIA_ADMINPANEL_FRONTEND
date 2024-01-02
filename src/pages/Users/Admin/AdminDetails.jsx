@@ -27,12 +27,11 @@ function AdminDetails() {
 
   const [admin, setAdmin] = useState();
 
-
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        // console.log(" admin by id==", data);
+        console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -54,8 +53,7 @@ function AdminDetails() {
             <div className="left_header">
               <div>
                 <p className="card_content">
-                  {adminDetails?.first_name}
-                  {adminDetails?.last_name}
+                  {adminDetails?.first_name} {adminDetails?.last_name}
                 </p>
               </div>
               <div className="card_header_contents">
@@ -113,7 +111,7 @@ function AdminDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; kuwait
+                  &nbsp; {adminDetails?.profileextra?.location}
                 </p>
               </div>
             </div>
@@ -281,14 +279,16 @@ function AdminDetails() {
                   className="mt-4 w-100 px-2"
                 >
                   <p className="p-2" style={{ fontWeight: "700" }}>
-                    Details  
+                    Details
                   </p>
 
                   <div className="d-flex">
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>First Name</p>
-                        <p style={{ fontWeight: "700" }}>{adminDetails?.first_name}</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.first_name}
+                        </p>
                       </div>
 
                       <div>
