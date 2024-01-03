@@ -24,37 +24,76 @@ export default function CustomerListing() {
     next: null,
     previous: null,
   });
+  
   useEffect(() => {
     getCustomerSearch("", "", "User")
       .then((data) => {
         console.log("customer-list", data.results);
-        // setListDiscount(data.results);
-        // const filteredResults = data.results.filter(
-        //   (item) => item.role === "User"
-        // );
-
         setListDiscount(data.results);
-        // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
-
+  const refreshPage = () => {
+    // You can use window.location.reload() to refresh the page
+    window.location.reload();
+  };
   const getCustomerListData = async () => {
     setIsLoading(true);
     getCustomerSearch(search, selectedValue, "User")
       .then((data) => {
         console.log("Search ---:", data);
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setListDiscount(data?.results);
+        if (data || search.length > 0) {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setListDiscount(data?.results);
+        } else {
+          refreshPage();
+          setIsLoading(true);
+        }
       })
       .catch((error) => {
         setIsLoading(false);
         console.error("Error fetching  data:", error);
       });
   };
+
+  // const getCustomerListData = async () => {
+  //   try {
+  //     setIsLoading(true);
+  //     const data = await getCustomerSearch(search, selectedValue, "User");
+  //     console.log(
+  //       "sele val",
+  //       selectedValue,
+  //       "search=",
+  //       search,
+  //       "data oc search ==",
+  //       data
+  //     );
+  //     if (data?.results && data?.results.length > 0) {
+  //       setIsLoading(false);
+  //       setListPageUrl({ next: data.next, previous: data.previous });
+  //       setListDiscount(data?.results);
+  //     } else {
+  //       const customerListData = await getCustomerSearch("", "", "User");
+  //       refreshPage();
+  //       setIsLoading(false);
+  //       setListPageUrl({
+  //         next: customerListData.next,
+  //         previous: customerListData.previous,
+  //       });
+  //       setListDiscount(customerListData.results);
+  //     }
+  //   } catch (error) {
+  //     setIsLoading(false);
+  //     console.error("Error fetching data:", error);
+  //   }
+  // };
+
+  useEffect(() => {
+    getCustomerSearch();
+  }, [selectedValue, isRefetch]);
 
   const handleExportCustomerData = () => {
     if (listDiscount) {

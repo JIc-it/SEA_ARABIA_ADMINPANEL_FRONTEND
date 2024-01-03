@@ -30,25 +30,19 @@ const Admin = () => {
   const [selectedValue, setSelectedValue] = useState("");
 
   useEffect(() => {
-    getCustomerlist()
+    const role = "Admin";
+    getCustomerlist(role)
       .then((data) => {
-        // console.log("ADMIN-list", data);
-        const filteredResults = data.results.filter(
-          (item) => item.role === "Admin"
-        );
-        console.log("filtered Admin", filteredResults);
         setListPageUrl({
           next: data.next,
           previous: data.previous,
         });
-        setAdmin(filteredResults);
-        console.log("filtered Admin", filteredResults);
-        // setCustomerId(data.results[0]?.id);
+        setAdmin(data.results);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
-  }, []); // Add dependencies if needed
+  }, []);
 
   const getAdminData = async () => {
     getAdminSearch(search, selectedValue)

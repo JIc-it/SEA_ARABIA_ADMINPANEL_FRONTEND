@@ -31,7 +31,7 @@ function UpdateAdmin({ show, close }) {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin by id------==", data);
+        console.log(" admin update list------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
