@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {AddImage} from "../../services/service"
+import {AddImage} from "../../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 
 const style = {
@@ -29,15 +29,9 @@ const style = {
 };
 
 
-export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated }) {
-    const [companylist, setCompanyList] = useState([])
+export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated,formikset }) {
     const [isLoading, setIsLoading] = useState(false);
-    const [search, setSearch] = useState("")
-    const [idset, setIdSet] = useState("")
-    const handleSearchChange = (e) => {
-        const searchTerm = e.target.value;
-        setSearch(searchTerm);
-    };
+   
 
     const validationSchema = Yup.object({
         image: Yup.mixed()        
@@ -58,46 +52,76 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
     const formik = useFormik({
         initialValues: {
             image: null,
-            service: "",
+            url:null,
+            thumbnail:false
            
         },
         validationSchema,
         onSubmit: async (values) => {
-        setIsLoading(true);
+        // setIsLoading(true);
     
-       
-        const formdata=new FormData()
-        formdata.append("image",values.image);
-        formdata.append("service",values.service);
-
-            if (!isLoading) {
-              try {
-            const adminData = await AddImage(formdata);
-
-            if (adminData) {
-              setIsLoading(false);
-              handleClose()
-            toast.success("Updated Successfully")
-            setIsUpdated(true)
-
-            } else {
-                setIsLoading(false);
-                toast.error(adminData.error.response.data)
-              console.error("Error while creating Admin:", adminData.error);
+        formikset((prev) => {
+            const datas = {
+                // service: Params.id,
+                image: values.image,
+                imageURL:values.url,
+                thumbnail:values.thumbnail
+                
             }
-            setIsLoading(false);
-              }catch (err) {
-                  setIsLoading(false);
-                toast.error(err.response.data)
-                console.log(err);
-              }
+
+            if (prev.service_image) {
+                return {
+                    ...prev, service_image: [...prev.service_image, datas]
+                }
             }
+            else {
+                return { ...prev, service_image: [datas] }
+            }
+
+        })
+        // const formdata=new FormData()
+        // formdata.append("image",values.image);
+        // formdata.append("service",values.service);
+
+        //     if (!isLoading) {
+        //       try {
+        //     const adminData = await AddImage(formdata);
+
+        //     if (adminData) {
+        //       setIsLoading(false);
+        //       handleClose()
+        //     toast.success("Updated Successfully")
+        //     setIsUpdated(true)
+
+        //     } else {
+        //         setIsLoading(false);
+        //         toast.error(adminData.error.response.data)
+        //       console.error("Error while creating Admin:", adminData.error);
+        //     }
+        //     setIsLoading(false);
+        //       }catch (err) {
+        //           setIsLoading(false);
+        //         toast.error(err.response.data)
+        //         console.log(err);
+        //       }
+        //     }
         },
     });
 
-    const handleFileChange = (file) => {
+      const handleFileChange = (e) => {
+        const file = e.target.files[0];
         formik.setFieldValue("image", file);
-        formik.setFieldValue("service", service_image[0]?.service);
+    
+        if (file) {
+          const reader = new FileReader();
+    
+          reader.onloadend = () => {
+  
+            formik.setFieldValue("url", reader.result);
+          };
+    
+          reader.readAsDataURL(file);
+        }
       };
 
 console.log(formik.values);
@@ -148,7 +172,7 @@ console.log(formik.values);
                                         accept=".jpg, .jpeg, .png"
                                         style={{ display: 'none' }}
                                     onBlur={formik.handleBlur}
-                                    onChange={(e)=>handleFileChange(e.target.files[0])}
+                                    onChange={(e)=>handleFileChange(e)}
                                     />
                                     <div style={{ marginBottom: "5px" }}>
                                         <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
@@ -174,7 +198,7 @@ console.log(formik.values);
                                {service_image.map((data)=>
                                    <div className='mx-1'>
                                        <div>
-                                           <img src={data.image}  className='rounded' style={{ width: "200px",height:"125px" }} />
+                                           <img src={data?.imageURL}  className='rounded' style={{ width: "200px",height:"125px" }} />
                                        </div>
                                    </div>
                                

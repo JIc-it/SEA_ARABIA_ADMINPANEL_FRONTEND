@@ -9,9 +9,9 @@ import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 // import Food from "../../assets/images/food.png"
-import UploadPopup from './Service-Edit-Components/UploadModal';
+import UploadPopup from './Service-Add-Components/UploadModal';
 // import CreateAddon from './CreateAddon';
-import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist, UpdateService, DeleteImage, SetThumbNail, getProfitMethod } from "../../services/service"
+import { getCategoryList, getsubcategorylist, getamenitieslist, CreateService, AddMultipleImage, getProfitMethod } from "../../services/service"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
@@ -28,12 +28,14 @@ import PerDayModal from './Service-Edit-Components/PerDayModal';
 import PerTimeModal from './Service-Edit-Components/PerTimeModal';
 import PerDateModal from './Service-Edit-Components/PerDateModal';
 
-const ServiceEdit = () => {
+
+const ServiceAdd = () => {
     const theme = useTheme();
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(false);
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const params = useParams()
     const [isupdated, setIsUpdated] = useState(false);
+
 
     const validationSchema = Yup.object({
         name: Yup.string()
@@ -86,7 +88,7 @@ const ServiceEdit = () => {
             is_active: false,
             is_top_suggestion: false,
             is_premium: false,
-            is_destination: false,
+            is_destination: true,
             is_duration: false,
             is_date: false,
             is_day: false,
@@ -122,7 +124,7 @@ const ServiceEdit = () => {
         validationSchema,
         onSubmit: async (values) => {
             setIsLoading(true);
-
+            const formData=new FormData()
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
             const formattedAmenities = amenitiesmappedid.join(', ');
 
@@ -142,6 +144,8 @@ const ServiceEdit = () => {
             }
 
             const data = {
+                company:"561b23be-c949-4d06-9d7d-0398ccd8396e",
+                // price_type:"549385a5-bcc6-4b5d-8609-24c985fa2f6c",
                 is_verified: values.is_verified,
                 is_active: values.is_active,
                 is_top_suggestion: values.is_top_suggestion,
@@ -175,16 +179,22 @@ const ServiceEdit = () => {
                 service_price_service: removeServiceKey(values)
             }
 
-            console.log(data, "created_data");
-            if (!isLoading) {
+            
+           if (!isLoading) {
+                        
                 try {
-                    const adminData = await UpdateService(params.id, data);
+                    const adminData = await CreateService(data);
 
                     if (adminData) {
                         setIsLoading(false);
                         //   window.location.reload();
+                        const imagesdata=values.service_image.map((item)=> {return {image:item.image,thumbnail:item.thumbnail,service:adminData.id}})
+                        formData.append("image",imagesdata)
+                        console.log(imagesdata,"check");
+                         AddMultipleImage(formData).then((data)=>console.log(data)).catch((err)=>console.log(err))
                         toast.success("Updated Successfully")
                         setIsUpdated(true)
+
                     } else {
                         console.error("Error while creating Admin:", adminData.error);
                         setIsLoading(false);
@@ -232,105 +242,7 @@ const ServiceEdit = () => {
     //     setOpenAddon(true)
     // }
 
-    //first load
-    useEffect(() => {
-        setIsLoading(true)
-        getOneService(params.id)
-            .then((data) => {
-                console.log(data, "first-fetch");
-                setIsLoading(false)
-                formik.setFieldValue("is_verified", data?.is_verified);
-                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
-                formik.setFieldValue("is_premium", data?.is_premium);
-                formik.setFieldValue("is_destination", data?.is_destination);
-                formik.setFieldValue("is_duration", data?.is_duration);
-                formik.setFieldValue("is_day", data?.is_day);
-                formik.setFieldValue("is_time", data?.is_time);
-                formik.setFieldValue("is_date", data?.is_date);
-                formik.setFieldValue("type", data?.type);
-                formik.setFieldValue("category", data?.category);
-                formik.setFieldValue("sub_category", data?.sub_category);
-                formik.setFieldValue("name", data?.name);
-                formik.setFieldValue("machine_id", data?.machine_id);
-                formik.setFieldValue("description", data?.description);
-                formik.setFieldValue("lounge", data?.lounge);
-                formik.setFieldValue("bedroom", data?.bedroom);
-                formik.setFieldValue("toilet", data?.toilet);
-                formik.setFieldValue("capacity", data?.capacity);
-                formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point_or_location", data?.pickup_point_or_location);
-                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
-                formik.setFieldValue("refund_policy", data?.refund_policy);
-                formik.setFieldValue("is_active", data?.is_active);
-                formik.setFieldValue("service_image", data?.service_image);
-
-                // formik.setFieldValue("price", data?.price);
-                formik.setFieldValue('profit_method', {
-                    id: data?.profit_method?.id,
-                    name: data?.profit_method?.name,
-                });
-                formik.setFieldValue("markup_fee", data?.markup_fee);
-                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
-                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
-                formik.setFieldValue("per_head_booking", data?.per_head_booking);
-                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
-                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
-                formik.setFieldValue("service_price_service", data?.service_price_service);
-
-                setIsUpdated(false)
-            }
-            ).catch((error) => {
-                setIsLoading(false);
-                toast.error(error.response.data)
-            })
-    }, [params.id])
-
-    //update load
-    useEffect(() => {
-        getOneService(params.id)
-            .then((data) => {
-                formik.setFieldValue("is_verified", data?.is_verified);
-                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
-                formik.setFieldValue("is_premium", data?.is_premium);
-                formik.setFieldValue("is_destination", data?.is_destination);
-                formik.setFieldValue("is_duration", data?.is_duration);
-                formik.setFieldValue("is_day", data?.is_day);
-                formik.setFieldValue("is_time", data?.is_time);
-                formik.setFieldValue("is_date", data?.is_date);
-                formik.setFieldValue("type", data?.type);
-                formik.setFieldValue("category", data?.category);
-                formik.setFieldValue("sub_category", data?.sub_category);
-                formik.setFieldValue("name", data?.name);
-                formik.setFieldValue("machine_id", data?.machine_id);
-                formik.setFieldValue("description", data?.description);
-                formik.setFieldValue("lounge", data?.lounge);
-                formik.setFieldValue("bedroom", data?.bedroom);
-                formik.setFieldValue("toilet", data?.toilet);
-                formik.setFieldValue("capacity", data?.capacity);
-                formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point_or_location", data?.pickup_point_or_location);
-                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
-                formik.setFieldValue("refund_policy", data?.refund_policy);
-                formik.setFieldValue("is_active", data?.is_active);
-                formik.setFieldValue("service_image", data?.service_image);
-
-                // formik.setFieldValue("price", data?.price);
-                formik.setFieldValue("profit_method", data?.profit_method);
-                formik.setFieldValue("markup_fee", data?.markup_fee);
-                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
-                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
-                formik.setFieldValue("per_head_booking", data?.per_head_booking);
-                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
-                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
-                formik.setFieldValue("service_price_service", data?.service_price_service);
-                setIsUpdated(false)
-            }
-            ).catch((error) => {
-                setIsLoading(false);
-                toast.error(error.response.data)
-            })
-    }, [params.id, isupdated])
-
+    
     useEffect(() => {
         getProfitMethod()
             .then((data) =>
@@ -415,21 +327,44 @@ const ServiceEdit = () => {
         formik.setFieldValue(fieldName, Math.max(0, formik.values[fieldName] - 1));
     };
 
-    const handleRemoveImage = (id) => {
-        DeleteImage(id)
-            .then((data) => { toast.success(data); setIsUpdated(true) }
-            ).catch((error) =>
-                toast.error(error.response.data))
-    }
+    const handleRemoveImage = (index) => {
+      
+            formik.setValues((prev) => {
+                const updatedServicePriceService = [...prev.service_image];
+                updatedServicePriceService.splice(index, 1);
+            
+                return {
+                  ...prev,
+                  service_image: updatedServicePriceService,
+                };
+              });
+        }
 
-    const settingthumbnailTrue = (id, data) => {
-        SetThumbNail(id, data)
-            .then((datas) => {
-                toast.success(datas);
-                toast.error(datas)
+        
+    const settingthumbnailTrue = (index, dat) => {
+
+        formik.setValues((prev) => {
+            const datas = {
+               image:dat.image,
+               thumbnail:true,
+               imageURL:dat.imageURL
             }
-            ).catch((error) =>
-                toast.error(error.response.data))
+
+            const findIndex = prev.service_image.findIndex((dat,i) => i === index);
+
+            
+            if (findIndex !== -1) {
+                let updatedService_image = [...prev.service_image];
+                updatedService_image[findIndex] = datas;
+
+                return {
+                    ...prev,
+                    service_image: updatedService_image
+                };
+            } 
+
+               
+        });  
     }
     const [validateeditor, setValidateEditor] = useState("")
 
@@ -504,7 +439,8 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    console.log(formik.values);
+    
+   
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -514,11 +450,9 @@ const ServiceEdit = () => {
                             <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
                             </svg>
-                            <span style={{ color: "#006875" }}>{formik.values.name}</span>
-                            <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
-                            </svg>
-                            <span style={{ color: "#006875" }}>Edit Service</span>
+                
+                            
+                            <span style={{ color: "#006875" }}>Add Service</span>
 
                         </Breadcrumb.Item>
                     </Breadcrumb>
@@ -557,13 +491,13 @@ const ServiceEdit = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <optgroup label="Selected Category">
+                                                    {<optgroup label="Selected Category">
                                                         {/* {formik.values.category?.map((data) => ( */}
                                                         <option selected key={formik.values.category[0]?.id} value={formik.values.category[0]?.id}>
                                                             {formik.values.category[0]?.name}
                                                         </option>
                                                         {/* ))} */}
-                                                    </optgroup>
+                                                    </optgroup>}
 
                                                     {/* Options from subcategorylist */}
                                                     <optgroup label="Category List">
@@ -617,11 +551,11 @@ const ServiceEdit = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <optgroup label="Selected Sub-Category">
+                                                    {<optgroup label="Selected Sub-Category">
                                                         <option selected key={formik.values.sub_category[0]?.id} value={formik.values.sub_category[0]?.id}>
                                                             {formik.values.sub_category[0]?.name}
                                                         </option>
-                                                    </optgroup>
+                                                    </optgroup>}
 
 
                                                     <optgroup label="Subcategory List">
@@ -829,13 +763,13 @@ const ServiceEdit = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <optgroup label="Selected Amenities">
+                                                   { <optgroup label="Selected Amenities">
                                                         {formik.values.amenities?.map((data) => (
                                                             <option selected key={data.id} value={data.id}>
                                                                 {data.name}
                                                             </option>
                                                         ))}
-                                                    </optgroup>
+                                                    </optgroup>}
 
 
                                                     <optgroup label="Amenities List">
@@ -1265,20 +1199,21 @@ const ServiceEdit = () => {
                                     <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
                                     <button type='button' onClick={handleOpen} className='btn px-2 py-1' style={{ backgroundColor: "#187AF7", color: "#ffff", fontSize: "12px" }} >Upload</button>
                                 </div>
-                                {open && <UploadPopup setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} />}
+                                {open && <UploadPopup setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} formikset={formik.setValues}/>}
                                 <p style={{ fontWeight: "550", fontSize: "12px" }}>Thumbnail</p>
                                 <div className="row">
-                                    {formik.values.service_image.map((data) => (
-                                        <div className="col-6 mb-3" key={data.id}>
+                                    {formik.values.service_image.map((data,i) => (
+                                        <div className="col-6 mb-3" key={i}>
+                                            {/* {console.log(data)} */}
                                             <div style={{ position: "relative" }}
-                                                onMouseEnter={() => handleHoverEffectTrue(data.id)}
+                                                onMouseEnter={() => handleHoverEffectTrue(i)}
                                                 onMouseLeave={() => handleHoverEffectFalse()}
                                             >
-                                                <img src={data.image} className='rounded' style={{ width: "200px", height: "125px", opacity: hovereffect === data.id ? 0.5 : 1 }} />
-                                                {hovereffect === data.id &&
+                                                <img src={data.imageURL} className='rounded' style={{ width: "200px", height: "125px", opacity: hovereffect === data.id ? 0.5 : 1 }} />
+                                                {hovereffect === i &&
                                                     <div style={{ position: "absolute", bottom: "50px", left: "20px", backgroundColor: "lightblack" }}>
-                                                        <button type="button" className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={() => settingthumbnailTrue(data.id, data.service)}>setThumbnail</button>
-                                                        <button type="button" className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={() => handleRemoveImage(data.id)}>Remove</button>
+                                                        <button type="button" className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={() => {settingthumbnailTrue(i,data)}}>setThumbnail</button>
+                                                        <button type="button" className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }} onClick={() => handleRemoveImage(i)}>Remove</button>
                                                     </div>
                                                 }
                                             </div>
@@ -1527,7 +1462,7 @@ const ServiceEdit = () => {
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
                             <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
-                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Edit Service</button>
+                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Add Service</button>
                         </div>
                     </form>
                 </div>
@@ -1542,4 +1477,4 @@ const ServiceEdit = () => {
     )
 }
 
-export default ServiceEdit;
+export default ServiceAdd;

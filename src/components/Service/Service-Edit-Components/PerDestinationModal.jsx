@@ -9,7 +9,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
-import {getLocationListing} from "../../services/service"
+import {getLocationListing} from "../../../services/service"
+import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
+
 
 const style = {
     position: 'absolute',
@@ -26,7 +29,7 @@ const style = {
 };
 
 
-export default function PerDestinationEditModal({ handleClose, handleOpen, open,data,formiks }) {
+export default function PerDestinationModal({ handleClose, handleOpen, open,formiks }) {
     const [locationlist, setLocationList] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState("")
@@ -35,20 +38,7 @@ export default function PerDestinationEditModal({ handleClose, handleOpen, open,
         const searchTerm = e.target.value;
         setSearch(searchTerm);
     };
-
-const validationSchema = Yup.object({
-    name: Yup.string()
-        .required("Name is required")
-        .max(20, "Name must be at most 20 characters"),
-    price: Yup.number()
-        .required("Price is required"),
-        duration_hour: Yup.number()
-        .required("Duration is required"),
-        duration_minute: Yup.number()
-        .required("Minute is required"),
-    location: Yup.string().required("Location is required"),
-});
-
+    const Params=useParams()
 
     useEffect(() => {
         getLocationListing()
@@ -58,17 +48,29 @@ const validationSchema = Yup.object({
                 console.error(error))
     }, [])
 
+    const validationSchema = Yup.object({
+        name: Yup.string()
+            .required("Name is required")
+            .max(20, "Name must be at most 20 characters"),
+        price: Yup.number()
+            .required("Price is required"),
+            duration_hour: Yup.number()
+            .required("Duration is required"),
+            duration_minute: Yup.number()
+            .required("Minute is required"),
+        location: Yup.string().required("Location is required"),
+    });
+
     const formik = useFormik({
         initialValues: {
-            id: data.id,
-            service: data.service,
-            is_active: data.is_active,
-            is_range: data.is_range,
-            location: data.location,
-            name: data.name,
-            price: data.price,
-            duration_hour: data.duration_hour,
-            duration_minute: data.duration_minute
+            // id:uuidv4(),
+            // service: Params.id,
+            is_active: false,
+            location: "",
+            name: "",
+            price:null,
+            duration_hour: null,
+            duration_minute: null
            
         },
         validationSchema,
@@ -76,8 +78,8 @@ const validationSchema = Yup.object({
         
             formiks((prev)=>{
                 const datas={
-                    id: values.id,
-                    service: values.service,
+                    // id:values.id,
+                    // service: Params.id,
                     is_active: values.is_active,
                     location: values.location,
                     name: values.name,
@@ -85,38 +87,33 @@ const validationSchema = Yup.object({
                     duration_hour:values.duration_hour,
                     duration_minute:values.duration_minute
                 }
-                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
-
-                
-                if (findIndex !== -1) {
-                    let updatedServicePriceService = [...prev.service_price_service];
-                    updatedServicePriceService[findIndex] = datas;
-
+               
+                if (prev.service_price_service) {
                     return {
-                        ...prev,
-                        service_price_service: updatedServicePriceService
-                    };
-                } else {
-                    
-                    return {
-                        ...prev,
-                        service_price_service: [...prev.service_price_service, datas]
-                    };
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
-            });
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
 
-            handleClose();
+            
+            })
+            handleClose()
+    
+       
+
         },
     });
 
     let duration=[]
-for(let i=1;i<=23;i++){
-    duration.push(i)
-}
-    let minutes=[]
-for(let i=1;i<=59;i++){
-    minutes.push(i)
-}
+    for(let i=1;i<=23;i++){
+        duration.push(i)
+    }
+        let minutes=[]
+    for(let i=1;i<=59;i++){
+        minutes.push(i)
+    }
 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
@@ -132,7 +129,7 @@ for(let i=1;i<=59;i++){
             >
                <Box sx={style}>
                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                        Edit Price
+                        Add Price
                     </Typography>
                     <IconButton
                         edge="end"
@@ -202,7 +199,7 @@ for(let i=1;i<=59;i++){
                                     
                                     name="location"
                                     className="form-control"
-                                    placeholder="Name"
+                                    placeholder=""
                                     value={formik.values.location}
                                     onChange={(e) => formik.setFieldValue('location', e.target.value)}
                                     onBlur={formik.handleBlur}

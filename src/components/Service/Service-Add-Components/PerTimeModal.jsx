@@ -67,8 +67,8 @@ export default function PerTimeModal({ handleClose, handleOpen, open, formiks })
 
             formiks((prev) => {
                 const datas = {
-                    id: values.id,
-                    service: Params.id,
+                    // id: values.id,
+                    // service: Params.id,
                     is_active: values.is_active,
                     is_range: values.is_range,
                     name: values.name,
@@ -78,9 +78,15 @@ export default function PerTimeModal({ handleClose, handleOpen, open, formiks })
                 }
 
 
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                if (prev.service_price_service) {
+                    return {
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
+
             })
             handleClose()
 
