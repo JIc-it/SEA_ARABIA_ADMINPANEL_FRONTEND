@@ -16,6 +16,7 @@ import {
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
+import { getLocation } from "../../../services/CustomerHandle";
 
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
@@ -26,7 +27,8 @@ function UpdateAdmin({ show, close }) {
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
-
+  const [location, setLocation] = useState([]);
+  
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
@@ -37,6 +39,18 @@ function UpdateAdmin({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [adminId]);
+
+
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results[0]);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -275,16 +289,25 @@ function UpdateAdmin({ show, close }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <input
+            {" "}
+            <select
               className="form-control"
-              type="text"
               id=""
               name="location"
-              placeholder="Location"
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
+            >
+              <option value="" label="Select a location" />
+
+              <option
+                key={location?.id}
+                value={location.id}
+                label={location.location}
+              />
+
+              {/* Add more options as needed */}
+            </select>
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
@@ -303,7 +326,7 @@ function UpdateAdmin({ show, close }) {
               <path
                 d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
                 stroke="#68727D"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
               <ellipse
                 cx="10"
@@ -311,63 +334,9 @@ function UpdateAdmin({ show, close }) {
                 rx="2.5"
                 ry="2.5"
                 stroke="#68727D"
-                stroke-width="1.5"
+                strokeWidth="1.5"
               />
             </svg>
-          </div>
-        </div>
-        <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
-            ) : null}
-          </div>
-        </div>
-        <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Confirm Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="Password"
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-              <div className="error">{formik.errors.confirmPassword}</div>
-            ) : null}
           </div>
         </div>
 
@@ -393,7 +362,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault1"
                   />
                 </div>
               </td>
@@ -404,7 +373,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault2"
                   />
                 </div>
               </td>
@@ -415,7 +384,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault3"
                   />
                 </div>
               </td>
@@ -426,7 +395,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault4"
                   />
                 </div>
               </td>
@@ -440,7 +409,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault5"
                   />
                 </div>
               </td>
@@ -451,7 +420,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault6"
                   />
                 </div>
               </td>
@@ -462,7 +431,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault7"
                   />
                 </div>
               </td>
@@ -473,7 +442,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault8"
                   />
                 </div>
               </td>
@@ -487,7 +456,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault9"
                   />
                 </div>
               </td>
@@ -498,7 +467,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault10"
                   />
                 </div>
               </td>
@@ -509,7 +478,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault11"
                   />
                 </div>
               </td>
@@ -520,7 +489,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault12"
                   />
                 </div>
               </td>
@@ -534,7 +503,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault13"
                   />
                 </div>
               </td>
@@ -545,7 +514,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault14"
                   />
                 </div>
               </td>
@@ -556,7 +525,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault15"
                   />
                 </div>
               </td>
@@ -567,7 +536,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault16"
                   />
                 </div>
               </td>
@@ -581,7 +550,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault17"
                   />
                 </div>
               </td>
@@ -592,7 +561,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault18"
                   />
                 </div>
               </td>
@@ -603,7 +572,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault19"
                   />
                 </div>
               </td>
@@ -614,7 +583,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault20"
                   />
                 </div>
               </td>
@@ -628,7 +597,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault21"
                   />
                 </div>
               </td>
@@ -639,7 +608,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault22"
                   />
                 </div>
               </td>
@@ -650,7 +619,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault23"
                   />
                 </div>
               </td>
@@ -661,7 +630,7 @@ function UpdateAdmin({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault24"
                   />
                 </div>
               </td>

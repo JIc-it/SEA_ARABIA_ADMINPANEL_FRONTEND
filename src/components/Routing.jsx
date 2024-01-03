@@ -45,6 +45,8 @@ import InviVitualBookingView from "./Booking/InviVitualBookingView";
 import CancellationBooking from "./Booking/CancellationBooking";
 import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
+import EventListing from "../pages/Events&Packages/EventsListing";
+import EventView from "./Events/EventView";
 
 function AllRouting() {
   return (
@@ -113,6 +115,10 @@ function AllRouting() {
       <Route path="/cancellation-booking" element={<CancellationBooking />} />
       <Route path="/cancellation-history" element={<CancellationHistory />} />
       <Route path="/booking-view" element={<BookingView />} />
+
+      <Route path="/events-and-packages" element={<EventListing />} />
+      <Route path="/eventsview" element={<EventView />} />
+
     </Routes>
   );
 }

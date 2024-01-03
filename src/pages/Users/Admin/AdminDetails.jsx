@@ -13,6 +13,7 @@ import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getAdminListById } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 import UpdateAdmin from "./UpdateAdmin";
+import AdminPassword from "./AdminPassword";
 
 function AdminDetails() {
   const theme = useTheme();
@@ -21,10 +22,13 @@ function AdminDetails() {
   const [active, setActive] = useState("Details");
   const [adminDetails, setAdminDetails] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
 
+  const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
   const [admin, setAdmin] = useState();
 
   useEffect(() => {
@@ -240,12 +244,32 @@ function AdminDetails() {
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
+                <AdminPassword
+                  show={showOffcanvas1}
+                  close={handleCloseOffcanvasPassword}
+                />
                 <button
                   onClick={handleOpenOffcanvas}
                   className="btn mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
                   Edit Details &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={15}
+                    height={15}
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    {/* ... (your SVG path) */}
+                  </svg>
+                </button>
+                <button
+                  onClick={handleOpenOffcanvasPassword}
+                  className="btn mt-2 px-4 py-2"
+                  style={{ backgroundColor: "#187AF7", color: "white" }}
+                >
+                  Reset Password &nbsp;
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}

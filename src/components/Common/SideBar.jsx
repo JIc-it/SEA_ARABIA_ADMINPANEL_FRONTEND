@@ -34,7 +34,10 @@ function SideBar() {
 
     navigate("/add-on-services");
   };
-
+  const handleEventsAndPackage = (event) => {
+    event.preventDefault();
+    navigate("/events-and-packages");
+  };
   const handleRequestClick = (event) => {
     event.preventDefault();
 
@@ -1128,16 +1131,18 @@ function SideBar() {
               </li>
               <li
                 className={`nav-item ${
-                  activeLink === "/add-on-services" ? "active" : ""
+                  activeLink === "/events-and-packages" ? "active" : ""
                 }`}
               >
                 <a
                   className="nav-link"
                   href="/Events"
-                  onClick={handleAddOnServiceClick}
+                  onClick={handleEventsAndPackage}
                   style={{
-                    color: activeLink === "/add-on-services" ? "#006875" : "",
-                    fontSize: activeLink === "/add-on-services" ? "17px" : "",
+                    color:
+                      activeLink === "/events-and-packages" ? "#006875" : "",
+                    fontSize:
+                      activeLink === "/events-and-packages" ? "17px" : "",
                   }}
                 >
                   <svg

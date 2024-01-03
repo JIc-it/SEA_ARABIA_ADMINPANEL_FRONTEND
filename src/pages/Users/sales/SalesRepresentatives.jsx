@@ -25,7 +25,7 @@ const SalesRepresentatives = () => {
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
   useEffect(() => {
     const role = "Staff";
     getCustomerlist(role)
@@ -209,7 +209,6 @@ const SalesRepresentatives = () => {
                       Search
                     </button>
                   </div>
-                  
                 </div>
               </form>
             </div>
@@ -268,7 +267,7 @@ const SalesRepresentatives = () => {
               </svg>
             </button>
           </div>
-          <CreateSalesRep show={showOffcanvas} close={handleOpenOffcanvas} />
+          <CreateSalesRep show={showOffcanvas} close={handleCloseOffcanvas} />
         </div>
         <div className="card mx-3">
           <div className="table-responsive">

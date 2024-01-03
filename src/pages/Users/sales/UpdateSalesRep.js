@@ -49,7 +49,7 @@ function UpdateSalesRep({ show, close }) {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results);
+        setLocation(data.results[0]);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -417,10 +417,13 @@ function UpdateSalesRep({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-              {location &&
-                location.map((item) => (
-                  <option key={item.id} value={item.id} label={item.location} />
-                ))}
+
+              <option
+                key={location?.id}
+                value={location.id}
+                label={location.location}
+              />
+
               {/* Add more options as needed */}
             </select>
             {formik.touched.location && formik.errors.location ? (
@@ -452,61 +455,6 @@ function UpdateSalesRep({ show, close }) {
                 strokeWidth="1.5"
               />
             </svg>
-          </div>
-        </div>
-
-        <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="password"
-              name="password"
-              className="form-control"
-              placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
-            ) : null}
-          </div>
-        </div>
-        <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Confirm Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="Password"
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-              <div className="error">{formik.errors.confirmPassword}</div>
-            ) : null}
           </div>
         </div>
 

@@ -32,12 +32,13 @@ function CreateSalesRep({ show, close }) {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results);
+        setLocation(data.results[0]);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
       });
   }, []);
+
   const validationSchema = Yup.object({
     // name: Yup.string()
     //   .required("Name is required")
@@ -275,10 +276,13 @@ function CreateSalesRep({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-              {location &&
-                location.map((item) => (
-                  <option key={item.id} value={item.id} label={item.location} />
-                ))}
+
+              <option
+                key={location?.id}
+                value={location.id}
+                label={location.location}
+              />
+
               {/* Add more options as needed */}
             </select>
             {formik.touched.location && formik.errors.location ? (

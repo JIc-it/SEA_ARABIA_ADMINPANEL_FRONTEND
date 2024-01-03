@@ -1,66 +1,45 @@
-import React, { useEffect, useState } from "react";
-import foodImg from "../../../static/img/food.png";
-import newBooking from "../../../static/img/new-booking.png";
-import totalBooking from "../../../static/img/total-booking.png";
-import confirmBooking from "../../../static/img/confirm-booking.png";
-import cancelBooking from "../../../static/img/cancel-booking.png";
-import filterIcon from "../../../static/img/Filter.png";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import CreateSalesRep from "../sales/CreateSalesRep";
+import { useNavigate } from "react-router-dom";
+import filterIcon from "../../static/img/Filter.png";
 import {
-  getAdminSearch,
-  getGuestUserList,
-} from "../../../services/GuestHandle";
-import CreateNewAdmin from "./CreateNewAdmin";
-import { getCustomerlist } from "../../../services/CustomerHandle";
-import { removeBaseUrlFromPath } from "../../../helpers";
-import { getListDataInPagination } from "../../../services/commonServices";
+  getCustomerSearch,
+  getCustomerlist,
+} from "../../services/CustomerHandle";
+import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { getListDataInPagination } from "../../services/commonServices";
 
-const Admin = () => {
+export default function EventListing() {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [admin, setAdmin] = useState();
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const [salesRep, setsalesRep] = useState();
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [search, setSearch] = useState();
-  const [selectedValue, setSelectedValue] = useState("");
+  // const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   useEffect(() => {
-    const role = "Admin";
+    const role = "Staff";
     getCustomerlist(role)
       .then((data) => {
+        console.log("salesRep-list", data);
+        // setListDiscount(data.results);
+        // const filteredResults = data.results.filter(
+        //   (item) => item.role === "Staff"
+        // );
         setListPageUrl({
           next: data.next,
           previous: data.previous,
         });
-        setAdmin(data.results);
+        setsalesRep(data.results);
+        // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
-        console.error("Error fetching Customer List data:", error);
+        console.error("Error fetching sales rep List data:", error);
       });
   }, []);
-
-  const getAdminData = async () => {
-    getAdminSearch(search, selectedValue)
-      .then((data) => {
-        // console.log("search", data);
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        const filteredResults = data.results.filter(
-          (item) => item.role === "Admin"
-        );
-        setAdmin(filteredResults);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("failed to search error", error);
-      });
-  };
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -76,9 +55,9 @@ const Admin = () => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
           const filteredResults = data.results.filter(
-            (item) => item.role === "Admin"
+            (item) => item?.role === "Staff"
           );
-          setAdmin(filteredResults);
+          setsalesRep(filteredResults);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -104,7 +83,7 @@ const Admin = () => {
                           "linear-gradient(135deg, #5C4AF2 0%, #988DF5 100%)",
                       }}
                     >
-                      <img src={totalBooking} />
+                      {/* <img src={totalBooking} /> */}
                     </span>
                   </div>
                   <div className="col">
@@ -135,7 +114,7 @@ const Admin = () => {
                         height: "50px",
                       }}
                     >
-                      <img src={newBooking} />
+                      {/* <img src={newBooking} /> */}
                     </span>
                   </div>
                   <div className="col">
@@ -166,7 +145,7 @@ const Admin = () => {
                         height: "50px",
                       }}
                     >
-                      <img src={confirmBooking} />
+                      {/* <img src={confirmBooking} /> */}
                     </span>
                   </div>
                   <div className="col">
@@ -214,15 +193,11 @@ const Admin = () => {
                       type="text"
                       className="form-control"
                       placeholder="Input search term"
-                      onChange={(e) => {
-                        setSearch(e.target.value);
-                      }}
                     />
                     <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
-                      onClick={getAdminData}
                     >
                       Search
                     </button>
@@ -232,6 +207,35 @@ const Admin = () => {
             </div>
           </div>
           <div className="action_buttons col-4">
+            <button
+              to="/eventsview"
+              // onClick={handleOpenOffcanvas}
+              className="btn btn-info vendor_button"
+              style={{ borderRadius: "6px" }}
+              type="button"
+            >
+              Add Events/Package + &nbsp;
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M10 3L10 17"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M3 10H17"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
             <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
               Export &nbsp;
               <svg
@@ -256,36 +260,8 @@ const Admin = () => {
                 />
               </svg>
             </button>
-            <button
-              onClick={handleOpenOffcanvas}
-              className="btn btn-info vendor_button"
-              style={{ borderRadius: "6px" }}
-              type="button"
-            >
-              Create New Admin &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M10 3L10 17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M3 10H17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
           </div>
-          <CreateNewAdmin show={showOffcanvas} close={handleCloseOffcanvas} />
+          {/* <CreateSalesRep show={showOffcanvas} close={handleOpenOffcanvas} /> */}
         </div>
         <div className="card mx-3">
           <div className="table-responsive">
@@ -312,7 +288,7 @@ const Admin = () => {
                     </svg>
                   </th>
                   <th>
-                    <span>Email</span>
+                    <span>Machine Name</span>
                     <svg
                       className="mx-2"
                       xmlns="http://www.w3.org/2000/svg"
@@ -332,7 +308,7 @@ const Admin = () => {
                   </th>
                   <th>
                     {" "}
-                    <span>Phone</span>
+                    <span>Type</span>
                     <svg
                       className="mx-2"
                       xmlns="http://www.w3.org/2000/svg"
@@ -351,7 +327,27 @@ const Admin = () => {
                     </svg>
                   </th>
                   <th>
-                    <span>Location</span>
+                    <span>Capacity</span>
+                    <svg
+                      className="mx-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                    >
+                      <path
+                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
+                        stroke="#6E7070"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                  </th>
+
+                  <th>
+                    <span>Status</span>
                     <svg
                       className="mx-2"
                       xmlns="http://www.w3.org/2000/svg"
@@ -372,36 +368,71 @@ const Admin = () => {
 
                   <th>
                     <span>Action</span>
+                    <svg
+                      className="mx-2"
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="14"
+                      height="14"
+                      viewBox="0 0 14 14"
+                      fill="none"
+                    >
+                      <path
+                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
+                        stroke="#6E7070"
+                        stroke-width="1.5"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
                   </th>
                 </tr>
               </thead>
-              {admin && admin.length > 0 ? (
+              {salesRep && salesRep.length > 0 ? (
                 <>
-                  {admin.map((item) => {
+                  {salesRep.map((item) => {
                     return (
                       <tbody>
+                        {console.log("sles map", salesRep)}
                         <tr>
                           <td>
-                            <span className="text-secondary">
-                              {item?.first_name} {item?.last_name}
-                            </span>
+                            <span className="text-secondary">Achile Laura</span>
                           </td>
                           <td>
-                            <span className="text-secondary">
-                              {item?.email}
-                            </span>
+                            <span className="text-secondary">Machine Name</span>
                           </td>
                           <td>
-                            <span className="text-secondary">
-                              {" "}
-                              {item?.mobile}
-                            </span>
+                            <span className="text-secondary">Package</span>
                           </td>
                           <td>
-                            <span className="text-secondary">
-                              {" "}
-                              {item?.location}
-                            </span>
+                            <span className="text-secondary">8</span>
+                          </td>
+                          <td>
+                            <Link
+                              to={`/sales-representatives/${item?.id}`}
+                              // to={`/customers/${item.id}`}
+                              className="btn btn-sm btn-info text-center"
+                              style={{
+                                padding: "6px 10px",
+                                borderRadius: "4px",
+                                color: "#40C77E",
+                                borderRadius:
+                                  "var(--Roundness-Round-Inside, 6px)",
+                                background: "rgba(19, 179, 112, 0.20)",
+
+                                /* Shadow/XSM */
+                                boxShadow:
+                                  "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                              }}
+                            >
+                              View &nbsp;
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                              ></svg>
+                            </Link>
                           </td>
 
                           <td
@@ -412,7 +443,7 @@ const Admin = () => {
                             }}
                           >
                             <Link
-                              to={`/admin/${item?.id}`}
+                              to="/eventsview"
                               // to={`/customers/${item.id}`}
                               className="btn btn-sm btn-info"
                               style={{
@@ -451,10 +482,6 @@ const Admin = () => {
             </table>
           </div>
           <div className="card-footer d-flex align-items-center">
-            {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
             <ul className="pagination m-0 ms-auto">
               <li
                 className={`page-item  ${!listPageUrl.previous && "disabled"}`}
@@ -527,6 +554,4 @@ const Admin = () => {
   )} */}
     </div>
   );
-};
-
-export default Admin;
+}
