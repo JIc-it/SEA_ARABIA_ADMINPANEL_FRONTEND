@@ -22,34 +22,26 @@ const style = {
     borderRadius: "5px",
     boxShadow: 24,
     p: 4,
-    overflowY: 'auto', 
-    maxHeight: '90vh', 
+    overflowY: 'auto', // Add this line for vertical scroll
+    maxHeight: '90vh', // Adjust the maximum height if needed
 };
 
 
-export default function PerDateModal({ handleClose, handleOpen, open, formiks }) {
+export default function PerDurationModal({ handleClose, handleOpen, open, formiks }) {
     const Params = useParams()
-    const [startdate,setStartDate]=useState("")
-    const [enddate,setEndDate]=useState("")
     const [isLoading, setIsLoading] = useState(false);
 
+    
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
             .required("Price is required"),
-        date: Yup.string()
-            .required("Date is required"),
-        end_date: Yup.string().when("is_range", ([is_range], schema) => {
-                if (is_range ===true) {
-                    return schema
-                        .required("End Date is Required")
-                }
-                else {
-                    return schema.notRequired();
-                }
-            }),
+        duration_hour: Yup.number()
+            .required("Duration is required"),
+        duration_minute: Yup.number()
+            .required("Minute is required"),
     });
 
     const formik = useFormik({
@@ -59,9 +51,8 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             is_active: false,
             name: "",
             price: null,
-            is_range: false,
-            date: null,
-            end_date: null
+            duration_hour: null,
+            duration_minute: null
 
         },
         validationSchema,
@@ -69,20 +60,25 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
             formiks((prev) => {
                 const datas = {
-                    id: values.id,
-                    service: Params.id,
+                    // id: values.id,
+                    // service: Params.id,
                     is_active: values.is_active,
-                    is_range: values.is_range,
+                    location: values.location,
                     name: values.name,
                     price: values.price,
-                    date: values.date,
-                    end_date: values.end_date
+                    duration_hour: values.duration_hour,
+                    duration_minute: values.duration_minute
                 }
 
-
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                if (prev.service_price_service) {
+                    return {
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
+
             })
             handleClose()
 
@@ -91,17 +87,16 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
         },
     });
 
-
-
-    let startdates=[]
-    for(let i=1;i<=31;i++){
-        startdates.push(i)
+    let duration = []
+    for (let i = 1; i <= 23; i++) {
+        duration.push(i)
     }
-    let enddates=[]
-    for(let i=1;i<=31;i++){
-        enddates.push(i)
+    let minute = []
+    for (let i = 1; i <= 59; i++) {
+        minute.push(i)
     }
 
+   
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -175,93 +170,64 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
 
 
                             </div>
-                            <div className='d-flex align-items-center mt-3 mx-1'>
-                                <div>
-                                    <input
-                                        type="checkbox"
-                                        name="is_range"
-                                        className=""
-                                        placeholder=""
-                                        checked={formik.values.is_range}
-                                        value={formik.values.is_range}
-                                        onChange={()=>{
-                                            formik.setFieldValue("is_range",!formik.values.is_range);
-                                            formik.setFieldValue("end_date",null)
-                                        }}
-                                        onBlur={formik.handleBlur}
-                                        style={{ width: "15px", height: "15px" }}
-                                    />
-                                </div>
-                                <div>
+
+                            <div className='d-flex  align-items-center mt-2'>
+
+                                <div className='w-50 mx-1'>
                                     <label
                                         htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px", marginLeft: "5px" }}
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                     >
-                                        Is Range <span style={{ color: "red" }}>*</span>
+                                        Duration <span style={{ color: "red" }}>*</span>
                                     </label>
+                                    <select
+
+                                        name="duration_hour"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.duration_hour}
+                                        onChange={(e) => formik.setFieldValue('duration_hour', e.target.value)}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        {duration.map((dat, i) =>
+                                            <option key={i} value={dat}>{dat}</option>
+                                        )}
+
+                                    </select>
+                                    {formik.touched.duration_hour && formik.errors.duration_hour ? (
+                                        <div className="error">{formik.errors.duration_hour}</div>
+                                    ) : null}
                                 </div>
-                                {formik.touched.is_range && formik.errors.is_range ? (
-                                    <div className="error">{formik.errors.is_range}</div>
-                                ) : null}
+
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <select
+
+                                        name="duration_minute"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.duration_minute}
+                                        onChange={(e) => formik.setFieldValue('duration_minute', e.target.value)}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        {minute.map((dat, i) =>
+                                            <option key={i} value={dat}>{dat}</option>
+                                        )}
+                                    </select>
+                                    {formik.touched.duration_minute && formik.errors.duration_minute ? (
+                                        <div className="error">{formik.errors.duration_minute}</div>
+                                    ) : null}
+                                </div>
+
+
                             </div>
-
-                             <div className='d-flex  align-items-center mt-2'>
-                                    
-                                    <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Date <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.date}
-                                                onChange={(e) => formik.setFieldValue('date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                            {startdates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
-
-                                            </select>
-                                            {formik.touched.date && formik.errors.date ? (
-                                                <div className="error">{formik.errors.date}</div>
-                                            ) : null}
-                                        </div>
-
-                                        <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                 <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="end_date"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.end_date}
-                                                onChange={(e) => formik.setFieldValue('end_date', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                             {enddates.map((dat,i)=>
-                                            <option key={i} value={dat}>{dat}</option>
-                                            )}
-                                            </select>
-                                            {formik.touched.end_date && formik.errors.end_date ? (
-                                                <div className="error">{formik.errors.end_date}</div>
-                                            ) : null}
-                                        </div>
-
-                                   
-                        </div>
 
                             <div className='d-flex justify-content-end mt-3'>
                                 <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>

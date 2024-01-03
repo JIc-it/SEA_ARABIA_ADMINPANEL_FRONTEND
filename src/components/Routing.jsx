@@ -45,8 +45,12 @@ import InviVitualBookingView from "./Booking/InviVitualBookingView";
 import CancellationBooking from "./Booking/CancellationBooking";
 import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
+<<<<<<< HEAD
 import EventListing from "../pages/Events&Packages/EventsListing";
 import EventView from "./Events/EventView";
+=======
+import ServiceAdd from "./Service/ServiceAdd";
+>>>>>>> c6d1b9796341d7ecf236f6094433a31e3fe1e8e9
 
 function AllRouting() {
   return (
@@ -109,6 +113,7 @@ function AllRouting() {
         element={<UserVendorCardDetails />}
       />
       <Route path="/service" element={<ServiceList />} />
+      <Route path="/service-add/:id" element={<ServiceAdd/>} />
       <Route path="/service-view/:id" element={<ServiceView />} />
       <Route path="/service-edit/:id" element={<ServiceEdit />} />
       <Route path="/guest-user" element={<GuestUser />} />

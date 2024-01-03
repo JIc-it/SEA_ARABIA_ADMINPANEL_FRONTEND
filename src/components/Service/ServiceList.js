@@ -48,6 +48,7 @@ function ServiceList() {
         getServiceListing()
             .then((data) => {
                 setServiceList(data?.results);
+                setListPageUrl({ next: data.next, previous: data.previous });
                 setIsLoading(false)
             })
             .catch((error) => {

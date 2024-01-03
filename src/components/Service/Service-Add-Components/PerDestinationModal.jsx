@@ -9,7 +9,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
-import {getLocationListing} from "../../services/service"
+import {getLocationListing} from "../../../services/service"
 import { v4 as uuidv4 } from 'uuid';
 import { useParams } from 'react-router-dom';
 
@@ -63,8 +63,8 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
 
     const formik = useFormik({
         initialValues: {
-            id:uuidv4(),
-            service: Params.id,
+            // id:uuidv4(),
+            // service: Params.id,
             is_active: false,
             location: "",
             name: "",
@@ -78,8 +78,8 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
         
             formiks((prev)=>{
                 const datas={
-                    id:values.id,
-                    service: Params.id,
+                    // id:values.id,
+                    // service: Params.id,
                     is_active: values.is_active,
                     location: values.location,
                     name: values.name,
@@ -88,10 +88,16 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                     duration_minute:values.duration_minute
                 }
                
-
-                return {
-                    ...prev,service_price_service:[...prev.service_price_service,datas]
+                if (prev.service_price_service) {
+                    return {
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
+
+            
             })
             handleClose()
     

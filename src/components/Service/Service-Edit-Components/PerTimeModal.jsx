@@ -27,7 +27,7 @@ const style = {
 };
 
 
-export default function PerDayModal({ handleClose, handleOpen, open, formiks }) {
+export default function PerTimeModal({ handleClose, handleOpen, open, formiks }) {
     const Params = useParams()
     const [isLoading, setIsLoading] = useState(false);
 
@@ -37,12 +37,12 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
             .required("Price is required"),
-        day: Yup.string()
-            .required("Day is required"),
-        end_day: Yup.string().when("is_range", ([is_range], schema) => {
+        time: Yup.string()
+            .required("Time is required"),
+        end_time: Yup.string().when("is_range", ([is_range], schema) => {
                 if (is_range ===true) {
                     return schema
-                        .required("End Day is Required")
+                        .required("End Time is Required")
                 }
                 else {
                     return schema.notRequired();
@@ -52,14 +52,14 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
 
     const formik = useFormik({
         initialValues: {
-            // id: uuidv4(),
-            // service: Params.id,
+            id: uuidv4(),
+            service: Params.id,
             is_active: false,
             name: "",
             price: null,
             is_range: false,
-            day: null,
-            end_day: null
+            time: null,
+            end_time: null
 
         },
         validationSchema,
@@ -73,14 +73,20 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
                     is_range: values.is_range,
                     name: values.name,
                     price: values.price,
-                    day: values.day,
-                    end_day: values.end_day
+                    time: values.time,
+                    end_time: values.end_time
                 }
 
 
-                return {
-                    ...prev, service_price_service: [...prev.service_price_service, datas]
+                if (prev.service_price_service) {
+                    return {
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
+
             })
             handleClose()
 
@@ -91,7 +97,7 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
 
 
 
-   
+    
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -176,7 +182,7 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
                                         value={formik.values.is_range}
                                         onChange={()=>{
                                             formik.setFieldValue("is_range",!formik.values.is_range);
-                                            formik.setFieldValue("end_day",null)
+                                            formik.setFieldValue("end_time",null)
                                         }}
                                         onBlur={formik.handleBlur}
                                         style={{ width: "15px", height: "15px" }}
@@ -202,30 +208,22 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
                                         htmlFor=""
                                         style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                     >
-                                        Day <span style={{ color: "red" }}>*</span>
+                                        Time <span style={{ color: "red" }}>*</span>
                                     </label>
-                                    <select
-
-                                        name="day"
+                                    <input
+                                        type="time"
+                                        name="time"
                                         className="form-control"
-                                        placeholder="Day"
-                                        value={formik.values.day}
-                                        onChange={formik.handleChange}
+                                        placeholder=""
+                                        value={formik.values.time}
+                                        onChange={(e)=>{
+                                            formik.setFieldValue("time",e.target.value);
+                                        }}
                                         onBlur={formik.handleBlur}
-                                    >
-                                        <option value={null}>Choose</option>
-                                        <option value="Sunday">Sunday</option>
-                                        <option value="Monday">Monday</option>
-                                        <option value="Tuesday">Tuesday</option>
-                                        <option value="Wednesday">Wednesday</option>
-                                        <option value="Thursday">Thursday</option>
-                                        <option value="Friday">Friday</option>
-                                        <option value="Saturday">Saturday</option>
-
-
-                                    </select>
-                                    {formik.touched.day && formik.errors.day ? (
-                                        <div className="error">{formik.errors.day}</div>
+                                        
+                                    />
+                                    {formik.touched.time && formik.errors.time ? (
+                                        <div className="error">{formik.errors.time}</div>
                                     ) : null}
                                 </div>
 
@@ -234,30 +232,22 @@ export default function PerDayModal({ handleClose, handleOpen, open, formiks }) 
                                         htmlFor=""
                                         style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                     >
-                                        End Day<span style={{ color: "red" }}>*</span>
+                                        End Time<span style={{ color: "red" }}>*</span>
                                     </label>
-                                    <select
-
-                                        name="end_day"
+                                    <input
+                                        type="time"
+                                        name="end_time"
                                         className="form-control"
-                                        placeholder="Name"
-                                        value={formik.values.end_day}
-                                        onChange={formik.handleChange}
+                                        placeholder=""
+                                        value={formik.values.end_time}
+                                        onChange={(e)=>{
+                                            formik.setFieldValue("end_time",e.target.value);
+                                        }}
                                         onBlur={formik.handleBlur}
                                         disabled={formik.values.is_range===false}
-                                    >
-                                        <option value={null}>Choose</option>
-                                        <option value="Sunday">Sunday</option>
-                                        <option value="Monday">Monday</option>
-                                        <option value="Tuesday">Tuesday</option>
-                                        <option value="Wednesday">Wednesday</option>
-                                        <option value="Thursday">Thursday</option>
-                                        <option value="Friday">Friday</option>
-                                        <option value="Saturday">Saturday</option>
-
-                                    </select>
-                                    {formik.touched.end_day && formik.errors.end_day ? (
-                                        <div className="error">{formik.errors.end_day}</div>
+                                    />
+                                    {formik.touched.end_time && formik.errors.end_time ? (
+                                        <div className="error">{formik.errors.end_time}</div>
                                     ) : null}
                                 </div>
 

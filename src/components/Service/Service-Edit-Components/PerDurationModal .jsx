@@ -1,19 +1,16 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Paper } from '@mui/material';
 import { useState } from 'react';
-import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { AddImage } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
-
+import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -30,39 +27,32 @@ const style = {
 };
 
 
-export default function PerDayEditModal({handleClose, handleOpen, open,data,formiks }) {
-
+export default function PerDurationModal({ handleClose, handleOpen, open, formiks }) {
+    const Params = useParams()
     const [isLoading, setIsLoading] = useState(false);
 
+    
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
             .required("Price is required"),
-        day: Yup.string()
-            .required("Day is required"),
-        end_day: Yup.string().when("is_range", ([is_range], schema) => {
-                if (is_range ===true) {
-                    return schema
-                        .required("End Day is Required")
-                }
-                else {
-                    return schema.notRequired();
-                }
-            }),
+        duration_hour: Yup.number()
+            .required("Duration is required"),
+        duration_minute: Yup.number()
+            .required("Minute is required"),
     });
 
     const formik = useFormik({
         initialValues: {
-            id: data.id,
-            // service: data.service,
-            is_active: data.is_active,
-            name: data.name,
-            price: data.price,
-            is_range: data.is_range,
-            day: data.day,
-            end_day: data.end_day
+            id: uuidv4(),
+            service: Params.id,
+            is_active: false,
+            name: "",
+            price: null,
+            duration_hour: null,
+            duration_minute: null
 
         },
         validationSchema,
@@ -70,44 +60,43 @@ export default function PerDayEditModal({handleClose, handleOpen, open,data,form
 
             formiks((prev) => {
                 const datas = {
-                    id: values.id,
-                    // service: values.service,
+                    // id: values.id,
+                    // service: Params.id,
                     is_active: values.is_active,
-                    is_range: values.is_range,
+                    location: values.location,
                     name: values.name,
                     price: values.price,
-                    day: values.day,
-                    end_day: values.end_day
+                    duration_hour: values.duration_hour,
+                    duration_minute: values.duration_minute
                 }
 
-
-                const findIndex = prev.service_price_service.findIndex((dat) => dat.id === values.id);
-
-                
-                if (findIndex !== -1) {
-                    let updatedServicePriceService = [...prev.service_price_service];
-                    updatedServicePriceService[findIndex] = datas;
-
+                if (prev.service_price_service) {
                     return {
-                        ...prev,
-                        service_price_service: updatedServicePriceService
-                    };
-                } else {
-                    
-                    return {
-                        ...prev,
-                        service_price_service: [...prev.service_price_service, datas]
-                    };
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
                 }
-            });
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
 
-            handleClose();
+            })
+            handleClose()
+
+
+
         },
     });
 
+    let duration = []
+    for (let i = 1; i <= 23; i++) {
+        duration.push(i)
+    }
+    let minute = []
+    for (let i = 1; i <= 59; i++) {
+        minute.push(i)
+    }
 
-
- 
+   
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -181,35 +170,6 @@ export default function PerDayEditModal({handleClose, handleOpen, open,data,form
 
 
                             </div>
-                            <div className='d-flex align-items-center mt-3 mx-1'>
-                                <div>
-                                    <input
-                                        type="checkbox"
-                                        name="is_range"
-                                        className=""
-                                        placeholder=""
-                                        checked={formik.values.is_range}
-                                        value={formik.values.is_range}
-                                        onChange={()=>{
-                                            formik.setFieldValue("is_range",!formik.values.is_range);
-                                            formik.setFieldValue("end_day",null)
-                                        }}
-                                        onBlur={formik.handleBlur}
-                                        style={{ width: "15px", height: "15px" }}
-                                    />
-                                </div>
-                                <div>
-                                    <label
-                                        htmlFor=""
-                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px", marginLeft: "5px" }}
-                                    >
-                                        Is Range <span style={{ color: "red" }}>*</span>
-                                    </label>
-                                </div>
-                                {formik.touched.is_range && formik.errors.is_range ? (
-                                    <div className="error">{formik.errors.is_range}</div>
-                                ) : null}
-                            </div>
 
                             <div className='d-flex  align-items-center mt-2'>
 
@@ -218,30 +178,25 @@ export default function PerDayEditModal({handleClose, handleOpen, open,data,form
                                         htmlFor=""
                                         style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                     >
-                                        Day <span style={{ color: "red" }}>*</span>
+                                        Duration <span style={{ color: "red" }}>*</span>
                                     </label>
                                     <select
 
-                                        name="day"
+                                        name="duration_hour"
                                         className="form-control"
-                                        placeholder="Day"
-                                        value={formik.values.day}
-                                        onChange={formik.handleChange}
+                                        placeholder="Name"
+                                        value={formik.values.duration_hour}
+                                        onChange={(e) => formik.setFieldValue('duration_hour', e.target.value)}
                                         onBlur={formik.handleBlur}
                                     >
                                         <option value={null}>Choose</option>
-                                        <option value="Sunday">Sunday</option>
-                                        <option value="Monday">Monday</option>
-                                        <option value="Tuesday">Tuesday</option>
-                                        <option value="Wednesday">Wednesday</option>
-                                        <option value="Thursday">Thursday</option>
-                                        <option value="Friday">Friday</option>
-                                        <option value="Saturday">Saturday</option>
-
+                                        {duration.map((dat, i) =>
+                                            <option key={i} value={dat}>{dat}</option>
+                                        )}
 
                                     </select>
-                                    {formik.touched.day && formik.errors.day ? (
-                                        <div className="error">{formik.errors.day}</div>
+                                    {formik.touched.duration_hour && formik.errors.duration_hour ? (
+                                        <div className="error">{formik.errors.duration_hour}</div>
                                     ) : null}
                                 </div>
 
@@ -250,30 +205,24 @@ export default function PerDayEditModal({handleClose, handleOpen, open,data,form
                                         htmlFor=""
                                         style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                     >
-                                        End Day<span style={{ color: "red" }}>*</span>
+                                        <span style={{ color: "red" }}>*</span>
                                     </label>
                                     <select
 
-                                        name="end_day"
+                                        name="duration_minute"
                                         className="form-control"
                                         placeholder="Name"
-                                        value={formik.values.end_day}
-                                        onChange={formik.handleChange}
+                                        value={formik.values.duration_minute}
+                                        onChange={(e) => formik.setFieldValue('duration_minute', e.target.value)}
                                         onBlur={formik.handleBlur}
-                                        disabled={formik.values.is_range===false}
                                     >
                                         <option value={null}>Choose</option>
-                                        <option value="Sunday">Sunday</option>
-                                        <option value="Monday">Monday</option>
-                                        <option value="Tuesday">Tuesday</option>
-                                        <option value="Wednesday">Wednesday</option>
-                                        <option value="Thursday">Thursday</option>
-                                        <option value="Friday">Friday</option>
-                                        <option value="Saturday">Saturday</option>
-
+                                        {minute.map((dat, i) =>
+                                            <option key={i} value={dat}>{dat}</option>
+                                        )}
                                     </select>
-                                    {formik.touched.end_day && formik.errors.end_day ? (
-                                        <div className="error">{formik.errors.end_day}</div>
+                                    {formik.touched.duration_minute && formik.errors.duration_minute ? (
+                                        <div className="error">{formik.errors.duration_minute}</div>
                                     ) : null}
                                 </div>
 
