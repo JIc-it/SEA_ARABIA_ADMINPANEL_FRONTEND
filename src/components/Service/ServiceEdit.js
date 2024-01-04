@@ -204,6 +204,13 @@ const ServiceEdit = () => {
     const [categoryId, setCategoryId] = useState("")
     const [subcategorylist, setSubcategoryList] = useState([])
     const [amenitieslist, setAmenitiesList] = useState([])
+    const [validateeditor, setValidateEditor] = useState("")
+    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+    const [PerDurationopen, setPerDurationopen] = useState(false)
+    const [PerDayopen, setPerDayopen] = useState(false)
+    const [PerTimeopen, setPerTimeopen] = useState(false)
+    const [PerDateopen, setPerDateopen] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const handleHoverEffectTrue = (id) => {
         setHoverEffect(id)
@@ -212,7 +219,6 @@ const ServiceEdit = () => {
         setHoverEffect("")
     }
 
-    const [open, setOpen] = useState(false)
 
     const handleClose = () => {
         setOpen(false)
@@ -232,7 +238,7 @@ const ServiceEdit = () => {
     //     setOpenAddon(true)
     // }
 
-    //first load
+    
     useEffect(() => {
         setIsLoading(true)
         getOneService(params.id)
@@ -281,55 +287,10 @@ const ServiceEdit = () => {
             }
             ).catch((error) => {
                 setIsLoading(false);
-                toast.error(error.response.data)
-            })
-    }, [params.id])
-
-    //update load
-    useEffect(() => {
-        getOneService(params.id)
-            .then((data) => {
-                formik.setFieldValue("is_verified", data?.is_verified);
-                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
-                formik.setFieldValue("is_premium", data?.is_premium);
-                formik.setFieldValue("is_destination", data?.is_destination);
-                formik.setFieldValue("is_duration", data?.is_duration);
-                formik.setFieldValue("is_day", data?.is_day);
-                formik.setFieldValue("is_time", data?.is_time);
-                formik.setFieldValue("is_date", data?.is_date);
-                formik.setFieldValue("type", data?.type);
-                formik.setFieldValue("category", data?.category);
-                formik.setFieldValue("sub_category", data?.sub_category);
-                formik.setFieldValue("name", data?.name);
-                formik.setFieldValue("machine_id", data?.machine_id);
-                formik.setFieldValue("description", data?.description);
-                formik.setFieldValue("lounge", data?.lounge);
-                formik.setFieldValue("bedroom", data?.bedroom);
-                formik.setFieldValue("toilet", data?.toilet);
-                formik.setFieldValue("capacity", data?.capacity);
-                formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point_or_location", data?.pickup_point_or_location);
-                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
-                formik.setFieldValue("refund_policy", data?.refund_policy);
-                formik.setFieldValue("is_active", data?.is_active);
-                formik.setFieldValue("service_image", data?.service_image);
-
-                // formik.setFieldValue("price", data?.price);
-                formik.setFieldValue("profit_method", data?.profit_method);
-                formik.setFieldValue("markup_fee", data?.markup_fee);
-                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
-                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
-                formik.setFieldValue("per_head_booking", data?.per_head_booking);
-                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
-                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
-                formik.setFieldValue("service_price_service", data?.service_price_service);
                 setIsUpdated(false)
-            }
-            ).catch((error) => {
-                setIsLoading(false);
                 toast.error(error.response.data)
             })
-    }, [params.id, isupdated])
+    }, [params.id,isupdated])
 
     useEffect(() => {
         getProfitMethod()
@@ -337,9 +298,13 @@ const ServiceEdit = () => {
                 setProfitMethods(data?.results)
             ).catch((error) =>
                 console.error(error))
-    }, [])
 
-    useEffect(() => {
+        getamenitieslist()
+            .then((data) =>
+                setAmenitiesList(data?.results)
+            ).catch((error) =>
+                console.error(error))
+
         getCategoryList()
             .then((data) =>
                 setCategoryList(data?.results)
@@ -354,14 +319,6 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 console.error(error))
     }, [categoryId])
-
-    useEffect(() => {
-        getamenitieslist()
-            .then((data) =>
-                setAmenitiesList(data?.results)
-            ).catch((error) =>
-                console.error(error))
-    }, [])
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
@@ -431,7 +388,7 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 toast.error(error.response.data))
     }
-    const [validateeditor, setValidateEditor] = useState("")
+  
 
     function submit(e) {
         e.preventDefault();
@@ -442,7 +399,7 @@ const ServiceEdit = () => {
             return formik.handleSubmit()
         }
     }
-    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+
 
     const handleopendestination = () => {
         setPerDestinationopen(true)
@@ -450,7 +407,7 @@ const ServiceEdit = () => {
     const handleclosedestination = () => {
         setPerDestinationopen(false)
     }
-    const [PerDurationopen, setPerDurationopen] = useState(false)
+   
 
     const handleopenduration = () => {
         setPerDurationopen(true)
@@ -458,7 +415,7 @@ const ServiceEdit = () => {
     const handlecloseduration = () => {
         setPerDurationopen(false)
     }
-    const [PerDayopen, setPerDayopen] = useState(false)
+    
 
     const handleopenday = () => {
         setPerDayopen(true)
@@ -466,7 +423,7 @@ const ServiceEdit = () => {
     const handlecloseday = () => {
         setPerDayopen(false)
     }
-    const [PerTimeopen, setPerTimeopen] = useState(false)
+    
 
     const handleopentime = () => {
         setPerTimeopen(true)
@@ -474,7 +431,7 @@ const ServiceEdit = () => {
     const handleclosetime = () => {
         setPerTimeopen(false)
     }
-    const [PerDateopen, setPerDateopen] = useState(false)
+    
 
     const handleopenDate = () => {
         setPerDateopen(true)
@@ -504,7 +461,7 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    console.log(formik.values);
+ 
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>

@@ -118,9 +118,7 @@ export const AddImage = (data) => {
 };
 export const AddMultipleImage = (data) => {
   return axiosInstance
-    .post(`${addMultipleImageURl}`, data,{headers: {
-      'Content-Type': 'multipart/form-data', 
-    },})
+    .post(`${addMultipleImageURl}`, data)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

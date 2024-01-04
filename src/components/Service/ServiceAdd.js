@@ -37,10 +37,41 @@ const ServiceAdd = () => {
     const [isupdated, setIsUpdated] = useState(false);
 
 
+    const AmenitiesobjectSchema = Yup.object({
+        id: Yup.string().required(),
+        image: Yup.string().required(),
+        name: Yup.string().required(),
+      });
+
+    const ServiceImagebjectSchema = Yup.object({
+        image: Yup.mixed().test('file-type', 'Image is required', (value) => {
+            return typeof value === 'object' && value instanceof File;
+          }),
+        imageURL:Yup.string().required(),
+        thumbnail:Yup.string().required(),
+      });
+
+    const CategoryobjectSchema = Yup.object({
+        id: Yup.string().required(),
+        image: Yup.string().required(),
+        name: Yup.string().required(),
+      });
+
+    const SubcategoryobjectSchema = Yup.object({
+        id: Yup.string().required(),
+        category: Yup.string().required(),
+        name: Yup.string().required(),
+      });
+
+
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
+        amenities:Yup.array().of(AmenitiesobjectSchema).min(1, 'Amenities is required'),    
+        category: Yup.array().of(CategoryobjectSchema).min(1, 'Category is required'),
+        sub_category: Yup.array().of(SubcategoryobjectSchema).min(1, 'Sub-Category is required'),
+        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
         machine_id: Yup.string()
             .required("Machine ID is required"),
         description: Yup.string()
@@ -80,12 +111,17 @@ const ServiceAdd = () => {
                 return schema.notRequired();
             }
         }),
+        
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero')
     });
 
     const formik = useFormik({
         initialValues: {
             is_verified: false,
-            is_active: false,
+            is_active: true,
             is_top_suggestion: false,
             is_premium: false,
             is_destination: true,
@@ -110,8 +146,8 @@ const ServiceAdd = () => {
             service_image: [],
 
             profit_method: {
-                id: "",
-                name: ""
+                id: "398bd81c-9f4d-4caf-9540-d7c4de623933",
+                name: "Ownership"
             },
             markup_fee: 0,
             vendor_percentage: 0,
@@ -119,6 +155,7 @@ const ServiceAdd = () => {
             per_head_booking: false,
             purchase_limit_min: 0,
             purchase_limit_max: 0,
+            service_price_service:[]
     
         },
         validationSchema,
@@ -144,7 +181,7 @@ const ServiceAdd = () => {
             }
 
             const data = {
-                company:"561b23be-c949-4d06-9d7d-0398ccd8396e",
+                company:params.id,
                 // price_type:"549385a5-bcc6-4b5d-8609-24c985fa2f6c",
                 is_verified: values.is_verified,
                 is_active: values.is_active,
@@ -214,6 +251,11 @@ const ServiceAdd = () => {
     const [categoryId, setCategoryId] = useState("")
     const [subcategorylist, setSubcategoryList] = useState([])
     const [amenitieslist, setAmenitiesList] = useState([])
+    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+    const [PerDurationopen, setPerDurationopen] = useState(false)
+    const [PerDayopen, setPerDayopen] = useState(false)
+    const [PerTimeopen, setPerTimeopen] = useState(false)
+    const [PerDateopen, setPerDateopen] = useState(false)
 
     const handleHoverEffectTrue = (id) => {
         setHoverEffect(id)
@@ -249,15 +291,20 @@ const ServiceAdd = () => {
                 setProfitMethods(data?.results)
             ).catch((error) =>
                 console.error(error))
-    }, [])
 
-    useEffect(() => {
         getCategoryList()
             .then((data) =>
                 setCategoryList(data?.results)
             ).catch((error) =>
                 console.error(error))
+
+        getamenitieslist()
+            .then((data) =>
+                setAmenitiesList(data?.results)
+            ).catch((error) =>
+                console.error(error))
     }, [])
+
 
     useEffect(() => {
         getsubcategorylist(categoryId)
@@ -267,13 +314,6 @@ const ServiceAdd = () => {
                 console.error(error))
     }, [categoryId])
 
-    useEffect(() => {
-        getamenitieslist()
-            .then((data) =>
-                setAmenitiesList(data?.results)
-            ).catch((error) =>
-                console.error(error))
-    }, [])
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
@@ -377,7 +417,7 @@ const ServiceAdd = () => {
             return formik.handleSubmit()
         }
     }
-    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+  
 
     const handleopendestination = () => {
         setPerDestinationopen(true)
@@ -385,7 +425,7 @@ const ServiceAdd = () => {
     const handleclosedestination = () => {
         setPerDestinationopen(false)
     }
-    const [PerDurationopen, setPerDurationopen] = useState(false)
+   
 
     const handleopenduration = () => {
         setPerDurationopen(true)
@@ -393,7 +433,7 @@ const ServiceAdd = () => {
     const handlecloseduration = () => {
         setPerDurationopen(false)
     }
-    const [PerDayopen, setPerDayopen] = useState(false)
+    
 
     const handleopenday = () => {
         setPerDayopen(true)
@@ -401,7 +441,7 @@ const ServiceAdd = () => {
     const handlecloseday = () => {
         setPerDayopen(false)
     }
-    const [PerTimeopen, setPerTimeopen] = useState(false)
+ 
 
     const handleopentime = () => {
         setPerTimeopen(true)
@@ -409,7 +449,7 @@ const ServiceAdd = () => {
     const handleclosetime = () => {
         setPerTimeopen(false)
     }
-    const [PerDateopen, setPerDateopen] = useState(false)
+   
 
     const handleopenDate = () => {
         setPerDateopen(true)
@@ -440,7 +480,7 @@ const ServiceAdd = () => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
     
-   
+   console.log(formik.values);
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -481,6 +521,7 @@ const ServiceAdd = () => {
                                                 <select
                                                     className="form-control"
                                                     name="category"
+                                                    onBlur={formik.handleBlur}
                                                     onChange={(e) => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
@@ -508,6 +549,9 @@ const ServiceAdd = () => {
                                                         ))}
                                                     </optgroup>
                                                 </select>
+                                                {formik.touched.category && formik.errors.category ? (
+                                                    <div className="error">{formik.errors.category}</div>
+                                                ) : null}
                                             </div>
                                             <div className="mt-2">
                                                 <label
@@ -541,7 +585,8 @@ const ServiceAdd = () => {
                                                 </label>
                                                 <select
                                                     className="form-control"
-                                                    name="subcategory"
+                                                    name="sub_category"
+                                                    onBlur={formik.handleBlur}
                                                     onChange={(e) => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
@@ -567,7 +612,9 @@ const ServiceAdd = () => {
                                                     </optgroup>
 
                                                 </select>
-
+                                                {formik.touched.sub_category && formik.errors.sub_category ? (
+                                                    <div className="error">{formik.errors.sub_category}</div>
+                                                ) : null}
                                             </div>
                                             <div className="mt-2">
                                                 <label
@@ -635,6 +682,9 @@ const ServiceAdd = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.lounge && formik.errors.lounge ? (
+                                                    <div className="error">{formik.errors.lounge}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -654,6 +704,9 @@ const ServiceAdd = () => {
 
                                                     </button>
                                                 </div>
+                                                {formik.touched.bedroom && formik.errors.bedroom ? (
+                                                    <div className="error">{formik.errors.bedroom}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -669,7 +722,11 @@ const ServiceAdd = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.toilet && formik.errors.toilet ? (
+                                                    <div className="error">{formik.errors.toilet}</div>
+                                                ) : null}
                                             </div>
+                                           
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isMobileView ? "column" : "row" }} className="mt-2">
@@ -753,7 +810,7 @@ const ServiceAdd = () => {
                                                     name="amenities"
                                                     // value={formik.values.subcategory}
                                                     // onChange={formik.handleChange}
-                                                    // onBlur={formik.handleBlur}
+                                                    onBlur={formik.handleBlur}
                                                     onChange={(e) => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
@@ -781,6 +838,9 @@ const ServiceAdd = () => {
                                                     </optgroup>
 
                                                 </select>
+                                                {formik.touched.amenities && formik.errors.amenities ? (
+                                                    <div className="error">{formik.errors.amenities}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -1219,6 +1279,12 @@ const ServiceAdd = () => {
                                             </div>
                                         </div>
                                     ))}
+                                      {formik.touched.service_image && formik.errors.service_image ? (
+                                                    <div className="error">{formik.errors.service_image}</div>
+                                                ) : null}
+                                    {formik.values.service_image.length===0 &&
+                                    <p style={{fontSize:"14px",padding:"10px",margin:"10px",textAlign:"center"}}>No Image Found</p>
+                                    }
                                     {/* <div className="col-6 mb-3">
                                     <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
                                         <img src={Thumbnail_1} />
