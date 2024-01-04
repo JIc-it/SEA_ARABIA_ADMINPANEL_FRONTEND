@@ -246,12 +246,12 @@ export default function Listing() {
                             <td>
                               <span
                                 className={`text-secondary ${
-                                  item.is_active
+                                  item.company_status
                                     ? "active-button"
                                     : "inActive-button "
                                 }`}
                               >
-                                {item.is_active ? <>Active</> : <>InActive</>}
+                                {item.company_status ? "Active" : "Inactive"}
                               </span>
                             </td>
                             <td

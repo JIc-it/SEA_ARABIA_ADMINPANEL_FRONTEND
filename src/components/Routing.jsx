@@ -45,6 +45,7 @@ import InviVitualBookingView from "./Booking/InviVitualBookingView";
 import CancellationBooking from "./Booking/CancellationBooking";
 import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
+import ActivityLog from "./UserVendor/ActivityLog";
 
 function AllRouting() {
   return (
@@ -85,6 +86,7 @@ function AllRouting() {
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
+      <Route path="/user-vendor-activity-log/:id/:vendor" element={<ActivityLog />} />
       <Route path="/user-vendor/edit/:id" element={<UserVendorEdit />} />
       <Route
         path="/user-vendor/add-service/"
