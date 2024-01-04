@@ -1,9 +1,12 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import Avatars from "../../../../assets/images/Avatar.png";
+import VendorResetPassword from "../VendorRestPassword";
 
 const VenderDetailsList = ({ venderDetails }) => {
+  const [open,setOpen]=useState(false)
+
   console.log(venderDetails, "venderDetails");
   const navigate = useNavigate();
   return (
@@ -38,7 +41,7 @@ const VenderDetailsList = ({ venderDetails }) => {
         </svg>
       </button>
       <button
-        // onClick={() => navigate(`/user-vendor/edit/${venderDetails?.id}`)}
+        onClick={() => setOpen(true)}
         className="btn  mt-2 px-4 py-2"
         style={{ backgroundColor: "#187AF7", color: "white" }}
       >
@@ -242,6 +245,7 @@ const VenderDetailsList = ({ venderDetails }) => {
           </div>
         </div>
       </div>
+      <VendorResetPassword  open={open} setOpen={setOpen} userid={venderDetails?.id}/>
     </div>
   );
 };
