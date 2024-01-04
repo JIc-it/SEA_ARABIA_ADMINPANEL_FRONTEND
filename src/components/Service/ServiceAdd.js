@@ -224,14 +224,21 @@ const ServiceAdd = () => {
                     if (adminData) {
                         setIsLoading(false);
                         //   window.location.reload();
-                        const formData = new FormData()
+                
 
-                        const imagesdata = values.service_image.map((item) => {
-                            console.log(item.image);
-                            return { image: item.image, thumbnail: item.thumbnail, service: adminData.id }
-                        })
-                        formData.append("image", imagesdata)
-                        console.log(imagesdata, "check");
+                      // Append non-file data
+                      const formData = new FormData();
+
+                      values.service_image.forEach((item, index) => {
+                          formData.append(`image[${index}][image]`, item.image);
+                          formData.append(`image[${index}][thumbnail]`, item.thumbnail);
+                          formData.append(`image[${index}][service]`, adminData.id);
+                      });
+                        
+                        // Assuming formData is an instance of FormData
+                        // formData.append('imageData', jsonData);
+                        
+                        
                         AddMultipleImage(formData).then((data) => console.log(data)).catch((err) => console.log(err))
                         toast.success("Updated Successfully")
                         setIsUpdated(true)
