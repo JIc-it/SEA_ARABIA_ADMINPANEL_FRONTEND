@@ -139,7 +139,7 @@ const ServiceView = () => {
                                 <div className="col-4 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Pickup Point</p>
-                                        <p style={{textTransform:"capitalize"}}>{oneservice?.pickup_point}</p>
+                                        <p style={{textTransform:"capitalize"}}>{oneservice?.pickup_point_or_location}</p>
                                     </div>
                                 </div>
                             </div>
@@ -415,6 +415,9 @@ const ServiceView = () => {
                                           
                                         </div>
                                     </div>)}
+                                    {oneservice?.service_image.length===0 &&
+                                    <p style={{fontSize:"14px",padding:"10px",margin:"10px",textAlign:"center"}}>No Image Found</p>
+                                    }
                                 {/* <div className="col-6 mb-3">
                                     <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
                                         <img src={Thumbnail_1} />

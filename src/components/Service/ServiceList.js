@@ -379,7 +379,7 @@ function ServiceList() {
                                                 </span>
                                             </td>
                                             <td>
-                                                <span className="text-secondary">{data.status === true ? "Active" : "Inactive"}</span>
+                                                <span className="text-secondary">{data.is_active === true ? "Active" : "Inactive"}</span>
                                             </td>
 
                                             <td>
