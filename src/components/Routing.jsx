@@ -47,6 +47,7 @@ import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
 import EventListing from "../pages/Events&Packages/EventsListing";
 import EventView from "./Events/EventView";
+import ServiceAdd from "./Service/ServiceAdd";
 
 function AllRouting() {
   return (
