@@ -1,16 +1,46 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Ship from "../../assets/images/jean-cloete-gX_04X-_GbQ-unsplash 1.png"
 import tick from "../../assets/images/uil_check.png"
+import { useParams } from 'react-router-dom';
+import { getBookingList } from "../../services/booking"
+import { CircularProgress } from '@mui/material';
 
 export default function BookingView() {
+    const params=useParams();
     const theme = useTheme();
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const navigate = useNavigate()
+    const [isLoading,setIsLoading]=useState(false)
+    const [booking,setBooking]=useState([])
+
+
+    useEffect(() => {
+        setIsLoading(true);
+        getBookingList()
+          .then((data) => {
+            setIsLoading(false);
+            // setListPageUrl({ next: data.next, previous: data.previous });
+            const finddata=data?.results?.filter((data)=>data.booking_id===params.id)
+            setBooking(finddata.flat());
+          })
+          .catch((error) => {
+            setIsLoading(false);
+            console.error("Error fetching  data:", error);
+          });
+      }, []);
+
+      console.log(booking,"one");
     return (
-        <div className="page">
+        <>
+        {isLoading &&
+        <div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}>
+             <CircularProgress/>
+        </div>
+        }
+        {!isLoading && <div className="page">
             <div className="page-body">
                 <div className="container-xl">
 
@@ -98,12 +128,20 @@ export default function BookingView() {
                             </div>
                             <div className='px-5 m-3' style={{ backgroundColor: "#F8F8F8", borderRadius: "8px" }}>
                                 <div className='d-flex justify-content-between align-items-center mt-3'>
-                                    <p style={{ color: "#68727D" }}>Customer</p>
-                                    <p>James Corden</p>
+                                    <p style={{ color: "#68727D" }}>Name</p>
+                                    <p>{booking[0]?.user?.first_name}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Email</p>
-                                    <p>jamescorden123@gmail.com</p>
+                                    <p>{booking[0]?.user?.email}</p>
+                                </div>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                    <p style={{ color: "#68727D" }}>Phone number</p>
+                                    <p>{booking[0]?.user?.mobile}</p>
+                                </div>
+                                <div className='d-flex justify-content-between align-items-center '>
+                                    <p style={{ color: "#68727D" }}>Total Number of People</p>
+                                    <p>{booking[0]?.number_of_people}</p>
                                 </div>
                             </div>
                         </div>
@@ -114,13 +152,13 @@ export default function BookingView() {
                                 <div style={{ width: "33%" }}>
                                     <div >
                                         <p style={{ color: "#68727D" }}>Booking ID</p>
-                                        <p>SS56DG2355D</p>
+                                        <p>{booking[0]?.booking_id}</p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>End Date</p>
-                                        <p>18 JAN 2021 09:00 AM</p>
+                                        <p>{new Date(booking[0]?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}</p>
                                     </div>
-                                    <div>
+                                    {/* <div>
                                         <p style={{ color: "#68727D" }}>Travellers</p>
                                         <p><svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="0 0 26 26" fill="none">
                                             <path d="M12.9997 12.9997C15.3938 12.9997 17.333 11.0605 17.333 8.66634C17.333 6.27217 15.3938 4.33301 12.9997 4.33301C10.6055 4.33301 8.66634 6.27217 8.66634 8.66634C8.66634 11.0605 10.6055 12.9997 12.9997 12.9997ZM12.9997 15.1663C10.1072 15.1663 4.33301 16.618 4.33301 19.4997V20.583C4.33301 21.1788 4.82051 21.6663 5.41634 21.6663H20.583C21.1788 21.6663 21.6663 21.1788 21.6663 20.583V19.4997C21.6663 16.618 15.8922 15.1663 12.9997 15.1663Z" fill="#252525" />
@@ -131,7 +169,7 @@ export default function BookingView() {
                                             </svg>&nbsp;0
 
                                         </p>
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
@@ -390,6 +428,7 @@ export default function BookingView() {
                     </div>
                 </div>
             </div>
-        </div>
+        </div>}
+        </>
     )
 }
