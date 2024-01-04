@@ -1,18 +1,18 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { Paper } from '@mui/material';
-import { useState } from 'react';
-import { toast } from 'react-toastify';
+import { useState,useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {AddImage} from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
+import {getLocationListing} from "../../../services/service"
+import { v4 as uuidv4 } from 'uuid';
+import { useParams } from 'react-router-dom';
+
 
 const style = {
     position: 'absolute',
@@ -29,8 +29,8 @@ const style = {
 };
 
 
-export default function PerDurationModal ({ handleClose, handleOpen, open }) {
-    const [companylist, setCompanyList] = useState([])
+export default function PerDestinationModal({ handleClose, handleOpen, open,formiks }) {
+    const [locationlist, setLocationList] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState("")
     const [idset, setIdSet] = useState("")
@@ -38,69 +38,83 @@ export default function PerDurationModal ({ handleClose, handleOpen, open }) {
         const searchTerm = e.target.value;
         setSearch(searchTerm);
     };
+    const Params=useParams()
+
+    useEffect(() => {
+        getLocationListing()
+            .then((data) =>
+                setLocationList(data?.results)
+            ).catch((error) =>
+                console.error(error))
+    }, [])
 
     const validationSchema = Yup.object({
-        image: Yup.mixed()        
-        .test('fileSize', 'File size is too large', (value) => {
-                if (!value) {
-                  return false;
-                }
-                return value.size <= 100 * 1024;
-              })
-              .test('fileType', 'Invalid file format', (value) => {
-                if (!value) {
-                  return false;
-                }
-                return /^image\/(jpeg|png|gif)$/i.test(value.type);
-              }),
+        name: Yup.string()
+            .required("Name is required")
+            .max(20, "Name must be at most 20 characters"),
+        price: Yup.number()
+            .required("Price is required"),
+            duration_hour: Yup.number()
+            .required("Duration is required"),
+            duration_minute: Yup.number()
+            .required("Minute is required"),
+        location: Yup.string().required("Location is required"),
     });
 
     const formik = useFormik({
         initialValues: {
-            image: null,
-            service: "",
+            // id:uuidv4(),
+            // service: Params.id,
+            is_active: false,
+            location: "",
+            name: "",
+            price:null,
+            duration_hour: null,
+            duration_minute: null
            
         },
         validationSchema,
         onSubmit: async (values) => {
-        setIsLoading(true);
+        
+            formiks((prev)=>{
+                const datas={
+                    // id:values.id,
+                    // service: Params.id,
+                    is_active: values.is_active,
+                    location: values.location,
+                    name: values.name,
+                    price: values.price,
+                    duration_hour:values.duration_hour,
+                    duration_minute:values.duration_minute
+                }
+               
+                if (prev.service_price_service) {
+                    return {
+                        ...prev, service_price_service: [...prev.service_price_service, datas]
+                    }
+                }
+                else {
+                    return { ...prev, service_price_service: [datas] }
+                }
+
+            
+            })
+            handleClose()
     
        
-        const formdata=new FormData()
-        formdata.append("image",values.image);
-        formdata.append("service",values.service);
 
-            if (!isLoading) {
-              try {
-            const adminData = await AddImage(formdata);
-
-            if (adminData) {
-              setIsLoading(false);
-              handleClose()
-            toast.success("Updated Successfully")
-            // setIsUpdated(true)
-
-            } else {
-                setIsLoading(false);
-                toast.error(adminData.error.response.data)
-              console.error("Error while creating Admin:", adminData.error);
-            }
-            setIsLoading(false);
-              }catch (err) {
-                  setIsLoading(false);
-                toast.error(err.response.data)
-                console.log(err);
-              }
-            }
         },
     });
 
-    // const handleFileChange = (file) => {
-    //     formik.setFieldValue("image", file);
-    //     formik.setFieldValue("service", service_image[0]?.service);
-    //   };
+    let duration=[]
+    for(let i=1;i<=23;i++){
+        duration.push(i)
+    }
+        let minutes=[]
+    for(let i=1;i<=59;i++){
+        minutes.push(i)
+    }
 
-console.log(formik.values);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -160,15 +174,15 @@ console.log(formik.values);
                                             </label>
                                             <input
                                                 type="number"
-                                                name="name"
+                                                name="price"
                                                 className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.name}
+                                                placeholder="Price"
+                                                value={formik.values.price}
                                                 onChange={formik.handleChange}
                                                 onBlur={formik.handleBlur}
                                             />
-                                            {formik.touched.name && formik.errors.name ? (
-                                                <div className="error">{formik.errors.name}</div>
+                                            {formik.touched.price && formik.errors.price ? (
+                                                <div className="error">{formik.errors.price}</div>
                                             ) : null}
                                         </div>
 
@@ -183,19 +197,20 @@ console.log(formik.values);
                                 </label>
                                 <select
                                     
-                                    name="name"
+                                    name="location"
                                     className="form-control"
-                                    placeholder="Name"
-                                    value={formik.values.name}
-                                    onChange={formik.handleChange}
+                                    placeholder=""
+                                    value={formik.values.location}
+                                    onChange={(e) => formik.setFieldValue('location', e.target.value)}
                                     onBlur={formik.handleBlur}
                                 >
-                                    <option>0</option>
-                                    <option>1</option>
-                                    <option>2</option>
+                                    <option value={null}>Choose</option>
+                                    {locationlist.map((dat,i)=>
+                                    <option key={i} value={dat.id}>{dat.name}</option>
+                                    )}
                                 </select>
-                                {formik.touched.name && formik.errors.name ? (
-                                    <div className="error">{formik.errors.name}</div>
+                                {formik.touched.location && formik.errors.location ? (
+                                    <div className="error">{formik.errors.location}</div>
                                 ) : null}
                             </div>        
                             <div className='d-flex  align-items-center mt-2'>
@@ -209,20 +224,21 @@ console.log(formik.values);
                                             </label>
                                             <select
                                                 
-                                                name="name"
+                                                name="duration_hour"
                                                 className="form-control"
                                                 placeholder="Name"
-                                                value={formik.values.name}
-                                                onChange={formik.handleChange}
+                                                value={formik.values.duration_hour}
+                                                onChange={(e) => formik.setFieldValue('duration_hour', e.target.value)}
                                                 onBlur={formik.handleBlur}
                                             >
-                                            <option>0</option>    
-                                            <option>1</option>    
-                                            <option>2</option>    
+                                                <option value={null}>Choose</option>
+                                            {duration.map((dat,i)=>
+                                            <option key={i} value={dat}>{dat}</option>
+                                            )}
 
                                             </select>
-                                            {formik.touched.name && formik.errors.name ? (
-                                                <div className="error">{formik.errors.name}</div>
+                                            {formik.touched.duration_hour && formik.errors.duration_hour ? (
+                                                <div className="error">{formik.errors.duration_hour}</div>
                                             ) : null}
                                         </div>
 
@@ -235,20 +251,20 @@ console.log(formik.values);
                                             </label>
                                             <select
                                                 
-                                                name="name"
+                                                name="duration_minute"
                                                 className="form-control"
                                                 placeholder="Name"
-                                                value={formik.values.name}
-                                                onChange={formik.handleChange}
+                                                value={formik.values.duration_minute}
+                                                onChange={(e) => formik.setFieldValue('duration_minute', e.target.value)}
                                                 onBlur={formik.handleBlur}
                                             >
-                                            <option>0</option>    
-                                            <option>1</option>    
-                                            <option>2</option>    
-
+                                                <option value={null}>Choose</option>
+                                             {minutes.map((dat,i)=>
+                                            <option key={i} value={dat}>{dat}</option>
+                                            )}
                                             </select>
-                                            {formik.touched.name && formik.errors.name ? (
-                                                <div className="error">{formik.errors.name}</div>
+                                            {formik.touched.duration_minute && formik.errors.duration_minute ? (
+                                                <div className="error">{formik.errors.duration_minute}</div>
                                             ) : null}
                                         </div>
 

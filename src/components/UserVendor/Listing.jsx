@@ -295,6 +295,7 @@ export default function Listing() {
                                   padding: "3px 6px",
                                   borderRadius: "4px",
                                 }}
+                                onClick={()=>navigate(`/service-add/${item?.company_id}`)}
                               >
                                 Add Service &nbsp;
                                 <svg

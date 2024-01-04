@@ -46,6 +46,9 @@ import CancellationBooking from "./Booking/CancellationBooking";
 import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
 import ActivityLog from "./UserVendor/ActivityLog";
+import EventListing from "../pages/Events&Packages/EventsListing";
+import EventView from "./Events/EventView";
+import ServiceAdd from "./Service/ServiceAdd";
 
 function AllRouting() {
   return (
@@ -86,7 +89,10 @@ function AllRouting() {
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
-      <Route path="/user-vendor-activity-log/:id/:vendor" element={<ActivityLog />} />
+      <Route
+        path="/user-vendor-activity-log/:id/:vendor"
+        element={<ActivityLog />}
+      />
       <Route path="/user-vendor/edit/:id" element={<UserVendorEdit />} />
       <Route
         path="/user-vendor/add-service/"
@@ -109,12 +115,16 @@ function AllRouting() {
         element={<UserVendorCardDetails />}
       />
       <Route path="/service" element={<ServiceList />} />
+      <Route path="/service-add/:id" element={<ServiceAdd />} />
       <Route path="/service-view/:id" element={<ServiceView />} />
       <Route path="/service-edit/:id" element={<ServiceEdit />} />
       <Route path="/guest-user" element={<GuestUser />} />
       <Route path="/cancellation-booking" element={<CancellationBooking />} />
       <Route path="/cancellation-history" element={<CancellationHistory />} />
       <Route path="/booking-view" element={<BookingView />} />
+
+      <Route path="/events-and-packages" element={<EventListing />} />
+      <Route path="/eventsview" element={<EventView />} />
     </Routes>
   );
 }

@@ -2,37 +2,59 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { passwordRegex } from "../../../helpers";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+// import ReactFlagsSelect from 'react-flags-select';
+// import 'react-flags-select/css/react-flags-select.css';
 import {
   UpdateAdminListById,
+  UpdateSalesRepListById,
   createAdmin,
+  getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
+import { passwordRegex } from "../../../helpers";
+import { getLocation } from "../../../services/CustomerHandle";
 
-function CreateNewAdmin({ show, close }) {
+function UpdateSalesRep({ show, close }) {
   const theme = useTheme();
-  const adminId = useParams()?.adminId;
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
-  const [adminDetails, setAdminDetails] = useState();
+  const [salesDetails, setSalesDetails] = useState();
+  const [location, setLocation] = useState([]);
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
+
   useEffect(() => {
     getSalesRepListById(salesRepId)
       .then((data) => {
-        setAdminDetails(data);
-        console.log(" admin by id==", data);
+        setSalesDetails(data);
+        console.log(" admin by id------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
   }, [salesRepId]);
+
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results[0]);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -45,12 +67,11 @@ function CreateNewAdmin({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
+    password: Yup.string().min(6, "Password should be at least 6 characters"),
+    // .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
-      .required("Confirm Password is required")
+      // .required("Confirm Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
@@ -59,45 +80,54 @@ function CreateNewAdmin({ show, close }) {
 
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
+    gender: Yup.string().required("Gender is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: "",
-      last_name: "",
-      email: "",
-      password: "",
-      location: "",
-      mobile: "",
-      confirmPassword: "",
+      first_name: salesDetails?.first_name || "",
+      last_name: salesDetails?.last_name || "",
+      email: salesDetails?.email || "",
+      password: salesDetails?.password || "",
+      confirmPassword: salesDetails?.confirmPassword || "",
+      mobile: salesDetails?.mobile || "",
+      location: salesDetails?.profileextra?.location || "",
+      gender: salesDetails?.profileextra?.gender || "",
+
+      // Add other fields as needed
     },
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
+
       if (!isLoading) {
         try {
           const data = {
+            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-            role: "Admin",
+
             email: values.email,
             password: values.password,
-            mobile: `+965 ${values.mobile}`,
-            location: values.location,
+            confirmPassword: values.confirmPassword,
+            mobile: values.mobile,
+            profileextra: {
+              location: values.location,
+            },
           };
 
-          const adminData = await createAdmin(data);
-          console.log("createAdmin", createAdmin);
-          if (adminData) {
-            setIsRefetch(!isRefetch);
-            toast.success("Admin Added Successfully.");
-            close();
+          const salesData = await UpdateSalesRepListById(salesRepId, data);
+          console.log("Admin updated detail is ---", salesData);
+          if (salesData) {
             setIsLoading(false);
+            window.location.reload();
+            // setIsRefetch(!isRefetch);
+            toast.success(" Admin updated Successfully.");
+            close();
           } else {
-            console.error("Error while creating Admin:", adminData.error);
+            console.error("Error while updating Admin:", salesData.error);
             setIsLoading(false);
           }
-          setIsLoading(false);
         } catch (err) {
           console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
@@ -107,6 +137,22 @@ function CreateNewAdmin({ show, close }) {
       }
     },
   });
+  console.log("sales edit formik update data", formik);
+
+  useEffect(() => {
+    formik.setValues({
+      first_name: salesDetails?.first_name || "",
+      last_name: salesDetails?.last_name || "",
+      password: salesDetails?.password || "",
+
+      email: salesDetails?.email || "",
+      mobile: salesDetails?.mobile || "",
+      location: salesDetails?.profileextra?.location || "",
+
+      // defineservice: salesDetails?.useridentificationdata?.,
+      // Add other fields as needed
+    });
+  }, [salesDetails]);
 
   return (
     <Offcanvas
@@ -119,7 +165,7 @@ function CreateNewAdmin({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Admin </Offcanvas.Title>
+        <Offcanvas.Title> Edit Details </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -238,60 +284,65 @@ function CreateNewAdmin({ show, close }) {
           </div>
         </div>
         <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="password"
-              name="password"
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Gender <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <select
               className="form-control"
-              placeholder="Password"
-              value={formik.values.password}
+              id=""
+              name="gender"
+              value={formik.values.gender}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
+            >
+              <option value="" label="Select a gender" />
+              {gender.map((item) => (
+                <option key={item.id} value={item.id} label={item.label}>
+                  {item.label}
+                </option>
+              ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.gender && formik.errors.gender ? (
+              <div className="error">{formik.errors.gender}</div>
             ) : null}
-          </div>
-        </div>
-        <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
               style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
+                top: "10px",
+                right: "5px",
+                position: "absolute",
               }}
             >
-              Confirm Password <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="Password"
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
-              <div className="error">{formik.errors.confirmPassword}</div>
-            ) : null}
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+            </svg>
           </div>
         </div>
-        <div style={{ margin: "20px" }}>
+        {/* <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
             style={{
@@ -343,7 +394,70 @@ function CreateNewAdmin({ show, close }) {
               />
             </svg>
           </div>
+        </div> */}
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Location <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            {" "}
+            <select
+              className="form-control"
+              id=""
+              name="location"
+              value={formik.values.location}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <option value="" label="Select a location" />
+
+              <option
+                key={location?.id}
+                value={location.id}
+                label={location.location}
+              />
+
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              style={{
+                top: "10px",
+                right: "5px",
+                position: "absolute",
+              }}
+            >
+              <path
+                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+              <ellipse
+                cx="10"
+                cy="8.33398"
+                rx="2.5"
+                ry="2.5"
+                stroke="#68727D"
+                strokeWidth="1.5"
+              />
+            </svg>
+          </div>
         </div>
+
         {/* table */}
         <table class="table table-hover">
           <thead>
@@ -680,4 +794,4 @@ function CreateNewAdmin({ show, close }) {
   );
 }
 
-export default CreateNewAdmin;
+export default UpdateSalesRep;

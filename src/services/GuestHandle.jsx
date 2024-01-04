@@ -1,21 +1,18 @@
 import axiosInstance from "./authHandle";
 const getIndivitualAdminListUrl = "/account/vendor-list-details";
-const getGuestListData = "/account/guest-user/list";
+
 const adminlistCreateUrl = "/account/user-create";
 const updateDetails = "account/users-update";
-export const getGuestUserList = () => {
+
+export const getAdminSearch = (search, status) => {
   return axiosInstance
-    .get(getGuestListData)
-    .then((response) => {
-      //   console.log("Guest user list response", response.data);
-      return response.data;
-    })
+    .get("account/user-list", { params: { search: search, status: status } })
+    .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching  guest list:", error);
+      console.error("Error while fetching admin request:", error);
       throw error;
     });
 };
-
 export const getAdminListById = (adminId) => {
   return axiosInstance
     .get(`${getIndivitualAdminListUrl}/${adminId}`)

@@ -13,6 +13,7 @@ import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getAdminListById } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 import UpdateAdmin from "./UpdateAdmin";
+import AdminPassword from "./AdminPassword";
 
 function AdminDetails() {
   const theme = useTheme();
@@ -21,18 +22,20 @@ function AdminDetails() {
   const [active, setActive] = useState("Details");
   const [adminDetails, setAdminDetails] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
 
+  const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
   const [admin, setAdmin] = useState();
-
 
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        // console.log(" admin by id==", data);
+        console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -54,8 +57,7 @@ function AdminDetails() {
             <div className="left_header">
               <div>
                 <p className="card_content">
-                  {adminDetails?.first_name}
-                  {adminDetails?.last_name}
+                  {adminDetails?.first_name} {adminDetails?.last_name}
                 </p>
               </div>
               <div className="card_header_contents">
@@ -79,8 +81,8 @@ function AdminDetails() {
                     />
                   </svg>{" "}
                   &nbsp; {adminDetails?.useridentificationdata?.id_number}
-                  <p>| &nbsp;</p>
                 </p>
+                <p className="card_content">| &nbsp;</p>
                 <p className="card_content">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -96,24 +98,7 @@ function AdminDetails() {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {adminDetails?.role} <p>| &nbsp;</p>
-                </p>
-                <p className="card_content">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="21"
-                    height="20"
-                    viewBox="0 0 21 20"
-                    fill="none"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M10.4997 1.66602C6.81778 1.66602 3.83301 5.0015 3.83301 8.74935C3.83301 12.4678 5.96078 16.5097 9.28056 18.0614C10.0545 18.4231 10.9449 18.4231 11.7188 18.0614C15.0386 16.5097 17.1663 12.4678 17.1663 8.74935C17.1663 5.0015 14.1816 1.66602 10.4997 1.66602ZM10.4997 9.99935C11.4201 9.99935 12.1663 9.25316 12.1663 8.33268C12.1663 7.41221 11.4201 6.66602 10.4997 6.66602C9.5792 6.66602 8.83301 7.41221 8.83301 8.33268C8.83301 9.25316 9.5792 9.99935 10.4997 9.99935Z"
-                      fill="white"
-                    />
-                  </svg>{" "}
-                  &nbsp; kuwait
+                  &nbsp; {adminDetails?.role}
                 </p>
               </div>
             </div>
@@ -259,12 +244,32 @@ function AdminDetails() {
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
+                <AdminPassword
+                  show={showOffcanvas1}
+                  close={handleCloseOffcanvasPassword}
+                />
                 <button
                   onClick={handleOpenOffcanvas}
                   className="btn mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
                   Edit Details &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={15}
+                    height={15}
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    {/* ... (your SVG path) */}
+                  </svg>
+                </button>
+                <button
+                  onClick={handleOpenOffcanvasPassword}
+                  className="btn mt-2 px-4 py-2"
+                  style={{ backgroundColor: "#187AF7", color: "white" }}
+                >
+                  Reset Password &nbsp;
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}
@@ -288,7 +293,9 @@ function AdminDetails() {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>First Name</p>
-                        <p style={{ fontWeight: "700" }}>{adminDetails?.first_name}</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.first_name}
+                        </p>
                       </div>
 
                       <div>

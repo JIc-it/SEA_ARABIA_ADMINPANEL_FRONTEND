@@ -2,7 +2,7 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import { passwordRegex } from "../../../helpers";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
@@ -11,35 +11,35 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateAdminListById,
   createAdmin,
-  getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
-import { passwordRegex } from "../../../helpers";
 import { getLocation } from "../../../services/CustomerHandle";
 
-function UpdateAdmin({ show, close }) {
+function CreateNewAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-  console.log("admin id ===", adminId);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
-  
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
+
   useEffect(() => {
-    getAdminListById(adminId)
+    getSalesRepListById(salesRepId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin update list------==", data);
+        console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
-  }, [adminId]);
-
+  }, [salesRepId]);
 
   useEffect(() => {
     getLocation()
@@ -63,11 +63,12 @@ function UpdateAdmin({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string().min(6, "Password should be at least 6 characters"),
-    // .required("Password is required"),
+    password: Yup.string()
+      .min(6, "Password should be at least 6 characters")
+      .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
-      // .required("Confirm Password is required")
+      .required("Confirm Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
@@ -80,48 +81,44 @@ function UpdateAdmin({ show, close }) {
 
   const formik = useFormik({
     initialValues: {
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      email: adminDetails?.email || "",
-      password: adminDetails?.password || "",
-      confirmPassword: adminDetails?.confirmPassword || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
-
-      // Add other fields as needed
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: "",
+      gender: "",
+      location: "",
+      mobile: "",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-
+            role: "Admin",
             email: values.email,
             password: values.password,
-            confirmPassword: values.confirmPassword,
             mobile: values.mobile,
-            profileextra: {
-              location: values.location,
-            },
+
+            location: values.location,
+            gender: values.gender,
           };
 
-          const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminData);
+          const adminData = await createAdmin(data);
+          console.log("createAdmin", createAdmin);
           if (adminData) {
-            setIsLoading(false);
-            // window.location.reload();
-            // setIsRefetch(!isRefetch);
-            toast.success(" Admin updated Successfully.");
+            setIsRefetch(!isRefetch);
+            toast.success("Admin Added Successfully.");
             close();
+            setIsLoading(false);
           } else {
-            console.error("Error while updating Admin:", adminData.error);
+            console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
+          setIsLoading(false);
         } catch (err) {
           console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
@@ -131,23 +128,7 @@ function UpdateAdmin({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
-
-  useEffect(() => {
-    formik.setValues({
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      password: adminDetails?.password || "",
-
-      email: adminDetails?.email || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
-
-      // defineservice: adminDetails?.useridentificationdata?.,
-      // Add other fields as needed
-    });
-  }, [adminDetails]);
-
+  console.log("formik of admin", formik);
   return (
     <Offcanvas
       show={show}
@@ -159,7 +140,7 @@ function UpdateAdmin({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Details </Offcanvas.Title>
+        <Offcanvas.Title>Add Admin </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -251,29 +232,35 @@ function UpdateAdmin({ show, close }) {
           ) : null}
         </div>
         <div style={{ margin: "20px" }}>
-          {" "}
-          <div className="mt-2">
-            <label
-              htmlFor=""
-              style={{
-                paddingBottom: "10px",
-                fontWeight: "600",
-                fontSize: "13px",
-              }}
-            >
-              Email <span style={{ color: "red" }}>*</span>
-            </label>
-            <input
-              type="email"
-              name="email"
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Gender <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <select
               className="form-control"
-              placeholder="Email"
-              value={formik.values.email}
+              id=""
+              name="gender"
+              value={formik.values.gender}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
-            {formik.touched.email && formik.errors.email ? (
-              <div className="error">{formik.errors.email}</div>
+            >
+              <option value="" label="Select a gender" />
+              {gender.map((item) => (
+                <option key={item.id} value={item.id} label={item.label}>
+                  {item.label}
+                </option>
+              ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.gender && formik.errors.gender ? (
+              <div className="error">{formik.errors.gender}</div>
             ) : null}
           </div>
         </div>
@@ -337,6 +324,87 @@ function UpdateAdmin({ show, close }) {
                 strokeWidth="1.5"
               />
             </svg>
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              Email <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="email"
+              name="email"
+              className="form-control"
+              placeholder="Email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.email && formik.errors.email ? (
+              <div className="error">{formik.errors.email}</div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="password"
+              name="password"
+              className="form-control"
+              placeholder="Password"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              Confirm Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <input
+              type="Password"
+              name="confirmPassword"
+              className="form-control"
+              placeholder="confirmPassword"
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+              <div className="error">{formik.errors.confirmPassword}</div>
+            ) : null}
           </div>
         </div>
 
@@ -676,4 +744,4 @@ function UpdateAdmin({ show, close }) {
   );
 }
 
-export default UpdateAdmin;
+export default CreateNewAdmin;

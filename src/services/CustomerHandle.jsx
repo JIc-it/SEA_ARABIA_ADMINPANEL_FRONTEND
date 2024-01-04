@@ -3,12 +3,12 @@ const getIndivitualVendorListUrl = "/account/vendor-list-details";
 const updateVendorDetails = "account/vendor-add-details";
 const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
-const serviceDetails = "main/category-list";
+// const serviceDetails = "main/category-list";
 const guestUserURL = "account/guest-user/list";
 
-export const getCustomerlist = () => {
+export const getCustomerlist = (role) => {
   return axiosInstance
-    .get("account/user-list")
+    .get("account/user-list", { params: { role: role } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -23,7 +23,7 @@ export const getCustomerSearch = (search, status, role) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };
@@ -32,7 +32,7 @@ export const getCustomerListById = (customerId) => {
     .get(`${getIndivitualVendorListUrl}/${customerId}`)
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };
@@ -44,7 +44,7 @@ export const UpdateVendorListById = (vendorId, data) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching vendor request:", error);
       throw error;
     });
 };
@@ -56,7 +56,7 @@ export const UpdateCustomerListById = (customerId, data) => {
     })
     .then((response) => response.data)
     .catch((error) => {
-      console.error("Error while fetching lead request:", error);
+      console.error("Error while fetching customer request:", error);
       throw error;
     });
 };
@@ -94,6 +94,15 @@ export const getTotalGuestUser = () => {
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
       throw error;
+    });
+};
+
+export const getLocation = () => {
+  return axiosInstance
+    .get("account/gcc-locations")
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching location request:", error);
     });
 };
 
