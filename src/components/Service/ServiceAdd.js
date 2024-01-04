@@ -536,22 +536,17 @@ const ServiceAdd = () => {
                                                         }
                                                     }}
                                                 >
-                                                    {<optgroup label="Selected Category">
-                                                        {/* {formik.values.category?.map((data) => ( */}
-                                                        <option selected key={formik.values.category[0]?.id} value={formik.values.category[0]?.id}>
-                                                            {formik.values.category[0]?.name}
-                                                        </option>
-                                                        {/* ))} */}
-                                                    </optgroup>}
+                                                    
 
-                                                    {/* Options from subcategorylist */}
-                                                    <optgroup label="Category List">
+                                                    <option value={null}>
+                                                                Choose
+                                                            </option>
                                                         {categorylist?.map((data) => (
                                                             <option key={data.id} value={data.id}>
                                                                 {data.name}
                                                             </option>
                                                         ))}
-                                                    </optgroup>
+                                                    
                                                 </select>
                                                 {formik.touched.category && formik.errors.category ? (
                                                     <div className="error">{formik.errors.category}</div>
@@ -600,20 +595,19 @@ const ServiceAdd = () => {
                                                         }
                                                     }}
                                                 >
-                                                    {<optgroup label="Selected Sub-Category">
-                                                        <option selected key={formik.values.sub_category[0]?.id} value={formik.values.sub_category[0]?.id}>
-                                                            {formik.values.sub_category[0]?.name}
-                                                        </option>
-                                                    </optgroup>}
+                                                    
 
 
-                                                    <optgroup label="Subcategory List">
+                                                   
+                                                    <option value={null}>
+                                                                Choose
+                                                            </option>
                                                         {subcategorylist?.map((data) => (
                                                             <option key={data.id} value={data.id}>
                                                                 {data.name}
                                                             </option>
                                                         ))}
-                                                    </optgroup>
+                                                    
 
                                                 </select>
                                                 {formik.touched.sub_category && formik.errors.sub_category ? (
@@ -824,22 +818,17 @@ const ServiceAdd = () => {
                                                         }
                                                     }}
                                                 >
-                                                    {<optgroup label="Selected Amenities">
-                                                        {formik.values.amenities?.map((data) => (
-                                                            <option selected key={data.id} value={data.id}>
-                                                                {data.name}
+                                                   
+
+                                                   <option value={null}>
+                                                                Choose
                                                             </option>
-                                                        ))}
-                                                    </optgroup>}
-
-
-                                                    <optgroup label="Amenities List">
                                                         {amenitieslist?.map((data) => (
                                                             <option key={data.id} value={data.id}>
                                                                 {data.name}
                                                             </option>
                                                         ))}
-                                                    </optgroup>
+                                                   
 
                                                 </select>
                                                 {formik.touched.amenities && formik.errors.amenities ? (
