@@ -408,14 +408,14 @@ const ServiceView = () => {
                             <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
                             <p style={{ fontWeight: "700" }}>Thumbnail</p>
                             <div className="row">
-                                {oneservice?.service_image?.map((data, index) =>
+                                { oneservice?.service_image?.length > 0 && oneservice?.service_image?.map((data, index) =>
                                     <div className="col-6 mb-3" key={index}>
                                         <div >
                                             <img src={data.image} alt={data.image} className='rounded' style={{ width: "200px",height:"125px" }} />
                                           
                                         </div>
                                     </div>)}
-                                    {oneservice?.service_image.length===0 &&
+                                    {oneservice?.service_image?.length===0 &&
                                     <p style={{fontSize:"14px",padding:"10px",margin:"10px",textAlign:"center"}}>No Image Found</p>
                                     }
                                 {/* <div className="col-6 mb-3">
