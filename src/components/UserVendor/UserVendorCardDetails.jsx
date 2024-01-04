@@ -12,6 +12,11 @@ import { getVendorListById } from "../../services/leadMangement";
 import {} from "../../services/CustomerHandle";
 import VenderDetailsList from "./UserVendorTabs/VenderDetails/VenderDetailsList";
 import { getUserVendorStatusUpdate } from "../../services/userVendorsServices";
+import SiteVisitList from "./UserVendorTabs/SiteVisit/SiteVisitList";
+import Proposal from "./UserVendorTabs/Proposal/Proposal";
+import MOU from "./UserVendorTabs/MOUCharter/MOU";
+import NegotationsList from "./UserVendorTabs/Negotiation/NegotationsList";
+import MiscellaneousList from "./UserVendorTabs/Miscellaneous/MiscellaneousList";
 
 function UserVendorCardDetails({ venderDetails }) {
   const navigate = useNavigate();
@@ -31,8 +36,8 @@ function UserVendorCardDetails({ venderDetails }) {
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   useEffect(() => {
-    venderDetails && setToggled(venderDetails.is_active);
-  }, []);
+    venderDetails && setToggled(venderDetails.company_status);
+  }, [venderDetails]);
 
   const handleToggle = () => {
     getUserVendorStatusUpdate(
@@ -40,7 +45,6 @@ function UserVendorCardDetails({ venderDetails }) {
       !isToggled
     )
       .then((data) => {
-        console.log(data);
         // If you need to update the state after the API call, use setIsToggled here
         setToggled(data.is_active);
       })
@@ -49,32 +53,6 @@ function UserVendorCardDetails({ venderDetails }) {
       });
   };
 
-  // const [venderDetails, setvenderDetails] = useState([]);
-
-  const [serviceData, setServiceData] = useState();
-
-  // useEffect(() => {
-  //   getVendorServiceDataById()
-  //     .then((data) => {
-  //       console.log("service data of c", data);
-  //       setServiceData(data); // assuming data.result is the service data
-  //     })
-  //     .catch((error) => {
-  //       console.error("failed to fetch service data", error);
-  //     });
-  // }, [vendorId]);
-
-  // useEffect(() => {
-  //   getVendorListById(vendorId)
-  //     .then((data) => {
-  //       setvenderDetails(data);
-  //       console.log(" card details getVendorListById==", data);
-  //     })
-  //     .catch((error) => {
-  //       console.error("Error fetching customer data:", error);
-  //     });
-  // }, [vendorId]);
-
   return (
     <div
       className={
@@ -82,7 +60,7 @@ function UserVendorCardDetails({ venderDetails }) {
       }
       style={{ height: "100vh" }}
     >
-      <div className={isMobileView ? "col-12 my-2" : "col-5 my-2"}>
+      <div className={isMobileView ? "col-12 my-2" : "col-4 my-2"}>
         <div
           className="card personal_details"
           style={{ height: "fit-content" }}
@@ -275,7 +253,12 @@ function UserVendorCardDetails({ venderDetails }) {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline mx-1">
+              <a
+                className="mail_vendor_button btn btn-outline mx-1"
+                onClick={() => {
+                  navigate(`/user-vendor-activity-log/${venderDetails?.id}/${venderDetails?.first_name}`);
+                }}
+              >
                 Activity Log &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -313,6 +296,9 @@ function UserVendorCardDetails({ venderDetails }) {
               <a
                 className="mail_vendor_button btn btn-outline mx-1"
                 style={{ backgroundColor: "#252525", color: "white" }}
+                onClick={() => {
+                  window.location.href = `tel:${venderDetails?.mobile}`;
+                }}
               >
                 Call Vendor &nbsp;
                 <svg
@@ -370,7 +356,7 @@ function UserVendorCardDetails({ venderDetails }) {
           </div>
         </div>
       </div>
-      <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>
+      <div className={isMobileView ? "col-12 my-2" : "col-8 my-2 mx-2"}>
         <div
           className="card personal_details"
           style={{ height: "fit-content" }}
@@ -560,494 +546,25 @@ function UserVendorCardDetails({ venderDetails }) {
             )}
 
             {active === "Site Visits" && (
-              <div>
-                <button
-                  onClick={() => handleOpenOffcanvas()}
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add Site Visit &nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <p className="mx-2">Site Visit 1</p>
-                          </td>
-                          <td className="text-dark">18 JAN 2021</td>
-                          <td className="text-dark">10:00 AM</td>
-
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={""}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {showOffcanvas && (
-                  <AddSiteVisitModal
-                    title={active}
-                    show={showOffcanvas}
-                    close={handleCloseOffcanvas}
-                  />
-                )}
-              </div>
+              <SiteVisitList
+                companyID={venderDetails?.company_company_user?.id}
+              />
             )}
             {active === "Proposals" && (
-              <div>
-                <button
-                  onClick={() => handleOpenOffcanvas()}
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add Proposal &nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <p className="mx-2">Proposal 1</p>
-                          </td>
-                          <td className="text-dark">18 JAN 2021</td>
-                          <td className="text-dark">10:00 AM</td>
-
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={""}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {showOffcanvas && (
-                  <AddSiteVisitModal
-                    title={active}
-                    show={showOffcanvas}
-                    close={handleCloseOffcanvas}
-                  />
-                )}
-              </div>
+              <Proposal companyID={venderDetails?.company_company_user?.id} />
             )}
             {active === "Negotiations" && (
-              <div>
-                <button
-                  onClick={() => handleOpenOffcanvas()}
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add Negotiation &nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <p className="mx-2">Negotiation 1</p>
-                          </td>
-                          <td className="text-dark">18 JAN 2021</td>
-                          <td className="text-dark">10:00 AM</td>
-
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={""}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {showOffcanvas && (
-                  <AddSiteVisitModal
-                    title={active}
-                    show={showOffcanvas}
-                    close={handleCloseOffcanvas}
-                  />
-                )}
-              </div>
+              <NegotationsList
+                companyID={venderDetails?.company_company_user?.id}
+              />
             )}
             {active === "MOU / Charter" && (
-              <div>
-                <button
-                  onClick={() => handleOpenOffcanvas()}
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add MOU / Charter&nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Date</th>
-                          <th>Time</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <p className="mx-2">Charter</p>
-                          </td>
-                          <td className="text-dark">18 JAN 2021</td>
-                          <td className="text-dark">10:00 AM</td>
-
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={""}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {showOffcanvas && (
-                  <AddSiteVisitModal
-                    title={active}
-                    show={showOffcanvas}
-                    close={handleCloseOffcanvas}
-                  />
-                )}
-              </div>
+              <MOU companyID={venderDetails?.company_company_user?.id} />
             )}
             {active === "Miscellaneous" && (
-              <div>
-                <button
-                  onClick={() => handleOpenOffcanvas()}
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add Attach./ Note &nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Title</th>
-                          <th>Type</th>
-                          <th>Time</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <p className="mx-2">SV01</p>
-                          </td>
-                          <td className="text-dark">Document</td>
-                          <td className="text-dark">10:00 AM</td>
-
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={""}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
-                              >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
-                </div>
-                {showOffcanvas && (
-                  <AddSiteVisitModal
-                    title={active}
-                    show={showOffcanvas}
-                    close={handleCloseOffcanvas}
-                  />
-                )}
-              </div>
+              <MiscellaneousList
+                companyID={venderDetails?.company_company_user?.id}
+              />
             )}
           </div>
         </div>

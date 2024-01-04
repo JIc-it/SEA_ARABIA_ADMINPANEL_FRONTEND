@@ -1,9 +1,12 @@
-import React from "react";
+import React,{useState} from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import Avatars from "../../../../assets/images/Avatar.png";
+import VendorResetPassword from "../VendorRestPassword";
 
 const VenderDetailsList = ({ venderDetails }) => {
+  const [open,setOpen]=useState(false)
+
   console.log(venderDetails, "venderDetails");
   const navigate = useNavigate();
   return (
@@ -33,6 +36,31 @@ const VenderDetailsList = ({ venderDetails }) => {
           />
           <path
             d="M16.399 6.14236C17.4228 5.11856 17.4228 3.45865 16.399 2.43484C15.3752 1.41104 13.7153 1.41104 12.6915 2.43484L12.1001 3.0262C12.1082 3.05066 12.1166 3.07545 12.1253 3.10056C12.3421 3.72532 12.751 4.54433 13.5204 5.31367C14.2897 6.08302 15.1087 6.49198 15.7335 6.70874C15.7585 6.71741 15.7832 6.72577 15.8075 6.73383L16.399 6.14236Z"
+            fill="white"
+          />
+        </svg>
+      </button>
+      <button
+        onClick={() => setOpen(true)}
+        className="btn  mt-2 px-4 py-2"
+        style={{ backgroundColor: "#187AF7", color: "white" }}
+      >
+        Reset Password &nbsp;
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 20 20"
+          fill="none"
+        >
+          <path
+            d="M13.1253 1.6665C13.1253 1.32133 12.8455 1.0415 12.5003 1.0415C12.1551 1.0415 11.8753 1.32133 11.8753 1.6665V18.3332C11.8753 18.6784 12.1551 18.9582 12.5003 18.9582C12.8455 18.9582 13.1253 18.6784 13.1253 18.3332V16.6618C15.3219 16.6388 16.5454 16.5021 17.3573 15.6902C18.3337 14.7139 18.3337 13.1425 18.3337 9.99984C18.3337 6.85714 18.3337 5.28579 17.3573 4.30948C16.5454 3.49754 15.3219 3.36084 13.1253 3.33783V1.6665Z"
+            fill="white"
+          />
+          <path
+            fill-rule="evenodd"
+            clip-rule="evenodd"
+            d="M2.6433 15.6902C3.61961 16.6665 5.19096 16.6665 8.33366 16.6665H10.8337V9.99984V3.33317H8.33366C5.19096 3.33317 3.61961 3.33317 2.6433 4.30948C1.66699 5.28579 1.66699 6.85714 1.66699 9.99984C1.66699 13.1425 1.66699 14.7139 2.6433 15.6902ZM10.8337 9.99984C10.8337 9.5396 10.4606 9.1665 10.0003 9.1665C9.54009 9.1665 9.16699 9.5396 9.16699 9.99984C9.16699 10.4601 9.54009 10.8332 10.0003 10.8332C10.4606 10.8332 10.8337 10.4601 10.8337 9.99984ZM7.50033 9.99984C7.50033 10.4601 7.12723 10.8332 6.66699 10.8332C6.20676 10.8332 5.83366 10.4601 5.83366 9.99984C5.83366 9.5396 6.20676 9.1665 6.66699 9.1665C7.12723 9.1665 7.50033 9.5396 7.50033 9.99984Z"
             fill="white"
           />
         </svg>
@@ -217,6 +245,7 @@ const VenderDetailsList = ({ venderDetails }) => {
           </div>
         </div>
       </div>
+      <VendorResetPassword  open={open} setOpen={setOpen} userid={venderDetails?.id}/>
     </div>
   );
 };

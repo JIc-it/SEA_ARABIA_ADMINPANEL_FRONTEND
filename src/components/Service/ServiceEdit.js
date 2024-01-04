@@ -1,16 +1,12 @@
 import React, { useEffect, useState } from 'react'
-// import Thumbnail_1 from "../../static/img/Rectangle 995.png"
 import { Breadcrumb } from 'react-bootstrap';
-// import Thumbnail_2 from "../../static/img/Image Hover.png"
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import Food from "../../assets/images/food.png"
 import UploadPopup from './Service-Edit-Components/UploadModal';
-// import CreateAddon from './CreateAddon';
 import { getOneService, getCategoryList, getsubcategorylist, getamenitieslist, UpdateService, DeleteImage, SetThumbNail, getProfitMethod } from "../../services/service"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
@@ -204,6 +200,13 @@ const ServiceEdit = () => {
     const [categoryId, setCategoryId] = useState("")
     const [subcategorylist, setSubcategoryList] = useState([])
     const [amenitieslist, setAmenitiesList] = useState([])
+    const [validateeditor, setValidateEditor] = useState("")
+    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+    const [PerDurationopen, setPerDurationopen] = useState(false)
+    const [PerDayopen, setPerDayopen] = useState(false)
+    const [PerTimeopen, setPerTimeopen] = useState(false)
+    const [PerDateopen, setPerDateopen] = useState(false)
+    const [open, setOpen] = useState(false)
 
     const handleHoverEffectTrue = (id) => {
         setHoverEffect(id)
@@ -212,7 +215,6 @@ const ServiceEdit = () => {
         setHoverEffect("")
     }
 
-    const [open, setOpen] = useState(false)
 
     const handleClose = () => {
         setOpen(false)
@@ -232,7 +234,7 @@ const ServiceEdit = () => {
     //     setOpenAddon(true)
     // }
 
-    //first load
+    
     useEffect(() => {
         setIsLoading(true)
         getOneService(params.id)
@@ -281,55 +283,10 @@ const ServiceEdit = () => {
             }
             ).catch((error) => {
                 setIsLoading(false);
-                toast.error(error.response.data)
-            })
-    }, [params.id])
-
-    //update load
-    useEffect(() => {
-        getOneService(params.id)
-            .then((data) => {
-                formik.setFieldValue("is_verified", data?.is_verified);
-                formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
-                formik.setFieldValue("is_premium", data?.is_premium);
-                formik.setFieldValue("is_destination", data?.is_destination);
-                formik.setFieldValue("is_duration", data?.is_duration);
-                formik.setFieldValue("is_day", data?.is_day);
-                formik.setFieldValue("is_time", data?.is_time);
-                formik.setFieldValue("is_date", data?.is_date);
-                formik.setFieldValue("type", data?.type);
-                formik.setFieldValue("category", data?.category);
-                formik.setFieldValue("sub_category", data?.sub_category);
-                formik.setFieldValue("name", data?.name);
-                formik.setFieldValue("machine_id", data?.machine_id);
-                formik.setFieldValue("description", data?.description);
-                formik.setFieldValue("lounge", data?.lounge);
-                formik.setFieldValue("bedroom", data?.bedroom);
-                formik.setFieldValue("toilet", data?.toilet);
-                formik.setFieldValue("capacity", data?.capacity);
-                formik.setFieldValue("amenities", data?.amenities);
-                formik.setFieldValue("pickup_point_or_location", data?.pickup_point_or_location);
-                formik.setFieldValue("cancellation_policy", data?.cancellation_policy);
-                formik.setFieldValue("refund_policy", data?.refund_policy);
-                formik.setFieldValue("is_active", data?.is_active);
-                formik.setFieldValue("service_image", data?.service_image);
-
-                // formik.setFieldValue("price", data?.price);
-                formik.setFieldValue("profit_method", data?.profit_method);
-                formik.setFieldValue("markup_fee", data?.markup_fee);
-                formik.setFieldValue("vendor_percentage", data?.vendor_percentage);
-                formik.setFieldValue("sea_arabia_percentage", data?.sea_arabia_percentage);
-                formik.setFieldValue("per_head_booking", data?.per_head_booking);
-                formik.setFieldValue("purchase_limit_min", data?.purchase_limit_min);
-                formik.setFieldValue("purchase_limit_max", data?.purchase_limit_max);
-                formik.setFieldValue("service_price_service", data?.service_price_service);
                 setIsUpdated(false)
-            }
-            ).catch((error) => {
-                setIsLoading(false);
                 toast.error(error.response.data)
             })
-    }, [params.id, isupdated])
+    }, [params.id,isupdated])
 
     useEffect(() => {
         getProfitMethod()
@@ -337,9 +294,13 @@ const ServiceEdit = () => {
                 setProfitMethods(data?.results)
             ).catch((error) =>
                 console.error(error))
-    }, [])
 
-    useEffect(() => {
+        getamenitieslist()
+            .then((data) =>
+                setAmenitiesList(data?.results)
+            ).catch((error) =>
+                console.error(error))
+
         getCategoryList()
             .then((data) =>
                 setCategoryList(data?.results)
@@ -354,14 +315,6 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 console.error(error))
     }, [categoryId])
-
-    useEffect(() => {
-        getamenitieslist()
-            .then((data) =>
-                setAmenitiesList(data?.results)
-            ).catch((error) =>
-                console.error(error))
-    }, [])
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
@@ -431,7 +384,7 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 toast.error(error.response.data))
     }
-    const [validateeditor, setValidateEditor] = useState("")
+  
 
     function submit(e) {
         e.preventDefault();
@@ -442,7 +395,7 @@ const ServiceEdit = () => {
             return formik.handleSubmit()
         }
     }
-    const [PerDestinationopen, setPerDestinationopen] = useState(false)
+
 
     const handleopendestination = () => {
         setPerDestinationopen(true)
@@ -450,7 +403,7 @@ const ServiceEdit = () => {
     const handleclosedestination = () => {
         setPerDestinationopen(false)
     }
-    const [PerDurationopen, setPerDurationopen] = useState(false)
+   
 
     const handleopenduration = () => {
         setPerDurationopen(true)
@@ -458,7 +411,7 @@ const ServiceEdit = () => {
     const handlecloseduration = () => {
         setPerDurationopen(false)
     }
-    const [PerDayopen, setPerDayopen] = useState(false)
+    
 
     const handleopenday = () => {
         setPerDayopen(true)
@@ -466,7 +419,7 @@ const ServiceEdit = () => {
     const handlecloseday = () => {
         setPerDayopen(false)
     }
-    const [PerTimeopen, setPerTimeopen] = useState(false)
+    
 
     const handleopentime = () => {
         setPerTimeopen(true)
@@ -474,7 +427,7 @@ const ServiceEdit = () => {
     const handleclosetime = () => {
         setPerTimeopen(false)
     }
-    const [PerDateopen, setPerDateopen] = useState(false)
+    
 
     const handleopenDate = () => {
         setPerDateopen(true)
@@ -504,7 +457,7 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    console.log(formik.values);
+ 
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -668,19 +621,7 @@ const ServiceEdit = () => {
                                         >
                                             Description
                                         </label>
-                                        {/* <textarea
-                                        name="description"
-                                        cols="30"
-                                        rows="10"
-                                        className="form-control"
-                                        placeholder="Description"
-                                        value={formik.values.description}
-                                        onChange={formik.handleChange}
-                                        onBlur={formik.handleBlur}
-                                    ></textarea>
-                                    {formik.touched.description && formik.errors.description ? (
-                                        <div className="error">{formik.errors.description}</div>
-                                    ) : null} */}
+                                       
                                         <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor} />
                                     </div>
                                     <br></br>
@@ -817,9 +758,7 @@ const ServiceEdit = () => {
                                                 <select
                                                     className="form-control"
                                                     name="amenities"
-                                                    // value={formik.values.subcategory}
-                                                    // onChange={formik.handleChange}
-                                                    // onBlur={formik.handleBlur}
+                                                  
                                                     onChange={(e) => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
@@ -895,55 +834,7 @@ const ServiceEdit = () => {
                                                 </div>
                                             </div>
                                         )}
-                                        {/* <div className={`${isMobileView}?"col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Upselling With Markup" }))}>
-                                            <div className="card p-2">
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <svg width={40} height={40} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="#ECF4FF" />
-                                                            <path fillRule="evenodd" clipRule="evenodd" d="M28.0003 15.668C21.1888 15.668 15.667 21.1898 15.667 28.0013C15.667 34.8128 21.1888 40.3346 28.0003 40.3346C34.8118 40.3346 40.3337 34.8128 40.3337 28.0013C40.3337 21.1898 34.8118 15.668 28.0003 15.668ZM13.667 28.0013C13.667 20.0852 20.0842 13.668 28.0003 13.668C35.9164 13.668 42.3337 20.0852 42.3337 28.0013C42.3337 35.9174 35.9164 42.3346 28.0003 42.3346C20.0842 42.3346 13.667 35.9174 13.667 28.0013ZM28.0003 19.0013C28.5526 19.0013 29.0003 19.449 29.0003 20.0013V20.4236C31.1742 20.8129 33.0003 22.4461 33.0003 24.668C33.0003 25.2203 32.5526 25.668 32.0003 25.668C31.448 25.668 31.0003 25.2203 31.0003 24.668C31.0003 23.7634 30.2482 22.8058 29.0003 22.4646V27.0903C31.1742 27.4795 33.0003 29.1128 33.0003 31.3346C33.0003 33.5565 31.1742 35.1897 29.0003 35.579V36.0013C29.0003 36.5536 28.5526 37.0013 28.0003 37.0013C27.448 37.0013 27.0003 36.5536 27.0003 36.0013V35.579C24.8264 35.1897 23.0003 33.5565 23.0003 31.3346C23.0003 30.7824 23.448 30.3346 24.0003 30.3346C24.5526 30.3346 25.0003 30.7824 25.0003 31.3346C25.0003 32.2392 25.7525 33.1968 27.0003 33.538V28.9123C24.8264 28.5231 23.0003 26.8898 23.0003 24.668C23.0003 22.4461 24.8264 20.8129 27.0003 20.4236V20.0013C27.0003 19.449 27.448 19.0013 28.0003 19.0013ZM27.0003 22.4646C25.7525 22.8058 25.0003 23.7634 25.0003 24.668C25.0003 25.5726 25.7525 26.5301 27.0003 26.8713V22.4646ZM29.0003 29.1313V33.538C30.2482 33.1968 31.0003 32.2392 31.0003 31.3346C31.0003 30.43 30.2482 29.4725 29.0003 29.1313Z" fill="#252525" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p style={{ fontWeight: "550" }}>Upselling with markup</p>
-                                                        <span className="text-wrap" style={{ fontSize: "12px" }}>
-                                                            The vendor gets a fixed amount monthly from the platform. The customers pay extra as service fee.
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Upselling With Markup"} />
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div>
-                                        <div className={`${isMobileView}?"col-12":"col-4" mx-1`} onClick={() => updateFormValues(({ ...formik.values, profit_method: "Revenue Sharing" }))}>
-                                            <div className="card p-2">
-                                                <div className="d-flex justify-content-between align-items-center">
-                                                    <div>
-                                                        <svg width={40} height={40} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                            <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="#ECF4FF" />
-                                                            <ellipse cx="24.0003" cy="20.0013" rx="5.33333" ry="5.33333" stroke="#252525" strokeWidth="1.5" />
-                                                            <path d="M32 24C34.2091 24 36 22.2091 36 20C36 17.7909 34.2091 16 32 16" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                            <ellipse cx="24.0003" cy="34.6654" rx="9.33333" ry="5.33333" stroke="#252525" strokeWidth="1.5" />
-                                                            <path d="M36 30.668C38.339 31.1809 40 32.4799 40 34.0013C40 35.3737 38.6484 36.5652 36.6667 37.1619" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                        </svg>
-                                                    </div>
-                                                    <div>
-                                                        <p style={{ fontWeight: "550" }}>Revenue sharing</p>
-                                                        <span className="text-wrap" style={{ fontSize: "12px" }}>
-                                                            The vendor gets a fixed amount monthly from the platform. The customers pay extra as service fee.
-                                                        </span>
-                                                    </div>
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" name="profit_method" style={{ height: "20px", width: "20px", borderRadius: "10px" }} type="checkbox"  checked={formik.values.profit_method==="Revenue Sharing"}/>
-                                                    </div>
-                                                </div>
-
-
-                                            </div>
-                                        </div> */}
+                                       
                                     </div>
 
                                 </div>
@@ -1320,210 +1211,7 @@ const ServiceEdit = () => {
                                 </div>
                             </div>
                         </div>
-                        {/* <div className='col-lg-4' style={{position:"absolute",top:"400px",right:"0%",display:isMobileView?"none":""}}>
-                        <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
-                            <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
-                            <button type="button" onClick={handleOpenAddon} className='btn px-2 py-1' style={{backgroundColor:"#187AF7",color:"#ffff",fontSize:"12px"}} >Create Add On</button>
-                            </div>
-                            {openAddon && <CreateAddon close={handleCloseAddon} show={openAddon}/>}
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='col-lg-4' style={{display:isMobileView?"block":"none"}}>
-                        <div style={{ backgroundColor: "#F8F8F8", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
-                        <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
-                            <button type="button" onClick={handleOpenAddon} className='btn px-2 py-1' style={{backgroundColor:"#187AF7",color:"#ffff",fontSize:"12px"}} >Create Add On</button>
-                            </div>
-                            {openAddon && <CreateAddon close={handleCloseAddon} show={openAddon}/>}
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                                <label class="switch" style={{ marginLeft: "5px" }}>
-                                                    <input type="checkbox" defaultChecked />
-                                                    <span class="slider round"></span>
-                                                </label>
-                                            </div> 
-                                            <button style={{backgroundColor:"transparent",border:"none",color:"#2684FC"}}>
-                                                <svg width={21} height={21} viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fillRule="evenodd" clipRule="evenodd" d="M3.61719 19.082C3.61719 18.7369 3.89701 18.457 4.24219 18.457H17.5755C17.9207 18.457 18.2005 18.7369 18.2005 19.082C18.2005 19.4272 17.9207 19.707 17.5755 19.707H4.24219C3.89701 19.707 3.61719 19.4272 3.61719 19.082Z" fill="#2684FC" />
-                                                    <path d="M9.71963 13.9347C9.93175 13.7693 10.1242 13.5768 10.5089 13.1921L15.4395 8.26151C14.7684 7.98222 13.9736 7.52344 13.222 6.77176C12.4702 6.01996 12.0114 5.22502 11.7321 4.5539L6.8014 9.48457L6.80138 9.48459C6.41663 9.86934 6.22424 10.0617 6.05879 10.2739C5.86361 10.5241 5.69628 10.7948 5.55975 11.0813C5.44401 11.3242 5.35797 11.5823 5.18589 12.0985L4.27849 14.8207C4.19381 15.0748 4.25992 15.3549 4.44927 15.5442C4.63863 15.7336 4.91871 15.7997 5.17275 15.715L7.89497 14.8076C8.4112 14.6355 8.66932 14.5495 8.91217 14.4337C9.19865 14.2972 9.4694 14.1299 9.71963 13.9347Z" fill="#2684FC" />
-                                                    <path d="M16.8077 6.89334C17.8315 5.86954 17.8315 4.20962 16.8077 3.18582C15.7839 2.16202 14.124 2.16202 13.1002 3.18582L12.5088 3.77718C12.5169 3.80163 12.5253 3.82642 12.534 3.85154C12.7508 4.4763 13.1597 5.29531 13.9291 6.06465C14.6984 6.83399 15.5174 7.24296 16.1422 7.45971C16.1672 7.46839 16.1919 7.47675 16.2162 7.48481L16.8077 6.89334Z" fill="#2684FC" />
-                                                </svg>
-
-                                                    Edit
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
+                       
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
                             <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
