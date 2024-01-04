@@ -74,9 +74,11 @@ export const getCustomerTotalCount = () => {
     });
 };
 
-export const getGuestUserRequest = () => {
+export const getGuestUserRequest = (search, status, role) => {
   return axiosInstance
-    .get(guestUserURL)
+    .get(guestUserURL, {
+      params: { search: search, status: status, role: role },
+    })
     .then((response) => {
       console.log("Reward Products Response:", response.data);
       return response.data;

@@ -32,7 +32,7 @@ function CreateSalesRep({ show, close }) {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results[0]);
+        setLocation(data.results);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -276,12 +276,15 @@ function CreateSalesRep({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-
-              <option
-                key={location?.id}
-                value={location.id}
-                label={location.location}
-              />
+              {location.map((item) => {
+                return (
+                  <option
+                    key={item?.id}
+                    value={item.id}
+                    label={item.location}
+                  />
+                );
+              })}
 
               {/* Add more options as needed */}
             </select>

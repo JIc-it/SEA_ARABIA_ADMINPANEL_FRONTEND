@@ -39,16 +39,6 @@ function AdminPassword({ show, close }) {
   }, [adminId]);
 
   const validationSchema = Yup.object({
-    first_name: Yup.string()
-      .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
-
-    last_name: Yup.string()
-      .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
     password: Yup.string().min(6, "Password should be at least 6 characters"),
     // .required("Password is required"),
     confirmPassword: Yup.string()
@@ -59,20 +49,12 @@ function AdminPassword({ show, close }) {
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
-
-    mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      email: adminDetails?.email || "",
       password: adminDetails?.password || "",
       confirmPassword: adminDetails?.confirmPassword || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
 
       // Add other fields as needed
     },
@@ -83,29 +65,20 @@ function AdminPassword({ show, close }) {
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
-            first_name: values.first_name,
-            last_name: values.last_name,
-
-            email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            mobile: values.mobile,
-            profileextra: {
-              location: values.location,
-            },
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminData);
+          console.log("Admin pass updated detail is ---", adminData);
           if (adminData) {
             setIsLoading(false);
-            // window.location.reload();
-            // setIsRefetch(!isRefetch);
-            toast.success(" Admin updated Successfully.");
+            window.location.reload();
+            setIsRefetch(!isRefetch);
+            toast.success(" Admin pass updated Successfully.");
             close();
           } else {
-            console.error("Error while updating Admin:", adminData.error);
+            console.error("Error while updating Admin pass:", adminData.error);
             setIsLoading(false);
           }
         } catch (err) {
@@ -207,12 +180,12 @@ function AdminPassword({ show, close }) {
         <br />
         <br />
         <br />
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
 
         <div
           style={{

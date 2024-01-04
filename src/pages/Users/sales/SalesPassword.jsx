@@ -9,9 +9,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
 import {
-  UpdateAdminListById,
-  createAdmin,
-  getAdminListById,
+  UpdateSalesRepListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
@@ -19,60 +17,42 @@ import { passwordRegex } from "../../../helpers";
 
 function SalesPassword({ show, close }) {
   const theme = useTheme();
-  const adminId = useParams()?.adminId;
-  console.log("admin id ===", adminId);
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
-  const [adminDetails, setAdminDetails] = useState();
+  const [salesRepDetails, setSalesRepDetails] = useState();
 
   useEffect(() => {
-    getAdminListById(adminId)
+    getSalesRepListById(salesRepId)
       .then((data) => {
-        setAdminDetails(data);
-        console.log(" admin update list------==", data);
+        setSalesRepDetails(data);
+        // console.log(" sales  update list------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
-  }, [adminId]);
+  }, [salesRepId]);
 
   const validationSchema = Yup.object({
-    first_name: Yup.string()
-      .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
-
-    last_name: Yup.string()
-      .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    password: Yup.string().min(6, "Password should be at least 6 characters"),
-    // .required("Password is required"),
+    password: Yup.string()
+      .min(6, "Password should be at least 6 characters")
+      .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
-      // .required("Confirm Password is required")
+      .required("Confirm Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
-
-    mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      email: adminDetails?.email || "",
-      password: adminDetails?.password || "",
-      confirmPassword: adminDetails?.confirmPassword || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      password: salesRepDetails?.password || "",
+      confirmPassword: salesRepDetails?.confirmPassword || "",
 
       // Add other fields as needed
     },
@@ -83,29 +63,26 @@ function SalesPassword({ show, close }) {
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
-            first_name: values.first_name,
-            last_name: values.last_name,
-
-            email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
-            mobile: values.mobile,
-            profileextra: {
-              location: values.location,
-            },
           };
 
-          const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminData);
-          if (adminData) {
+          const salesUpdateData = await UpdateSalesRepListById(
+            salesRepId,
+            data
+          );
+          // console.log("Sales password updated detail is ---", salesUpdateData);
+          if (salesUpdateData) {
             setIsLoading(false);
-            // window.location.reload();
-            // setIsRefetch(!isRefetch);
-            toast.success(" Admin updated Successfully.");
+            window.location.reload();
+            setIsRefetch(!isRefetch);
+            toast.success(" Sales password updated Successfully.");
             close();
           } else {
-            console.error("Error while updating Admin:", adminData.error);
+            console.error(
+              "Error while updating Sales password:",
+              salesUpdateData.error
+            );
             setIsLoading(false);
           }
         } catch (err) {
@@ -121,18 +98,18 @@ function SalesPassword({ show, close }) {
 
   useEffect(() => {
     formik.setValues({
-      first_name: adminDetails?.first_name || "",
-      last_name: adminDetails?.last_name || "",
-      password: adminDetails?.password || "",
+      first_name: salesRepDetails?.first_name || "",
+      last_name: salesRepDetails?.last_name || "",
+      password: salesRepDetails?.password || "",
 
-      email: adminDetails?.email || "",
-      mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      email: salesRepDetails?.email || "",
+      mobile: salesRepDetails?.mobile || "",
+      location: salesRepDetails?.profileextra?.location || "",
 
-      // defineservice: adminDetails?.useridentificationdata?.,
+      // defineservice: salesRepDetails?.useridentificationdata?.,
       // Add other fields as needed
     });
-  }, [adminDetails]);
+  }, [salesRepDetails]);
 
   return (
     <Offcanvas
@@ -207,12 +184,12 @@ function SalesPassword({ show, close }) {
         <br />
         <br />
         <br />
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
+        <br />
 
         <div
           style={{
