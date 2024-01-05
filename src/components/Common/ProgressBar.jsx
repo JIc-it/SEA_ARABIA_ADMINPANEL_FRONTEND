@@ -37,7 +37,7 @@ import {
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
-function ProgressBar() {
+function ProgressBar({ locationList }) {
   const customStyles = {
     content: {
       top: "50%",
@@ -98,7 +98,7 @@ function ProgressBar() {
     fullName: "",
     phone: "",
     email: "",
-    location: "",
+    location: {},
     idType: "",
     idNumber: "",
     companyName: "",
@@ -117,7 +117,7 @@ function ProgressBar() {
         formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
-        formik.setFieldValue("location", data.profileextra?.location);
+        formik.setFieldValue("location", data.profileextra.location?.location);
         formik.setFieldValue(
           "idType",
           data?.useridentificationdata?.id_type?.id || ""
@@ -148,26 +148,26 @@ function ProgressBar() {
           "thirdPartyService",
           data?.company_company_user?.third_party_ownership
         );
-
-        if (data.status === "New Lead") {
+console.log(data.company_onboard_status,'data.status');
+        if (data.company_onboard_status === "New Lead") {
           dispatch(setCounter(0));
         }
-        if (data.status === "Initial Contact") {
+        if (data.company_onboard_status === "Initial Contact") {
           dispatch(setCounter(1));
         }
-        if (data.status === "Site Visit") {
+        if (data.company_onboard_status === "Site Visit") {
           dispatch(setCounter(2));
         }
-        if (data.status === "Proposal") {
+        if (data.company_onboard_status === "Proposal") {
           dispatch(setCounter(3));
         }
-        if (data.status === "Negotiation") {
+        if (data.company_onboard_status === "Negotiation") {
           dispatch(setCounter(4));
         }
-        if (data.status === "MOU / Charter") {
+        if (data.company_onboard_status === "MOU / Charter") {
           dispatch(setCounter(5));
         }
-        if (data.status === "Ready to Onboard") {
+        if (data.company_onboard_status === "Ready to Onboard") {
           dispatch(setCounter(6));
         }
       })
@@ -217,7 +217,7 @@ function ProgressBar() {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
     idType: Yup.string().required("ID Type is required"),
     idNumber: Yup.string().required("ID Number is required"),
     companyName: Yup.string().required("Company Name is required"),
@@ -377,7 +377,7 @@ function ProgressBar() {
         mobile: formik.values.phone,
         first_name: formik.values.fullName,
         last_name: formik.values.last_name,
-        location: formik.values.location,
+        location: formik.values.location?.id,
         useridentificationdata: {
           id_type: formik.values.idType,
           id_number: formik.values.idNumber,
@@ -662,7 +662,9 @@ function ProgressBar() {
               </div>
             </div>
           </div>
-          {count === 1 && <AddVendorInfo formik={formik} />}
+          {count === 1 && (
+            <AddVendorInfo formik={formik} locationList={locationList} />
+          )}
           {count === 2 && (
             <AddSiteVisit
               formik={formik}

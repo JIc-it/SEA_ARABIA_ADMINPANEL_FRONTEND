@@ -86,7 +86,7 @@ const VenderDetailsList = ({ venderDetails }) => {
               <div className="d-flex justify-content-between">
                 <p style={{ fontWeight: "700" }}>
                   {" "}
-                  {venderDetails?.profileextra?.location}
+                  {venderDetails?.profileextra.location?.location}
                 </p>
                 <p>
                   <svg

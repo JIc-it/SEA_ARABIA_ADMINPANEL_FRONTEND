@@ -126,7 +126,7 @@ function UserVendorCardDetails({ venderDetails }) {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {venderDetails?.profileextra?.location}
+                  &nbsp; {venderDetails?.profileextra.location?.location}
                 </p>
               </div>
             </div>

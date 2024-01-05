@@ -16,10 +16,10 @@ export const getCustomerlist = (role) => {
     });
 };
 
-export const getCustomerSearch = (search, status, role) => {
+export const getCustomerSearch = (params) => {
   return axiosInstance
     .get("account/user-list", {
-      params: { search: search, status: status, role: role },
+      params: params,
     })
     .then((response) => response.data)
     .catch((error) => {

@@ -7,8 +7,7 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-// import ReactFlagsSelect from 'react-flags-select';
-// import 'react-flags-select/css/react-flags-select.css';
+
 import {
   UpdateAdminListById,
   UpdateSalesRepListById,

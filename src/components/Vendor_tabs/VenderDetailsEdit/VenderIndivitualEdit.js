@@ -13,6 +13,7 @@ import {
   getVendorServiceTag,
 } from "../../../services/leadMangement";
 import { toast } from "react-toastify";
+import { getLocation } from "../../../services/CustomerHandle";
 
 const VenderIndivitualEdit = () => {
   const navigate = useNavigate();
@@ -27,6 +28,18 @@ const VenderIndivitualEdit = () => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [idTypeList, setIdTypeList] = useState();
   const [userdata, setUserData] = useState([]);
+  const [location, setLocation] = useState();
+
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
 
   useEffect(() => {
     getVendorServiceTag()
@@ -51,7 +64,7 @@ const VenderIndivitualEdit = () => {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
     idType: Yup.string().required("ID Type is required"),
     idNumber: Yup.string().required("ID Number is required"),
     companyName: Yup.string().required("Company Name is required"),
@@ -73,7 +86,7 @@ const VenderIndivitualEdit = () => {
       last_name: "",
       phone: "",
       email: "",
-      location: "",
+      location: {},
       idType: "",
       idNumber: "",
       companyName: "",
@@ -98,9 +111,11 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("fullName", data.first_name);
         // formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
-        const formattedPhoneNumber = data.mobile.replace(/\D/g, "").replace(/^965/, "");
+        const formattedPhoneNumber = data.mobile
+          .replace(/\D/g, "")
+          .replace(/^965/, "");
         formik.setFieldValue("phone", formattedPhoneNumber);
-        formik.setFieldValue("location", data.profileextra?.location);
+        formik.setFieldValue("location", data.profileextra.location?.location);
         formik.setFieldValue(
           "idType",
           data?.useridentificationdata?.id_type?.id || ""
@@ -147,7 +162,7 @@ const VenderIndivitualEdit = () => {
         mobile: formik.values.phone,
         first_name: formik.values.fullName,
         last_name: formik.values.last_name,
-        location: formik.values.location,
+        location: formik.values.location?.id,
         useridentificationdata: {
           id_type: formik.values.idType,
           id_number: formik.values.idNumber,
@@ -307,19 +322,75 @@ const VenderIndivitualEdit = () => {
                   <div className="col-sm-6 ">
                     <div className="mb-3">
                       <label className="form-label">Location</label>
-                      <input
-                        type="text"
-                        className="form-control"
-                        placeholder="Location"
-                        name="location"
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                        value={formik.values.location}
-                        maxLength={20}
-                      />
-                      {formik.touched.location && formik.errors.location ? (
-                        <div className="error">{formik.errors.location}</div>
-                      ) : null}
+                      <div style={{ position: "relative" }}>
+                        <select
+                          className="form-control"
+                          id=""
+                          name="location"
+                          // value={formik.values.location}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        >
+                          {/* <option
+                            disabled={true}
+                            value=""
+                            id={formik.values.location?.id}
+                          >
+                            {formik.values.location?.location}
+                          </option> */}
+                          {location &&
+                            location.length > 0 &&
+                            location.map((item, index) => {
+                              return (
+                                <option
+                                  key={item.id}
+                                  value={item.id}
+                                  label={item.location}
+                                >
+                                  {item.country_flag && (
+                                    <img
+                                      src={item.country_flag}
+                                      alt={`${item.location} flag`}
+                                      style={{
+                                        width: "20px",
+                                        marginRight: "5px",
+                                      }}
+                                    />
+                                  )}
+                                </option>
+                              );
+                            })}
+                        </select>
+                        {formik.touched.location && formik.errors.location ? (
+                          <div className="error">{formik.errors.location}</div>
+                        ) : null}
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          style={{
+                            top: "10px",
+                            right: "5px",
+                            position: "absolute",
+                          }}
+                        >
+                          <path
+                            d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                            stroke="#68727D"
+                            stroke-width="1.5"
+                          />
+                          <ellipse
+                            cx="10"
+                            cy="8.33398"
+                            rx="2.5"
+                            ry="2.5"
+                            stroke="#68727D"
+                            stroke-width="1.5"
+                          />
+                        </svg>
+                      </div>
                     </div>
                   </div>
                 </div>

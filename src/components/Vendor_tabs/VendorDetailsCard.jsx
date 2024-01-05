@@ -137,7 +137,12 @@ function VendorDetailsCard() {
             </div>
           </div>
           <div className="bottom_button">
-            <a className="call_vendor_button btn ">
+            <a
+              className="call_vendor_button btn "
+              onClick={() => {
+                window.location.href = `tel:${userdata?.mobile}`;
+              }}
+            >
               Call Vendor &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -162,7 +167,19 @@ function VendorDetailsCard() {
                 />
               </svg>
             </a>
-            <a className="mail_vendor_button btn btn-outline">
+
+            <a
+              className="mail_vendor_button btn btn-outline"
+              onClick={() => {
+                const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${userdata?.email}`;
+
+                // Open the Gmail compose window in a new tab
+                const newTab = window.open(gmailComposeUrl, "_blank");
+                if (newTab) {
+                  newTab.focus();
+                }
+              }}
+            >
               Mail Vendor &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"

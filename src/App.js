@@ -2,6 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../src/Styles/global.scss";
+// import 'react-flags-select/css/react-flags-select.css'; // Import the styles
+
+
 import MainPage from "./pages/MainPage";
 import Login from "./pages/Login";
 import EmailVerification from "./pages/EmailVerification";

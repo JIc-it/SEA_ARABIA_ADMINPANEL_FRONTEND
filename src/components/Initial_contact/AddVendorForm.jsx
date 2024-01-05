@@ -13,8 +13,9 @@ import {
   getVendorServiceTag,
 } from "../../services/leadMangement";
 import { OnboardContext } from "../../Context/OnboardContext";
+import { getLocation } from "../../services/CustomerHandle";
 
-const AddVendorInfo = ({ formik }) => {
+const AddVendorInfo = ({ formik, locationList }) => {
   const vendorId = useParams()?.id;
 
   console.log(formik.values.phone, "formik.values.phone");
@@ -25,6 +26,7 @@ const AddVendorInfo = ({ formik }) => {
   const handleCloseOffcanvas = () => setOffcanvas(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [idTypeList, setIdTypeList] = useState();
+  const [location, setLocation] = useState();
 
   useEffect(() => {
     getVendorListById(vendorId).then((data) => {
@@ -32,7 +34,7 @@ const AddVendorInfo = ({ formik }) => {
       formik.setFieldValue("last_name", data.last_name);
       formik.setFieldValue("email", data.email);
       formik.setFieldValue("phone", data.mobile);
-      formik.setFieldValue("location", data.profileextra?.location);
+      formik.setFieldValue("location", data.profileextra.location);
     });
   }, [vendorId]);
 
@@ -50,6 +52,14 @@ const AddVendorInfo = ({ formik }) => {
       })
       .catch((error) => {
         console.error("Error fetching  data:", error);
+      });
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
       });
   }, []);
 
@@ -136,19 +146,71 @@ const AddVendorInfo = ({ formik }) => {
             <div className="col-sm-6 ">
               <div className="mb-3">
                 <label className="form-label">Location</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Location"
-                  name="location"
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  value={formik.values.location}
-                  maxLength={20}
-                />
-                {formik.touched.location && formik.errors.location ? (
+                <div style={{ position: "relative" }}>
+                  <select
+                    className="form-control"
+                    id=""
+                    name="location"
+                    // value={formik.values.location}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  >
+                    <option
+                      disabled={true}
+                      value=""
+                      id={formik.values.location?.id}
+                    >
+                      {formik.values.location?.location}
+                    </option>
+                    {location &&
+                      location.length > 0 &&
+                      location.map((item, index) => {
+                        return (
+                          <option
+                            key={item.id}
+                            value={item.id}
+                            label={item.location}
+                          >
+                            {item.country_flag && (
+                              <img
+                                src={item.country_flag}
+                                alt={`${item.location} flag`}
+                                style={{ width: "20px", marginRight: "5px" }}
+                              />
+                            )}
+                          </option>
+                        );
+                      })}
+                  </select>
+                  {formik.touched.location && formik.errors.location ? (
+                    <div className="error">{formik.errors.location}</div>
+                  ) : null}
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                    style={{ top: "10px", right: "5px", position: "absolute" }}
+                  >
+                    <path
+                      d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
+                      stroke="#68727D"
+                      stroke-width="1.5"
+                    />
+                    <ellipse
+                      cx="10"
+                      cy="8.33398"
+                      rx="2.5"
+                      ry="2.5"
+                      stroke="#68727D"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </div>
+                {/* {formik.touched.location && formik.errors.location ? (
                   <div className="error">{formik.errors.location}</div>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
           </div>

@@ -32,7 +32,7 @@ export default function Listing() {
 
   const getVendorListData = async () => {
     setIsLoading(true);
-    getCustomerSearch(search, selectedValue, "Vendor")
+    getCustomerSearch({ search: search, status: selectedValue, role: "Vendor" })
       .then((data) => {
         console.log("Search ---:", data);
         setIsLoading(false);
@@ -295,7 +295,9 @@ export default function Listing() {
                                   padding: "3px 6px",
                                   borderRadius: "4px",
                                 }}
-                                onClick={()=>navigate(`/service-add/${item?.company_id}`)}
+                                onClick={() =>
+                                  navigate(`/service-add/${item?.company_id}`)
+                                }
                               >
                                 Add Service &nbsp;
                                 <svg

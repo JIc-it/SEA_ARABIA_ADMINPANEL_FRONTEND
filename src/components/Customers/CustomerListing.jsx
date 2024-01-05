@@ -24,9 +24,9 @@ export default function CustomerListing() {
     next: null,
     previous: null,
   });
-  
+
   useEffect(() => {
-    getCustomerSearch("", "", "User")
+    getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {
         console.log("customer-list", data.results);
         setListDiscount(data.results);
@@ -41,7 +41,7 @@ export default function CustomerListing() {
   };
   const getCustomerListData = async () => {
     setIsLoading(true);
-    getCustomerSearch(search, selectedValue, "User")
+    getCustomerSearch({ search: search, status: selectedValue, role: "User" })
       .then((data) => {
         console.log("Search ---:", data);
         if (data || search.length > 0) {

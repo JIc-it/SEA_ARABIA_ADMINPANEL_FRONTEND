@@ -3,18 +3,39 @@ import "../../static/css/AddNewLead.css";
 import { colors } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createVenderLead } from "../../services/leadMangement";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import { getLocation } from "../../services/CustomerHandle";
+import CountryDropdown from "./Test";
 
 function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [location, setLocation] = useState();
+
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
 
   const validationSchema = Yup.object({
     name: Yup.string()
       .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -169,17 +190,31 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <input
+            <select
               className="form-control"
-              type="text"
               id=""
               name="location"
-              placeholder="Location"
-              maxLength={20}
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
+            >
+              <option value="" label="Select a location" />
+              {location &&
+                location.length > 0 &&
+                location.map((item, index) => {
+                  return (
+                    <option key={item.id} value={item.id} label={item.location}>
+                      {item.country_flag && (
+                        <img
+                          src={item.country_flag}
+                          alt={`${item.location} flag`}
+                          style={{ width: "20px", marginRight: "5px" }}
+                        />
+                      )}
+                    </option>
+                  );
+                })}
+            </select>
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
@@ -206,6 +241,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
               />
             </svg>
           </div>
+          {/* <CountryDropdown/> */}
         </div>
         <button
           className="btn btn-success"
