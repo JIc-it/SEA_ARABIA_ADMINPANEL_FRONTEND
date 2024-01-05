@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Ship from "../../assets/images/jean-cloete-gX_04X-_GbQ-unsplash 1.png"
 import tick from "../../assets/images/uil_check.png"
 import { useParams } from 'react-router-dom';
-import { getBookingList } from "../../services/booking"
+import { getBooking } from "../../services/booking"
 import { CircularProgress } from '@mui/material';
 
 export default function BookingView() {
@@ -14,23 +14,21 @@ export default function BookingView() {
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const navigate = useNavigate()
     const [isLoading,setIsLoading]=useState(false)
-    const [booking,setBooking]=useState([])
+    const [booking,setBooking]=useState({})
 
 
     useEffect(() => {
         setIsLoading(true);
-        getBookingList()
+        getBooking(params.id)
           .then((data) => {
             setIsLoading(false);
-            // setListPageUrl({ next: data.next, previous: data.previous });
-            const finddata=data?.results?.filter((data)=>data.booking_id===params.id)
-            setBooking(finddata.flat());
+            setBooking(data);
           })
           .catch((error) => {
             setIsLoading(false);
             console.error("Error fetching  data:", error);
           });
-      }, []);
+      }, [params.id]);
 
       console.log(booking,"one");
     return (
@@ -67,11 +65,36 @@ export default function BookingView() {
                     <div className={isMobileView ? "d-flex flex-column" : "d-flex flex-row"}>
                         <div className={isMobileView ? "col-12 card mt-3" : 'col-5 card mt-2 mx-1'} style={{ borderRadius: "8px" }} >
                             <div className={'centered-container'} style={{ height: isMobileView ? "35vh" : "25vh" }}>
-                                <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} viewBox="0 0 48 48" fill="none">
+                               {booking?.status==="Complete" && <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} viewBox="0 0 48 48" fill="none">
                                     <path opacity="0.4" d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z" fill="#08A747" />
                                     <path d="M32.0607 17.9393C32.6464 18.5251 32.6464 19.4749 32.0607 20.0607L22.0607 30.0607C21.4749 30.6464 20.5251 30.6464 19.9393 30.0607L15.9393 26.0607C15.3536 25.4749 15.3536 24.5251 15.9393 23.9393C16.5251 23.3536 17.4749 23.3536 18.0607 23.9393L21 26.8787L25.4697 22.409L29.9393 17.9393C30.5251 17.3536 31.4749 17.3536 32.0607 17.9393Z" fill="#08A747" />
-                                </svg>
-                                <p className='booking-confirmed'>Booking Confirmed</p>
+                                </svg>}
+                                    {booking?.status === "Opened" && <svg width={48} height={48} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.4" d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#2684FC" />
+                                        <path fillRule="evenodd" clipRule="evenodd" d="M23.1628 12.8372C23.1628 12.3748 23.5376 12 24 12C30.6274 12 36 17.3726 36 24C36 30.6274 30.6274 36 24 36C17.3726 36 12 30.6274 12 24C12 23.5376 12.3748 23.1628 12.8372 23.1628C13.2996 23.1628 13.6744 23.5376 13.6744 24C13.6744 29.7027 18.2973 34.3256 24 34.3256C29.7027 34.3256 34.3256 29.7027 34.3256 24C34.3256 18.2973 29.7027 13.6744 24 13.6744C23.5376 13.6744 23.1628 13.2996 23.1628 12.8372Z" fill="#2684FC" />
+                                        <path opacity="0.5" fillRule="evenodd" clipRule="evenodd" d="M20.7624 13.282C20.9289 13.7134 20.7142 14.1981 20.2829 14.3646C20.125 14.4255 19.969 14.4902 19.8149 14.5586C19.3923 14.7462 18.8976 14.5557 18.71 14.1331C18.5224 13.7105 18.7129 13.2158 19.1355 13.0282C19.3147 12.9487 19.4962 12.8734 19.6799 12.8025C20.1112 12.636 20.5959 12.8507 20.7624 13.282ZM16.9091 15.339C17.228 15.6739 17.2151 16.2038 16.8803 16.5227C16.7578 16.6393 16.6383 16.7588 16.5217 16.8812C16.2028 17.2161 15.6729 17.229 15.338 16.9101C15.0032 16.5912 14.9903 16.0613 15.3092 15.7265C15.4445 15.5843 15.5834 15.4455 15.7255 15.3101C16.0603 14.9913 16.5903 15.0042 16.9091 15.339ZM14.1321 18.711C14.5547 18.8986 14.7452 19.3933 14.5576 19.8159C14.4893 19.9699 14.4245 20.126 14.3636 20.2838C14.1971 20.7152 13.7124 20.9299 13.2811 20.7634C12.8497 20.5969 12.635 20.1122 12.8015 19.6808C12.8724 19.4972 12.9477 19.3157 13.0272 19.1365C13.2149 18.7139 13.7095 18.5234 14.1321 18.711Z" fill="#2684FC" />
+                                        <path opacity="0.5" d="M24.0003 19.8125C24.4627 19.8125 24.8375 20.1873 24.8375 20.6497V24.2776H28.4654C28.9278 24.2776 29.3026 24.6524 29.3026 25.1148C29.3026 25.5772 28.9278 25.952 28.4654 25.952H24.0003C23.5379 25.952 23.1631 25.5772 23.1631 25.1148V20.6497C23.1631 20.1873 23.5379 19.8125 24.0003 19.8125Z" fill="#2684FC" />
+                                    </svg>
+
+                                    }
+                                    {booking?.status === "Upcoming" && <svg width={48} height={48} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.4" d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#2684FC" />
+                                        <path fillRule="evenodd" clipRule="evenodd" d="M23.1628 12.8372C23.1628 12.3748 23.5376 12 24 12C30.6274 12 36 17.3726 36 24C36 30.6274 30.6274 36 24 36C17.3726 36 12 30.6274 12 24C12 23.5376 12.3748 23.1628 12.8372 23.1628C13.2996 23.1628 13.6744 23.5376 13.6744 24C13.6744 29.7027 18.2973 34.3256 24 34.3256C29.7027 34.3256 34.3256 29.7027 34.3256 24C34.3256 18.2973 29.7027 13.6744 24 13.6744C23.5376 13.6744 23.1628 13.2996 23.1628 12.8372Z" fill="#2684FC" />
+                                        <path opacity="0.5" fillRule="evenodd" clipRule="evenodd" d="M20.7624 13.282C20.9289 13.7134 20.7142 14.1981 20.2829 14.3646C20.125 14.4255 19.969 14.4902 19.8149 14.5586C19.3923 14.7462 18.8976 14.5557 18.71 14.1331C18.5224 13.7105 18.7129 13.2158 19.1355 13.0282C19.3147 12.9487 19.4962 12.8734 19.6799 12.8025C20.1112 12.636 20.5959 12.8507 20.7624 13.282ZM16.9091 15.339C17.228 15.6739 17.2151 16.2038 16.8803 16.5227C16.7578 16.6393 16.6383 16.7588 16.5217 16.8812C16.2028 17.2161 15.6729 17.229 15.338 16.9101C15.0032 16.5912 14.9903 16.0613 15.3092 15.7265C15.4445 15.5843 15.5834 15.4455 15.7255 15.3101C16.0603 14.9913 16.5903 15.0042 16.9091 15.339ZM14.1321 18.711C14.5547 18.8986 14.7452 19.3933 14.5576 19.8159C14.4893 19.9699 14.4245 20.126 14.3636 20.2838C14.1971 20.7152 13.7124 20.9299 13.2811 20.7634C12.8497 20.5969 12.635 20.1122 12.8015 19.6808C12.8724 19.4972 12.9477 19.3157 13.0272 19.1365C13.2149 18.7139 13.7095 18.5234 14.1321 18.711Z" fill="#2684FC" />
+                                        <path opacity="0.5" d="M24.0003 19.8125C24.4627 19.8125 24.8375 20.1873 24.8375 20.6497V24.2776H28.4654C28.9278 24.2776 29.3026 24.6524 29.3026 25.1148C29.3026 25.5772 28.9278 25.952 28.4654 25.952H24.0003C23.5379 25.952 23.1631 25.5772 23.1631 25.1148V20.6497C23.1631 20.1873 23.5379 19.8125 24.0003 19.8125Z" fill="#2684FC" />
+                                    </svg>
+
+                                    }
+                                    {booking?.status === "Cancelled" && <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path opacity="0.4" d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z" fill="#DE4E21" />
+                                        <path d="M17.9393 17.9393C18.5251 17.3536 19.4749 17.3536 20.0607 17.9393L24 21.8787L27.9393 17.9394C28.5251 17.3536 29.4749 17.3536 30.0607 17.9394C30.6464 18.5252 30.6464 19.4749 30.0607 20.0607L26.1213 24L30.0606 27.9393C30.6464 28.5251 30.6464 29.4748 30.0606 30.0606C29.4748 30.6464 28.5251 30.6464 27.9393 30.0606L24 26.1213L20.0607 30.0607C19.4749 30.6464 18.5252 30.6464 17.9394 30.0607C17.3536 29.4749 17.3536 28.5251 17.9394 27.9393L21.8787 24L17.9393 20.0607C17.3536 19.4749 17.3536 18.5251 17.9393 17.9393Z" fill="#DE4E21" />
+                                    </svg>
+}
+                               {booking?.status==="Complete" && <svg xmlns="http://www.w3.org/2000/svg" width={48} height={48} viewBox="0 0 48 48" fill="none">
+                                    <path opacity="0.4" d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z" fill="#08A747" />
+                                    <path d="M32.0607 17.9393C32.6464 18.5251 32.6464 19.4749 32.0607 20.0607L22.0607 30.0607C21.4749 30.6464 20.5251 30.6464 19.9393 30.0607L15.9393 26.0607C15.3536 25.4749 15.3536 24.5251 15.9393 23.9393C16.5251 23.3536 17.4749 23.3536 18.0607 23.9393L21 26.8787L25.4697 22.409L29.9393 17.9393C30.5251 17.3536 31.4749 17.3536 32.0607 17.9393Z" fill="#08A747" />
+                                </svg>}
+                                <p className='booking-confirmed' style={{color:booking.status==="Opened" || booking.status==="Upcoming"? "#2684FC":"green"}}>Booking {booking?.status==="Opened"? "Opened":booking?.status==="Upcoming"? "Upcoming":""}</p>
                                 <div className={isMobileView ? "bottom_button_mobile" : "bottom_button"}>
                                     <a className={isMobileView ? "call_vendor_button btn my-2" : "call_vendor_button btn me-2"}>
                                         Call Vendor &nbsp;
@@ -129,87 +152,113 @@ export default function BookingView() {
                             <div className='px-5 m-3' style={{ backgroundColor: "#F8F8F8", borderRadius: "8px" }}>
                                 <div className='d-flex justify-content-between align-items-center mt-3'>
                                     <p style={{ color: "#68727D" }}>Name</p>
-                                    <p>{booking[0]?.user?.first_name}</p>
+                                    <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Email</p>
-                                    <p>{booking[0]?.user?.email}</p>
+                                    <p>{booking?.user?.email}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <p style={{ color: "#68727D" }}>Phone number</p>
-                                    <p>{booking[0]?.user?.mobile}</p>
+                                    <p>{booking?.user?.mobile}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Total Number of People</p>
-                                    <p>{booking[0]?.number_of_people}</p>
+                                    <p>{booking?.number_of_people}</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className={isMobileView ? "col-12 card mt-2" : 'col-7 card mt-2'} style={{ borderRadius: "8px" }} >
+                       <div className='col-12 h-100'>
+                       <div className={isMobileView ? "col-12 card mt-2" : 'col-7 card mt-2 h-50'} style={{ borderRadius: "8px" }} >
                             <span style={{ fontWeight: "600" }} className='p-3'>Booking Details</span>
-                            <div className='d-flex p-4'>
+                            <div className='d-flex px-4 py-1'>
                                 <div style={{ width: "33%" }}>
                                     <div >
                                         <p style={{ color: "#68727D" }}>Booking ID</p>
-                                        <p>{booking[0]?.booking_id}</p>
+                                        <p>{booking?.booking_id}</p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>End Date</p>
-                                        <p>{new Date(booking[0]?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"2-digit",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}</p>
+                                        <p>{new Date(booking?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}</p>
                                     </div>
-                                    {/* <div>
-                                        <p style={{ color: "#68727D" }}>Travellers</p>
-                                        <p><svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="0 0 26 26" fill="none">
-                                            <path d="M12.9997 12.9997C15.3938 12.9997 17.333 11.0605 17.333 8.66634C17.333 6.27217 15.3938 4.33301 12.9997 4.33301C10.6055 4.33301 8.66634 6.27217 8.66634 8.66634C8.66634 11.0605 10.6055 12.9997 12.9997 12.9997ZM12.9997 15.1663C10.1072 15.1663 4.33301 16.618 4.33301 19.4997V20.583C4.33301 21.1788 4.82051 21.6663 5.41634 21.6663H20.583C21.1788 21.6663 21.6663 21.1788 21.6663 20.583V19.4997C21.6663 16.618 15.8922 15.1663 12.9997 15.1663Z" fill="#252525" />
-                                        </svg>&nbsp;3&nbsp;
-                                            <svg xmlns="http://www.w3.org/2000/svg" width={26} height={26} viewBox="0 0 26 26" fill="none">
-                                                <path d="M16.2102 6.04609C16.2199 6.47376 16.144 6.89905 15.9871 7.297C15.8301 7.69494 15.5952 8.05752 15.2962 8.36344C14.9972 8.66936 14.6401 8.91247 14.2458 9.07848C13.8516 9.24449 13.4281 9.33006 13.0004 9.33016C12.5726 9.33027 12.1491 9.24491 11.7548 9.0791C11.3604 8.91329 11.0032 8.67036 10.704 8.36459C10.4049 8.05882 10.1698 7.69636 10.0126 7.29849C9.8555 6.90062 9.77941 6.47537 9.78887 6.0477C9.80743 5.2086 10.1537 4.41011 10.7537 3.82316C11.3536 3.23621 12.1595 2.90744 12.9988 2.90723C13.8381 2.90702 14.6441 3.23538 15.2443 3.82204C15.8445 4.40869 16.1912 5.20701 16.2102 6.04609Z" fill="#252525" />
-                                                <path d="M20.6912 14.5889L16.5162 10.3658C16.1704 10.0143 15.7579 9.73534 15.303 9.54511C14.8481 9.35487 14.3599 9.25721 13.8668 9.25782H12.147C11.1065 9.25782 10.164 9.68173 9.48313 10.3658L5.30822 14.5889C5.15451 14.6797 5.02359 14.8044 4.92544 14.9536C4.82728 15.1027 4.7645 15.2723 4.74187 15.4494C4.71925 15.6265 4.73738 15.8065 4.79488 15.9755C4.85239 16.1445 4.94774 16.2982 5.07368 16.4248C5.19961 16.5513 5.3528 16.6475 5.52154 16.7058C5.69028 16.7642 5.87012 16.7832 6.04734 16.7614C6.22456 16.7397 6.39446 16.6778 6.5441 16.5804C6.69373 16.483 6.81914 16.3527 6.91075 16.1994L9.78822 13.3203V23.7094H12.1968V17.2865H13.8026V23.7094H16.2112V13.3203L19.0212 16.2106C19.1216 16.3424 19.2488 16.4514 19.3944 16.5304C19.5399 16.6094 19.7006 16.6566 19.8658 16.669C20.031 16.6814 20.1969 16.6587 20.3526 16.6023C20.5084 16.5459 20.6504 16.4571 20.7693 16.3418C20.8883 16.2265 20.9814 16.0874 21.0426 15.9335C21.1039 15.7796 21.1318 15.6144 21.1246 15.4489C21.1173 15.2835 21.0751 15.1214 21.0007 14.9734C20.9263 14.8254 20.8213 14.6949 20.6928 14.5905L20.6912 14.5889Z" fill="#252525" />
-                                            </svg>&nbsp;0
-
-                                        </p>
-                                    </div> */}
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
-                                        <p style={{ color: "#68727D" }}>Booked On</p>
-                                        <p>18 JAN 2021 06:00 AM</p>
+                                        <p style={{ color: "#68727D" }}>Creation On</p>
+                                        <p>{new Date(booking?.created_at).toLocaleDateString("en-US",{
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true,
+                                            })
+                                        }</p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Starting Point</p>
-                                        <p>Marina Crescent</p>
-                                    </div>
-                                    <div>
-                                        <p style={{ color: "#68727D" }}>Is Insured</p>
-                                        <p>Yes</p>
+                                        <p style={{textTransform:"capitalize"}}>{booking?.starting_point}</p>
                                     </div>
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Start Date</p>
-                                        <p>18 JAN 2021 10:00 AM</p>
+                                        <p>{new Date(booking?.start_date).toLocaleDateString("en-US",{
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true,
+                                            })
+                                        }</p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Destination</p>
-                                        <p>Kuwait Bay</p>
+                                        <p style={{textTransform:"capitalize"}}>{booking?.destination}</p>
                                     </div>
-                                    <div>
-                                        <p style={{ color: "#68727D" }}>Insurance ID</p>
-                                        <p>IN846838083</p>
-                                    </div>
+                                    
                                 </div>
                             </div>
                         </div>
+                        <div className={isMobileView ? "col-12 card mt-2" : 'col-7 card mt-2 h-50'} style={{ borderRadius: "8px" }} >
+                            <span style={{ fontWeight: "600" }} className='p-3'>Registered Details</span>
+                            <div className='d-flex px-4 py-5'>
+                                <div style={{ width: "33%" }}>
+                                    <div >
+                                        <p style={{ color: "#68727D" }}>Customer ID</p>
+                                        <p>{booking?.user?.account_id}</p>
+                                    </div>
+                                    
+                                </div>
+                                <div style={{ width: "33%" }}>
+                                    <div>
+                                        <p style={{ color: "#68727D" }}>Customer Name</p>
+                                        <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
+                                    </div>
+                                   
+                                </div>
+                                <div style={{ width: "33%" }}>
+                                    <div>
+                                        <p style={{ color: "#68727D" }}>Customer Email</p>
+                                        <p>{booking?.user?.email}</p>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                       </div>
                     </div>
                     {/* section-2 */}
 
                     <div className={isMobileView ? "d-flex flex-column" : "d-flex flex-row"}>
                         <div className={isMobileView ? "col-12 card mt-2" : 'col-5 card mt-2 mx-1'} style={{ borderRadius: "8px" }} >
-                            <img src={Ship} alt="ship" />
-                            <div className="left_header">
+                            <img src={booking?.service?.service_image[0]?.image} alt="ship" width={100} height={100} className='w-100' style={{height:"200px",borderRadius:"5px"}}/>
+                            <div className="left_header" style={{marginTop:"-5px"}}>
                                 <div>
-                                    <p className="card_content">Achille Lauro</p>
+                                    <p className="card_content">{booking?.service?.name}</p>
                                 </div>
                                 <div className="card_header_contents">
                                     <p className="card_content">
@@ -249,7 +298,7 @@ export default function BookingView() {
                                                 fill="white"
                                             />
                                         </svg>{" "}
-                                        Vendor
+                                        {booking?.service?.company}
                                     </p>
                                     &nbsp;
                                     <p className="card_content">
@@ -267,14 +316,15 @@ export default function BookingView() {
                                                 fill="white"
                                             />
                                         </svg>
-                                        &nbsp; Kuwait
+                                        &nbsp; {booking?.service?.pickup_point_or_location}
                                     </p>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-between align-items-center p-3'>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>06:00 AM</p>
-                                    <p style={{ color: "#68727D" }}>Mon,18 JAN 2021</p>
+                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.start_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
+                                })}</p>
+                                    <p style={{ color: "#68727D" }}>{new Date(booking?.start_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
                                 </div>
                                 <div className='d-flex flex-column justify-content-center align-items-center'>
                                     <p><svg width={28} height={28} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -284,22 +334,57 @@ export default function BookingView() {
                                     <p style={{ color: "#006875" }}>4 hr 45 mins</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>10:45 AM</p>
-                                    <p style={{ color: "#68727D" }}>Mon,18 JAN 2021</p>
+                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.end_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
+                                })}</p>
+                                    <p style={{ color: "#68727D" }}>{new Date(booking?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-center align-items-center'>
                                 <p><svg width={18} height={24} viewBox="0 0 19 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <path fillRule="evenodd" clipRule="evenodd" d="M9.5 1.5C6.18629 1.5 3.5 4.50194 3.5 7.875C3.5 11.2216 5.41499 14.8593 8.4028 16.2558C9.09931 16.5814 9.90069 16.5814 10.5972 16.2558C13.585 14.8593 15.5 11.2216 15.5 7.875C15.5 4.50194 12.8137 1.5 9.5 1.5ZM9.5 9C10.3284 9 11 8.32843 11 7.5C11 6.67157 10.3284 6 9.5 6C8.67157 6 8 6.67157 8 7.5C8 8.32843 8.67157 9 9.5 9Z" fill="#68727D" />
                                 </svg></p>
-                                <p style={{ color: "#68727D" }}>Destination:</p>
-                                <p>Kuwait Bay</p>
+                                <p style={{ color: "#68727D" }}>Destination: &nbsp;</p>
+                                <p style={{textTransform:"capitalize"}}>{booking?.service?.service_price_service?.map((dat)=>
+                                dat?.location?.name
+                                
+                                )}</p>
 
                             </div>
                         </div>
 
                         <div className={isMobileView ? "col-12 card mt-2" : 'col-7 card mt-2'} style={{ borderRadius: "8px" }} >
-                            <span style={{ fontWeight: "600" }} className='p-3'>Payment Details</span>
+                            <div className='d-flex justify-content-between align-items-center px-2'>
+                            <p style={{ fontWeight: "600" }} className='p-3'>Payment Details</p>
+                            <button
+                                className="btn btn-sm btn-info"
+                                style={{
+                                  padding: "7px 10px 5px 10px",
+                                  borderRadius: "4px",
+                                  borderRadius:
+                                    "var(--roundness-round-inside, 6px)",
+                                  background: "#187AF7",
+                                  boxSShadow:
+                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                                }}
+                              >
+                                Initiate Refund &nbsp;
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
                             <div className='p-3 m-2 rounded' style={{ backgroundColor: "#EAEBF0" }}>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ color: "#68727D" }}>LA CABANE</span>
@@ -337,18 +422,27 @@ export default function BookingView() {
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Payment Method</p>
-                                        <p style={{ fontWeight: "500" }}>Credit Card</p>
+                                        <p style={{ fontWeight: "500" }}>{booking?.payment?.payment_method}</p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Payment Date</p>
-                                        <p style={{ fontWeight: "500" }}>18 JAN 2021 09:00 AM</p>
+                                        <p style={{ fontWeight: "500" }}>{new Date(booking?.payment?.created_at).toLocaleDateString("en-US",
+                                        {
+                                            day: 'numeric',
+                                            month: 'short',
+                                            year: 'numeric',
+                                            hour: 'numeric',
+                                            minute: 'numeric',
+                                            hour12: true,
+                                          }
+                                        )}</p>
                                     </div>
 
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Payment ID</p>
-                                        <p style={{ fontWeight: "500" }}>SS56DG2355D</p>
+                                        <p style={{ fontWeight: "500" }}>{booking?.payment?.payment_id}</p>
                                     </div>
                                 </div>
                             </div>
@@ -358,11 +452,11 @@ export default function BookingView() {
                     {/* section-3 */}
                     <div className={isMobileView ? "d-flex flex-column" : "d-flex flex-row"}>
                         <div className="col-12 card  my-2" style={{ borderRadius: "8px", marginLeft: !isMobileView ? "5px" : "0px" }} >
-                            <span style={{ fontWeight: "600" }} className='p-3'>Travellers</span>
+                            <span style={{ fontWeight: "600" }} className='p-3'>Cancellation And Refund</span>
                             <div className={isMobileView ? 'd-flex flex-column justify-content-center align-items-center' : 'd-flex justify-content-between align-items-center'}>
-                                <div style={{ width: isMobileView ? "90%" : "33%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
+                                <div style={{ width: isMobileView ? "90%" : "50%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
                                     <div className='d-flex justify-content-between align-items-center'>
-                                        <p style={{ fontWeight: "600" }}>Traveller 1</p>
+                                        <p style={{ fontWeight: "600" }}>Cancellation</p>
                                         <p><svg width={27} height={26} viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M13.6657 12.9997C16.0599 12.9997 17.999 11.0605 17.999 8.66634C17.999 6.27217 16.0599 4.33301 13.6657 4.33301C11.2715 4.33301 9.33236 6.27217 9.33236 8.66634C9.33236 11.0605 11.2715 12.9997 13.6657 12.9997ZM13.6657 15.1663C10.7732 15.1663 4.99902 16.618 4.99902 19.4997V20.583C4.99902 21.1788 5.48652 21.6663 6.08236 21.6663H21.249C21.8449 21.6663 22.3324 21.1788 22.3324 20.583V19.4997C22.3324 16.618 16.5582 15.1663 13.6657 15.1663Z" fill="#252525" />
                                         </svg>
@@ -381,9 +475,9 @@ export default function BookingView() {
                                         <p>Male</p>
                                     </div>
                                 </div>
-                                <div style={{ width: isMobileView ? "90%" : "33%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
+                                <div style={{ width: isMobileView ? "90%" : "50%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
                                     <div className='d-flex justify-content-between align-items-center'>
-                                        <p style={{ fontWeight: "600" }}>Traveller 2</p>
+                                        <p style={{ fontWeight: "600" }}>Refund</p>
                                         <p><svg width={27} height={26} viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M13.6657 12.9997C16.0599 12.9997 17.999 11.0605 17.999 8.66634C17.999 6.27217 16.0599 4.33301 13.6657 4.33301C11.2715 4.33301 9.33236 6.27217 9.33236 8.66634C9.33236 11.0605 11.2715 12.9997 13.6657 12.9997ZM13.6657 15.1663C10.7732 15.1663 4.99902 16.618 4.99902 19.4997V20.583C4.99902 21.1788 5.48652 21.6663 6.08236 21.6663H21.249C21.8449 21.6663 22.3324 21.1788 22.3324 20.583V19.4997C22.3324 16.618 16.5582 15.1663 13.6657 15.1663Z" fill="#252525" />
                                         </svg>
@@ -402,27 +496,7 @@ export default function BookingView() {
                                         <p>Male</p>
                                     </div>
                                 </div>
-                                <div style={{ width: isMobileView ? "90%" : "33%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                        <p style={{ fontWeight: "600" }}>Traveller 3</p>
-                                        <p><svg width={27} height={26} viewBox="0 0 27 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M13.6657 12.9997C16.0599 12.9997 17.999 11.0605 17.999 8.66634C17.999 6.27217 16.0599 4.33301 13.6657 4.33301C11.2715 4.33301 9.33236 6.27217 9.33236 8.66634C9.33236 11.0605 11.2715 12.9997 13.6657 12.9997ZM13.6657 15.1663C10.7732 15.1663 4.99902 16.618 4.99902 19.4997V20.583C4.99902 21.1788 5.48652 21.6663 6.08236 21.6663H21.249C21.8449 21.6663 22.3324 21.1788 22.3324 20.583V19.4997C22.3324 16.618 16.5582 15.1663 13.6657 15.1663Z" fill="#252525" />
-                                        </svg>
-                                        </p>
-                                    </div>
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                        <p>Name</p>
-                                        <p>James Corden</p>
-                                    </div>
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                        <p>Age</p>
-                                        <p>28</p>
-                                    </div>
-                                    <div className='d-flex justify-content-between align-items-center'>
-                                        <p>Gender</p>
-                                        <p>Male</p>
-                                    </div>
-                                </div>
+                                
                             </div>
                         </div>
                     </div>

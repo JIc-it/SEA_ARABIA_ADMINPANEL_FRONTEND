@@ -80,10 +80,31 @@ const ServiceAdd = () => {
             .required("Privacy Policy is required"),
         refund_policy: Yup.string()
             .required("Refund Policy is required"),
+        purchase_limit_min: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+                if (per_head_booking === true) {
+                    return schema
+                        .required("Minimum is Required")
+                        .min(1, 'Must be greater than zero')
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
+        purchase_limit_max: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+                if (per_head_booking === true) {
+                    return schema
+                        .required("Minimum is Required")
+                        .min(1, 'Must be greater than zero')
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
         markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
             if (profit_method.name === "Upselling With Markup") {
                 return schema
                     .required("Markup Fee is Required")
+                    .min(1, 'Must be greater than zero')
             }
             else {
                 return schema.notRequired();
@@ -125,6 +146,7 @@ const ServiceAdd = () => {
             is_date: false,
             is_day: false,
             is_time: false,
+            is_refundable:false,
             type: "",
             category: [],
             sub_category: [],
@@ -142,8 +164,8 @@ const ServiceAdd = () => {
             service_image: [],
 
             profit_method: {
-                id: "398bd81c-9f4d-4caf-9540-d7c4de623933",
-                name: "Ownership"
+                id:"630540c7-acd5-478c-999f-62f912e35b66",
+                name:"OwnerShip"
             },
             markup_fee: 0,
             vendor_percentage: 0,
@@ -187,6 +209,7 @@ const ServiceAdd = () => {
                 is_date: values.is_date,
                 is_day: values.is_day,
                 is_time: values.is_time,
+                is_refundable:values.is_refundable,
                 type: values.type,
                 name: values.name,
                 machine_id: values.machine_id,
@@ -339,7 +362,7 @@ const ServiceAdd = () => {
     };
     const amenitiesstore = (id, name, image) => {
         formik.setValues((prev) => {
-            const isCategoryExists = prev.amenities.some((category) => category.id === id);
+            const isCategoryExists = prev?.amenities?.some((category) => category.id === id);
 
             if (!isCategoryExists) {
                 return {
@@ -473,7 +496,7 @@ const ServiceAdd = () => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
 
-    console.log(formik.values);
+   
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -718,7 +741,15 @@ const ServiceAdd = () => {
                                                     className="form-control"
                                                     placeholder="0"
                                                     value={formik.values.capacity}
-                                                    onChange={formik.handleChange}
+                                                    onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("capacity",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("capacity",e.target.value)
+                                                        }
+                                                        
+                                                    }}
                                                     onBlur={formik.handleBlur}
                                                 />
                                                 {formik.touched.capacity && formik.errors.capacity ? (
@@ -875,10 +906,17 @@ const ServiceAdd = () => {
                                             className="form-control"
                                             placeholder="0"
                                             value={formik.values.markup_fee}
-                                            onChange={formik.handleChange}
+                                            onChange={(e)=>{
+                                                if(e.target.value<=0){
+                                                    formik.setFieldValue("markup_fee",0)
+                                                }
+                                                else{
+                                                    formik.setFieldValue("markup_fee",e.target.value)
+                                                }
+                                                }}
                                             onBlur={formik.handleBlur}
                                         />
-                                        {formik.touched.capacity && formik.errors.markup_fee ? (
+                                        {formik.touched.markup_fee && formik.errors.markup_fee ? (
                                             <div className="error">{formik.errors.markup_fee}</div>
                                         ) : null}
                                     </div>
@@ -1075,6 +1113,9 @@ const ServiceAdd = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.purchase_limit_min && formik.errors.purchase_limit_min ? (
+                                            <div className="error">{formik.errors.purchase_limit_min}</div>
+                                        ) : null}
                                             </div>
 
 
@@ -1093,6 +1134,9 @@ const ServiceAdd = () => {
 
 
                                                     </button>
+                                                    {formik.touched.purchase_limit_max && formik.errors.purchase_limit_max ? (
+                                            <div className="error">{formik.errors.purchase_limit_max}</div>
+                                        ) : null}
                                                 </div>
                                             </div>
 
@@ -1143,6 +1187,20 @@ const ServiceAdd = () => {
                                 {formik.touched.cancellation_policy && formik.errors.cancellation_policy ? (
                                     <div className="error">{formik.errors.cancellation_policy}</div>
                                 ) : null}
+                                
+                                <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 d-flex m-2 align-items-center">
+
+                                    <div style={{ fontWeight: "700" }}>Refund Available</div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <label class="switch" style={{ marginLeft: "5px" }}>
+                                            <input type="checkbox" name="is_refundable" checked={formik.values.is_refundable} value={formik.values.is_refundable} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                            <span class="slider round"></span>
+                                        </label> &nbsp;
+                                        <div style={{ fontSize: "14px" }}>{formik.values.is_refundable === true ? "Yes" : "No"}</div>
+
+                                    </div>
+                                </div>
+
                                 <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
                                 <textarea
                                     name="refund_policy"
