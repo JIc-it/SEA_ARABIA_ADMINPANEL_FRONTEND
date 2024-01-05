@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
-import { getCustomerTotalCount } from "../../services/CustomerHandle";
+import {
+  getCustomerListById,
+  getCustomerTotalCount,
+} from "../../services/CustomerHandle";
+import { useParams } from "react-router-dom";
 
 function CustomerHeaders(props) {
+  const customerId = useParams()?.customerId;
   const [count, setCount] = useState();
+
+  const [customerDetails, setCustomerDetails] = useState([]);
   useEffect(() => {
     getCustomerTotalCount()
       .then((data) => {
@@ -15,6 +22,7 @@ function CustomerHeaders(props) {
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
+
   return (
     <div className="row row-cards m-1 p-1">
       {/* <div className="col-sm-6 col-lg-3">

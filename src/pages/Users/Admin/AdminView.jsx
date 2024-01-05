@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getCustomerlist } from "../../../services/CustomerHandle";
 import AdminDetails from "./AdminDetails";
-
+import { getAdminListById } from "../../../services/GuestHandle";
 
 function AdminView() {
   const navigate = useNavigate();
+  const adminId = useParams()?.adminId;
   const [adminData, setAdminData] = useState();
+  const [adminDetails, setAdminDetails] = useState();
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
         // console.log("admin==-list", data.results);
-        setAdminData(data.results)
+        setAdminData(data.results);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
+
+  useEffect(() => {
+    getAdminListById(adminId)
+      .then((data) => {
+        setAdminDetails(data);
+        console.log(" admin by id==", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching customer data:", error);
+      });
+  }, [adminId]);
   return (
     <>
       <div className="page">
@@ -31,7 +44,14 @@ function AdminView() {
                       style={{ cursor: "pointer" }}
                       onClick={() => navigate("/customers")}
                     >
-                      <p>Users</p>
+                      <p>
+                        {" "}
+                        {adminDetails?.role === "Admin" ? (
+                          <p>Admin</p>
+                        ) : (
+                          <span></span>
+                        )}
+                      </p>
                     </div>
                     <span>
                       <svg
@@ -66,7 +86,8 @@ function AdminView() {
                         />
                       </svg>
                     </span>
-                    <p>Alexa Paul</p>
+                    <p>{adminDetails?.first_name}
+                      {adminDetails?.last_name}</p>
                   </div>
                 </div>
               </div>

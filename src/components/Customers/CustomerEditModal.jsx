@@ -10,6 +10,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateCustomerListById,
   getCustomerListById,
+  getLocation,
 } from "../../services/CustomerHandle";
 import { useParams } from "react-router-dom";
 
@@ -17,15 +18,24 @@ function CustomerEditModal({ show, close }) {
   const theme = useTheme();
   const customerId = useParams()?.customerId;
   console.log("c-id==", customerId);
-
+  const [isRefetch, setIsRefetch] = useState(false);
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
+  const [location, setLocation] = useState([]);
 
+  
+  useEffect(() => {
+    getLocation()
+      .then((data) => {
+        console.log("location is==", data.results);
+        setLocation(data?.results);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
+  }, []);
   const validationSchema = Yup.object({
-    // name: Yup.string()
-    //   .required("Name is required")
-    //   .max(20, "Name must be at most 20 characters"),
     first_name: Yup.string()
       .required("First name is required")
       .max(20, "First name must be at most 20 characters"),
@@ -96,7 +106,7 @@ function CustomerEditModal({ show, close }) {
           if (customerData) {
             setIsLoading(false);
             window.location.reload();
-            // setIsRefetch(!isRefetch);
+            setIsRefetch(!isRefetch);
             toast.success("customer updated Successfully.");
             close();
           } else {
@@ -266,16 +276,22 @@ function CustomerEditModal({ show, close }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <input
+            <select
               className="form-control"
-              type="text"
               id=""
               name="location"
-              placeholder="Location"
               value={formik.values.location}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-            />
+            >
+              <option value="" label="Select a location" />
+              {location.map((item) => {
+                return (
+                  <option key={item?.id} value={item?.id} label={item?.location}/> 
+                );
+              })}
+              {/* Add more options as needed */}
+            </select>
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
@@ -328,27 +344,7 @@ function CustomerEditModal({ show, close }) {
           ) : null}
         </div>
 
-        {/* <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
-          >
-            Gender
-          </label>
-          <select
-            name="gender"
-            className="form-select"
-            value={formik.values.gender}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-          {formik.touched.gender && formik.errors.gender ? (
-            <div className="error">{formik.errors.gender}</div>
-          ) : null}
-        </div> */}
+        
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""

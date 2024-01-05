@@ -3,17 +3,19 @@ import customerImg from "../../assets/images/customerimg.png";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import UploadFiles from "../Common/UploadFile";
 import { getCustomerListById } from "../../services/CustomerHandle";
 import CustomerEditModal from "./CustomerEditModal";
-
+import CustomerPasswordReset from "./CustomerPasswordReset";
+import PasswordIcon from "../../assets/images/PasswordIcon.png";
+import Pen from "../../assets/images/Pen 2.png";
 function CustomerCardDetails() {
-  
   const theme = useTheme();
+  const navigate = useNavigate();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
-  
+
   const [customerDetails, setCustomerDetails] = useState([]);
 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -21,9 +23,11 @@ function CustomerCardDetails() {
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
+  const [showOffcanvas1, setShowOffcanvas1] = useState(false);
+  const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
+  const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
   const customerId = useParams()?.customerId;
-  
-  
+
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
@@ -51,7 +55,7 @@ function CustomerCardDetails() {
               <div>
                 <p className="card_content">{customerDetails.first_name}</p>
               </div>
-              <div className="card_header_contents">
+              {/* <div className="card_header_contents">
                 <p className="card_content">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -108,6 +112,47 @@ function CustomerCardDetails() {
                   </svg>{" "}
                   &nbsp; kuwait
                 </p>
+              </div> */}
+              <div className="card_header_contents">
+                <p className="card_content">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="20"
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M12.2436 8.9577L11.6186 11.041H8.75701L9.38201 8.9577H12.2436Z"
+                      fill="white"
+                    />
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M3.38738 2.8864C2.16699 4.10679 2.16699 6.07098 2.16699 9.99935C2.16699 13.9277 2.16699 15.8919 3.38738 17.1123C4.60777 18.3327 6.57195 18.3327 10.5003 18.3327C14.4287 18.3327 16.3929 18.3327 17.6133 17.1123C18.8337 15.8919 18.8337 13.9277 18.8337 9.99935C18.8337 6.07098 18.8337 4.10679 17.6133 2.8864C16.3929 1.66602 14.4287 1.66602 10.5003 1.66602C6.57195 1.66602 4.60777 1.66602 3.38738 2.8864ZM9.84659 5.23405C10.1772 5.33324 10.3648 5.68167 10.2656 6.01229L9.75701 7.70769H12.6186L13.235 5.6531C13.3342 5.32248 13.6826 5.13487 14.0133 5.23405C14.3439 5.33324 14.5315 5.68167 14.4323 6.01229L13.9237 7.70769H15.5003C15.8455 7.70769 16.1253 7.98752 16.1253 8.33269C16.1253 8.67787 15.8455 8.9577 15.5003 8.9577H13.5487L12.9237 11.041H14.667C15.0122 11.041 15.292 11.3209 15.292 11.666C15.292 12.0112 15.0122 12.291 14.667 12.291H12.5487L11.9323 14.3456C11.8331 14.6762 11.4847 14.8639 11.1541 14.7647C10.8234 14.6655 10.6358 14.3171 10.735 13.9864L11.2436 12.291H8.38201L7.76563 14.3456C7.66645 14.6762 7.31802 14.8639 6.9874 14.7647C6.65678 14.6655 6.46916 14.3171 6.56835 13.9864L7.07697 12.291H5.50033C5.15515 12.291 4.87533 12.0112 4.87533 11.666C4.87533 11.3209 5.15515 11.041 5.50033 11.041H7.45197L8.07697 8.9577H6.33366C5.98848 8.9577 5.70866 8.67787 5.70866 8.33269C5.70866 7.98752 5.98848 7.70769 6.33366 7.70769H8.45197L9.06835 5.6531C9.16754 5.32248 9.51596 5.13487 9.84659 5.23405Z"
+                      fill="white"
+                    />
+                  </svg>{" "}
+                  &nbsp; {customerDetails?.useridentificationdata?.id_number}
+                </p>
+                <p className="card_content">| &nbsp;</p>
+                <p className="card_content">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="21"
+                    height="20"
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      clip-rule="evenodd"
+                      d="M18.8337 9.99935C18.8337 14.6017 15.1027 18.3327 10.5003 18.3327C5.89795 18.3327 2.16699 14.6017 2.16699 9.99935C2.16699 5.39698 5.89795 1.66602 10.5003 1.66602C15.1027 1.66602 18.8337 5.39698 18.8337 9.99935ZM13.0003 7.49935C13.0003 8.88006 11.881 9.99935 10.5003 9.99935C9.11961 9.99935 8.00033 8.88006 8.00033 7.49935C8.00033 6.11864 9.11961 4.99935 10.5003 4.99935C11.881 4.99935 13.0003 6.11864 13.0003 7.49935ZM10.5003 17.0827C11.987 17.0827 13.3667 16.6247 14.5061 15.842C15.0093 15.4963 15.2244 14.8379 14.9318 14.302C14.3253 13.1912 13.0755 12.4993 10.5003 12.4993C7.92507 12.4993 6.6753 13.1912 6.06878 14.302C5.7762 14.8378 5.99124 15.4963 6.49446 15.842C7.63381 16.6246 9.01357 17.0827 10.5003 17.0827Z"
+                      fill="white"
+                    />
+                  </svg>{" "}
+                  &nbsp; {customerDetails?.role}
+                </p>
               </div>
             </div>
 
@@ -155,7 +200,14 @@ function CustomerCardDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a
+                className="mail_vendor_button btn btn-outline"
+                onClick={() => {
+                  navigate(
+                    `/customer-activity-log/${customerDetails?.id}/${customerDetails?.first_name}`
+                  );
+                }}
+              >
                 Activity Log &nbsp;
                 <svg
                   width={20}
@@ -259,96 +311,133 @@ function CustomerCardDetails() {
 
             {active === "Details" && (
               <>
-              <CustomerEditModal show={showOffcanvas} close={handleCloseOffcanvas} />
-              <button
-                onClick={handleOpenOffcanvas}
-                className="btn mt-2 px-4 py-2"
-                style={{ backgroundColor: "#187AF7", color: "white" }}
-              >
-                Edit Details &nbsp;
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width={15}
-                  height={15}
-                  viewBox="0 0 21 20"
-                  fill="none"
+                <CustomerEditModal
+                  show={showOffcanvas}
+                  close={handleCloseOffcanvas}
+                />
+                <CustomerPasswordReset
+                  show={showOffcanvas1}
+                  close={handleCloseOffcanvasPassword}
+                />
+                <button
+                  onClick={handleOpenOffcanvas}
+                  className="btn mt-2 px-4 py-2 text-center"
+                  style={{
+                    backgroundColor: "#187AF7",
+                    color: "white",
+                    alignItems: "center",
+                  }}
                 >
-                  {/* ... (your SVG path) */}
-                </svg>
-              </button>
-            
-              <div
-                style={{ backgroundColor: "#F8F8F8", borderRadius: "5px" }}
-                className="mt-4 w-100 px-2"
-              >
-                <p className="p-2" style={{ fontWeight: "700" }}>
-                  Details
-                </p>
-            
-                <div className="d-flex">
-                  <div className="col-4 px-2">
-                    <div>
-                      <p style={{ color: "#68727D" }}>First Name</p>
-                      <p style={{ fontWeight: "700" }}>{customerDetails?.first_name}</p>
-                    </div>
-            
-                    <div>
-                      <p style={{ color: "#68727D" }}>Date of Birth</p>
-                      <p style={{ fontWeight: "700" }}>
-                        {customerDetails?.profileextra?.dob}
-                      </p>
-                    </div>
-            
-                    <div>
-                      <p style={{ color: "#68727D" }}>Location</p>
-                      <div className="d-flex justify-content-between">
+                  Edit Details &nbsp;
+                  <img src={Pen} alt="" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={15}
+                    height={15}
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    {/* ... (your SVG path) */}
+                  </svg>
+                </button>
+                <button
+                  onClick={handleOpenOffcanvasPassword}
+                  className="btn mt-2 px-4 py-2"
+                  style={{ backgroundColor: "#187AF7", color: "white" }}
+                >
+                  Reset Password &nbsp;
+                  <img src={PasswordIcon} alt="" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width={15}
+                    height={15}
+                    viewBox="0 0 21 20"
+                    fill="none"
+                  >
+                    {/* ... (your SVG path) */}
+                  </svg>
+                </button>
+
+                <div
+                  style={{ backgroundColor: "#F8F8F8", borderRadius: "5px" }}
+                  className="mt-4 w-100 px-2"
+                >
+                  <p className="p-2" style={{ fontWeight: "700" }}>
+                    Details
+                  </p>
+
+                  <div className="d-flex">
+                    <div className="col-4 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>First Name</p>
                         <p style={{ fontWeight: "700" }}>
-                          {customerDetails?.profileextra?.location}
+                          {customerDetails?.first_name}
                         </p>
-                        <p>
-                          <svg
-                            width="18"
-                            height="22"
-                            viewBox="0 0 22 22"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            {/* ... (your SVG path) */}
-                          </svg>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Date of Birth</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.profileextra?.dob}
+                          {console.log("c details", customerDetails)}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Location</p>
+                        <div className="d-flex justify-content-between">
+                          <p style={{ fontWeight: "700" }}>
+                            {customerDetails?.profileextra?.location?.location}
+                          </p>
+                          <p>
+                            <svg
+                              width="18"
+                              height="22"
+                              viewBox="0 0 22 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              {/* ... (your SVG path) */}
+                            </svg>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-4 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Last Name</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.last_name}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Phone</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.mobile}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="col-4 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Email</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.email}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Gender</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {customerDetails?.profileextra?.gender}
                         </p>
                       </div>
                     </div>
                   </div>
-            
-                  <div className="col-4 px-2">
-                    <div>
-                      <p style={{ color: "#68727D" }}>Last Name</p>
-                      <p style={{ fontWeight: "700" }}>{customerDetails?.last_name}</p>
-                    </div>
-            
-                    <div>
-                      <p style={{ color: "#68727D" }}>Phone</p>
-                      <p style={{ fontWeight: "700" }}>{customerDetails?.mobile}</p>
-                    </div>
-                  </div>
-            
-                  <div className="col-4 px-2">
-                    <div>
-                      <p style={{ color: "#68727D" }}>Email</p>
-                      <p style={{ fontWeight: "700" }}>{customerDetails?.email}</p>
-                    </div>
-            
-                    <div>
-                      <p style={{ color: "#68727D" }}>Gender</p>
-                      <p style={{ fontWeight: "700" }}>
-                        {customerDetails?.profileextra?.gender}
-                      </p>
-                    </div>
-                  </div>
                 </div>
-              </div>
-            </>
-            
+              </>
             )}
 
             {/* {active === "Bookings" && <div style={{ borderRadius: "5px" }} className="mt-4 w-100 px-2">

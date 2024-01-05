@@ -3,7 +3,7 @@ import customerImg from "../../../assets/images/customerimg.png";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import {
   getCustomerListById,
@@ -14,9 +14,12 @@ import { getAdminListById } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 import UpdateAdmin from "./UpdateAdmin";
 import AdminPassword from "./AdminPassword";
+import PasswordIcon from "../../../assets/images/PasswordIcon.png";
+import Pen from "../../../assets/images/Pen 2.png";
 
 function AdminDetails() {
   const theme = useTheme();
+  const navigate= useNavigate()
   const adminId = useParams()?.adminId;
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
@@ -136,7 +139,14 @@ function AdminDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a
+                className="mail_vendor_button btn btn-outline"
+                onClick={() => {
+                  navigate(
+                    `/admin-activity-log/${adminDetails?.id}/${adminDetails?.first_name}`
+                  );
+                }}
+              >
                 Activity Log &nbsp;
                 <svg
                   width={20}
@@ -254,6 +264,7 @@ function AdminDetails() {
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
                   Edit Details &nbsp;
+                  <img src={Pen} alt="" />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}
@@ -269,7 +280,7 @@ function AdminDetails() {
                   className="btn mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
-                  Reset Password &nbsp;
+                  Reset Password &nbsp; <img src={PasswordIcon} alt="" />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}
@@ -302,7 +313,7 @@ function AdminDetails() {
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            {adminDetails?.profileextra?.location}
+                            {adminDetails?.profileextra?.location?.location}
                           </p>
                           <p>
                             <svg

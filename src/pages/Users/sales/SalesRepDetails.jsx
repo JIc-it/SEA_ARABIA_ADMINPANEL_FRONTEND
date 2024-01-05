@@ -3,7 +3,7 @@ import customerImg from "../../../assets/images/customerimg.png";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { getCustomerListById } from "../../../services/CustomerHandle";
 import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
@@ -11,8 +11,10 @@ import { getSalesRepListById } from "../../../services/GuestHandle";
 import CreateSalesRep from "./CreateSalesRep";
 import UpdateSalesRep from "./UpdateSalesRep";
 import SalesPassword from "./SalesPassword";
-
+import PasswordIcon from "../../../assets/images/PasswordIcon.png";
+import Pen from "../../../assets/images/Pen 2.png";
 function SalesRepDetails() {
+  const navigate = useNavigate();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
@@ -151,7 +153,14 @@ function SalesRepDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a
+                className="mail_vendor_button btn btn-outline"
+                onClick={() => {
+                  navigate(
+                    `/sales-activity-log/${salesRepDetails?.id}/${salesRepDetails?.first_name}`
+                  );
+                }}
+              >
                 Activity Log &nbsp;
                 <svg
                   width={20}
@@ -269,6 +278,7 @@ function SalesRepDetails() {
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
                   Edit Details &nbsp;
+                  <img src={Pen} alt="" />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}
@@ -285,6 +295,7 @@ function SalesRepDetails() {
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
                   Password Reset &nbsp;
+                  <img src={PasswordIcon} alt="" />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width={15}
@@ -321,7 +332,7 @@ function SalesRepDetails() {
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            {salesRepDetails?.profileextra?.location}
+                            {salesRepDetails?.profileextra?.location?.location}
                           </p>
                           <p>
                             <svg

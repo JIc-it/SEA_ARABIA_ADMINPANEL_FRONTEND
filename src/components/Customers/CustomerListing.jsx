@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
+// import {
+//   getCustomerSearch,
+//   getCustomerlist,
+// } from "../../services/CustomerHandle";
+
+import CustomerCreate from "./CustomerCreate";
+
 import {
   getCustomerSearch,
   getCustomerlist,
 } from "../../services/CustomerHandle";
-
-import CustomerCreate from "./CustomerCreate";
 import { formatDate } from "../../helpers";
 
 export default function CustomerListing() {
