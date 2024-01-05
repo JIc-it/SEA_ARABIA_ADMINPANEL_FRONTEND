@@ -1,28 +1,21 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 import {
-  UpdateAdminListById,
   UpdateSalesRepListById,
-  createAdmin,
-  getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
-import { passwordRegex } from "../../../helpers";
+
 import { getLocation } from "../../../services/CustomerHandle";
 
 function UpdateSalesRep({ show, close }) {
   const theme = useTheme();
 
-  const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
@@ -37,18 +30,18 @@ function UpdateSalesRep({ show, close }) {
     getSalesRepListById(salesRepId)
       .then((data) => {
         setSalesDetails(data);
-        console.log(" admin by id------==", data);
+        // console.log(" Sales Rep by id------==", data);
       })
       .catch((error) => {
-        console.error("Error fetching customer data:", error);
+        console.error("Error fetching Salesrep data:", error);
       });
   }, [salesRepId]);
 
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("location is==", data.results);
-        setLocation(data.results[0]);
+        // console.log("location of sales is==", data);
+        setLocation(data.results);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -66,16 +59,6 @@ function UpdateSalesRep({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string().min(6, "Password should be at least 6 characters"),
-    // .required("Password is required"),
-    confirmPassword: Yup.string()
-      .max(50)
-      // .required("Confirm Password is required")
-      .matches(
-        passwordRegex,
-        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
-      .oneOf([Yup.ref("password")], "Passwords must match"),
 
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
@@ -87,8 +70,7 @@ function UpdateSalesRep({ show, close }) {
       first_name: salesDetails?.first_name || "",
       last_name: salesDetails?.last_name || "",
       email: salesDetails?.email || "",
-      password: salesDetails?.password || "",
-      confirmPassword: salesDetails?.confirmPassword || "",
+
       mobile: salesDetails?.mobile || "",
       location: salesDetails?.profileextra?.location || "",
       gender: salesDetails?.profileextra?.gender || "",
@@ -116,15 +98,15 @@ function UpdateSalesRep({ show, close }) {
           };
 
           const salesData = await UpdateSalesRepListById(salesRepId, data);
-          console.log("Admin updated detail is ---", salesData);
+          // console.log("Sales Rep updated detail is ---", salesData);
           if (salesData) {
             setIsLoading(false);
             window.location.reload();
             // setIsRefetch(!isRefetch);
-            toast.success(" Admin updated Successfully.");
+            toast.success(" Sales Rep updated Successfully.");
             close();
           } else {
-            console.error("Error while updating Admin:", salesData.error);
+            console.error("Error while updating Sales Rep:", salesData.error);
             setIsLoading(false);
           }
         } catch (err) {
@@ -416,12 +398,13 @@ function UpdateSalesRep({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-
-              <option
-                key={location?.id}
-                value={location.id}
-                label={location.location}
-              />
+              {location.map((item) => {
+                return (
+                  <option key={item?.id} value={item.id} label={item.location}>
+                    {item?.location}
+                  </option>
+                );
+              })}
 
               {/* Add more options as needed */}
             </select>

@@ -45,7 +45,7 @@ function CreateNewAdmin({ show, close }) {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results[0]);
+        setLocation(data.results);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -286,13 +286,13 @@ function CreateNewAdmin({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-
-              <option
-                key={location?.id}
-                value={location.id}
-                label={location.location}
-              />
-
+              {location.map((item) => {
+                return (
+                  <option key={item?.id} value={item.id} label={item?.location}>
+                    {`${item?.location} ${item?.country_flag}`}
+                  </option>
+                );
+              })}
               {/* Add more options as needed */}
             </select>
             {formik.touched.location && formik.errors.location ? (

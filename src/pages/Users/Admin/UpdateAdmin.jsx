@@ -28,7 +28,7 @@ function UpdateAdmin({ show, close }) {
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
-  
+
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
@@ -40,12 +40,11 @@ function UpdateAdmin({ show, close }) {
       });
   }, [adminId]);
 
-
   useEffect(() => {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results[0]);
+        setLocation(data.results);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -63,16 +62,6 @@ function UpdateAdmin({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    password: Yup.string().min(6, "Password should be at least 6 characters"),
-    // .required("Password is required"),
-    confirmPassword: Yup.string()
-      .max(50)
-      // .required("Confirm Password is required")
-      .matches(
-        passwordRegex,
-        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
-      .oneOf([Yup.ref("password")], "Passwords must match"),
 
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
@@ -83,8 +72,7 @@ function UpdateAdmin({ show, close }) {
       first_name: adminDetails?.first_name || "",
       last_name: adminDetails?.last_name || "",
       email: adminDetails?.email || "",
-      password: adminDetails?.password || "",
-      confirmPassword: adminDetails?.confirmPassword || "",
+
       mobile: adminDetails?.mobile || "",
       location: adminDetails?.profileextra?.location || "",
 
@@ -100,10 +88,7 @@ function UpdateAdmin({ show, close }) {
             // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-
             email: values.email,
-            password: values.password,
-            confirmPassword: values.confirmPassword,
             mobile: values.mobile,
             profileextra: {
               location: values.location,
@@ -114,8 +99,8 @@ function UpdateAdmin({ show, close }) {
           console.log("Admin updated detail is ---", adminData);
           if (adminData) {
             setIsLoading(false);
-            // window.location.reload();
-            // setIsRefetch(!isRefetch);
+            window.location.reload();
+            setIsRefetch(!isRefetch);
             toast.success(" Admin updated Successfully.");
             close();
           } else {
@@ -299,13 +284,13 @@ function UpdateAdmin({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-
-              <option
-                key={location?.id}
-                value={location.id}
-                label={location.location}
-              />
-
+              {location.map((item) => {
+                return (
+                  <option key={item?.id} value={item.id} label={item.location}>
+                    {item?.location}
+                  </option>
+                );
+              })}
               {/* Add more options as needed */}
             </select>
             {formik.touched.location && formik.errors.location ? (

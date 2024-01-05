@@ -5,6 +5,7 @@ const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
 // const serviceDetails = "main/category-list";
 const guestUserURL = "account/guest-user/list";
+const customerCreateUrl = "/account/user-create";
 
 export const getCustomerlist = (role) => {
   return axiosInstance
@@ -14,6 +15,16 @@ export const getCustomerlist = (role) => {
       console.error("Error while fetching lead request:", error);
       throw error;
     });
+};
+
+export const createCustomer = async (data) => {
+  try {
+    const response = await axiosInstance.post(customerCreateUrl, data);
+    return response.data;
+  } catch (error) {
+    console.error("Error while creating customer:", error);
+    throw error;
+  }
 };
 
 export const getCustomerSearch = (params) => {
@@ -74,9 +85,11 @@ export const getCustomerTotalCount = () => {
     });
 };
 
-export const getGuestUserRequest = () => {
+export const getGuestUserRequest = (search, status, role) => {
   return axiosInstance
-    .get(guestUserURL)
+    .get(guestUserURL, {
+      params: { search: search, status: status, role: role },
+    })
     .then((response) => {
       console.log("Reward Products Response:", response.data);
       return response.data;

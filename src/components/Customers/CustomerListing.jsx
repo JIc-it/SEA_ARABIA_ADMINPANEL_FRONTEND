@@ -6,15 +6,11 @@ import {
   getCustomerSearch,
   getCustomerlist,
 } from "../../services/CustomerHandle";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+
+import CustomerCreate from "./CustomerCreate";
+import { formatDate } from "../../helpers";
 
 export default function CustomerListing() {
-  const navigate = useNavigate();
-  const [isToggled, setToggled] = useState(true);
-
-  const handleToggle = () => {
-    setToggled(!isToggled);
-  };
   const [listDiscount, setListDiscount] = useState([]);
   const [search, setSearch] = useState("");
   const [isRefetch, setIsRefetch] = useState(false);
@@ -24,6 +20,8 @@ export default function CustomerListing() {
     next: null,
     previous: null,
   });
+
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
@@ -59,37 +57,8 @@ export default function CustomerListing() {
       });
   };
 
-  // const getCustomerListData = async () => {
-  //   try {
-  //     setIsLoading(true);
-  //     const data = await getCustomerSearch(search, selectedValue, "User");
-  //     console.log(
-  //       "sele val",
-  //       selectedValue,
-  //       "search=",
-  //       search,
-  //       "data oc search ==",
-  //       data
-  //     );
-  //     if (data?.results && data?.results.length > 0) {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setListDiscount(data?.results);
-  //     } else {
-  //       const customerListData = await getCustomerSearch("", "", "User");
-  //       refreshPage();
-  //       setIsLoading(false);
-  //       setListPageUrl({
-  //         next: customerListData.next,
-  //         previous: customerListData.previous,
-  //       });
-  //       setListDiscount(customerListData.results);
-  //     }
-  //   } catch (error) {
-  //     setIsLoading(false);
-  //     console.error("Error fetching data:", error);
-  //   }
-  // };
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   useEffect(() => {
     getCustomerSearch();
@@ -216,8 +185,9 @@ export default function CustomerListing() {
               />
             </svg>
           </button>
+          <CustomerCreate show={showOffcanvas} close={handleCloseOffcanvas} />
           <button
-            // onClick={()=>navigate("/discounts-offers/add")}
+            onClick={handleOpenOffcanvas}
             className="btn btn-info vendor_button"
             style={{ borderRadius: "6px" }}
             type="button"

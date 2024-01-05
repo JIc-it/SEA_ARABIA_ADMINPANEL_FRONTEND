@@ -2,31 +2,42 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  UpdateCustomerListById,
-  getCustomerListById,
-  getLocation,
-} from "../../../services/CustomerHandle";
-import { Link, useParams } from "react-router-dom";
-import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
-import { passwordRegex } from "../../../helpers";
 
-function CreateSalesRep({ show, close }) {
+
+import { useParams } from "react-router-dom";
+import { createCustomer, getCustomerListById, getLocation } from "../../services/CustomerHandle";
+import { passwordRegex } from "../../helpers";
+import { createAdmin } from "../../services/GuestHandle";
+
+
+function CustomerCreate({ show, close }) {
   const theme = useTheme();
+  const customerId = useParams()?.customerId;
+  const [isRefetch, setIsRefetch] = useState();
+  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
+  const [isLoading, setIsLoading] = useState(false);
+  const salesRepId = useParams()?.salesRepId;
+  const [adminDetails, setAdminDetails] = useState();
+  const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
-  const [isRefetch, setIsRefetch] = useState();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
-  const [isLoading, setIsLoading] = useState(false);
-  const [customerDetails, setCustomerDetails] = useState([]);
-  const [location, setLocation] = useState([]);
+
+  useEffect(() => {
+    getCustomerListById(customerId)
+      .then((data) => {
+        setAdminDetails(data);
+        console.log(" customerId by id==", data);
+      })
+      .catch((error) => {
+        console.error("Error fetching customer data:", error);
+      });
+  }, [customerId]);
 
   useEffect(() => {
     getLocation()
@@ -40,9 +51,6 @@ function CreateSalesRep({ show, close }) {
   }, []);
 
   const validationSchema = Yup.object({
-    // name: Yup.string()
-    //   .required("Name is required")
-    //   .max(20, "Name must be at most 20 characters"),
     first_name: Yup.string()
       .required("First name is required")
       .max(20, "First name must be at most 20 characters"),
@@ -64,9 +72,9 @@ function CreateSalesRep({ show, close }) {
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
+
     mobile: Yup.string().required("Mobile is required"),
     location: Yup.string().required("Location is required"),
-    gender: Yup.string().required("Gender is required"),
   });
 
   const formik = useFormik({
@@ -75,9 +83,10 @@ function CreateSalesRep({ show, close }) {
       last_name: "",
       email: "",
       password: "",
+      gender: "",
       location: "",
       mobile: "",
-      gender: ",",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -87,24 +96,24 @@ function CreateSalesRep({ show, close }) {
           const data = {
             first_name: values.first_name,
             last_name: values.last_name,
-            role: "Staff",
+            role: "User",
             email: values.email,
             password: values.password,
             mobile: values.mobile,
+
             location: values.location,
             gender: values.gender,
           };
 
-          const staffData = await createSalesRep(data);
-
-          console.log("sales rep -- console", staffData);
-          if (staffData) {
+          const customerData = await createCustomer(data);
+          console.log("create customer", createAdmin);
+          if (customerData) {
             setIsRefetch(!isRefetch);
-            toast.success("Staff Added Successfully.");
+            toast.success("Customer Added Successfully.");
             close();
             setIsLoading(false);
           } else {
-            console.error("Error while creating staff:", staffData.error);
+            console.error("Error while creating Customer:", customerData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
@@ -117,8 +126,7 @@ function CreateSalesRep({ show, close }) {
       }
     },
   });
-
-  console.log("sales formik data", formik);
+  console.log("formik of admin", formik);
   return (
     <Offcanvas
       show={show}
@@ -130,7 +138,7 @@ function CreateSalesRep({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Sales Rep </Offcanvas.Title>
+        <Offcanvas.Title>Add Admin </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -278,14 +286,11 @@ function CreateSalesRep({ show, close }) {
               <option value="" label="Select a location" />
               {location.map((item) => {
                 return (
-                  <option
-                    key={item?.id}
-                    value={item.id}
-                    label={item.location}
-                  />
+                  <option key={item?.id} value={item.id} label={item?.location}>
+                    {`${item?.location} ${item?.country_flag}`}
+                  </option>
                 );
               })}
-
               {/* Add more options as needed */}
             </select>
             {formik.touched.location && formik.errors.location ? (
@@ -346,7 +351,6 @@ function CreateSalesRep({ show, close }) {
             ) : null}
           </div>
         </div>
-
         <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
@@ -401,6 +405,7 @@ function CreateSalesRep({ show, close }) {
             ) : null}
           </div>
         </div>
+
         {/* table */}
         <table class="table table-hover">
           <thead>
@@ -423,7 +428,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault1"
                   />
                 </div>
               </td>
@@ -434,7 +439,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault2"
                   />
                 </div>
               </td>
@@ -445,7 +450,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault3"
                   />
                 </div>
               </td>
@@ -456,7 +461,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault4"
                   />
                 </div>
               </td>
@@ -470,7 +475,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault5"
                   />
                 </div>
               </td>
@@ -481,7 +486,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault6"
                   />
                 </div>
               </td>
@@ -492,7 +497,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault7"
                   />
                 </div>
               </td>
@@ -503,7 +508,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault8"
                   />
                 </div>
               </td>
@@ -517,7 +522,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault9"
                   />
                 </div>
               </td>
@@ -528,7 +533,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault10"
                   />
                 </div>
               </td>
@@ -539,7 +544,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault11"
                   />
                 </div>
               </td>
@@ -550,7 +555,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault12"
                   />
                 </div>
               </td>
@@ -564,7 +569,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault13"
                   />
                 </div>
               </td>
@@ -575,7 +580,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault14"
                   />
                 </div>
               </td>
@@ -586,7 +591,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault15"
                   />
                 </div>
               </td>
@@ -597,7 +602,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault16"
                   />
                 </div>
               </td>
@@ -611,7 +616,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault17"
                   />
                 </div>
               </td>
@@ -622,7 +627,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault18"
                   />
                 </div>
               </td>
@@ -633,7 +638,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault19"
                   />
                 </div>
               </td>
@@ -644,7 +649,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault20"
                   />
                 </div>
               </td>
@@ -658,7 +663,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault21"
                   />
                 </div>
               </td>
@@ -669,7 +674,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault22"
                   />
                 </div>
               </td>
@@ -680,7 +685,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault23"
                   />
                 </div>
               </td>
@@ -691,7 +696,7 @@ function CreateSalesRep({ show, close }) {
                     class="form-check-input"
                     type="checkbox"
                     value=""
-                    id="flexCheckDefault"
+                    id="flexCheckDefault24"
                   />
                 </div>
               </td>
@@ -737,4 +742,4 @@ function CreateSalesRep({ show, close }) {
   );
 }
 
-export default CreateSalesRep;
+export default CustomerCreate;

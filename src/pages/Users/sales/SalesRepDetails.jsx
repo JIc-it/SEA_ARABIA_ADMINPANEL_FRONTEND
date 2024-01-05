@@ -54,7 +54,9 @@ function SalesRepDetails() {
           <div className="card-body">
             <div className="left_header">
               <div>
-                <p className="card_content">{salesRepDetails?.first_name}</p>
+                <p className="card_content">
+                  {salesRepDetails?.first_name} {salesRepDetails?.last_name}
+                </p>
               </div>
               <div className="card_header_contents">
                 <p className="card_content">

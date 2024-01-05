@@ -122,6 +122,23 @@ const ServiceEdit = () => {
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
             const formattedAmenities = amenitiesmappedid.join(', ');
 
+            const findservice_price_service_destination_id=values.service_price_service.map((dat)=>{
+                if(dat.location.id){
+                    return{
+                    id: dat.id,
+                    service: dat.service,
+                    is_active: dat.is_active,
+                    location: dat.location.id,
+                    name: dat.name,
+                    price: dat.price,
+                    duration_hour:dat.duration_hour,
+                    duration_minute:dat.duration_minute
+                    }
+                }
+                else{
+                    return values.service_price_service
+                }
+            })
 
             function removeServiceKey(values) {
 
@@ -168,7 +185,8 @@ const ServiceEdit = () => {
                 per_head_booking: values.per_head_booking,
                 purchase_limit_min: values.purchase_limit_min,
                 purchase_limit_max: values.purchase_limit_max,
-                service_price_service: removeServiceKey(values)
+                service_price_service: findservice_price_service_destination_id
+                // removeServiceKey(values)
             }
 
             console.log(data, "created_data");
@@ -236,7 +254,11 @@ const ServiceEdit = () => {
 
     
     useEffect(() => {
-        setIsLoading(true)
+        if(isupdated){
+            setIsLoading(false)
+        }else{
+            setIsLoading(true)
+        }
         getOneService(params.id)
             .then((data) => {
                 console.log(data, "first-fetch");

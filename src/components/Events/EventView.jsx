@@ -10,13 +10,29 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import Avatars from "../../assets/images/Avatar.png";
 import { useNavigate } from "react-router-dom";
 import Dropdowns from "../../assets/images/dropdowns.png";
+import foodImg from "../../static/img/food.png";
+import newBooking from "../../static/img/new-booking.png";
+import totalBooking from "../../static/img/total-booking.png";
+import confirmBooking from "../../static/img/confirm-booking.png";
+import cancelBooking from "../../static/img/cancel-booking.png";
+import filterIcon from "../../static/img/Filter.png";
+import CreateAddOn from "./CreateAddOn";
 
 function EventView({ show, close }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
+  const [isChecked, setIsChecked] = useState(false);
+  const [showOffcanvas, setShowOffcanvas] = useState(false);
 
+  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+
+  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+
+  const handleSwitchChange = () => {
+    setIsChecked(!isChecked);
+  };
   const validationSchema = Yup.object({
     name: Yup.string()
       .required("Name is required")
@@ -432,26 +448,23 @@ function EventView({ show, close }) {
                           >
                             Price <span style={{ color: "red" }}>*</span>
                           </label>
-                          <select
-                            className="form-control"
-                            name="amenities"
-                            value={formik.values.amenities}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          >
-                            <option value="" disabled>
-                              Select a Amenities
-                            </option>
-                            <option value="service1">Amenities 1</option>
-                            <option value="service2">Amenities 2</option>
-                            {/* Add more options as needed */}
-                          </select>
-                          {formik.touched.amenities &&
-                          formik.errors.amenities ? (
-                            <div className="error">
-                              {formik.errors.amenities}
-                            </div>
-                          ) : null}
+                          <div style={{ position: "relative" }}>
+                            <input
+                              type="text"
+                              placeholder=""
+                              className="form-control"
+                              name=""
+                              value={formik.values.pickuppoint}
+                              onChange={formik.handleChange}
+                              onBlur={formik.handleBlur}
+                            />
+                            {formik.touched.pickuppoint &&
+                            formik.errors.pickuppoint ? (
+                              <div className="error">
+                                {formik.errors.pickuppoint}
+                              </div>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -633,50 +646,270 @@ function EventView({ show, close }) {
                   </div>
                 </div>
               </div>
-
+              {/* test */}
               <div
-                className={!isMobileView ? "card mt-2 me-3" : "card mt-2"}
-                style={{
-                  width: isMobileView ? "100vw" : "50vw",
-                  borderRadius: "8px",
-                }}
+                className={
+                  isMobileView ? "d-flex flex-column" : "d-flex flex-row"
+                }
               >
-                <div className="p-5"></div>
-                <div className="col-12 p-5">
-                  <p style={{ fontWeight: "600" }}>Pricing</p>
-                  <p style={{ fontWeight: "550" }}>Profit Method</p>
-                  <div className={isMobileView ? "col-12" : "col-12"}>
-                    <div className="mt-2">
-                      <label
-                        htmlFor=""
-                        style={{ paddingBottom: "10px", fontWeight: "500" }}
-                      >
-                        Cancellation Policy
-                      </label>
-                      <textarea
-                        name=""
-                        id=""
-                        cols=""
-                        rows="1"
-                        className="form-control"
-                        placeholder="Notes"
-                      ></textarea>
+                <div
+                  className={!isMobileView ? "card mt-2 me-3" : "card mt-2"}
+                  style={{
+                    width: isMobileView ? "100vw" : "50vw",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <div className="col-12 p-5">
+                    <p style={{ fontWeight: "600" }}>Pricing</p>
+                    <p style={{ fontWeight: "550" }}>Profit Method</p>
+                    <div className={isMobileView ? "col-12" : "col-12"}>
+                      <div className="mt-2">
+                        <label
+                          htmlFor=""
+                          style={{ paddingBottom: "10px", fontWeight: "500" }}
+                        >
+                          Cancellation Policy
+                        </label>
+                        <textarea
+                          name=""
+                          id=""
+                          cols=""
+                          rows="1"
+                          className="form-control"
+                          placeholder="Notes"
+                        ></textarea>
+                      </div>
+                      <div className="mt-2">
+                        <label
+                          htmlFor=""
+                          style={{ paddingBottom: "10px", fontWeight: "500" }}
+                        >
+                          Return Policy
+                        </label>
+                        <textarea
+                          name=""
+                          id=""
+                          cols=""
+                          rows="1"
+                          className="form-control"
+                          placeholder="Notes"
+                        ></textarea>
+                      </div>
                     </div>
-                    <div className="mt-2">
-                      <label
-                        htmlFor=""
-                        style={{ paddingBottom: "10px", fontWeight: "500" }}
+                  </div>
+                </div>
+
+                <div
+                  className="card mt-2"
+                  style={{
+                    width: isMobileView ? "100vw" : "30vw",
+                    borderRadius: "8px",
+                  }}
+                >
+                  <CreateAddOn
+                    show={showOffcanvas}
+                    close={handleCloseOffcanvas}
+                  />
+                  <div className="p-5">
+                    <div className="d-flex justify-content-between align-items-center">
+                      <p style={{ fontWeight: "600" }}>Add On Service</p>
+                      <button
+                        onClick={handleOpenOffcanvas}
+                        className="btn btn-primary px-1 py-1"
+                        style={{ backgroundColor: "#187AF7", fontSize: "14px" }}
                       >
-                        Return Policy
-                      </label>
-                      <textarea
-                        name=""
-                        id=""
-                        cols=""
-                        rows="1"
-                        className="form-control"
-                        placeholder="Notes"
-                      ></textarea>
+                        Create Add On
+                      </button>
+                    </div>
+
+                    <div className="d-flex">
+                      {/* <img
+                        src="https://images.unsplash.com/photo-1682685797208-c741d58c2eff?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        style={{ width: "50%", borderRadius: "8px" }}
+                        className="me-3"
+                      />
+                      <img
+                        src="https://images.unsplash.com/photo-1701854711357-ac1374019816?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                        style={{ width: "50%", borderRadius: "8px" }}
+                      /> */}
+
+                      <div className="container">
+                        <div className="row">
+                          <div className="d-flex">
+                            <div className="col-sm-12 col-lg-12 mb-2">
+                              <div
+                                className="card card-sm"
+                                style={{ borderRadius: "12px" }}
+                              >
+                                <div className="card-body">
+                                  <div className="row align-items-center">
+                                    <div className="col-auto">
+                                      <span
+                                        style={{
+                                          borderRadius: "8px",
+                                          border:
+                                            "1px solid rgba(255, 255, 255, 0.30)",
+                                          width: "50px",
+                                          height: "50px",
+                                        }}
+                                      >
+                                        <img
+                                          src={foodImg}
+                                          style={{ width: "70%" }}
+                                        />
+                                      </span>
+                                    </div>
+                                    <div className="column">
+                                      <div className="row">
+                                        <div className="col">
+                                          <div
+                                            className="font-weight-medium count_card_heading col-12"
+                                            style={{
+                                              color: "#000",
+                                              fontSize: 16,
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            Food
+                                          </div>
+                                        </div>
+                                        <div className="col">
+                                          <span>|&nbsp; </span>
+                                          <span>50 kwd</span>
+                                        </div>
+
+                                        <div className="col-4">
+                                          <div className="form-check form-switch">
+                                            <input
+                                              className="form-check-input"
+                                              type="checkbox"
+                                              id="flexSwitchCheckDefault"
+                                              checked={isChecked}
+                                              onChange={handleSwitchChange}
+                                            />
+                                            <label
+                                              className="form-check-label"
+                                              htmlFor="flexSwitchCheckDefault"
+                                            >
+                                              {isChecked
+                                                ? "Active"
+                                                : "Inactive"}
+                                            </label>
+                                          </div>
+                                        </div>
+
+                                        <div className="col">
+                                          <button className="border-none">
+                                            Edit
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="text-secondary"
+                                        style={{
+                                          fontSize: "14px",
+                                          fontWeight: "400",
+                                        }}
+                                      >
+                                        Lorem Ipsum is simply dummy text of the
+                                        printing and typesetting industry. Lorem
+                                        Ipsum has been.
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="d-flex">
+                            {" "}
+                            <div className="col-sm-12 col-lg-12 mb-2">
+                              <div
+                                className="card card-sm"
+                                style={{ borderRadius: "12px" }}
+                              >
+                                <div className="card-body">
+                                  <div className="row align-items-center">
+                                    <div className="col-auto">
+                                      <span
+                                        style={{
+                                          borderRadius: "8px",
+                                          border:
+                                            "1px solid rgba(255, 255, 255, 0.30)",
+                                          width: "50px",
+                                          height: "50px",
+                                        }}
+                                      >
+                                        <img
+                                          src={foodImg}
+                                          style={{ width: "70%" }}
+                                        />
+                                      </span>
+                                    </div>
+                                    <div className="column">
+                                      <div className="row">
+                                        <div className="col">
+                                          <div
+                                            className="font-weight-medium count_card_heading col-12"
+                                            style={{
+                                              color: "#000",
+                                              fontSize: 16,
+                                              fontWeight: 600,
+                                            }}
+                                          >
+                                            Food
+                                          </div>
+                                        </div>
+                                        <div className="col">
+                                          <span>|&nbsp; </span>
+                                          <span>50 kwd</span>
+                                        </div>
+
+                                        <div className="col-4">
+                                          <div className="form-check form-switch">
+                                            <input
+                                              className="form-check-input"
+                                              type="checkbox"
+                                              id="flexSwitchCheckDefault"
+                                              checked={isChecked}
+                                              onChange={handleSwitchChange}
+                                            />
+                                            <label
+                                              className="form-check-label"
+                                              htmlFor="flexSwitchCheckDefault"
+                                            >
+                                              {isChecked
+                                                ? "Active"
+                                                : "Inactive"}
+                                            </label>
+                                          </div>
+                                        </div>
+
+                                        <div className="col">
+                                          <button className="border-none">
+                                            Edit
+                                          </button>
+                                        </div>
+                                      </div>
+                                      <div
+                                        className="text-secondary"
+                                        style={{
+                                          fontSize: "14px",
+                                          fontWeight: "400",
+                                        }}
+                                      >
+                                        Lorem Ipsum is simply dummy text of the
+                                        printing and typesetting industry. Lorem
+                                        Ipsum has been.
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -697,7 +930,7 @@ function EventView({ show, close }) {
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      alignItems: "",
                       flexDirection: isMobileView ? "column" : "row",
                     }}
                   >
@@ -716,53 +949,26 @@ function EventView({ show, close }) {
                         >
                           Status <span style={{ color: "red" }}>*</span>
                         </label>
-                       
                       </div>
                     </div>
                     <div
                       className=""
                       style={{ width: isMobileView ? "80vw" : "35vw" }}
                     >
-                      <div className="mt-2">
+                      <div className="form-check form-switch">
+                        <input
+                          className="form-check-input"
+                          type="checkbox"
+                          id="flexSwitchCheckDefault"
+                          checked={isChecked}
+                          onChange={handleSwitchChange}
+                        />
                         <label
-                          htmlFor=""
-                          style={{
-                            paddingBottom: "10px",
-                            fontWeight: "600",
-                            fontSize: "13px",
-                          }}
+                          className="form-check-label"
+                          htmlFor="flexSwitchCheckDefault"
                         >
-                          OwnerShip
+                          Active
                         </label>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                          }}
-                        >
-                          <div>
-                            <input
-                              type="checkbox"
-                              style={{ width: "15px" }}
-                              defaultChecked
-                            />
-                          </div>
-                          <div>
-                            <p
-                              style={{
-                                fontSize: "14px",
-                                transform: "translateY(5px)",
-                                marginLeft: "5px",
-                              }}
-                            >
-                              Third Party Services
-                            </p>
-                          </div>
-                        </div>
-                        {formik.touched.mobile && formik.errors.mobile ? (
-                          <div className="error">{formik.errors.mobile}</div>
-                        ) : null}
                       </div>
                     </div>
                   </div>
