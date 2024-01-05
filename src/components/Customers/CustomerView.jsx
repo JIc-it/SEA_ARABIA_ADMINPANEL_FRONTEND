@@ -1,10 +1,23 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomerCardDetails from "./CustomerCardDetails";
+import { getCustomerListById } from "../../services/CustomerHandle";
 
 function CustomerView() {
   const navigate = useNavigate();
+  const customerId = useParams()?.customerId;
 
+  const [customerDetails, setCustomerDetails] = useState([]);
+  useEffect(() => {
+    getCustomerListById(customerId)
+      .then((data) => {
+        console.log("BREAD scrumb customer detail is ---", data);
+        setCustomerDetails(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching customer data:", error);
+      });
+  }, [customerId]);
   return (
     <>
       <div className="page">
@@ -36,7 +49,12 @@ function CustomerView() {
                         />
                       </svg>
                     </span>
-                    <p>Customers</p>
+                    {customerDetails?.role === "User" ? (
+                      <p>Customers</p>
+                    ) : (
+                      <span></span>
+                    )}
+
                     <span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -53,7 +71,10 @@ function CustomerView() {
                         />
                       </svg>
                     </span>
-                    <p>Alexa Paul</p>
+                    <p>
+                      {customerDetails?.first_name}
+                      {customerDetails?.last_name}
+                    </p>
                   </div>
                 </div>
               </div>

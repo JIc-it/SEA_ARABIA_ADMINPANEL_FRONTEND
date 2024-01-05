@@ -126,7 +126,7 @@ function UserVendorCardDetails({ venderDetails }) {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {venderDetails?.profileextra?.location}
+                  &nbsp; {venderDetails?.profileextra?.location?.location}
                 </p>
               </div>
             </div>
@@ -256,7 +256,9 @@ function UserVendorCardDetails({ venderDetails }) {
               <a
                 className="mail_vendor_button btn btn-outline mx-1"
                 onClick={() => {
-                  navigate(`/user-vendor-activity-log/${venderDetails?.id}/${venderDetails?.first_name}`);
+                  navigate(
+                    `/user-vendor-activity-log/${venderDetails?.id}/${venderDetails?.first_name}`
+                  );
                 }}
               >
                 Activity Log &nbsp;

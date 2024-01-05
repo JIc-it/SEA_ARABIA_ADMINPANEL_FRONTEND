@@ -2,20 +2,20 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { passwordRegex } from "../../../helpers";
+
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 
-import {
-  UpdateAdminListById,
-  createAdmin,
-  getSalesRepListById,
-} from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
-import { getLocation } from "../../../services/CustomerHandle";
-import { createCustomer, getCustomerListById } from "../../services/CustomerHandle";
+
+import {
+  createCustomer,
+  getCustomerListById,
+  getLocation,
+} from "../../services/CustomerHandle";
+import { passwordRegex } from "../../helpers";
 
 function CustomerCreate({ show, close }) {
   const theme = useTheme();
@@ -24,7 +24,7 @@ function CustomerCreate({ show, close }) {
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
-  const [adminDetails, setAdminDetails] = useState();
+  const [customerDetails, setCustomerDetails] = useState();
   const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
@@ -34,7 +34,7 @@ function CustomerCreate({ show, close }) {
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        setAdminDetails(data);
+        setCustomerDetails(data);
         console.log(" customerId by id==", data);
       })
       .catch((error) => {
@@ -109,7 +109,7 @@ function CustomerCreate({ show, close }) {
           };
 
           const customerData = await createCustomer(data);
-          console.log("create customer", createAdmin);
+          console.log("create customer", createCustomer);
           if (customerData) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
@@ -141,7 +141,7 @@ function CustomerCreate({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Admin </Offcanvas.Title>
+        <Offcanvas.Title>Add Customer </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -289,9 +289,9 @@ function CustomerCreate({ show, close }) {
               <option value="" label="Select a location" />
               {location.map((item) => {
                 return (
-                  <option key={item?.id} value={item.id} label={item?.location}>
-                    {`${item?.location} ${item?.country_flag}`}
-                  </option>
+                  <option key={item?.id} value={item.id} label={item?.location}/>
+                    
+                
                 );
               })}
               {/* Add more options as needed */}

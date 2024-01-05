@@ -1,22 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import CustomerCardDetails from "../../../components/Customers/CustomerCardDetails";
-import { getCustomerlist } from "../../../services/CustomerHandle";
+import { useNavigate, useParams } from "react-router-dom";
+
 import SalesRepDetails from "./SalesRepDetails";
+import { getSalesRepListById } from "../../../services/GuestHandle";
 
 function SalesRepView() {
   const navigate = useNavigate();
-  const [salesData, setSalesData] = useState();
+  const salesRepId = useParams()?.salesRepId;
+
+  const [salesRepDetails, setsalesRepDetails] = useState();
+
   useEffect(() => {
-    getCustomerlist()
+    getSalesRepListById(salesRepId)
       .then((data) => {
-        // console.log("salesRep-list", data.results);
-        setSalesData(data.results)
+        setsalesRepDetails(data);
+        // console.log(" admin by id==", data);
       })
       .catch((error) => {
-        console.error("Error fetching Customer List data:", error);
+        console.error("Error fetching customer data:", error);
       });
-  }, []);
+  }, [salesRepId]);
   return (
     <>
       <div className="page">
@@ -48,7 +51,14 @@ function SalesRepView() {
                         />
                       </svg>
                     </span>
-                    <p>Sales Rep</p>
+                    <p>
+                      {" "}
+                      {salesRepDetails?.role === "Staff" ? (
+                        <p>Staff</p>
+                      ) : (
+                        <span></span>
+                      )}
+                    </p>
                     <span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -65,7 +75,10 @@ function SalesRepView() {
                         />
                       </svg>
                     </span>
-                    <p>Alexa Paul</p>
+                    <p>
+                      {salesRepDetails?.first_name}
+                      {salesRepDetails?.last_name}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -90,7 +103,7 @@ function SalesRepView() {
                 &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
               </div>
             </div>
-            <SalesRepDetails/>
+            <SalesRepDetails />
           </div>
         </div>
       </div>

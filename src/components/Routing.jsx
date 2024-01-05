@@ -49,6 +49,8 @@ import ActivityLog from "./UserVendor/ActivityLog";
 import EventListing from "../pages/Events&Packages/EventsListing";
 import EventView from "./Events/EventView";
 import ServiceAdd from "./Service/ServiceAdd";
+import AdminActivityLog from "../pages/Users/Admin/AdminActivityLog";
+import CustomerActivityLog from "./Customers/CustomerActivityLog";
 
 function AllRouting() {
   return (
@@ -85,6 +87,11 @@ function AllRouting() {
       {/* ///////////////User/////////////////////// */}
       <Route path="/customers" element={<Customers />} />
       <Route path="/customers/:customerId" element={<CustomerView />} />
+      <Route
+        path="/customer-activity-log/:customerId/:customer"
+        element={<CustomerActivityLog />}
+      />
+
       {/* <Route path="/customers-edit/:id" element={<CustomerEdit />} /> */}
       <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
@@ -103,9 +110,16 @@ function AllRouting() {
         path="/sales-representatives/:salesRepId"
         element={<SalesRepView />}
       />
-
+      <Route
+        path="/sales-activity-log/:salesRepId/:salesRep"
+        element={<AdminActivityLog />}
+      />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/:adminId" element={<AdminView />} />
+      <Route
+        path="/admin-activity-log/:adminId/:admin"
+        element={<AdminActivityLog />}
+      />
       {/* ///////////////User/////////////////////// */}
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
