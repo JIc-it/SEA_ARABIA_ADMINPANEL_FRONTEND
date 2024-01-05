@@ -13,6 +13,10 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import { getBookingList } from "../../services/booking"
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'
+
 
 const style = {
   position: "absolute",
@@ -48,41 +52,42 @@ const BookinList = () => {
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
-  const [listVendor, setListVendor] = useState([]);
+  const [bookingList, setBookingList] = useState([]);
 
-  const getVendorListData = async () => {
+  // const getVendorListData = async () => {
+  //   setIsLoading(true);
+  //   getVendorList(search, selectedValue)
+  //     .then((data) => {
+  //       setIsLoading(false);
+  //       setListPageUrl({ next: data.next, previous: data.previous });
+  //       setBookingList(data?.results);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.error("Error fetching  data:", error);
+  //     });
+  // };
+
+  useEffect(() => {
     setIsLoading(true);
-    getVendorList(search, selectedValue)
+    getBookingList(search, selectedValue)
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
-        setListVendor(data?.results);
+        setBookingList(data?.results);
       })
       .catch((error) => {
         setIsLoading(false);
-        console.error("Error fetching  data:", error);
-      });
-  };
-
-  useEffect(() => {
-    setIsLoading(true);
-    getVendorStatus()
-      .then((data) => {
-        setIsLoading(false);
-        setStatusList(data.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("Error fetching  data:", error);
+        toast.error(error.response.data)
       });
   }, []);
 
-  useEffect(() => {
-    getVendorListData();
-  }, [selectedValue, isRefetch]);
+  // useEffect(() => {
+  //   getVendorListData();
+  // }, [selectedValue, isRefetch]);
 
   const handleExportData = () => {
-    if (listVendor) {
+    if (bookingList) {
       const header = [
         "NAME",
         "EMAIL",
@@ -92,7 +97,7 @@ const BookinList = () => {
         "CREATED BY",
         "STATUS",
       ];
-      const csvData = listVendor.map((elem) => {
+      const csvData = bookingList.map((elem) => {
         let formatedDate = formatDate(elem.created_at);
         return [
           elem.first_name,
@@ -132,7 +137,7 @@ const BookinList = () => {
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
-          setListVendor(data?.results);
+          setBookingList(data?.results);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -291,7 +296,7 @@ const BookinList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          onClick={getVendorListData}
+                          // onClick={getVendorListData}
                         >
                           Search
                         </button>
@@ -384,26 +389,28 @@ const BookinList = () => {
                     <thead>
                       <tr>
                         <th className="w-1">
-                          <span>Name</span>
+                          <span>Booking ID</span>
                         </th>
                         <th>
-                          <span>User Type</span>
+                          <span>Booking Item</span>
                         </th>
                         <th>
-                          {" "}
-                          <span>Date & Time</span>
+                          <span>Category</span>
                         </th>
                         <th>
-                          <span>Location</span>
+                          <span>Vendor Name</span>
                         </th>
                         <th>
-                          <span>Phone</span>
+                          <span>Customer Name</span>
                         </th>
                         <th>
-                          <span>Email</span>
+                          <span>Customer Type</span>
                         </th>
                         <th>
-                          <span>Service</span>
+                          <span>Commencement Date</span>
+                        </th>
+                        <th>
+                          <span>Creation Date</span>
                         </th>
                         <th>
                           <span>Status</span>
@@ -416,49 +423,60 @@ const BookinList = () => {
                     <tbody>
                       {!isLoading ? (
                         <>
+                          {bookingList.length>0 && 
+                          bookingList.map((data)=>
                           <tr>
+                            {console.log(data)}
                             <td>
                               <span className="text-secondary">
-                                Shaheel Arham
+                              {data.booking_id}
                               </span>
                             </td>
                             <td>
-                              <span className="text-secondary">Registered</span>
+                              <span className="text-secondary">{data.booking_item}</span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                08 OCT, 2022 , 08:20 AM
+                                {data?.service?.category.map((items)=>
+                                items.name
+                                )}
                               </span>
                             </td>
                             <td>
-                              <span className="text-secondary">Kuwait</span>
+                              <span className="text-secondary">{data?.service?.company}</span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                +97455682545
+                                {data?.first_name}
                               </span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                shaheel098@gmail.com{" "}
+                                {data?.user_type}
                               </span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                Hot Air Balloon
+                                {new Date(data?.start_date).toLocaleDateString("es-CL")}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                -
                               </span>
                             </td>
                             <td>
                               <span
-                                className="badge  text-blue-fg confirm-button"
+                                className="badge  text-blue-fg "
                                 style={{
                                   width: "100px",
                                   padding: "7px 9px 5px 9px ",
                                   borderRadius: "4px",
-                                  //   backgroundColor: "#5A9CD9",
+                                  background:data?.status==="Completed"? "#13B370":data?.status==="Unsuccessful"?"#DC7932":data?.status==="Cancelled"?"#DE4E21":"#2684FC",
+                                  
                                 }}
                               >
-                                Confirmed
+                                {data?.status ? data?.status: "-"}
                               </span>
                             </td>
                             <td
@@ -469,7 +487,7 @@ const BookinList = () => {
                               }}
                             >
                               <Link
-                                to={`/booking-view/1234`}
+                                to={`/booking-view/${data?.booking_id}/`}
                                
 
                                 className="btn btn-sm btn-info"
@@ -502,178 +520,9 @@ const BookinList = () => {
                               </Link>
                             </td>
                           </tr>
-                          <tr>
-                            <td>
-                              <span className="text-secondary">
-                                Shaheel Arham
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">Registered</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                08 OCT, 2022 , 08:20 AM
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">Kuwait</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                +97455682545
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                shaheel098@gmail.com{" "}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                Hot Air Balloon
-                              </span>
-                            </td>
-                            <td>
-                              <span
-                                className="badge  text-blue-fg cancel-button"
-                                style={{
-                                  width: "100px",
-                                  padding: "7px 9px 5px 9px ",
-                                  borderRadius: "4px",
-                                  //   backgroundColor: "#5A9CD9",
-                                }}
-                              >
-                                Failed
-                              </span>
-                            </td>
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                // to={"/onboard"}
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "7px 10px 5px 10px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-
-                                  /* Shadow/XSM */
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                              >
-                                View &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
-                          </tr>
-                          <tr>
-                            <td>
-                              <span className="text-secondary">
-                                Shaheel Arham
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">Registered</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                08 OCT, 2022 , 08:20 AM
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">Kuwait</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                +97455682545
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                shaheel098@gmail.com{" "}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                Hot Air Balloon
-                              </span>
-                            </td>
-                            <td>
-                              <span
-                                className="badge  text-blue-fg warning-button"
-                                style={{
-                                  width: "100px",
-                                  padding: "7px 9px 5px 9px ",
-                                  borderRadius: "4px",
-                                  //   backgroundColor: "#5A9CD9",
-                                }}
-                              >
-                                Opened
-                              </span>
-                            </td>
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                // to={"/onboard"}
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "7px 10px 5px 10px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-
-                                  /* Shadow/XSM */
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                              >
-                                View &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
-                          </tr>
+                          
+                          )
+                          }
                         </>
                       ) : (
                         <tr>
