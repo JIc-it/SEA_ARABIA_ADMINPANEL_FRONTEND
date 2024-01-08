@@ -5,12 +5,20 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import { siteVisitQualification, submitSiteVisit } from "../../../../services/leadMangement";
+import {
+  siteVisitQualification,
+  submitSiteVisit,
+} from "../../../../services/leadMangement";
 import { FileUploader } from "../../../Modal/FileUploader";
 
-function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch,companyID }) {
-  
- 
+function AddSiteVisitModal({
+  show,
+  close,
+  title,
+  setIsRefetch,
+  isRefetch,
+  companyID,
+}) {
   const [isLoading, setIsLoading] = useState(false);
   const initialValues = {
     title: "",
@@ -20,8 +28,6 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch,company
     date: "",
     qualification: [],
   };
-
- 
 
   const formik = useFormik({
     initialValues: initialValues,
@@ -59,7 +65,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch,company
           formdata.append("attachment", values.files);
           formdata.append("note", values.note);
           formdata.append("date", values.date);
-          formdata.append("time", values.time);
+          formdata.append("time", `${values.time}:00`);
           formdata.append("qualifications", values.qualification);
           // console.log(formdata.getAll("qualifications"));
           const response = await submitSiteVisit(formdata);

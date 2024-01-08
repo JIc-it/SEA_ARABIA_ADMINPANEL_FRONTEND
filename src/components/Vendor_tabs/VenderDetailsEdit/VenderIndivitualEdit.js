@@ -14,6 +14,7 @@ import {
 } from "../../../services/leadMangement";
 import { toast } from "react-toastify";
 import { getLocation } from "../../../services/CustomerHandle";
+import CountryDropdown from "../../SharedComponents/CountryDropDown";
 
 const VenderIndivitualEdit = () => {
   const navigate = useNavigate();
@@ -30,18 +31,16 @@ const VenderIndivitualEdit = () => {
   const [userdata, setUserData] = useState([]);
   const [location, setLocation] = useState();
 
+
   useEffect(() => {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results);
+        setLocation(data);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
       });
-  }, []);
-
-  useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
         setServiceTagList(data.results);
@@ -115,7 +114,17 @@ const VenderIndivitualEdit = () => {
           .replace(/\D/g, "")
           .replace(/^965/, "");
         formik.setFieldValue("phone", formattedPhoneNumber);
-        formik.setFieldValue("location", data.profileextra.location?.location);
+        const selectedCountryObject =
+          location &&
+          location.length > 0 &&
+          location.find(
+            (country) =>
+              country.code === data.profileextra.location.country_code
+          );
+        console.log(selectedCountryObject, "selectedCountryObject");
+        selectedCountryObject &&
+          formik.setFieldValue("location", selectedCountryObject);
+
         formik.setFieldValue(
           "idType",
           data?.useridentificationdata?.id_type?.id || ""
@@ -150,7 +159,7 @@ const VenderIndivitualEdit = () => {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [vendorId]);
+  }, [vendorId,location]);
 
   const updateInitialContact = async () => {
     try {
@@ -322,7 +331,8 @@ const VenderIndivitualEdit = () => {
                   <div className="col-sm-6 ">
                     <div className="mb-3">
                       <label className="form-label">Location</label>
-                      <div style={{ position: "relative" }}>
+                      <CountryDropdown gccCountries={location} formik={formik} />
+                      {/* <div style={{ position: "relative" }}>
                         <select
                           className="form-control"
                           id=""
@@ -330,7 +340,7 @@ const VenderIndivitualEdit = () => {
                           // value={formik.values.location}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
-                        >
+                        > */}
                           {/* <option
                             disabled={true}
                             value=""
@@ -338,7 +348,7 @@ const VenderIndivitualEdit = () => {
                           >
                             {formik.values.location?.location}
                           </option> */}
-                          {location &&
+                          {/* {location &&
                             location.length > 0 &&
                             location.map((item, index) => {
                               return (
@@ -360,11 +370,11 @@ const VenderIndivitualEdit = () => {
                                 </option>
                               );
                             })}
-                        </select>
-                        {formik.touched.location && formik.errors.location ? (
+                        </select> */}
+                        {/* {formik.touched.location && formik.errors.location ? (
                           <div className="error">{formik.errors.location}</div>
-                        ) : null}
-                        <svg
+                        ) : null} */}
+                        {/* <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
                           height="20"
@@ -390,7 +400,7 @@ const VenderIndivitualEdit = () => {
                             stroke-width="1.5"
                           />
                         </svg>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>

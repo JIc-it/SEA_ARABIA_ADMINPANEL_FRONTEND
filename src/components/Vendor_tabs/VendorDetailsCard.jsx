@@ -14,6 +14,7 @@ function VendorDetailsCard() {
   const [userdata, setUser] = useState([]);
   const count = useSelector((state) => state.counter.value);
   console.log(count);
+
   useEffect(() => {
     getVendorListById(vendorId)
       .then((data) => {
@@ -59,7 +60,7 @@ function VendorDetailsCard() {
                     fill="white"
                   />
                 </svg>{" "}
-                &nbsp; SS56DG2355D <span>| &nbsp;</span>
+                &nbsp;  {userdata?.account_id} <span>| &nbsp;</span>
               </p>
               <p className="card_content">
                 <svg
@@ -96,7 +97,7 @@ function VendorDetailsCard() {
                     fill="white"
                   />
                 </svg>{" "}
-                &nbsp; {userdata?.location}
+                &nbsp; {userdata?.profileextra?.location?.country}
               </p>
             </div>
           </div>
@@ -169,7 +170,7 @@ function VendorDetailsCard() {
             </a>
 
             <a
-              className="mail_vendor_button btn btn-outline"
+              className="mail_vendor_button btn btn-outline mx-2"
               onClick={() => {
                 const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${userdata?.email}`;
 

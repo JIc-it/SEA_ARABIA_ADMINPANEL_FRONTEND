@@ -19,6 +19,7 @@ export default function LeadDetails({ count }) {
       });
   }, [vendorId, count]);
 
+  
   return (
     <div class="tab-content home">
       {leads && (
@@ -122,7 +123,7 @@ export default function LeadDetails({ count }) {
                           textTransform: "capitalize",
                         }}
                       >
-                        {leads.profileextra?.location?.location}
+                        {leads.profileextra?.location?.country}
                       </p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

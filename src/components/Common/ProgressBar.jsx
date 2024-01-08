@@ -117,7 +117,11 @@ function ProgressBar({ locationList }) {
         formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
-        formik.setFieldValue("location", data.profileextra.location?.location);
+        const selectedCountryObject =locationList&&locationList.length>0&& locationList.find(
+          (country) => country.code === data.profileextra.location?.country_code
+        );
+        console.log(selectedCountryObject, "selectedCountryObject");
+        selectedCountryObject&&   formik.setFieldValue("location", selectedCountryObject);
         formik.setFieldValue(
           "idType",
           data?.useridentificationdata?.id_type?.id || ""
@@ -148,7 +152,7 @@ function ProgressBar({ locationList }) {
           "thirdPartyService",
           data?.company_company_user?.third_party_ownership
         );
-console.log(data.company_onboard_status,'data.status');
+        console.log(data.company_onboard_status, "data.status");
         if (data.company_onboard_status === "New Lead") {
           dispatch(setCounter(0));
         }
@@ -425,9 +429,9 @@ console.log(data.company_onboard_status,'data.status');
       formdata.append("attachment", formik.values.files);
       formdata.append("note", formik.values.note);
       formdata.append("date", formik.values.siteVisitDate);
-      formdata.append("time", formik.values.siteVisitTime);
+      formdata.append("time", `${formik.values.siteVisitTime}:00`);
       formdata.append("qualifications", formik.values.qualification);
-      // console.log(formdata.getAll("qualifications"));
+      console.log(`${formik.values.qualification.join(",")}`, "qualifications");
       const response = await submitSiteVisit(formdata);
       if (response) {
         updateVendorStatus(companyID, "Proposal")
@@ -577,7 +581,7 @@ console.log(data.company_onboard_status,'data.status');
   };
 
   const dispatch = useDispatch();
-
+  console.log(formik.values.location, "formik.values.location");
   return (
     <div>
       <div className="col-12">

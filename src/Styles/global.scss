@@ -178,3 +178,9 @@ optgroup {
   // border:1px solid black;
   border-radius: 3px;
 }
+
+@media (max-width:991px){
+.page-wrapper{
+  margin-left: 10px !important;
+}
+}

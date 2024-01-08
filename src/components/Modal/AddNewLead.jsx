@@ -8,7 +8,7 @@ import { createVenderLead } from "../../services/leadMangement";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { getLocation } from "../../services/CustomerHandle";
-import CountryDropdown from "./Test";
+import CountryDropdown from "../SharedComponents/CountryDropDown";
 
 function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -17,8 +17,8 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("location is==", data.results);
-        setLocation(data.results);
+        console.log("location is==", data);
+        setLocation(data);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -40,7 +40,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
       .email("Invalid email address")
       .required("Email is required"),
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -62,7 +62,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             role: "Vendor",
             email: values.email,
             mobile: `+965 ${values.mobile}`,
-            location: values.location,
+            location: values.location?.id,
           };
 
           const adminData = await createVenderLead(data);
@@ -87,7 +87,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
       }
     },
   });
-
+  console.log(formik.errors);
   return (
     <Offcanvas
       show={show}
@@ -189,59 +189,8 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
           >
             Location <span style={{ color: "red" }}>*</span>
           </label>
-          <div style={{ position: "relative" }}>
-            <select
-              className="form-control"
-              id=""
-              name="location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="" label="Select a location" />
-              {location &&
-                location.length > 0 &&
-                location.map((item, index) => {
-                  return (
-                    <option key={item.id} value={item.id} label={item.location}>
-                      {item.country_flag && (
-                        <img
-                          src={item.country_flag}
-                          alt={`${item.location} flag`}
-                          style={{ width: "20px", marginRight: "5px" }}
-                        />
-                      )}
-                    </option>
-                  );
-                })}
-            </select>
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{ top: "10px", right: "5px", position: "absolute" }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-            </svg>
-          </div>
-          {/* <CountryDropdown/> */}
+     
+          <CountryDropdown gccCountries={location} formik={formik} />
         </div>
         <button
           className="btn btn-success"

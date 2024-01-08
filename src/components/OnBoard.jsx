@@ -17,8 +17,8 @@ function OnBoard() {
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("location is==", data.results);
-        setLocation(data.results);
+        console.log("location is==", data);
+        setLocation(data);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
