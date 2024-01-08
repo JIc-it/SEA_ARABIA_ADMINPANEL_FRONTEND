@@ -47,12 +47,7 @@ function AddSiteVisitModal({
       note: Yup.string().required("Note is required"),
       time: Yup.string().required("Time is required"),
       date: Yup.string().required("Date is required"),
-      // qualification: Yup.array()
-      //   .min(6, "All qualifications must be selected")
-      //   .test("allChecked", "All qualifications must be selected", (value) => {
-      //     // Check if every item in the array is truthy
-      //     return Array.isArray(value) && value.every((item) => item);
-      //   }),
+    
     }),
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
