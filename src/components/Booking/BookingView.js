@@ -2,10 +2,10 @@ import React,{useState,useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Ship from "../../assets/images/jean-cloete-gX_04X-_GbQ-unsplash 1.png"
+import { toast } from "react-toastify";
 import tick from "../../assets/images/uil_check.png"
 import { useParams } from 'react-router-dom';
-import { getBooking } from "../../services/booking"
+import { getBooking,updateCancellation } from "../../services/booking"
 import { CircularProgress } from '@mui/material';
 import RefundModal from './RefundModal';
 
@@ -17,6 +17,10 @@ export default function BookingView() {
     const [isLoading,setIsLoading]=useState(false)
     const [booking,setBooking]=useState({})
     const [open,setOpen]=useState(false);
+
+const cancelBooking=()=>{
+    updateCancellation(params.id).then((data)=>toast.success(data)).catch(err=>toast.error(err.response.data.error))
+}
 
     useEffect(() => {
         setIsLoading(true);
@@ -71,7 +75,7 @@ const statusCheck=()=>{
                             </div>
                         </div>
 
-                        <button className='btn btn-danger'>Cancel Booking &nbsp;
+                        <button className='btn btn-danger' onClick={cancelBooking}>Cancel Booking &nbsp;
                             <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
                                 <path d="M16.1268 6.34754L12.8278 3.37845C11.8879 2.53256 11.418 2.10961 10.8413 1.88835L10.8337 4.16708C10.8337 6.13127 10.8337 7.11336 11.4439 7.72355C12.054 8.33375 13.0361 8.33375 15.0003 8.33375H17.9837C17.6816 7.7469 17.1406 7.26003 16.1268 6.34754Z" fill="white" />
                                 <path fillRule="evenodd" clipRule="evenodd" d="M8.33366 18.3337H11.667C14.8097 18.3337 16.381 18.3337 17.3573 17.3573C18.3337 16.381 18.3337 14.8097 18.3337 11.667V11.3027C18.3337 10.5754 18.3337 10.029 18.2982 9.58375H15.0003L14.9213 9.58375C14.007 9.58382 13.199 9.58389 12.5478 9.49633C11.8419 9.40142 11.136 9.1835 10.56 8.60744C9.98391 8.03138 9.76599 7.32556 9.67108 6.61962C9.58352 5.96836 9.58358 5.16039 9.58366 4.24613L9.59135 1.88413C9.59158 1.81543 9.59746 1.74749 9.60867 1.68088C9.26816 1.66699 8.86349 1.66699 8.35849 1.66699C5.19924 1.66699 3.61961 1.66699 2.6433 2.6433C1.66699 3.61961 1.66699 5.19096 1.66699 8.33366V11.667C1.66699 14.8097 1.66699 16.381 2.6433 17.3573C3.61961 18.3337 5.19096 18.3337 8.33366 18.3337ZM4.55838 12.0584C4.80246 11.8143 5.19819 11.8143 5.44227 12.0584L6.25033 12.8664L7.05838 12.0584C7.30246 11.8143 7.69819 11.8143 7.94227 12.0584C8.18635 12.3025 8.18635 12.6982 7.94227 12.9423L7.13421 13.7503L7.94227 14.5584C8.18635 14.8025 8.18635 15.1982 7.94227 15.4423C7.69819 15.6863 7.30246 15.6863 7.05838 15.4423L6.25033 14.6342L5.44227 15.4423C5.19819 15.6863 4.80246 15.6863 4.55838 15.4423C4.31431 15.1982 4.31431 14.8025 4.55838 14.5584L5.36644 13.7503L4.55838 12.9423C4.31431 12.6982 4.31431 12.3025 4.55838 12.0584Z" fill="white" />
@@ -428,8 +432,8 @@ const statusCheck=()=>{
                             </div>
                             <div className='p-3 m-2 rounded' style={{ backgroundColor: "#EAEBF0" }}>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
-                                    <span style={{ color: "#68727D" }}>LA CABANE</span>
-                                    <span>2.50 KWD</span>
+                                    <span style={{ color: "#68727D" }}>{booking?.service?.name}</span>
+                                    <span>{booking?.payment?.amount} KWD</span>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ color: "#68727D" }}>Service Fee</span>
@@ -516,7 +520,7 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled On</p>
-                                        {/* <p>{booking?.cancellation_}</p> */}
+                                        <p>{new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancellation Reason</p>
@@ -527,34 +531,34 @@ const statusCheck=()=>{
                                         <p style={{visibility:"hidden"}}>NO</p>
                                     </div>
                                 </div>
-                                <div style={{ width: isMobileView ? "90%" : "50%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
+                                {<div style={{ width: isMobileView ? "90%" : "50%", backgroundColor: "#F8F8F8" }} className='p-3 m-3 rounded'>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p style={{ fontWeight: "600" }}>Refund</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Amount</p>
-                                        <p>{booking?.refund_amount} KWD</p>
+                                        <p>{booking?.is_refunded && booking?.refund_amount} KWD</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Details</p>
-                                        <p>{booking?.refund_details}</p>
+                                        <p>{ booking?.is_refunded && booking?.refund_details}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Status</p>
-                                        <p>{booking?.refund_status}</p>
+                                        <p>{ booking?.is_refunded && booking?.refund_status}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Type</p>
-                                        <p>{booking?.refund_type}</p>
+                                        <p>{ booking?.is_refunded && booking?.refund_type}</p>
                                     </div>
-                                </div>
+                                </div>}
                                 
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <RefundModal open={open} setOpen={setOpen}/>
+            <RefundModal open={open} setOpen={setOpen} bookingId={params.id}/>
         </div>}
         </>
     )

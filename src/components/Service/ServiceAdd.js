@@ -261,7 +261,7 @@ const ServiceAdd = () => {
                                               
                         
                         AddMultipleImage(formData).then((data) => console.log(data)).catch((err) => console.log(err))
-                        toast.success("Updated Successfully")
+                        toast.success("Service Created Successfully")
                         setIsUpdated(true)
 
                     } else {

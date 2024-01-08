@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Offcanvas from "react-bootstrap/Offcanvas";
-// import { handleChangePassword } from "../../../services/commonServices"
+import { updateRefund } from "../../services/booking"
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import { Radio, Paper, Typography, Box } from '@mui/material';
+
 
 const offcanvasStyle = {
     width: "365px",
@@ -19,21 +20,15 @@ const offcanvasStyle = {
 export default function RefundModal({
     open,
     setOpen,
-    //   userid
+    bookingId
 }) {
     const [isLoading, setIsLoading] = useState(false);
 
-
-    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
-
     const validationSchema = Yup.object({
             refund_amount: Yup.number()
-            .required("Amount is required")
-            .min(1, 'Must be greater than zero'),
+            .min(1, 'Value must be greater than or equal to 1'),
             refund_details: Yup.string()
             .required("Details is required"),
-            refund_on: Yup.string()
-            .required("Refund On is required"),
     });
 
     const formik = useFormik({
@@ -41,56 +36,59 @@ export default function RefundModal({
             refund_type: "Partial Amount",
             refund_amount:0,
             refund_details:"",
-            refund_on: "",
         },
         validationSchema,
         onSubmit: async (values) => {
-        //   setIsLoading(true);
-        //   if (!isLoading) {
-        //     try {
-        //       const data = {
-        //         user_id:userid,
-        //         new_password: values.password,
-        //         confirm_password: values.confirmPassword,
-        //       };
+          setIsLoading(true);
+          if (!isLoading) {
+            try {
+              const data = {
+                  refund_type: values.refund_type,
+                  refund_amount: values.refund_amount,
+                  refund_details: values.refund_details,
+              };
 
-        //       const resetData = await handleChangePassword(data);
-        //       if (resetData) {
-        //         toast.success("Reset password successfully!");
+              const resetData = await updateRefund(bookingId,data);
+              if (resetData) {
+                toast.success("Initiated successfully!");
                 setOpen(false);
-        //         setIsLoading(false);
-        //         formik.setValues(()=>{
+                setIsLoading(false);
+                formik.setValues(()=>{
 
-        //            return {
-        //             password: "",
-        //             confirmPassword: "",
-        //            }
+                   return {
+                    refund_type: "Partial Amount",
+                    refund_amount:0,
+                    refund_details:"",
+                   }
 
-        //         })
-        //       } else {
-        //         console.error("Error while creating Admin:", resetData.error);
-        //         setIsLoading(false);
-        //       }
-        //       setIsLoading(false);
-        //     } catch (err) {
-        //       console.log(err);
-        //       err.response.data.email && toast.error(err.response.data.email[0]);
-        //       err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-        //       setIsLoading(false);
-        //     }
-        //   }
+                })
+              } else {
+                console.error("Error while creating Admin:", resetData.error);
+                setIsLoading(false);
+              }
+              setIsLoading(false);
+            } catch (err) {
+              console.log(err);
+              toast.error(err.response.data.error);
+              setIsLoading(false);
+            }
+          }
         },
     });
 
     const handleCloseOffcanvas = () => {
         setOpen(false);
         setIsLoading(false);
+        formik.setValues(()=>{
+
+            return {
+             refund_type: "Partial Amount",
+             refund_amount:0,
+             refund_details:"",
+            }
+
+         })
     };
-
-
-
-console.log(formik.values);
-
     return (
         <Offcanvas
             show={open}
@@ -99,7 +97,7 @@ console.log(formik.values);
             style={{ overflow: "auto" }}
         >
             <Offcanvas.Header
-                // style={{ marginLeft: 345 }}
+                style={{ borderBottom:"none" }}
                 closeButton
                 onClick={handleCloseOffcanvas}
             >
@@ -107,7 +105,7 @@ console.log(formik.values);
             </Offcanvas.Header>
             <form onSubmit={formik.handleSubmit}>
                 <div style={offcanvasStyle}>
-                    <h5 style={{ marginTop: 10 }}>Refund Type</h5>
+                    <h5>Refund Type</h5>
                     <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
                         <Paper
                               onClick={() => formik.setFieldValue("refund_type","Partial Amount")}
@@ -160,7 +158,7 @@ console.log(formik.values);
                             <div className="error">{formik.errors.refund_amount}</div>
                         ) : null}
                     </div>
-                    <div style={{ marginTop: 7 }}>
+                    {/* <div style={{ marginTop: 7 }}>
                     <h5 style={{ marginTop: 10 }}>Refunded On</h5>
                         <input
                             type="date"
@@ -174,7 +172,7 @@ console.log(formik.values);
                         {formik.touched.refund_on && formik.errors.refund_on ? (
                             <div className="error">{formik.errors.refund_on}</div>
                         ) : null}
-                    </div>
+                    </div> */}
                     <div style={{ marginTop: 7 }}>
                     <h5 style={{ marginTop: 10 }}>Refund Details</h5>
                         <textarea

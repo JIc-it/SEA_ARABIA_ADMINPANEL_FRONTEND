@@ -47,7 +47,7 @@ import CancellationHistory from "./Booking/CancellationHistory";
 import BookingView from "./Booking/BookingView";
 import ActivityLog from "./UserVendor/ActivityLog";
 import EventListing from "../pages/Events&Packages/EventsListing";
-import EventView from "./Events/EventView";
+import EventEdit from "./Events/EventEdit";
 import ServiceAdd from "./Service/ServiceAdd";
 import AdminActivityLog from "../pages/Users/Admin/AdminActivityLog";
 import CustomerActivityLog from "./Customers/CustomerActivityLog";
@@ -138,7 +138,7 @@ function AllRouting() {
       <Route path="/booking-view/:id" element={<BookingView />} />
 
       <Route path="/events-and-packages" element={<EventListing />} />
-      <Route path="/eventsview" element={<EventView />} />
+      <Route path="/eventedit/:id" element={<EventEdit />} />
     </Routes>
   );
 }
