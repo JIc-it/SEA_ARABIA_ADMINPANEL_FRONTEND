@@ -38,6 +38,10 @@ const ServiceAdd = () => {
         image: Yup.string().required(),
         name: Yup.string().required(),
     });
+    const servicepriceserviceobjectSchema = Yup.object({
+        name: Yup.string().required(),
+        price: Yup.string().required(),
+    });
 
     const ServiceImagebjectSchema = Yup.object({
         image: Yup.mixed().test('file-type', 'Image is required', (value) => {
@@ -68,6 +72,7 @@ const ServiceAdd = () => {
         category: Yup.array().of(CategoryobjectSchema).min(1, 'Category is required'),
         sub_category: Yup.array().of(SubcategoryobjectSchema).min(1, 'Sub-Category is required'),
         service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
         machine_id: Yup.string()
             .required("Machine ID is required"),
         description: Yup.string()
@@ -80,10 +85,31 @@ const ServiceAdd = () => {
             .required("Privacy Policy is required"),
         refund_policy: Yup.string()
             .required("Refund Policy is required"),
+        purchase_limit_min: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+                if (per_head_booking === true) {
+                    return schema
+                        .required("Minimum is Required")
+                        .min(1, 'Must be greater than zero')
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
+        purchase_limit_max: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+                if (per_head_booking === true) {
+                    return schema
+                        .required("Minimum is Required")
+                        .min(1, 'Must be greater than zero')
+                }
+                else {
+                    return schema.notRequired();
+                }
+            }),
         markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
             if (profit_method.name === "Upselling With Markup") {
                 return schema
                     .required("Markup Fee is Required")
+                    .min(1, 'Must be greater than zero')
             }
             else {
                 return schema.notRequired();
@@ -125,6 +151,7 @@ const ServiceAdd = () => {
             is_date: false,
             is_day: false,
             is_time: false,
+            is_refundable:false,
             type: "",
             category: [],
             sub_category: [],
@@ -142,8 +169,8 @@ const ServiceAdd = () => {
             service_image: [],
 
             profit_method: {
-                id: "398bd81c-9f4d-4caf-9540-d7c4de623933",
-                name: "Ownership"
+                id:"630540c7-acd5-478c-999f-62f912e35b66",
+                name:"OwnerShip"
             },
             markup_fee: 0,
             vendor_percentage: 0,
@@ -187,6 +214,7 @@ const ServiceAdd = () => {
                 is_date: values.is_date,
                 is_day: values.is_day,
                 is_time: values.is_time,
+                is_refundable:values.is_refundable,
                 type: values.type,
                 name: values.name,
                 machine_id: values.machine_id,
@@ -233,7 +261,7 @@ const ServiceAdd = () => {
                                               
                         
                         AddMultipleImage(formData).then((data) => console.log(data)).catch((err) => console.log(err))
-                        toast.success("Updated Successfully")
+                        toast.success("Service Created Successfully")
                         setIsUpdated(true)
 
                     } else {
@@ -310,7 +338,7 @@ const ServiceAdd = () => {
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
-            const isCategoryExists = prev.category.some((category) => category.id === id);
+            const isCategoryExists = prev?.category?.some((category) => category.id === id);
 
             if (!isCategoryExists) {
                 return {
@@ -339,7 +367,7 @@ const ServiceAdd = () => {
     };
     const amenitiesstore = (id, name, image) => {
         formik.setValues((prev) => {
-            const isCategoryExists = prev.amenities.some((category) => category.id === id);
+            const isCategoryExists = prev?.amenities?.some((category) => category.id === id);
 
             if (!isCategoryExists) {
                 return {
@@ -473,7 +501,6 @@ const ServiceAdd = () => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
 
-    console.log(formik.values);
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -520,6 +547,9 @@ const ServiceAdd = () => {
                                                         const selectedCategory = e.target.value;
                                                         setCategoryId(selectedCategory)
                                                         const selectedCategoryData = categorylist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("category",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             categorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
                                                         }
@@ -579,6 +609,9 @@ const ServiceAdd = () => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
                                                         const selectedCategoryData = subcategorylist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("sub_category",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             subcategorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.category);
                                                         }
@@ -718,7 +751,15 @@ const ServiceAdd = () => {
                                                     className="form-control"
                                                     placeholder="0"
                                                     value={formik.values.capacity}
-                                                    onChange={formik.handleChange}
+                                                    onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("capacity",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("capacity",e.target.value)
+                                                        }
+                                                        
+                                                    }}
                                                     onBlur={formik.handleBlur}
                                                 />
                                                 {formik.touched.capacity && formik.errors.capacity ? (
@@ -789,6 +830,9 @@ const ServiceAdd = () => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
                                                         const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("amenities",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
                                                         }
@@ -875,10 +919,17 @@ const ServiceAdd = () => {
                                             className="form-control"
                                             placeholder="0"
                                             value={formik.values.markup_fee}
-                                            onChange={formik.handleChange}
+                                            onChange={(e)=>{
+                                                if(e.target.value<=0){
+                                                    formik.setFieldValue("markup_fee",0)
+                                                }
+                                                else{
+                                                    formik.setFieldValue("markup_fee",e.target.value)
+                                                }
+                                                }}
                                             onBlur={formik.handleBlur}
                                         />
-                                        {formik.touched.capacity && formik.errors.markup_fee ? (
+                                        {formik.touched.markup_fee && formik.errors.markup_fee ? (
                                             <div className="error">{formik.errors.markup_fee}</div>
                                         ) : null}
                                     </div>
@@ -1075,6 +1126,9 @@ const ServiceAdd = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.purchase_limit_min && formik.errors.purchase_limit_min ? (
+                                            <div className="error">{formik.errors.purchase_limit_min}</div>
+                                        ) : null}
                                             </div>
 
 
@@ -1093,6 +1147,9 @@ const ServiceAdd = () => {
 
 
                                                     </button>
+                                                    {formik.touched.purchase_limit_max && formik.errors.purchase_limit_max ? (
+                                            <div className="error">{formik.errors.purchase_limit_max}</div>
+                                        ) : null}
                                                 </div>
                                             </div>
 
@@ -1117,6 +1174,9 @@ const ServiceAdd = () => {
                                         {formik.values.is_day && <PerDayTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
                                         {formik.values.is_time && <PerTimeTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
                                         {formik.values.is_date && <PerDateTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.touched.service_price_service && formik.errors.service_price_service ? (
+                                                    <div className="error">{formik.errors.service_price_service}</div>
+                                                ) : null}
                                     </div>
                                 </div>
                             </div>
@@ -1143,6 +1203,20 @@ const ServiceAdd = () => {
                                 {formik.touched.cancellation_policy && formik.errors.cancellation_policy ? (
                                     <div className="error">{formik.errors.cancellation_policy}</div>
                                 ) : null}
+                                
+                                <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 d-flex m-2 align-items-center">
+
+                                    <div style={{ fontWeight: "700" }}>Refund Available</div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <label class="switch" style={{ marginLeft: "5px" }}>
+                                            <input type="checkbox" name="is_refundable" checked={formik.values.is_refundable} value={formik.values.is_refundable} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                            <span class="slider round"></span>
+                                        </label> &nbsp;
+                                        <div style={{ fontSize: "14px" }}>{formik.values.is_refundable === true ? "Yes" : "No"}</div>
+
+                                    </div>
+                                </div>
+
                                 <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
                                 <textarea
                                     name="refund_policy"
@@ -1210,7 +1284,7 @@ const ServiceAdd = () => {
                         </div>
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
-                            <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                        <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>formik.resetForm()}>cancel</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Add Service</button>
                         </div>
                     </form>

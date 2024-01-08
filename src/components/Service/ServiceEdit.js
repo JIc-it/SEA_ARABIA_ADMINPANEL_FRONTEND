@@ -31,6 +31,19 @@ const ServiceEdit = () => {
     const params = useParams()
     const [isupdated, setIsUpdated] = useState(false);
 
+    const ServiceImagebjectSchema = Yup.object({
+        image: Yup.mixed().test('file-type', 'Image is required', (value) => {
+            return typeof value === 'object' && value instanceof File;
+        }),
+        service: Yup.string().required(),
+        is_thumbnail: Yup.string().required(),
+    });
+
+    const servicepriceserviceobjectSchema = Yup.object({
+        name: Yup.string().required(),
+        price: Yup.string().required(),
+    });
+
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Name is required")
@@ -47,10 +60,37 @@ const ServiceEdit = () => {
             .required("Privacy Policy is required"),
         refund_policy: Yup.string()
             .required("Refund Policy is required"),
+        service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
+        purchase_limit_min: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+            if (per_head_booking === true) {
+                return schema
+                    .required("Minimum is Required")
+                    .min(1, 'Must be greater than zero')
+            }
+            else {
+                return schema.notRequired();
+            }
+        }),
+        purchase_limit_max: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
+            if (per_head_booking === true) {
+                return schema
+                    .required("Minimum is Required")
+                    .min(1, 'Must be greater than zero')
+            }
+            else {
+                return schema.notRequired();
+            }
+        }),
+        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
         markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
             if (profit_method.name === "Upselling With Markup") {
                 return schema
                     .required("Markup Fee is Required")
+                    .min(1, 'Must be greater than zero')
             }
             else {
                 return schema.notRequired();
@@ -74,6 +114,7 @@ const ServiceEdit = () => {
                 return schema.notRequired();
             }
         }),
+
     });
 
     const formik = useFormik({
@@ -87,6 +128,7 @@ const ServiceEdit = () => {
             is_date: false,
             is_day: false,
             is_time: false,
+            is_refundable: false,
             type: "",
             category: [],
             sub_category: [],
@@ -113,7 +155,7 @@ const ServiceEdit = () => {
             per_head_booking: false,
             purchase_limit_min: 0,
             purchase_limit_max: 0,
-    
+
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -122,37 +164,37 @@ const ServiceEdit = () => {
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
             const formattedAmenities = amenitiesmappedid.join(', ');
 
-            const findservice_price_service_destination_id=values.service_price_service.map((dat)=>{
-                if(dat.location.id){
-                    return{
-                    id: dat.id,
-                    service: dat.service,
-                    is_active: dat.is_active,
-                    location: dat.location.id,
-                    name: dat.name,
-                    price: dat.price,
-                    duration_hour:dat.duration_hour,
-                    duration_minute:dat.duration_minute
+            const findservice_price_service_destination_id = values.service_price_service.map((dat) => {
+                if (dat?.location?.id) {
+                    return {
+                        id: dat.id,
+                        service: dat.service,
+                        is_active: dat.is_active,
+                        location: dat.location.id,
+                        name: dat.name,
+                        price: dat.price,
+                        duration_hour: dat.duration_hour,
+                        duration_minute: dat.duration_minute
                     }
                 }
-                else{
-                    return values.service_price_service
+                else {
+                    return dat
                 }
             })
 
-            function removeServiceKey(values) {
+            // function removeServiceKey(values) {
 
-                if (values.hasOwnProperty("service_price_service")) {
+            //     if (values.hasOwnProperty("service_price_service")) {
 
-                    values.service_price_service.forEach(item => {
-                        if (item.hasOwnProperty("service")) {
-                            delete item.service;
-                        }
-                    });
-                }
+            //         values.service_price_service.forEach(item => {
+            //             if (item.hasOwnProperty("service")) {
+            //                 delete item.service;
+            //             }
+            //         });
+            //     }
 
-                return values.service_price_service
-            }
+            //     return values.service_price_service
+            // }
 
             const data = {
                 is_verified: values.is_verified,
@@ -164,6 +206,7 @@ const ServiceEdit = () => {
                 is_date: values.is_date,
                 is_day: values.is_day,
                 is_time: values.is_time,
+                is_refundable: values.is_refundable,
                 type: values.type,
                 name: values.name,
                 machine_id: values.machine_id,
@@ -252,11 +295,11 @@ const ServiceEdit = () => {
     //     setOpenAddon(true)
     // }
 
-    
+
     useEffect(() => {
-        if(isupdated){
+        if (isupdated) {
             setIsLoading(false)
-        }else{
+        } else {
             setIsLoading(true)
         }
         getOneService(params.id)
@@ -271,6 +314,7 @@ const ServiceEdit = () => {
                 formik.setFieldValue("is_day", data?.is_day);
                 formik.setFieldValue("is_time", data?.is_time);
                 formik.setFieldValue("is_date", data?.is_date);
+                formik.setFieldValue("is_refundable", data?.is_refundable);
                 formik.setFieldValue("type", data?.type);
                 formik.setFieldValue("category", data?.category);
                 formik.setFieldValue("sub_category", data?.sub_category);
@@ -308,7 +352,7 @@ const ServiceEdit = () => {
                 setIsUpdated(false)
                 toast.error(error.response.data)
             })
-    }, [params.id,isupdated])
+    }, [params.id, isupdated])
 
     useEffect(() => {
         getProfitMethod()
@@ -406,7 +450,7 @@ const ServiceEdit = () => {
             ).catch((error) =>
                 toast.error(error.response.data))
     }
-  
+
 
     function submit(e) {
         e.preventDefault();
@@ -425,7 +469,7 @@ const ServiceEdit = () => {
     const handleclosedestination = () => {
         setPerDestinationopen(false)
     }
-   
+
 
     const handleopenduration = () => {
         setPerDurationopen(true)
@@ -433,7 +477,7 @@ const ServiceEdit = () => {
     const handlecloseduration = () => {
         setPerDurationopen(false)
     }
-    
+
 
     const handleopenday = () => {
         setPerDayopen(true)
@@ -441,7 +485,7 @@ const ServiceEdit = () => {
     const handlecloseday = () => {
         setPerDayopen(false)
     }
-    
+
 
     const handleopentime = () => {
         setPerTimeopen(true)
@@ -449,7 +493,7 @@ const ServiceEdit = () => {
     const handleclosetime = () => {
         setPerTimeopen(false)
     }
-    
+
 
     const handleopenDate = () => {
         setPerDateopen(true)
@@ -479,7 +523,7 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
- 
+
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -643,7 +687,7 @@ const ServiceEdit = () => {
                                         >
                                             Description
                                         </label>
-                                       
+
                                         <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor} />
                                     </div>
                                     <br></br>
@@ -664,6 +708,9 @@ const ServiceEdit = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.lounge && formik.errors.lounge ? (
+                                                    <div className="error">{formik.errors.lounge}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -683,6 +730,9 @@ const ServiceEdit = () => {
 
                                                     </button>
                                                 </div>
+                                                {formik.touched.bedroom && formik.errors.bedroom ? (
+                                                    <div className="error">{formik.errors.bedroom}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -698,7 +748,11 @@ const ServiceEdit = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.toilet && formik.errors.toilet ? (
+                                                    <div className="error">{formik.errors.toilet}</div>
+                                                ) : null}
                                             </div>
+
                                         </div>
                                     </div>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexDirection: isMobileView ? "column" : "row" }} className="mt-2">
@@ -716,7 +770,15 @@ const ServiceEdit = () => {
                                                     className="form-control"
                                                     placeholder="0"
                                                     value={formik.values.capacity}
-                                                    onChange={formik.handleChange}
+                                                    onChange={(e) => {
+                                                        if (e.target.value <= 0) {
+                                                            return formik.setFieldValue("capacity", 0)
+                                                        }
+                                                        else {
+                                                            formik.setFieldValue("capacity", e.target.value)
+                                                        }
+
+                                                    }}
                                                     onBlur={formik.handleBlur}
                                                 />
                                                 {formik.touched.capacity && formik.errors.capacity ? (
@@ -780,7 +842,7 @@ const ServiceEdit = () => {
                                                 <select
                                                     className="form-control"
                                                     name="amenities"
-                                                  
+
                                                     onChange={(e) => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
@@ -840,7 +902,7 @@ const ServiceEdit = () => {
                                                             </svg>
                                                         </div>}
 
-                                                        
+
                                                         <div>
                                                             <p style={{ fontWeight: "550" }}>{data.name}</p>
                                                             <span className="text-wrap" style={{ fontSize: "12px" }}>
@@ -856,7 +918,7 @@ const ServiceEdit = () => {
                                                 </div>
                                             </div>
                                         )}
-                                       
+
                                     </div>
 
                                 </div>
@@ -874,10 +936,17 @@ const ServiceEdit = () => {
                                             className="form-control"
                                             placeholder="0"
                                             value={formik.values.markup_fee}
-                                            onChange={formik.handleChange}
+                                            onChange={(e) => {
+                                                if (e.target.value <= 0) {
+                                                    formik.setFieldValue("markup_fee", 0)
+                                                }
+                                                else {
+                                                    formik.setFieldValue("markup_fee", e.target.value)
+                                                }
+                                            }}
                                             onBlur={formik.handleBlur}
                                         />
-                                        {formik.touched.capacity && formik.errors.markup_fee ? (
+                                        {formik.touched.markup_fee && formik.errors.markup_fee ? (
                                             <div className="error">{formik.errors.markup_fee}</div>
                                         ) : null}
                                     </div>
@@ -1074,6 +1143,9 @@ const ServiceEdit = () => {
                                                         <path d="M3 10H17" stroke="#252525" strokeWidth={2} strokeLinecap="round" />
                                                     </svg></button>
                                                 </div>
+                                                {formik.touched.purchase_limit_min && formik.errors.purchase_limit_min ? (
+                                                    <div className="error">{formik.errors.purchase_limit_min}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -1093,6 +1165,9 @@ const ServiceEdit = () => {
 
                                                     </button>
                                                 </div>
+                                                {formik.touched.purchase_limit_max && formik.errors.purchase_limit_max ? (
+                                                    <div className="error">{formik.errors.purchase_limit_max}</div>
+                                                ) : null}
                                             </div>
 
 
@@ -1111,11 +1186,15 @@ const ServiceEdit = () => {
                                             </label>
                                             <button type="button" className='btn btn-blue' style={{ backgroundColor: "#187AF7", padding: "1px 3px" }} onClick={handleModalOpens}>Add Price</button>
                                         </div>
-                                        {formik.values.is_destination && <PerDestinationTable  data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated}/>}
-                                        {formik.values.is_duration && <PerDurationTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated}/>}
-                                        {formik.values.is_day && <PerDayTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated}/>}
-                                        {formik.values.is_time && <PerTimeTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated}/>}
-                                        {formik.values.is_date && <PerDateTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated}/>}
+                                        {formik.values.is_destination && <PerDestinationTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.values.is_duration && <PerDurationTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.values.is_day && <PerDayTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.values.is_time && <PerTimeTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.values.is_date && <PerDateTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.touched.service_price_service && formik.errors.service_price_service ? (
+                                            <div className="error">{formik.errors.service_price_service}</div>
+                                        ) : null}
+
                                     </div>
                                 </div>
                             </div>
@@ -1142,6 +1221,19 @@ const ServiceEdit = () => {
                                 {formik.touched.cancellation_policy && formik.errors.cancellation_policy ? (
                                     <div className="error">{formik.errors.cancellation_policy}</div>
                                 ) : null}
+                                <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 d-flex m-2 align-items-center">
+
+                                    <div style={{ fontWeight: "700" }}>Refund Available</div>
+                                    <div style={{ display: "flex", alignItems: "center" }}>
+                                        <label class="switch" style={{ marginLeft: "5px" }}>
+                                            <input type="checkbox" name="is_refundable" checked={formik.values.is_refundable} value={formik.values.is_refundable} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                            <span class="slider round"></span>
+                                        </label> &nbsp;
+                                        <div style={{ fontSize: "14px" }}>{formik.values.is_refundable === true ? "Yes" : "No"}</div>
+
+                                    </div>
+                                </div>
+
                                 <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
                                 <textarea
                                     name="refund_policy"
@@ -1230,13 +1322,16 @@ const ServiceEdit = () => {
                                         }
                                     </div>
                                 </div> */}
+                                    {formik.touched.service_image && formik.errors.service_image ? (
+                                        <div className="error">{formik.errors.service_image}</div>
+                                    ) : null}
                                 </div>
                             </div>
                         </div>
-                       
+
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
-                            <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>navigate(-1)}>cancel</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Edit Service</button>
                         </div>
                     </form>

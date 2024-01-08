@@ -24,6 +24,7 @@ const SalesRepresentatives = () => {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [selectedValue, setSelectedValue] = useState("");
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   useEffect(() => {
@@ -31,21 +32,49 @@ const SalesRepresentatives = () => {
     getCustomerlist(role)
       .then((data) => {
         console.log("salesRep-list", data);
-        // setListDiscount(data.results);
-        // const filteredResults = data.results.filter(
-        //   (item) => item.role === "Staff"
-        // );
+
         setListPageUrl({
           next: data.next,
           previous: data.previous,
         });
-        setsalesRep(data.results);
+        setsalesRep(data?.results);
         // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
   }, []);
+  const [search, setSearch] = useState("");
+
+  const refreshPage = () => {
+    // You can use window.location.reload() to refresh the page
+    window.location.reload();
+  };
+  const getCustomerListData = async () => {
+    setIsLoading(true);
+    getCustomerSearch()
+      .then((data) => {
+        console.log("Search ---:", data);
+        if (data) {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setsalesRep(data?.results);
+        } else {
+          refreshPage();
+          setIsLoading(true);
+          setSearch("");
+          setsalesRep(data?.results);
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching  data:", error);
+      });
+  };
+  useEffect(() => {
+    const data = { search: search, status: selectedValue, role: "Staff" };
+    getCustomerSearch(data).then((res) => setsalesRep(res?.results));
+  }, [selectedValue, isRefetch, search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -200,11 +229,15 @@ const SalesRepresentatives = () => {
                       type="text"
                       className="form-control"
                       placeholder="Input search term"
+                      onChange={(e) => {
+                        setSearch(e.target.value);
+                      }}
                     />
                     <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
+                      onClick={getCustomerListData}
                     >
                       Search
                     </button>
@@ -359,71 +392,72 @@ const SalesRepresentatives = () => {
               </thead>
               {salesRep && salesRep.length > 0 ? (
                 <>
-                  {salesRep.map((item) => {
-                    return (
-                      <tbody>
-                        {console.log("sles map", salesRep)}
-                        <tr>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.first_name}
-                              {item?.last_name}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.email}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.mobile}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.profileextra?.location}
-                            </span>
-                          </td>
+                  {salesRep &&
+                    salesRep?.map((item) => {
+                      return (
+                        <tbody>
+                          {console.log("sles map", salesRep)}
+                          <tr>
+                            <td>
+                              <span className="text-secondary">
+                                {item?.first_name}
+                                {item?.last_name}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item?.email}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item?.mobile}
+                              </span>
+                            </td>
+                            <td>
+                              <span className="text-secondary">
+                                {item?.profileextra?.location}
+                              </span>
+                            </td>
 
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={`/sales-representatives/${item?.id}`}
-                              // to={`/customers/${item.id}`}
-                              className="btn btn-sm btn-info"
+                            <td
                               style={{
-                                padding: "6px 10px",
-                                borderRadius: "4px",
+                                display: "flex",
+                                gap: "10px",
+                                alignItems: "baseline",
                               }}
                             >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
+                              <Link
+                                to={`/sales-representatives/${item?.id}`}
+                                // to={`/customers/${item.id}`}
+                                className="btn btn-sm btn-info"
+                                style={{
+                                  padding: "6px 10px",
+                                  borderRadius: "4px",
+                                }}
                               >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  })}
+                                View &nbsp;
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  viewBox="0 0 16 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M4 12L12 4M12 4H6M12 4V10"
+                                    stroke="white"
+                                    strokeWidth="1.5"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              </Link>
+                            </td>
+                          </tr>
+                        </tbody>
+                      );
+                    })}
                 </>
               ) : (
                 <tr>

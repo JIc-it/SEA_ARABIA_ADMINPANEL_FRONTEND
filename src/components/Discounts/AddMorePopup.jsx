@@ -63,7 +63,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
                     if (company.id === idset) {
                         return {
                             ...company,
-                            companyData: data.results,
+                            companyData: data,
                         };
                     }
                     return company;
@@ -71,7 +71,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
 
                 return updatedList;
             });
-            setServiceListing(data.results)
+            setServiceListing(data)
         })
         .catch((error) => {
             console.error("Error fetching data:", error);
@@ -79,7 +79,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
     },[idset])
 
     const lowercasedFilter = search.toLowerCase();
-    const filteredData = companylist.filter(item => {
+    const filteredData = companylist?.filter(item => {
       return Object.keys(item).some(key =>
         item[key].toLowerCase().includes(lowercasedFilter)
       );
@@ -94,7 +94,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
     };
 
     const handleCheckboxChange = (data) => {
-        data.companyData.map((dat)=>{
+        data?.companyData?.map((dat)=>{
             return handleServiceAdd(data.id, data.name,dat.id, data?.companyData);
         })
     };

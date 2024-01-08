@@ -22,6 +22,17 @@ export default function DiscountAddNew() {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    const serviceObjectSchema = Yup.object({
+        id: Yup.string().required(),
+        name: Yup.string().required(),
+        company: Yup.string().required(),
+    });
+
+    const companyObjectSchema = Yup.object({
+        id: Yup.string().required(),
+        name: Yup.string().required(),
+    });
+
     const validationSchema = Yup.object({
         name: Yup.string()
             .required("Campaign Name is required")
@@ -33,11 +44,13 @@ export default function DiscountAddNew() {
         start_date: Yup.string()
             .required("Start Date is required"),
         discount_value: Yup.number()
-            .required("Value is Required"),
+            .required("Value is Required")
+            .min(1, 'Must be greater than zero'),
         up_to_amount: Yup.number().when("discount_type", ([discount_type], schema) => {
             if (discount_type === "Percentage") {
                 return schema
                     .required("Upto is Required")
+                    .min(1, 'Must be greater than zero')
             } else {
                 return schema.notRequired();
             }
@@ -48,6 +61,7 @@ export default function DiscountAddNew() {
                 return schema
                     .typeError("Specify Number  must be a number")
                     .required("Specify Number is Required")
+                    .min(1, 'Must be greater than zero')
                     .typeError("Specify Number must be a number");
             }
             else {
@@ -59,20 +73,20 @@ export default function DiscountAddNew() {
             if (purchase_requirement === true) {
                 return schema
                     .required("Minimum Amount is Required")
+                    .min(1, 'Must be greater than zero')
             }
             else {
                 return schema.notRequired();
             }
         }),
-        multiple_redeem_specify_no: Yup.number().when("allow_multiple_redeem", ([allow_multiple_redeem], schema) => {
-            if (allow_multiple_redeem === "Multiple-time") {
-                return schema
-                    .required("Specify Number is Required")
+        multiple_redeem_specify_no: Yup.number().when('allow_multiple_redeem',([allow_multiple_redeem], schema) => {
+              return allow_multiple_redeem === 'Multiple-time'
+                ? schema
+                    .required('Specify Number is Required')
+                    .min(1, 'Must be greater than zero')
+                : schema.notRequired();
             }
-            else {
-                return schema.notRequired();
-            }
-        }),
+          ),
 
         end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
             if (is_lifetime === false) {
@@ -97,6 +111,8 @@ export default function DiscountAddNew() {
                 }
                 return /^image\/(jpeg|png|gif)$/i.test(value.type);
             }),
+            services: Yup.array().of(serviceObjectSchema).min(1, 'service is required'),    
+            companies: Yup.array().of(companyObjectSchema).min(1, 'Vendor / Service is required'),    
     });
 
     const formik = useFormik({
@@ -106,7 +122,7 @@ export default function DiscountAddNew() {
             name: "",
             coupon_code: "",
             discount_type: "Percentage",
-            discount_value: "",
+            discount_value: 0,
             up_to_amount: 0,
             redemption_type: "One-Time",
             specify_no: 0,
@@ -152,9 +168,9 @@ export default function DiscountAddNew() {
                     formdata.append("specify_no", values.specify_no);
                     formdata.append("allow_multiple_redeem", values.allow_multiple_redeem);
                     formdata.append("multiple_redeem_specify_no", values.multiple_redeem_specify_no);
-                    formdata.append("start_date", values.start_date);
+                    formdata.append("start_date", new Date(values.start_date)?.toISOString().slice(0, -5) + 'Z');
                     formdata.append("is_lifetime", checktrue(values.is_lifetime));
-                    formdata.append("end_date", values.end_date);
+                    formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');
                     formdata.append("on_home_screen", checktrue(values.on_home_screen));
                     formdata.append("on_checkout", checktrue(values.on_checkout));
                     formdata.append("apply_global", checktrue(values.apply_global));
@@ -285,14 +301,14 @@ export default function DiscountAddNew() {
 
     function companywithservice(companyid) {
 
-        const serviceCount = formik?.values.services?.map((dat) => dat.company === companyid) || 0;
+        const serviceCount = formik?.values.services?.map((dat) => dat.company_id === companyid) || 0;
         return serviceCount.length
 
     }
 
     function companywithservicelength(companyid) {
 
-        const serviceCount = servicelisting.filter((dat) => dat.company === companyid) || 0;
+        const serviceCount = servicelisting?.filter((dat) => dat.company_id === companyid) || 0;
         return serviceCount.length
 
     }
@@ -392,14 +408,30 @@ export default function DiscountAddNew() {
                                         <div className='d-flex' style={{ marginTop: "8px" }}>
                                             <div>
                                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage</p>
-                                                <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                                <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("discount_value",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("discount_value",e.target.value)
+                                                        }
+                                                        
+                                                    }} onBlur={formik.handleBlur} />
                                                 {formik.touched.discount_value && formik.errors.discount_value ? (
                                                     <div className="error">{formik.errors.discount_value}</div>
                                                 ) : null}
                                             </div>
                                             <div>
                                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount</p>
-                                                <input type='number' value={formik.values.up_to_amount} name='up_to_amount' className='discount-input' style={{ width: "90%" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                                <input type='number' value={formik.values.up_to_amount} name='up_to_amount' className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("up_to_amount",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("up_to_amount",e.target.value)
+                                                        }
+                                                        
+                                                    }} onBlur={formik.handleBlur} />
                                                 {formik.touched.up_to_amount && formik.errors.up_to_amount ? (
                                                     <div className="error">{formik.errors.up_to_amount}</div>
                                                 ) : null}
@@ -469,7 +501,15 @@ export default function DiscountAddNew() {
                             {formik.values.redemption_type === "Limited-Number" &&
                                 <div style={{ marginTop: "8px" }}>
                                     <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number</p>
-                                    <input type='number' value={formik.values.specify_no} name="specify_no" onChange={formik.handleChange} onBlur={formik.handleBlur} className='discount-input' style={{ width: "50%" }} />
+                                    <input type='number' value={formik.values.specify_no} name="specify_no"  onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("specify_no",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("specify_no",e.target.value)
+                                                        }
+                                                        
+                                                    }} onBlur={formik.handleBlur} className='discount-input' style={{ width: "50%" }} />
                                     {formik.touched.specify_no && formik.errors.specify_no ? (
                                         <div className="error">{formik.errors.specify_no}</div>
                                     ) : null}
@@ -516,7 +556,15 @@ export default function DiscountAddNew() {
 
                                 <div className={isMobileView ? "w-100" : "w-50"} style={{ marginTop: "8px" }}>
                                     <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number</p>
-                                    <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem === "One-Time"} value={formik.values.multiple_redeem_specify_no} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                                    <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem==="One-Time"} value={formik.values.multiple_redeem_specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("multiple_redeem_specify_no",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("multiple_redeem_specify_no",e.target.value)
+                                                        }
+                                                        
+                                                    }} onBlur={formik.handleBlur}/>
                                     {formik.touched.multiple_redeem_specify_no && formik.errors.multiple_redeem_specify_no ? (
                                         <div className="error">{formik.errors.multiple_redeem_specify_no}</div>
                                     ) : null}
@@ -599,6 +647,11 @@ export default function DiscountAddNew() {
                             {formik.values.companies.length === 0 &&
                                 <div style={{ fontWeight: 550, textAlign: "center" }}> No Service/Vendor Found</div>
                             }
+                            {formik.touched.companies && formik.errors.companies ? (
+                                            <div className="error text-center">{formik.errors.companies}</div>
+                                        ) : null}
+
+                                
                             {formik?.values?.companies &&
 
                                 formik?.values?.companies.map((company) =>
@@ -625,6 +678,7 @@ export default function DiscountAddNew() {
                                     </div>
 
                                 )}
+                                
                             {/* <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
                             <div className='d-flex justify-content-between'>
                                 <p style={{ fontWeight: "550", fontSize: "14px" }}>Salma international</p>
@@ -646,6 +700,7 @@ export default function DiscountAddNew() {
                             </div>
                             <p className='typography-dicount-view'>( 1 of 3 Services Selected )</p>
                         </div> */}
+                        
                         </div>
 
                         <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px", marginBottom: "2%" }}>
@@ -688,7 +743,15 @@ export default function DiscountAddNew() {
                                 </div>
                                 <div className={isMobileView ? "w-100" : 'w-50'} style={{ marginTop: isMobileView ? "5px" : "" }}>
                                     <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount</p>
-                                    <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount} onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === false} />
+                                    <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount}  onChange={(e)=>{
+                                                        if(e.target.value<=0){
+                                                            return formik.setFieldValue("min_purchase_amount",0)
+                                                        }
+                                                        else{
+                                                            formik.setFieldValue("min_purchase_amount",e.target.value)
+                                                        }
+                                                        
+                                                    }} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === false} />
                                     {formik.touched.min_purchase_amount && formik.errors.min_purchase_amount ? (
                                         <div className="error">{formik.errors.min_purchase_amount}</div>
                                     ) : null}
@@ -755,7 +818,7 @@ export default function DiscountAddNew() {
                         </div>
                         <hr style={{ borderBottom: "2px solid black" }} />
                         <div className='d-flex justify-content-end'>
-                            <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>formik.resetForm()}>cancel</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Add Discount</button>
                         </div>
                     </form>

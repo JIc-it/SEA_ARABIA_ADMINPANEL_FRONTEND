@@ -462,7 +462,7 @@ const BookinList = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                -
+                                {new Date(data?.created_at).toLocaleDateString("es-CL")}
                               </span>
                             </td>
                             <td>
@@ -487,7 +487,7 @@ const BookinList = () => {
                               }}
                             >
                               <Link
-                                to={`/booking-view/${data?.booking_id}/`}
+                                to={`/booking-view/${data?.id}/`}
                                
 
                                 className="btn btn-sm btn-info"

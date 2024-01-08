@@ -7,7 +7,7 @@ import totalVendor from "../../static/img/total-vendor.png"
 import totalMachine from "../../static/img/total-machine.png"
 import ActiveMachine from "../../static/img/active-machine.png"
 import inactiveMachine from "../../static/img/inactive-machine.png"
-import { getServiceListing } from "../../services/service"
+import { getServiceListing,getCount } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import {formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
@@ -17,35 +17,18 @@ import 'react-toastify/dist/ReactToastify.css'
 
 // import AddNewService from "./AddNewService";
 function ServiceList() {
-    const navigate = useNavigate();
-    const [showOffcanvas, setShowOffcanvas] = useState(false);
-    const [selectedValue, setSelectedValue] = useState("New Lead");
+    const [search,setSearch]=useState(null)
     const [listPageUrl, setListPageUrl] = useState({
         next: null,
         previous: null,
       });
     const [servicelist, setServiceList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-
-    const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-    const handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-    const handleSelectChange = (event) => {
-        setSelectedValue(event.target.value);
-    };
-    const [listDiscount, setlistDiscount] = useState([]);
-
-    const [isToggled, setToggled] = useState(true);
-
-    const handleToggle = () => {
-        setToggled(!isToggled);
-    }
-    const [isRefetch, setIsRefetch] = useState(false);
+    const [count,setCount]=useState(null)
 
     useEffect(() => {
         setIsLoading(true)
-        getServiceListing()
+        getServiceListing(search)
             .then((data) => {
                 setServiceList(data?.results);
                 setListPageUrl({ next: data.next, previous: data.previous });
@@ -55,7 +38,21 @@ function ServiceList() {
                 {setIsLoading(false);
                     toast.error(error.response.data)};
             });
-    }, []);
+
+        getCount()
+            .then((data) => {
+                setCount({
+                    total_machines:data?.total_machines,
+                    active_machine_count:data?.active_machine_count,
+                    inactive_machine_count:data?.inactive_machine_count,
+                    total_vendor_count:data?.total_vendor_count
+                });
+            })
+            .catch((error) => {
+                {setIsLoading(false);
+                    toast.error(error.response.data)};
+            });
+    }, [search]);
 
     const handlePagination = async (type) => {
         setIsLoading(true);
@@ -89,10 +86,10 @@ function ServiceList() {
             ];
             const csvData = servicelist.map((elem) => {
                 return [
-                    elem.company,
+                    elem.name,
                     elem.category.map((data) => data.name).join(','),
                     elem.sub_category.map((data) => data.name).join(','),
-                    elem.name,
+                    elem.company,
                     elem.status === true ? "Active" : "Inactive",
                     elem.total_booking
                 ];
@@ -142,7 +139,7 @@ function ServiceList() {
                                             className="text-secondary"
                                             style={{ fontSize: "18px", fontWeight: "700" }}
                                         >
-                                            469
+                                            {count?.total_machines}
                                         </div>
                                     </div>
                                 </div>
@@ -173,7 +170,7 @@ function ServiceList() {
                                             className="text-secondary"
                                             style={{ fontSize: "18px", fontWeight: "700" }}
                                         >
-                                            123
+                                            {count?.total_vendor_count}
                                         </div>
                                     </div>
                                 </div>
@@ -205,7 +202,7 @@ function ServiceList() {
                                             className="text-secondary"
                                             style={{ fontSize: "18px", fontWeight: "700" }}
                                         >
-                                            326
+                                            {count?.active_machine_count}
                                         </div>
                                     </div>
                                 </div>
@@ -236,7 +233,7 @@ function ServiceList() {
                                             className="text-secondary"
                                             style={{ fontSize: "18px", fontWeight: "700" }}
                                         >
-                                            153
+                                            {count?.inactive_machine_count}
                                         </div>
                                     </div>
                                 </div>
@@ -273,6 +270,7 @@ function ServiceList() {
                                             type="text"
                                             className="form-control"
                                             placeholder="Input search term"
+                                            onChange={(e)=>setSearch(e.target.value)}
                                         />
                                         <button
                                             type="button"
@@ -324,7 +322,7 @@ function ServiceList() {
                             <thead>
                                 <tr>
                                     <th className="w-1">
-                                        <span>Name</span>
+                                        <span>Machine Name</span>
                                     </th>
                                     <th>
                                         <span>Category</span>
@@ -354,7 +352,7 @@ function ServiceList() {
                                         <tr>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.company}
+                                                    {data.name}
                                                 </span>
                                             </td>
 
@@ -375,7 +373,7 @@ function ServiceList() {
                                             </td>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.name}
+                                                    {data.company}
                                                 </span>
                                             </td>
                                             <td>

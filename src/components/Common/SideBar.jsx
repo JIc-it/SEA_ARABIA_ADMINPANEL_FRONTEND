@@ -21,12 +21,12 @@ function SideBar() {
   const handleBookingCancellationClick = (event) => {
     event.preventDefault();
 
-    navigate("/cancellation-booking");
+    navigate("/refunds-request");
   };
   const handleBookingHistoryClick = (event) => {
     event.preventDefault();
 
-    navigate("/cancellation-history");
+    navigate("/refunds-history");
   };
 
   const handleAddOnServiceClick = (event) => {
@@ -569,8 +569,8 @@ function SideBar() {
                     <div className="dropdown-menu-column">
                       <a
                         className={`dropdown-item ${
-                          (activeLink === "/booking" ? "active" : "",
-                          openDropdown === "/booking" ? "active" : "")
+                          (activeLink === "/booking" ? "active" : ""
+                          )
                         }`}
                         style={{
                           color: activeLink === "/booking" ? "#006875" : "",
@@ -596,16 +596,16 @@ function SideBar() {
                       </a>
                       <a
                         className={`dropdown-item ${
-                          activeLink === "/cancellation-booking" ? "active" : ""
+                          activeLink === "/refunds-request" ? "active" : ""
                         }`}
                         style={{
                           color:
-                            activeLink === "/cancellation-booking"
+                            activeLink === "/refunds-request"
                               ? "#006875"
                               : "",
                         }}
                         onClick={handleBookingCancellationClick}
-                        href="/cancellation-booking"
+                        href="/refunds-request"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -619,20 +619,20 @@ function SideBar() {
                             fill="#68727D"
                           />
                         </svg>
-                        &nbsp; Cancellation Booking
+                        &nbsp; Refund Request
                       </a>
                       <a
                         className={`dropdown-item ${
-                          activeLink === "/cancellation-history" ? "active" : ""
+                          activeLink === "/refunds-history" ? "active" : ""
                         }`}
                         onClick={handleBookingHistoryClick}
                         style={{
                           color:
-                            activeLink === "/cancellation-history"
+                            activeLink === "/refunds-history"
                               ? "#006875"
                               : "",
                         }}
-                        href="/cancellation-history"
+                        href="/refunds-history"
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -646,14 +646,14 @@ function SideBar() {
                             fill="#68727D"
                           />
                         </svg>
-                        &nbsp; Cancellation History
+                        &nbsp; Refund History
                       </a>
                     </div>
                   </div>
                 </div>
               </li>
 
-              <li
+              {/* <li
                 className={`nav-item dropdown 
                   ${openDropdown === "/refunds" ? "active" : ""}
                 }`}
@@ -748,7 +748,7 @@ function SideBar() {
                     </div>
                   </div>
                 </div>
-              </li>
+              </li> */}
               <li
                 className={`nav-item dropdown ${
                   activeLink === "/service" ? "active" : ""

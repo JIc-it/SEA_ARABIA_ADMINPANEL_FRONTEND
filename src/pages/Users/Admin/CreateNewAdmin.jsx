@@ -15,7 +15,7 @@ import {
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { getLocation } from "../../../services/CustomerHandle";
-
+import CountryDropdown from "../../../components/Modal/Test";
 function CreateNewAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
@@ -277,7 +277,7 @@ function CreateNewAdmin({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <select
+            {/* <select
               className="form-control"
               id=""
               name="location"
@@ -294,8 +294,8 @@ function CreateNewAdmin({ show, close }) {
                 );
               })}
               {/* Add more options as needed */}
-            </select>
-            {formik.touched.location && formik.errors.location ? (
+            {/* </select> */}
+            {/* {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
             <svg
@@ -323,7 +323,17 @@ function CreateNewAdmin({ show, close }) {
                 stroke="#68727D"
                 strokeWidth="1.5"
               />
-            </svg>
+            </svg> */}
+            {/* <div style={{ position: "relative" }}> */}
+            <CountryDropdown
+              className="form-control"
+              value={formik.values.location} // Set the selected value to the formik values
+              onChange={(val) => formik.setFieldValue("location", val)}
+            />
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
+            {/* </div> */}
           </div>
         </div>
         <div style={{ margin: "20px" }}>

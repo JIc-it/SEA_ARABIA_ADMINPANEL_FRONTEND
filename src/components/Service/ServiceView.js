@@ -95,13 +95,13 @@ const ServiceView = () => {
                                 <div className="col-6 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Category</p>
-                                        <p style={{ fontWeight: "700" }}>{oneservice?.category?.map((data)=>data.name)}</p>
+                                        <p style={{ fontWeight: "700" }}>{oneservice?.category?.[0]?.name}</p>
                                     </div>
                                 </div>
                                 <div className="col-6 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Sub Category</p>
-                                        <p style={{ fontWeight: "700" }}>{oneservice?.sub_category?.map((data)=>data.name)}</p>
+                                        <p style={{ fontWeight: "700" }}>{oneservice?.sub_category?.[0]?.name}</p>
                                     </div>
                                 </div>
                             </div>

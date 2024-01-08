@@ -254,7 +254,7 @@ function CustomerCreate({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a gender" />
-              {gender.map((item) => (
+              {gender?.map((item) => (
                 <option key={item.id} value={item.id} label={item.label}>
                   {item.label}
                 </option>
@@ -288,7 +288,7 @@ function CustomerCreate({ show, close }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a location" />
-              {location.map((item) => {
+              {location?.map((item) => {
                 return (
                   <option key={item?.id} value={item.id} label={item?.location}/>
                     

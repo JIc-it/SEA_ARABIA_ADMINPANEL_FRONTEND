@@ -17,8 +17,10 @@ import confirmBooking from "../../static/img/confirm-booking.png";
 import cancelBooking from "../../static/img/cancel-booking.png";
 import filterIcon from "../../static/img/Filter.png";
 import CreateAddOn from "./CreateAddOn";
+import { Radio, Paper, Typography, ButtonGroup, Button, Box, Checkbox } from '@mui/material';
+import TextEditor from "./TextEditor"
 
-function EventView({ show, close }) {
+function EventEdit({ show, close }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
@@ -61,7 +63,7 @@ function EventView({ show, close }) {
       email: "",
       mobile: "",
       location: "",
-      idtype: "",
+      type: "Package",
       idnumber: "",
       companyname: "",
       companyaddress: "",
@@ -122,7 +124,7 @@ function EventView({ show, close }) {
               <div className="col-12">
                 <div className="row row-cards">
                   <div className="breadcrumbs">
-                    <p>Users</p>
+                    <p>Events and Packages</p>
                     <span>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -156,24 +158,8 @@ function EventView({ show, close }) {
                         />
                       </svg>
                     </span>
-                    <p>Alex Paul</p>
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M8.33301 5L12.7438 9.41074C13.0692 9.73618 13.0692 10.2638 12.7438 10.5893L8.33301 15"
-                          stroke="#68727D"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </span>
-                    <p>Add Service</p>
+                    
+                    <p>Edit Service</p>
                   </div>
                 </div>
               </div>
@@ -228,33 +214,45 @@ function EventView({ show, close }) {
                         style={{ width: isMobileView ? "80vw" : "35vw" }}
                       >
                         <div>
-                          <label
-                            htmlFor=""
-                            style={{
-                              paddingBottom: "10px",
-                              fontWeight: "600",
-                              fontSize: "13px",
-                            }}
-                          >
-                            Type <span style={{ color: "red" }}>*</span>
-                          </label>
-                          <select
-                            className="form-control"
-                            name="defineservice"
-                            value={formik.values.idtype}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          >
-                            <option value="" disabled>
-                              Select a Category
-                            </option>
-                            <option value="service1">Category 1</option>
-                            <option value="service2">Category 2</option>
-                            {/* Add more options as needed */}
-                          </select>
-                          {formik.touched.name && formik.errors.name ? (
-                            <div className="error">{formik.errors.name}</div>
-                          ) : null}
+                          <Typography variant="subtitle1" fontWeight={550} fontSize="14px" marginTop="8px">
+                            Type
+                          </Typography>
+                          <ButtonGroup style={{ border: "1px solid black", marginTop: "5px" }} >
+                            <Button
+                              style={{
+                                fontWeight: "500",
+                                fontSize: "15px",
+                                textTransform: "capitalize",
+                                // width: "40%",
+                                backgroundColor: formik.values.type === "Package" ? "black" : "",
+                                color: formik.values.type === "Package" ? "white" : "",
+                                padding: "3px 40px",
+                                // borderRadius: "5px",
+                                textAlign: "center",
+                                // margin: "4px"
+                              }}
+                            // onClick={() => updateFormValues(({ ...formik.values, type: "Percentage" }))}
+                            >
+                              Package
+                            </Button>
+                            <Button
+                              style={{
+                                fontWeight: "500",
+                                fontSize: "15px",
+                                // width: "40%",
+                                textTransform: "capitalize",
+                                backgroundColor: formik.values.type === "Event" ? "black" : "",
+                                color: formik.values.type === "Event" ? "white" : "",
+                                padding: "3px 40px",
+                                // borderRadius: "5px",
+                                textAlign: "center",
+                                // margin: "4px"
+                              }}
+                            // onClick={() => updateFormValues(({ ...formik.values, type: "Fixed" }))}
+                            >
+                              Event
+                            </Button>
+                          </ButtonGroup>
                         </div>
                       </div>
                       <div
@@ -290,7 +288,7 @@ function EventView({ show, close }) {
                     <div className="mt-2">
                       <label
                         htmlFor=""
-                        style={{ paddingBottom: "10px", fontWeight: "500" }}
+                        style={{ paddingBottom: "10px", fontWeight: "550" }}
                       >
                         Short Description
                       </label>
@@ -318,19 +316,13 @@ function EventView({ show, close }) {
                     <div className="mt-2">
                       <label
                         htmlFor=""
-                        style={{ paddingBottom: "10px", fontWeight: "500" }}
+                        style={{ paddingBottom: "10px", fontWeight: "550" }}
                       >
-                        Short Description
+                        Description
                       </label>
-                      <textarea
-                        name=""
-                        id=""
-                        cols=""
-                        rows="1"
-                        className="form-control"
-                        placeholder="Notes"
-                      ></textarea>
+                      <TextEditor/>
                     </div>
+                    <br></br>
                     <div className="mt-2"></div>
                     <div
                       style={{
@@ -339,7 +331,7 @@ function EventView({ show, close }) {
                         alignItems: "center",
                         flexDirection: isMobileView ? "column" : "row",
                       }}
-                      className="mt-2"
+                      className="mt-5"
                     >
                       <div
                         className="mr-2"
@@ -394,7 +386,7 @@ function EventView({ show, close }) {
                               onBlur={formik.handleBlur}
                             />
                             {formik.touched.pickuppoint &&
-                            formik.errors.pickuppoint ? (
+                              formik.errors.pickuppoint ? (
                               <div className="error">
                                 {formik.errors.pickuppoint}
                               </div>
@@ -459,7 +451,7 @@ function EventView({ show, close }) {
                               onBlur={formik.handleBlur}
                             />
                             {formik.touched.pickuppoint &&
-                            formik.errors.pickuppoint ? (
+                              formik.errors.pickuppoint ? (
                               <div className="error">
                                 {formik.errors.pickuppoint}
                               </div>
@@ -660,13 +652,13 @@ function EventView({ show, close }) {
                   }}
                 >
                   <div className="col-12 p-5">
-                    <p style={{ fontWeight: "600" }}>Pricing</p>
-                    <p style={{ fontWeight: "550" }}>Profit Method</p>
+                    <p style={{ fontWeight: "600" }}>Policy</p>
+                    {/* <p style={{ fontWeight: "550" }}>Profit Method</p> */}
                     <div className={isMobileView ? "col-12" : "col-12"}>
                       <div className="mt-2">
                         <label
                           htmlFor=""
-                          style={{ paddingBottom: "10px", fontWeight: "500" }}
+                          style={{ paddingBottom: "10px", fontWeight: "550" }}
                         >
                           Cancellation Policy
                         </label>
@@ -682,7 +674,7 @@ function EventView({ show, close }) {
                       <div className="mt-2">
                         <label
                           htmlFor=""
-                          style={{ paddingBottom: "10px", fontWeight: "500" }}
+                          style={{ paddingBottom: "10px", fontWeight: "550" }}
                         >
                           Return Policy
                         </label>
@@ -922,54 +914,16 @@ function EventView({ show, close }) {
                   borderRadius: "8px",
                 }}
               >
-                <div className="col-12 p-5">
-                  <div className="d-flex justify-content-between align-items-center">
-                    <p style={{ fontWeight: "600" }}>Set Status</p>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "",
-                      flexDirection: isMobileView ? "column" : "row",
-                    }}
-                  >
-                    <div
-                      className="mr-2"
-                      style={{ width: isMobileView ? "80vw" : "35vw" }}
-                    >
-                      <div className="mt-2">
-                        <label
-                          htmlFor=""
-                          style={{
-                            paddingBottom: "10px",
-                            fontWeight: "600",
-                            fontSize: "13px",
-                          }}
-                        >
-                          Status <span style={{ color: "red" }}>*</span>
-                        </label>
-                      </div>
-                    </div>
-                    <div
-                      className=""
-                      style={{ width: isMobileView ? "80vw" : "35vw" }}
-                    >
-                      <div className="form-check form-switch">
-                        <input
-                          className="form-check-input"
-                          type="checkbox"
-                          id="flexSwitchCheckDefault"
-                          checked={isChecked}
-                          onChange={handleSwitchChange}
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor="flexSwitchCheckDefault"
-                        >
-                          Active
-                        </label>
-                      </div>
+                <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-2">
+                  <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Set Status</p>
+                  <div className='d-flex justify-content-between align-items-center mx-2'>
+                    <p style={{fontWeight:"550"}}>Status</p>
+                    <div style={{ display: "flex", alignItems: "center" }}>
+                      <div style={{ fontSize: "12px" }}>{formik.values.is_active === true ? "Active" : "Inactive"}</div>
+                      <label class="switch" style={{ marginLeft: "5px" }}>
+                        <input type="checkbox" name="is_active" checked={formik.values.is_active} value={formik.values.is_active} onChange={formik.handleChange} onBlur={formik.handleBlur} />
+                        <span class="slider round"></span>
+                      </label>
                     </div>
                   </div>
                 </div>
@@ -995,4 +949,4 @@ function EventView({ show, close }) {
   );
 }
 
-export default EventView;
+export default EventEdit;
