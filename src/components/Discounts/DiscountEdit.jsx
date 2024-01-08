@@ -882,7 +882,7 @@ if(!isLoading){
                     </div>
                     <hr style={{borderBottom:"2px solid black"}}/>
                     <div className='d-flex justify-content-end'>
-                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                    <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>navigate(-1)}>cancel</button>
                         <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Edit Discount</button>
                     </div>
                 </form>
