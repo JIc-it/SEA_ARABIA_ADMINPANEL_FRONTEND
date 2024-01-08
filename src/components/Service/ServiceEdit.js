@@ -39,20 +39,9 @@ const ServiceEdit = () => {
         is_thumbnail: Yup.string().required(),
     });
 
-    const perdestinationschema = Yup.object({
+    const servicepriceserviceobjectSchema = Yup.object({
         name: Yup.string().required(),
         price: Yup.string().required(),
-        duration_hour: Yup.string().required(),
-        duration_minute: Yup.string().required(),
-    });
-
-    const servicePriceSchema = Yup.object().shape({
-        // is_destination: Yup.boolean(),
-        service_price_service: Yup.array().when('is_destination', {
-            is: true,
-            then: Yup.array().of(perdestinationschema).min(1, 'Price is required'),
-            otherwise: Yup.array(),
-        }),
     });
 
     const validationSchema = Yup.object({
@@ -71,6 +60,7 @@ const ServiceEdit = () => {
             .required("Privacy Policy is required"),
         refund_policy: Yup.string()
             .required("Refund Policy is required"),
+        service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
         purchase_limit_min: Yup.number().when("per_head_booking", ([per_head_booking], schema) => {
             if (per_head_booking === true) {
                 return schema
@@ -91,7 +81,7 @@ const ServiceEdit = () => {
                 return schema.notRequired();
             }
         }),
-        // service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
         lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
         bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
         toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
@@ -1341,7 +1331,7 @@ const ServiceEdit = () => {
 
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
-                            <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>navigate(-1)}>cancel</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Edit Service</button>
                         </div>
                     </form>

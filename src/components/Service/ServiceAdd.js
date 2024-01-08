@@ -38,6 +38,10 @@ const ServiceAdd = () => {
         image: Yup.string().required(),
         name: Yup.string().required(),
     });
+    const servicepriceserviceobjectSchema = Yup.object({
+        name: Yup.string().required(),
+        price: Yup.string().required(),
+    });
 
     const ServiceImagebjectSchema = Yup.object({
         image: Yup.mixed().test('file-type', 'Image is required', (value) => {
@@ -68,6 +72,7 @@ const ServiceAdd = () => {
         category: Yup.array().of(CategoryobjectSchema).min(1, 'Category is required'),
         sub_category: Yup.array().of(SubcategoryobjectSchema).min(1, 'Sub-Category is required'),
         service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
         machine_id: Yup.string()
             .required("Machine ID is required"),
         description: Yup.string()
@@ -333,7 +338,7 @@ const ServiceAdd = () => {
 
     const categorystore = (id, name, image) => {
         formik.setValues((prev) => {
-            const isCategoryExists = prev.category.some((category) => category.id === id);
+            const isCategoryExists = prev?.category?.some((category) => category.id === id);
 
             if (!isCategoryExists) {
                 return {
@@ -496,7 +501,6 @@ const ServiceAdd = () => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
 
-   
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -543,6 +547,9 @@ const ServiceAdd = () => {
                                                         const selectedCategory = e.target.value;
                                                         setCategoryId(selectedCategory)
                                                         const selectedCategoryData = categorylist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("category",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             categorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
                                                         }
@@ -602,6 +609,9 @@ const ServiceAdd = () => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
                                                         const selectedCategoryData = subcategorylist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("sub_category",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             subcategorystore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.category);
                                                         }
@@ -820,6 +830,9 @@ const ServiceAdd = () => {
                                                         formik.handleChange(e)
                                                         const selectedCategory = e.target.value;
                                                         const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
+                                                        if(selectedCategory==="Choose"){
+                                                            formik.setFieldValue("amenities",[])
+                                                        }
                                                         if (selectedCategoryData) {
                                                             amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
                                                         }
@@ -1161,6 +1174,9 @@ const ServiceAdd = () => {
                                         {formik.values.is_day && <PerDayTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
                                         {formik.values.is_time && <PerTimeTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
                                         {formik.values.is_date && <PerDateTable data={formik.values.service_price_service} formik={formik.setValues} setIsUpdated={setIsUpdated} />}
+                                        {formik.touched.service_price_service && formik.errors.service_price_service ? (
+                                                    <div className="error">{formik.errors.service_price_service}</div>
+                                                ) : null}
                                     </div>
                                 </div>
                             </div>
@@ -1268,7 +1284,7 @@ const ServiceAdd = () => {
                         </div>
                         <hr style={{ borderBottom: "2px solid black", marginTop: "10px" }} />
                         <div className='d-flex justify-content-end'>
-                            <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
+                        <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>formik.resetForm()}>cancel</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Add Service</button>
                         </div>
                     </form>

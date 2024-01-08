@@ -94,7 +94,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
     };
 
     const handleCheckboxChange = (data) => {
-        data.companyData.map((dat)=>{
+        data?.companyData?.map((dat)=>{
             return handleServiceAdd(data.id, data.name,dat.id, data?.companyData);
         })
     };
