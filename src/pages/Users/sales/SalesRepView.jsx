@@ -7,6 +7,7 @@ import { getSalesRepListById } from "../../../services/GuestHandle";
 function SalesRepView() {
   const navigate = useNavigate();
   const salesRepId = useParams()?.salesRepId;
+  console.log("salesRepId", salesRepId);
 
   const [salesRepDetails, setsalesRepDetails] = useState();
 

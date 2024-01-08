@@ -44,16 +44,18 @@ export default function CustomerListing() {
   };
   const getCustomerListData = async () => {
     setIsLoading(true);
-    getCustomerSearch({ search: search, status: selectedValue, role: "User" })
+    getCustomerSearch()
       .then((data) => {
         console.log("Search ---:", data);
-        if (data || search.length > 0) {
+        if (data) {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
           setListDiscount(data?.results);
         } else {
           refreshPage();
           setIsLoading(true);
+          setSearch("");
+          setListDiscount(data?.results);
         }
       })
       .catch((error) => {
@@ -66,8 +68,9 @@ export default function CustomerListing() {
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   useEffect(() => {
-    getCustomerSearch();
-  }, [selectedValue, isRefetch]);
+    const data = { search: search, status: selectedValue, role: "User" };
+    getCustomerSearch(data).then((res) => setListDiscount(res?.results));
+  }, [selectedValue, isRefetch, search]);
 
   const handleExportCustomerData = () => {
     if (listDiscount) {

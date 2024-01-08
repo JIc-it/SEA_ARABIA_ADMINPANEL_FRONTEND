@@ -43,24 +43,38 @@ const Admin = () => {
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
-  }, []);
-
+  }, [admin]);
+  const refreshPage = () => {
+    // You can use window.location.reload() to refresh the page
+    window.location.reload();
+  };
   const getAdminData = async () => {
-    getAdminSearch(search, selectedValue)
-      .then((data) => {
-        // console.log("search", data);
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        const filteredResults = data.results.filter(
-          (item) => item.role === "Admin"
-        );
-        setAdmin(filteredResults);
+    getAdminSearch()
+       .then((data) => {
+        if (data) {
+          // console.log("search", data);
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          // const filteredResults = data.results.filter(
+          //   (item) => item.role === "Admin"
+          // );
+          setAdmin(data?.results);
+        } else {
+          refreshPage();
+          setIsLoading(true);
+          setSearch("");
+          setAdmin(data?.results);
+        }
       })
       .catch((error) => {
         setIsLoading(false);
         console.error("failed to search error", error);
       });
   };
+  useEffect(() => {
+    const data = { search: search, status: selectedValue, role: "User" };
+    getAdminSearch(data).then((res) => setAdmin(res?.results));
+  }, [selectedValue, isRefetch, search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);

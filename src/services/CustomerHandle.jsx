@@ -27,10 +27,13 @@ export const createCustomer = async (data) => {
   }
 };
 
-export const getCustomerSearch = (params) => {
+export const getCustomerSearch = (data) => {
   return axiosInstance
     .get("account/user-list", {
-      params: params,
+      params: {
+        search:data.search,
+        role:data.role
+      },
     })
     .then((response) => response.data)
     .catch((error) => {

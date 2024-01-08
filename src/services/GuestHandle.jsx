@@ -4,9 +4,14 @@ const getIndivitualAdminListUrl = "/account/vendor-list-details";
 const adminlistCreateUrl = "/account/user-create";
 const updateDetails = "account/users-update";
 
-export const getAdminSearch = (search, status) => {
+export const getAdminSearch = (data) => {
   return axiosInstance
-    .get("account/user-list", { params: { search: search, status: status } })
+    .get("account/user-list", {
+      params: {
+        search: data.search,
+        role: data.role,
+      },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching admin request:", error);
