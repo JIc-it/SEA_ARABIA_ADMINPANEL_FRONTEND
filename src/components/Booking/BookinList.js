@@ -6,14 +6,13 @@ import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
-import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { getBookingList } from "../../services/booking"
+import { getBookingList,getBookingCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -53,20 +52,9 @@ const BookinList = () => {
     setSelectedValue(event.target.value);
   };
   const [bookingList, setBookingList] = useState([]);
+  const [count, setCount] = useState({});
 
-  // const getVendorListData = async () => {
-  //   setIsLoading(true);
-  //   getVendorList(search, selectedValue)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("Error fetching  data:", error);
-  //     });
-  // };
+  
 
   useEffect(() => {
     setIsLoading(true);
@@ -80,11 +68,23 @@ const BookinList = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
+
+    getBookingCount()
+      .then((data) => {
+        setIsLoading(false);
+        setCount({
+          total_booking:data?.total_booking,
+          today_booking:data?.today_booking,
+          total_confirmed_booking:data?.total_confirmed_booking,
+          total_cancelled_booking:data?.total_cancelled_booking
+        });
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
   }, []);
 
-  // useEffect(() => {
-  //   getVendorListData();
-  // }, [selectedValue, isRefetch]);
 
   const handleExportData = () => {
     if (bookingList) {
@@ -178,7 +178,7 @@ const BookinList = () => {
                         />
                       </svg>
                     }
-                    firstCount={"198"}
+                    firstCount={count?.total_booking}
                     secondLabel={"Today's New Bookings"}
                     secondIcon={
                       <svg
@@ -199,7 +199,7 @@ const BookinList = () => {
                         />
                       </svg>
                     }
-                    secondCount={"198"}
+                    secondCount={count?.today_booking}
                     thirdLabel={"Total Confirmed Bookings"}
                     thirdIcon={
                       <svg
@@ -224,7 +224,7 @@ const BookinList = () => {
                         />
                       </svg>
                     }
-                    thirdCount={"198"}
+                    thirdCount={count?.total_confirmed_booking}
                     fourthLabel={"Total Cancelled Bookings"}
                     fourthIcon={
                       <svg
@@ -249,7 +249,7 @@ const BookinList = () => {
                         />
                       </svg>
                     }
-                    fourthCount={"198"}
+                    fourthCount={count?.total_cancelled_booking}
                   />
                 </div>
 

@@ -445,7 +445,7 @@ const RefundHistoryList  = () => {
                               }}
                             >
                               <Link
-                                to={`/refunds-request/${data?.id}/`}
+                                to={`/refunds-history/${data?.id}/`}
                                
 
                                 className="btn btn-sm btn-info"
