@@ -72,7 +72,7 @@ function UserVendorEdit({ show, close }) {
       .catch((error) => {
         console.log("error while fetching location", error);
       });
-  }, []);
+  }, [vendorDetails]);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -180,7 +180,7 @@ function UserVendorEdit({ show, close }) {
       name: vendorDetails?.first_name || "",
       email: vendorDetails?.email || "",
       mobile: vendorDetails?.mobile || "",
-      // location: selectedCountryObject || {},
+      location: selectedCountryObject || {},
       idType: vendorDetails.useridentificationdata?.id_type?.id || "",
       idnumber: vendorDetails?.useridentificationdata?.id_number || "",
       companyaddress: vendorDetails?.company_company_user?.address || "",
