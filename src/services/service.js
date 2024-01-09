@@ -15,6 +15,7 @@ const locationlistURl="service/destination-list"
 const profitMethodURl="service/profit-method-list"
 const deletePriceURl="/service/price/delete"
 const CountURl="service/admin/count"
+const exportURl="service/export-service-list"
 
 export const getCount = () => {
   return axiosInstance
@@ -88,6 +89,16 @@ export const getsubcategorylist = (id) => {
 export const getamenitieslist = () => {
   return axiosInstance
     .get(`${amenitieslist}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getExportList = () => {
+  return axiosInstance
+    .get(`${exportURl}`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -401,7 +401,7 @@ const statusCheck=()=>{
                         <div className={isMobileView ? "col-12 card mt-2" : 'col-7 card mt-2'} style={{ borderRadius: "8px" }} >
                             <div className='d-flex justify-content-between align-items-center px-2'>
                             <p style={{ fontWeight: "600" }} className='p-3'>Payment Details</p>
-                            <button
+                            {/* <button
                                 className="btn btn-sm btn-info"
                                 style={{
                                   padding: "7px 10px 5px 10px",
@@ -430,7 +430,7 @@ const statusCheck=()=>{
                                     strokeLinejoin="round"
                                   />
                                 </svg>
-                              </button>
+                              </button> */}
                             </div>
                             <div className='p-3 m-2 rounded' style={{ backgroundColor: "#EAEBF0" }}>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
@@ -561,7 +561,7 @@ const statusCheck=()=>{
                 </div>
             </div>
             <CancellationModal open={open2} setOpen={setOpen2} bookingId={params.id}/>
-            <RefundModal open={open} setOpen={setOpen} bookingId={params.id}/>
+            {/* <RefundModal open={open} setOpen={setOpen} bookingId={params.id}/> */}
         </div>}
         </>
     )

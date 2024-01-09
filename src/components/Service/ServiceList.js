@@ -7,12 +7,13 @@ import totalVendor from "../../static/img/total-vendor.png"
 import totalMachine from "../../static/img/total-machine.png"
 import ActiveMachine from "../../static/img/active-machine.png"
 import inactiveMachine from "../../static/img/inactive-machine.png"
-import { getServiceListing,getCount } from "../../services/service"
+import { getServiceListing,getCount,getExportList } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
 import {formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { CSVLink } from 'react-csv';
 
 
 // import AddNewService from "./AddNewService";
@@ -25,6 +26,7 @@ function ServiceList() {
     const [servicelist, setServiceList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [count,setCount]=useState(null)
+    const[exportdata,setExportData]=useState([])
 
     useEffect(() => {
         setIsLoading(true)
@@ -52,6 +54,17 @@ function ServiceList() {
                 {setIsLoading(false);
                     toast.error(error.response.data)};
             });
+
+            getExportList()
+            .then((data) => {
+                setExportData(data);
+                setIsLoading(false)
+            })
+            .catch((error) => {
+                {setIsLoading(false);
+                    toast.error(error.response.data)};
+            });
+
     }, [search]);
 
     const handlePagination = async (type) => {
@@ -290,8 +303,11 @@ function ServiceList() {
                     </div>
                     <div className="action_buttons col-4">
 
-                        <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
-                            Export &nbsp;
+                        <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+                            <CSVLink style={{ textDecorationLine: "none", color: "black" }} data={exportdata} filename={"service-list.csv"}>
+                                Export
+                            </CSVLink>
+                            {/* Export &nbsp; */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 width="20"

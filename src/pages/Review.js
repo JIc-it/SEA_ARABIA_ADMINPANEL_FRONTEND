@@ -64,7 +64,7 @@ const Review = () => {
   useEffect(() => {
     getServiceFilterList(filtering)
       .then((data) => {
-        setserviceFilterList(data.results);
+        setserviceFilterList(data);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
