@@ -7,8 +7,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { FileUploader } from "../../../Modal/FileUploader";
 import { submitProposal } from "../../../../services/leadMangement";
 
-function AddProposalModal({ show, close, isRefetch, setIsRefetch,companyID }) {
-
+function AddProposalModal({ show, close, isRefetch, setIsRefetch, companyID }) {
   const [isLoading, setIsLoading] = useState(false);
   const initialValues = {
     title: "",
@@ -21,7 +20,15 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch,companyID }) {
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required"),
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       files: Yup.mixed()
         .required("Please upload  file")
         .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -33,7 +40,15 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch,companyID }) {
           // Check if the file size is less than or equal to 50MB
           return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
         }),
-      note: Yup.string().required("Note is required"),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),
@@ -193,7 +208,7 @@ function AddProposalModal({ show, close, isRefetch, setIsRefetch,companyID }) {
               }}
               type="submit"
             >
-                {isLoading ? <CircularProgress /> : "Add"}
+              {isLoading ? <CircularProgress /> : "Add"}
             </button>
           </div>
         </div>

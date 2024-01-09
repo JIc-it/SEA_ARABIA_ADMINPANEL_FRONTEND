@@ -31,7 +31,6 @@ const VenderIndivitualEdit = () => {
   const [userdata, setUserData] = useState([]);
   const [location, setLocation] = useState();
 
-
   useEffect(() => {
     getLocation()
       .then((data) => {
@@ -58,7 +57,15 @@ const VenderIndivitualEdit = () => {
   }, []);
 
   const validationSchema = Yup.object().shape({
-    fullName: Yup.string().required("Full Name is required"),
+    fullName: Yup.string()
+      .required("Full Name is required")
+      .test(
+        "is-not-blank",
+        "Full Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     phone: Yup.string().required("Phone is required"),
     email: Yup.string()
       .email("Invalid email address")
@@ -66,11 +73,33 @@ const VenderIndivitualEdit = () => {
     location: Yup.mixed().required("Location is required"),
     idType: Yup.string().required("ID Type is required"),
     idNumber: Yup.string().required("ID Number is required"),
-    companyName: Yup.string().required("Company Name is required"),
-    companyAddress: Yup.string().required("Company Address is required"),
-    companyRegistrationNumber: Yup.string().required(
-      "Company Registration Number is required"
-    ),
+    companyName: Yup.string()
+      .required("Company Name is required")
+      .test(
+        "is-not-blank",
+        "Company Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyAddress: Yup.string()
+      .required("Company Address is required")
+      .test(
+        "is-not-blank",
+        "Company Address must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyRegistrationNumber: Yup.string()
+      .required("Company Registration Number is required")
+      .test(
+        "is-not-blank",
+        "Company Registration must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     // companyWebsite: Yup.string()
     //   .url("Invalid URL")
     //   .required("Company Website is required"),
@@ -116,7 +145,7 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("phone", formattedPhoneNumber);
         const selectedCountryObject =
           location &&
-          location.length > 0 &&
+          location.length > 0 &&  data.profileextra?.location?.country_code &&
           location.find(
             (country) =>
               country.code === data.profileextra.location.country_code
@@ -159,7 +188,7 @@ const VenderIndivitualEdit = () => {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, [vendorId,location]);
+  }, [vendorId, location]);
 
   const updateInitialContact = async () => {
     try {
@@ -331,7 +360,10 @@ const VenderIndivitualEdit = () => {
                   <div className="col-sm-6 ">
                     <div className="mb-3">
                       <label className="form-label">Location</label>
-                      <CountryDropdown gccCountries={location} formik={formik} />
+                      <CountryDropdown
+                        gccCountries={location}
+                        formik={formik}
+                      />
                       {/* <div style={{ position: "relative" }}>
                         <select
                           className="form-control"
@@ -341,14 +373,14 @@ const VenderIndivitualEdit = () => {
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         > */}
-                          {/* <option
+                      {/* <option
                             disabled={true}
                             value=""
                             id={formik.values.location?.id}
                           >
                             {formik.values.location?.location}
                           </option> */}
-                          {/* {location &&
+                      {/* {location &&
                             location.length > 0 &&
                             location.map((item, index) => {
                               return (
@@ -371,10 +403,10 @@ const VenderIndivitualEdit = () => {
                               );
                             })}
                         </select> */}
-                        {/* {formik.touched.location && formik.errors.location ? (
+                      {/* {formik.touched.location && formik.errors.location ? (
                           <div className="error">{formik.errors.location}</div>
                         ) : null} */}
-                        {/* <svg
+                      {/* <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="20"
                           height="20"

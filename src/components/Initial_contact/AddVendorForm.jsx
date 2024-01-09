@@ -27,7 +27,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [idTypeList, setIdTypeList] = useState();
 
-
   useEffect(() => {
     getVendorListById(vendorId).then((data) => {
       formik.setFieldValue("fullName", data.first_name);
@@ -37,6 +36,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
       const selectedCountryObject =
         locationList &&
         locationList.length > 0 &&
+        data.profileextra?.location?.country_code &&
         locationList.find(
           (country) => country.code === data.profileextra.location.country_code
         );
@@ -44,7 +44,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
       selectedCountryObject &&
         formik.setFieldValue("location", selectedCountryObject);
     });
-  }, [vendorId,locationList]);
+  }, [vendorId, locationList]);
 
   useEffect(() => {
     getVendorServiceTag()
@@ -61,7 +61,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-   
   }, []);
 
   console.log(formik.values, "formik.values.location");
@@ -150,7 +149,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
               <div className="mb-3">
                 <label className="form-label">Location</label>
                 <CountryDropdown gccCountries={locationList} formik={formik} />
-               
               </div>
             </div>
           </div>

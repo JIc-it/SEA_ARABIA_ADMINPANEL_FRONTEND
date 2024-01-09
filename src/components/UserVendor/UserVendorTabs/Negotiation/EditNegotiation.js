@@ -13,7 +13,7 @@ function EditNegotiation({
   setIsRefetch,
   isRefetch,
   selectedData,
-  companyID
+  companyID,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   var substringToRemove =
@@ -31,9 +31,25 @@ function EditNegotiation({
       // date: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required"),
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       //   files: Yup.string().required("Please upload  file"),
-      note: Yup.string().required("Note is required"),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),

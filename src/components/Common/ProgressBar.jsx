@@ -117,11 +117,16 @@ function ProgressBar({ locationList }) {
         formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
         formik.setFieldValue("phone", data.mobile);
-        const selectedCountryObject =locationList&&locationList.length>0&& locationList.find(
-          (country) => country.code === data.profileextra.location?.country_code
-        );
+        const selectedCountryObject =
+          locationList &&
+          locationList.length > 0 &&
+          locationList.find(
+            (country) =>
+              country.code === data.profileextra.location?.country_code
+          );
         console.log(selectedCountryObject, "selectedCountryObject");
-        selectedCountryObject&&   formik.setFieldValue("location", selectedCountryObject);
+        selectedCountryObject &&
+          formik.setFieldValue("location", selectedCountryObject);
         formik.setFieldValue(
           "idType",
           data?.useridentificationdata?.id_type?.id || ""
@@ -216,19 +221,65 @@ function ProgressBar({ locationList }) {
   };
 
   const validationSchemaForInitialContact = Yup.object().shape({
-    fullName: Yup.string().required("Full Name is required"),
+    fullName: Yup.string()
+      .required("Full Name is required")
+      .test(
+        "is-not-blank",
+        "Full Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     phone: Yup.string().required("Phone is required"),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
     location: Yup.mixed().required("Location is required"),
-    idType: Yup.string().required("ID Type is required"),
-    idNumber: Yup.string().required("ID Number is required"),
-    companyName: Yup.string().required("Company Name is required"),
-    companyAddress: Yup.string().required("Company Address is required"),
-    companyRegistrationNumber: Yup.string().required(
-      "Company Registration Number is required"
-    ),
+    idType: Yup.string()
+      .required("ID Type is required")
+      .test(
+        "is-not-blank",
+        "ID Type must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    idNumber: Yup.string()
+      .required("ID Number is required")
+      .test(
+        "is-not-blank",
+        "ID Type must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyName: Yup.string()
+      .required("Company Name is required")
+      .test(
+        "is-not-blank",
+        "Company Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyAddress: Yup.string()
+      .required("Company Address is required")
+      .test(
+        "is-not-blank",
+        "Company Address must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyRegistrationNumber: Yup.string()
+      .required("Company Registration Number is required")
+      .test(
+        "is-not-blank",
+        "Company Registration Number must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     // companyWebsite: Yup.string()
     //   .url("Invalid URL")
     //   .required("Company Website is required"),
@@ -247,7 +298,15 @@ function ProgressBar({ locationList }) {
   };
 
   const validationSchemaForSiteVisit = Yup.object({
-    title: Yup.string().required("Title is required"),
+    title: Yup.string()
+      .required("Title is required")
+      .test(
+        "is-not-blank",
+        "Title must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     files: Yup.mixed()
       .required("Please upload file")
       .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -259,7 +318,15 @@ function ProgressBar({ locationList }) {
         // Check if the file size is less than or equal to 50MB
         return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
       }),
-    note: Yup.string().required("Note is required"),
+    note: Yup.string()
+      .required("Note is required")
+      .test(
+        "is-not-blank",
+        "Note must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     siteVisitTime: Yup.string().required("Time is required"),
     siteVisitDate: Yup.string().required("Date is required"),
     qualification: Yup.array()
@@ -271,7 +338,15 @@ function ProgressBar({ locationList }) {
   });
 
   const validationSchemaForProposal = Yup.object({
-    proposalTitle: Yup.string().required("Title is required"),
+    proposalTitle: Yup.string()
+      .required("Title is required")
+      .test(
+        "is-not-blank",
+        "Title must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     files: Yup.mixed()
       .required("Please upload file")
       .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -283,13 +358,29 @@ function ProgressBar({ locationList }) {
         // Check if the file size is less than or equal to 50MB
         return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
       }),
-    proposalNote: Yup.string().required("Note is required"),
+    proposalNote: Yup.string()
+      .required("Note is required")
+      .test(
+        "is-not-blank",
+        "Note must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     // proposalTime: Yup.string().required("Time is required"),
     // proposalDate: Yup.string().required("Date is required"),
   });
 
   const validationSchemaForNegotiation = Yup.object({
-    negotiationTitle: Yup.string().required("Title is required"),
+    negotiationTitle: Yup.string()
+      .required("Title is required")
+      .test(
+        "is-not-blank",
+        "Title must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     files: Yup.mixed()
       .required("Please upload file")
       .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -301,13 +392,27 @@ function ProgressBar({ locationList }) {
         // Check if the file size is less than or equal to 50MB
         return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
       }),
-    negotiationNote: Yup.string().required("Note is required"),
+    negotiationNote: Yup.string()
+      .required("Note is required")
+      .test(
+        "is-not-blank",
+        "Note must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     // negotiationTime: Yup.string().required("Time is required"),
     // negotiationDate: Yup.string().required("Date is required"),
   });
 
   const validationSchemaForCharter = Yup.object({
-    charterTitle: Yup.string().required("Title is required"),
+    charterTitle: Yup.string().required("Title is required").test(
+      "is-not-blank",
+      "Title must not contain only blank spaces",
+      (value) => {
+        return /\S/.test(value); // Checks if there is at least one non-whitespace character
+      }
+    ),
     files: Yup.mixed()
       .required("Please upload file")
       .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -319,7 +424,13 @@ function ProgressBar({ locationList }) {
         // Check if the file size is less than or equal to 50MB
         return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
       }),
-    charterNote: Yup.string().required("Note is required"),
+    charterNote: Yup.string().required("Note is required").test(
+      "is-not-blank",
+      "Note must not contain only blank spaces",
+      (value) => {
+        return /\S/.test(value); // Checks if there is at least one non-whitespace character
+      }
+    ),
     // charterTime: Yup.string().required("Time is required"),
     // charterDate: Yup.string().required("Date is required"),
   });
@@ -789,7 +900,6 @@ function ProgressBar({ locationList }) {
               </div>
             </div>
           )}
-          {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
         </div>
       </form>
     </div>

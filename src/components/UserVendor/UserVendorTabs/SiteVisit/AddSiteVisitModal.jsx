@@ -32,7 +32,15 @@ function AddSiteVisitModal({
   const formik = useFormik({
     initialValues: initialValues,
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required"),
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       files: Yup.mixed()
         .required("Please upload  file")
         .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -44,10 +52,17 @@ function AddSiteVisitModal({
           // Check if the file size is less than or equal to 50MB
           return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
         }),
-      note: Yup.string().required("Note is required"),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       time: Yup.string().required("Time is required"),
       date: Yup.string().required("Date is required"),
-    
     }),
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);

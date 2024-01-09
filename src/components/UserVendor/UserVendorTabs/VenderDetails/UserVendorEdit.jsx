@@ -67,7 +67,14 @@ function UserVendorEdit({ show, close }) {
   const validationSchema = Yup.object({
     name: Yup.string()
       .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
@@ -77,12 +84,41 @@ function UserVendorEdit({ show, close }) {
     idnumber: Yup.string().required("ID Number is required"),
     companyname: Yup.string()
       .required("Company Name is required")
-      .max(20, "Company Name must be at most 20 characters"),
-    companyaddress: Yup.string().required("Company Address is required"),
-    companyregnumber: Yup.string().required(
-      "Company Register Number is required"
-    ),
-    companywebaddress: Yup.string().required("Company Website is required"),
+      .max(20, "Company Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Company Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyaddress: Yup.string()
+      .required("Company Address is required")
+      .test(
+        "is-not-blank",
+        "Company Address must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companyregnumber: Yup.string()
+      .required("Company Register Number is required")
+      .test(
+        "is-not-blank",
+        "Company Register Number must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
+    companywebaddress: Yup.string()
+      .required("Company Website is required")
+      .test(
+        "is-not-blank",
+        "Company Website must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     defineServices: Yup.array().required("Define Service is required"),
   });
   const selectedCountryObject =
