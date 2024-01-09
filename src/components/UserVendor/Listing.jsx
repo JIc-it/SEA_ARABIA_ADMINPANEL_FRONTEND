@@ -40,11 +40,14 @@ export default function Listing() {
     setSelectedValue(event.target.value);
   };
 
-  // const [statusList, setStatusList] = useState([]);
-
   const getVendorListData = async () => {
     setIsLoading(true);
-    getCustomerSearch({ search: search, status: selectedValue, role: "Vendor" })
+    getCustomerSearch({
+      search: search,
+      status: selectedValue,
+      role: "Vendor",
+      company_company_user: true,
+    })
       .then((data) => {
         console.log("Search ---:", data);
         setIsLoading(false);
@@ -315,13 +318,18 @@ export default function Listing() {
                             </td>
                             <td>
                               <button
-                                className="btn btn-dark "
+                                className={`btn ${
+                                  item.company_status
+                                    ? "btn-dark"
+                                    : "service-disable-button"
+                                } btn-dark `}
                                 style={{
                                   fontSize: "12px",
                                   padding: "3px 6px",
                                   borderRadius: "4px",
                                 }}
                                 onClick={() =>
+                                  item.company_status  &&
                                   navigate(`/service-add/${item?.company_id}`)
                                 }
                               >

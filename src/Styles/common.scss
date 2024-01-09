@@ -381,7 +381,6 @@ tr {
   cursor: pointer;
 }
 
-
 // New Css
 
 .frame-427319790,
@@ -415,7 +414,7 @@ tr {
 .service {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex-shrink: 0;
@@ -545,7 +544,7 @@ tr {
 .customer {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex-shrink: 0;
@@ -581,7 +580,7 @@ tr {
 .booking {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex-shrink: 0;
@@ -622,9 +621,6 @@ tr {
   overflow: visible;
 }
 
-
-
-
 .frame-427319784,
 .frame-427319784 * {
   box-sizing: border-box;
@@ -638,7 +634,7 @@ tr {
   padding: 12px;
   display: flex;
   flex-direction: row;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex-wrap: wrap;
@@ -652,7 +648,7 @@ tr {
   padding: 4px 8px 4px 8px;
   display: flex;
   flex-direction: row;
- gap: 1px;
+  gap: 1px;
   align-items: center;
   justify-content: flex-start;
   flex-shrink: 0;
@@ -823,7 +819,6 @@ tr {
   overflow: visible;
 }
 
-
 .comingSoon {
   position: relative;
   text-align: center;
@@ -831,7 +826,6 @@ tr {
   font-size: 81px;
   color: #123499;
 }
-
 
 // Cancellation model Css
 .frame-11232,
@@ -903,7 +897,7 @@ tr {
 .frame-11248 {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
@@ -1012,7 +1006,7 @@ tr {
 .frame-11249 {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
@@ -1101,7 +1095,7 @@ tr {
 .frame-11250 {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   align-self: stretch;
@@ -1386,7 +1380,7 @@ tr {
 .checkbox-text2 {
   display: flex;
   flex-direction: row;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex: 1;
@@ -1395,7 +1389,7 @@ tr {
 .text-container2 {
   display: flex;
   flex-direction: column;
- gap: 1px;
+  gap: 1px;
   align-items: flex-start;
   justify-content: flex-start;
   flex: 1;
@@ -1499,4 +1493,10 @@ tr {
   right: 40px;
   top: 30px;
   overflow: visible;
+}
+
+.service-disable-button {
+  background-color: #75797f !important;
+  border-color: #75797f !important;
+  pointer-events: none;
 }

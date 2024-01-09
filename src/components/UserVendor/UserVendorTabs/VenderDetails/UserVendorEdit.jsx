@@ -3,7 +3,7 @@ import "../../../../static/css/AddNewLead.css";
 
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -20,18 +20,20 @@ import {
 } from "../../../../services/CustomerHandle";
 import { Autocomplete, TextField } from "@mui/material";
 import CountryDropdown from "../../../SharedComponents/CountryDropDown";
+import { AppContext } from "../../../../Context/AppContext";
 
 function UserVendorEdit({ show, close }) {
   const navigate = useNavigate();
   const theme = useTheme();
   const vendorId = useParams()?.id;
+  const { gccCountriesList } = useContext(AppContext);
+  console.log(gccCountriesList, "gccCountriesList");
 
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [idTypeList, setIdTypeList] = useState();
   const [serviceTagList, setServiceTagList] = useState();
   const [vendorDetails, setvendorDetails] = useState([]);
-  const [location, setLocation] = useState([]);
 
   useEffect(() => {
     getVendorListById(vendorId)
@@ -60,18 +62,6 @@ function UserVendorEdit({ show, close }) {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-    getLocation()
-      .then((data) => {
-        setLocation(data);
-        let selectedCountry = data.find(
-          (country) =>
-            country.code === vendorDetails.profileextra.location.country_code
-        );
-        selectedCountry && formik.setFieldValue("location", selectedCountry);
-      })
-      .catch((error) => {
-        console.log("error while fetching location", error);
-      });
   }, [vendorDetails]);
 
   const validationSchema = Yup.object({
@@ -95,11 +85,11 @@ function UserVendorEdit({ show, close }) {
     companywebaddress: Yup.string().required("Company Website is required"),
     defineServices: Yup.array().required("Define Service is required"),
   });
-  const [serviceData, setServiceData] = useState();
   const selectedCountryObject =
-    location &&
-    location.length > 0 &&
-    location.find(
+    gccCountriesList &&
+    gccCountriesList.length > 0 &&
+    vendorDetails?.profileextra?.location &&
+    gccCountriesList.find(
       (country) =>
         country.code === vendorDetails.profileextra.location.country_code
     );
@@ -437,7 +427,7 @@ function UserVendorEdit({ show, close }) {
                                 Location <span style={{ color: "red" }}>*</span>
                               </label>
                               <CountryDropdown
-                                gccCountries={location}
+                                gccCountries={gccCountriesList}
                                 formik={formik}
                               />
                             </div>
