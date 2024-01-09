@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList } from "../services/review"
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList,getServiceReviewFilter2 } from "../services/review"
 
 const Review = () => {
   const [categorylist, setCategorylist] = useState([]);
@@ -72,13 +72,27 @@ const Review = () => {
   }, [filtering]);
 
   useEffect(() => {
-    getServiceReviewFilter(filterdataid,filtering.rating)
+    if(filterdataid.trim()!==""){
+      getServiceReviewFilter2(filterdataid,filtering.rating)
       .then((data) => {
         setfilteridData(data.results);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
+    }
+   else{
+    getServiceReviewFilter(filtering.rating)
+    .then((data) => {
+      setfilteridData(data.results);
+    })
+    .catch((error) => {
+      console.error("Error fetching distributor data:", error);
+    });
+   }
+
+      
+      
   }, [filterdataid,filtering.rating]);
 
   const handleSelectChange = (event) => {
@@ -112,7 +126,7 @@ const Review = () => {
                     value={selectedValue}
                     onChange={handleSelectChange}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {companyList.map((data, index) =>
                       <option key={data.id} value={data.name}>{data.name}</option>
                     )}
@@ -127,16 +141,16 @@ const Review = () => {
                     className="form-select mb-3 status_selector"
                     value={categorychoose}
                     onChange={(e) => {
-                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      const selectedValue = e.target.value === "Choose" ? null : e.target.value;
                       setCategoryChoose(selectedValue);
                       handlefiltering({ categoryid: selectedValue });
                     }}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {categorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
-                    {/* <option value="New Lead">All</option>
+                    {/* <option value="New Lead">Choose</option>
                                         <option value="Yatch">Yatch</option>
                                         <option value="Boat">Boat</option> */}
                   </select>
@@ -150,12 +164,12 @@ const Review = () => {
                     className="form-select mb-3 status_selector"
                     value={subcategorychoose}
                     onChange={(e) => {
-                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      const selectedValue = e.target.value === "Choose" ? null : e.target.value;
                       setSubcategoryChoose(selectedValue);
                       handlefiltering({ subcategoryid: selectedValue });
                     }}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {subcategorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
@@ -198,7 +212,7 @@ const Review = () => {
                     onChange={(e)=>{handlefiltering({rating:e.target.value})}}
                   >
                     <optgroup label="Rating">
-                    <option value={""}>All</option>
+                    <option value={""}>Choose</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
@@ -224,11 +238,11 @@ const Review = () => {
                         </svg>
                       </h4>
                       <h5 class="card-subtitle mb-2 text-muted">{data.service}</h5>
-                      <span className='head-text'>{data?.review_title}</span>
+                      <span className='head-text' style={{textTransform:"capitalize"}}>{data?.review_title}</span>
                       <p class="card-text">{data?.review_summary}</p>
                       <div style={{ position: 'relative', bottom: 10 }}>
                         <span style={{ color: '#006875' }}>{data?.user}</span><br></br>
-                        <span>25/07/2023</span>
+                        <span>{new Date(data?.created_at).toLocaleDateString("es-CL")}</span>
                       </div>
                     </div>
                   </div>

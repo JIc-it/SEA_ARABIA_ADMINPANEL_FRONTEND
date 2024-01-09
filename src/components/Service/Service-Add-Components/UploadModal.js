@@ -79,6 +79,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
             }
 
         })
+        handleClose()
         // const formdata=new FormData()
         // formdata.append("image",values.image);
         // formdata.append("service",values.service);
@@ -124,7 +125,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
         }
       };
 
-console.log(formik.values);
+
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>

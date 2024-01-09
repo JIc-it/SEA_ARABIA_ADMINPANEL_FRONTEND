@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
-import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { getBookingList } from "../../services/booking"
+import { getBookingList,getRefundHistoryCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -53,6 +47,7 @@ const RefundHistoryList  = () => {
     setSelectedValue(event.target.value);
   };
   const [bookingList, setBookingList] = useState([]);
+  const [count,setCount]=useState({})
 
   // const getVendorListData = async () => {
   //   setIsLoading(true);
@@ -70,11 +65,26 @@ const RefundHistoryList  = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getBookingList(search, selectedValue)
+    const statuspass={status:"Cancelled",refund_status:"Completed"}
+    getBookingList(statuspass)
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
         setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
+
+      getRefundHistoryCount()
+      .then((data) => {
+        setIsLoading(false);
+        setCount({
+          refund_request_count:data.refund_request_count,
+          cancelled_by_vendor:data.cancelled_by_vendor,
+          cancelled_by_user:data.cancelled_by_user
+        });
       })
       .catch((error) => {
         setIsLoading(false);
@@ -97,7 +107,7 @@ const RefundHistoryList  = () => {
         "CREATED BY",
         "STATUS",
       ];
-      const csvData = bookingList.map((elem) => {
+      const csvData = bookingList?.map((elem) => {
         let formatedDate = formatDate(elem.created_at);
         return [
           elem.first_name,
@@ -145,6 +155,20 @@ const RefundHistoryList  = () => {
         });
   };
 
+  const handleSearch=()=>{
+    const Pass={status:"Cancelled",search:search,refund_status:"Completed"}
+    getBookingList(Pass)
+      .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
+  }
+
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -168,7 +192,7 @@ const RefundHistoryList  = () => {
 
                       
                     }
-                    firstCount={"198"}
+                    firstCount={count?.refund_request_count}
                     secondLabel={"Cancellation By Vendor"}
                     secondIcon={
                       <svg width="57" height="56" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,7 +210,7 @@ const RefundHistoryList  = () => {
                       </svg>
 
                     }
-                    secondCount={"198"}
+                    secondCount={count?.cancelled_by_vendor}
                     thirdLabel={"Cancellation By Customer"}
                     thirdIcon={
                       <svg width="57" height="56" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -204,7 +228,7 @@ const RefundHistoryList  = () => {
                       </svg>
                       
                     }
-                    thirdCount={"198"}
+                    thirdCount={count?.cancelled_by_user}
                     fourthLabel={""}
                     fourthIcon={""}
                     fourthCount={""}
@@ -216,10 +240,7 @@ const RefundHistoryList  = () => {
               <div className="col-12 actions_menu my-2">
                 <div className="action_menu_left col-8">
                   <div>
-                    <form
-                      action=""
-                      method="post"
-                      autocomplete="off"
+                    <div
                       style={{ display: "flex" }}
                     >
                       <div className="input-icon">
@@ -254,7 +275,7 @@ const RefundHistoryList  = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          // onClick={getVendorListData}
+                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -279,7 +300,7 @@ const RefundHistoryList  = () => {
                           />
                         </svg>
                       </button>
-                    </form>
+                    </div>
                   </div>
                 </div>
                 <div className="action_buttons col-4">
@@ -381,8 +402,8 @@ const RefundHistoryList  = () => {
                     <tbody>
                       {!isLoading ? (
                         <>
-                          {bookingList.length>0 && 
-                          bookingList.map((data)=>
+                          {bookingList?.length>0 && 
+                          bookingList?.map((data)=>
                           <tr>
                             {console.log(data)}
                             <td>
@@ -395,7 +416,7 @@ const RefundHistoryList  = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.service?.category.map((items)=>
+                                {data?.service?.category?.map((items)=>
                                 items.name
                                 )}
                               </span>
@@ -410,12 +431,12 @@ const RefundHistoryList  = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.user_type}
+                                {data?.user?.role}
                               </span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {new Date(data?.start_date).toLocaleDateString("es-CL")}
+                                {new Date(data?.cancelled_date).toLocaleDateString("es-CL")}
                               </span>
                             </td>
                             <td>

@@ -12,7 +12,8 @@ export default function DiscountView() {
   const [isLoading, setIsLoading] = useState(false)
   const [redemptiontype, setRedemptionType] = useState("");
   const [copys,setCopies]=useState("Copy")
-  const params = useParams()
+  const params = useParams();
+  const[newService,setNewService]=useState(false)
 
   useEffect(() => {
     setIsLoading(true)
@@ -25,30 +26,33 @@ export default function DiscountView() {
         setIsLoading(false)
         toast.error(error.response.data)
       });
-  }, [params.id]);
 
-  useEffect(()=>{
-    getOneCompanyList(params.id)
-    .then((data) => {
-        const servicelist=data.results.map((data)=>data.company_service_count)
-        setOfferView((prev) => {
-                if (prev.id === params.id) {
-                    return {
-                        ...prev,
-                        servicelist: servicelist.flat(),
-                    };
-                }
-                else{
-                  return {
-                    ...prev
+      setIsLoading(true)
+      getOneCompanyList(params.id)
+      .then((data) => {
+        setIsLoading(false)
+          const servicelist=data?.results?.map((data)=>data?.company_service_count)
+          setOfferView((prev) => {
+                  if (prev.id === params.id) {
+                      return {
+                          ...prev,
+                          servicelist: servicelist.flat(),
+                      };
                   }
-                }
-        });
-    })
-    .catch((error) => {
-        console.error("Error fetching data:", error);
-    });
-},[params.id])
+                  else{
+                    return {
+                      ...prev
+                    }
+                  }
+          });
+          
+         
+      })
+      .catch((error) => {
+        setIsLoading(false)
+          console.error("Error fetching data:", error);
+      });
+  }, [params.id]);
 
   const navigate = useNavigate()
 

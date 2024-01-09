@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import { Radio, Paper, Typography, Box } from '@mui/material';
+import { updateCancellation } from "../../services/booking"
 
 
 const offcanvasStyle = {
@@ -26,7 +27,7 @@ export default function CancellationModal({
 
     const validationSchema = Yup.object({
             refund_details: Yup.string()
-            .required("Details is required"),
+            .required("Reason is required"),
     });
 
     const formik = useFormik({
@@ -34,40 +35,47 @@ export default function CancellationModal({
             refund_details:"",
         },
         validationSchema,
-        // onSubmit: async (values) => {
-        //   setIsLoading(true);
-        //   if (!isLoading) {
-        //     try {
-        //       const data = {
-        //           refund_details: values.refund_details,
-        //       };
+        onSubmit: async (values) => {
+          setIsLoading(true);
+          if (!isLoading) {
+            try {
+              const data = {
+                cancellation_reason: values.refund_details,
+              };
 
-        //       const resetData = await updateRefund(bookingId,data);
-        //       if (resetData) {
-        //         toast.success("Initiated successfully!");
-        //         setOpen(false);
-        //         setIsLoading(false);
-        //         formik.setValues(()=>{
+              const resetData = await updateCancellation(bookingId);
+              if (resetData) {
+                toast.success("Initiated successfully!");
+                setOpen(false);
+                setIsLoading(false);
+                formik.setValues(()=>{
 
-        //            return {
-        //             refund_type: "Partial Amount",
-        //             refund_amount:0,
-        //             refund_details:"",
-        //            }
+                   return {
+    
+                    refund_details:"",
+                   }
 
-        //         })
-        //       } else {
-        //         console.error("Error while creating Admin:", resetData.error);
-        //         setIsLoading(false);
-        //       }
-        //       setIsLoading(false);
-        //     } catch (err) {
-        //       console.log(err);
-        //       toast.error(err.response.data.error);
-        //       setIsLoading(false);
-        //     }
-        //   }
-        // },
+                })
+              } else {
+                console.error("Error while creating Admin:", resetData.error);
+                setIsLoading(false);
+              }
+              setIsLoading(false);
+            } catch (err) {
+              console.log(err);
+              toast.error(err.response.data.error);
+              setIsLoading(false);
+            }
+          }
+          formik.setValues(()=>{
+
+            return {
+
+             refund_details:"",
+            }
+
+         })
+        },
     });
 
     const handleCloseOffcanvas = () => {
