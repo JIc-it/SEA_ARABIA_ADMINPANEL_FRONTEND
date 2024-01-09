@@ -51,6 +51,11 @@ import EventEdit from "./Events/EventEdit";
 import ServiceAdd from "./Service/ServiceAdd";
 import AdminActivityLog from "../pages/Users/Admin/AdminActivityLog";
 import CustomerActivityLog from "./Customers/CustomerActivityLog";
+import RefundRequestList from "./Booking/RefundRequestList";
+import RefundHistoryList from "./Booking/RefundHistoryList ";
+import RefundRequestView from "./Booking/RefundRequestView";
+import RefundHistoryView from "./Booking/RefundHistoryView";
+
 
 function AllRouting() {
   return (
@@ -66,8 +71,10 @@ function AllRouting() {
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
-      <Route path="/refunds-request" element={<RefundsRequest />} />
-      <Route path="/refunds-history" element={<RefundHistory />} />
+      <Route path="/refunds-request" element={<RefundRequestList/>} />
+      <Route path="/refunds-request/:id" element={<RefundRequestView/>} />
+      <Route path="/refunds-history" element={<RefundHistoryList />} />
+      <Route path="/refunds-history/:id" element={<RefundHistoryView />} />
       {/* //////////Refund//////////////////// */}
       {/* ///////////////services/////////////////////// */}
       <Route path="/manage-services" element={<ManageServices />} />

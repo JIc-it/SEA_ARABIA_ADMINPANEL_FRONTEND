@@ -24,7 +24,7 @@ const ListCards = ({
        }
       </style> */}
 
-      <div className="col-sm-6 col-lg-3">
+      <div className={fourthLabel.trim() !== "" ? "col-sm-6 col-lg-3" : "col-sm-6 col-lg-4"}>
         <div className="card card-sm" style={{ borderRadius: "12px" }}>
           <div className="card-body">
             <div className="row align-items-center">
@@ -57,7 +57,7 @@ const ListCards = ({
           </div>
         </div>
       </div>
-      <div className="col-sm-6 col-lg-3">
+      <div className={fourthLabel.trim() !== "" ? "col-sm-6 col-lg-3" : "col-sm-6 col-lg-4"}>
         <div className="card card-sm" style={{ borderRadius: "12px" }}>
           <div className="card-body">
             <div className="row align-items-center">
@@ -91,7 +91,7 @@ const ListCards = ({
           </div>
         </div>
       </div>
-      <div className="col-sm-6 col-lg-3">
+      <div className={fourthLabel.trim() !== "" ? "col-sm-6 col-lg-3" : "col-sm-6 col-lg-4"}>
         <div className="card card-sm" style={{ borderRadius: "12px" }}>
           <div className="card-body">
             <div className="row align-items-center">
@@ -125,7 +125,7 @@ const ListCards = ({
           </div>
         </div>
       </div>
-      <div className="col-sm-6 col-lg-3">
+      <div className={fourthLabel.trim() !== "" ? "col-sm-6 col-lg-3" : "d-none"}>
         <div className="card card-sm" style={{ borderRadius: "12px" }}>
           <div className="card-body">
             <div className="row align-items-center">

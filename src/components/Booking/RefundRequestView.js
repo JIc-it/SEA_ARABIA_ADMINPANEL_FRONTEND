@@ -10,7 +10,7 @@ import { CircularProgress } from '@mui/material';
 import RefundModal from './RefundModal';
 import CancellationModal from './CancellationModal';
 
-export default function BookingView() {
+export default function RefundRequestView() {
     const params=useParams();
     const theme = useTheme();
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));

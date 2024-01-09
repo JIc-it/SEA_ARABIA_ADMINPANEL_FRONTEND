@@ -260,9 +260,12 @@ const ServiceAdd = () => {
                       });
                                               
                         
-                        AddMultipleImage(formData).then((data) => console.log(data)).catch((err) => console.log(err))
+                        const clearTimeout=setTimeout(()=>{
+                            AddMultipleImage(formData).then((data) => console.log(data,"data")).catch((err) => console.log(err))
+                        },5000)
                         toast.success("Service Created Successfully")
                         setIsUpdated(true)
+                        clearTimeout(clearTimeout)
 
                     } else {
                         console.error("Error while creating Admin:", adminData.error);

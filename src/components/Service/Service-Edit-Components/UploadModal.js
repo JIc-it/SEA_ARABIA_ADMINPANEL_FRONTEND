@@ -13,6 +13,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import {AddImage} from "../../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
+import { useParams } from 'react-router-dom';
 
 const style = {
     position: 'absolute',
@@ -30,14 +31,9 @@ const style = {
 
 
 export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated }) {
-    const [companylist, setCompanyList] = useState([])
+    const params=useParams()
     const [isLoading, setIsLoading] = useState(false);
-    const [search, setSearch] = useState("")
-    const [idset, setIdSet] = useState("")
-    const handleSearchChange = (e) => {
-        const searchTerm = e.target.value;
-        setSearch(searchTerm);
-    };
+   
 
     const validationSchema = Yup.object({
         image: Yup.mixed()        
@@ -68,7 +64,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
        
         const formdata=new FormData()
         formdata.append("image",values.image);
-        formdata.append("service",values.service);
+        formdata.append("service",params.id);
 
             if (!isLoading) {
               try {
