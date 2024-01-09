@@ -31,7 +31,7 @@ function UserVendorEdit({ show, close }) {
   const [idTypeList, setIdTypeList] = useState();
   const [serviceTagList, setServiceTagList] = useState();
   const [vendorDetails, setvendorDetails] = useState([]);
-  const [location, setLocation] = useState();
+  const [location, setLocation] = useState([]);
 
   useEffect(() => {
     getVendorListById(vendorId)
@@ -63,6 +63,11 @@ function UserVendorEdit({ show, close }) {
     getLocation()
       .then((data) => {
         setLocation(data);
+        let selectedCountry = data.find(
+          (country) =>
+            country.code === vendorDetails.profileextra.location.country_code
+        );
+        selectedCountry && formik.setFieldValue("location", selectedCountry);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -106,7 +111,7 @@ function UserVendorEdit({ show, close }) {
       name: vendorDetails?.first_name || "",
       email: vendorDetails?.email || "",
       mobile: vendorDetails?.mobile || "",
-      location: selectedCountryObject || "",
+      location: (selectedCountryObject && selectedCountryObject) || {},
       idType: vendorDetails.useridentificationdata?.id_type?.id || "",
       idnumber: vendorDetails?.useridentificationdata?.id_number || "",
       companyaddress: vendorDetails?.company_company_user?.address || "",
@@ -175,7 +180,7 @@ function UserVendorEdit({ show, close }) {
       name: vendorDetails?.first_name || "",
       email: vendorDetails?.email || "",
       mobile: vendorDetails?.mobile || "",
-      location: selectedCountryObject || "",
+      // location: selectedCountryObject || {},
       idType: vendorDetails.useridentificationdata?.id_type?.id || "",
       idnumber: vendorDetails?.useridentificationdata?.id_number || "",
       companyaddress: vendorDetails?.company_company_user?.address || "",
