@@ -1,11 +1,11 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import Avatars from "../../../../assets/images/Avatar.png";
 import VendorResetPassword from "../VendorRestPassword";
 
 const VenderDetailsList = ({ venderDetails }) => {
-  const [open,setOpen]=useState(false)
+  const [open, setOpen] = useState(false);
 
   console.log(venderDetails, "venderDetails");
   const navigate = useNavigate();
@@ -86,7 +86,7 @@ const VenderDetailsList = ({ venderDetails }) => {
               <div className="d-flex justify-content-between">
                 <p style={{ fontWeight: "700" }}>
                   {" "}
-                  {venderDetails?.profileextra.location?.location}
+                  {venderDetails?.profileextra.location?.country}
                 </p>
                 <p>
                   <svg
@@ -245,7 +245,11 @@ const VenderDetailsList = ({ venderDetails }) => {
           </div>
         </div>
       </div>
-      <VendorResetPassword  open={open} setOpen={setOpen} userid={venderDetails?.id}/>
+      <VendorResetPassword
+        open={open}
+        setOpen={setOpen}
+        userid={venderDetails?.id}
+      />
     </div>
   );
 };

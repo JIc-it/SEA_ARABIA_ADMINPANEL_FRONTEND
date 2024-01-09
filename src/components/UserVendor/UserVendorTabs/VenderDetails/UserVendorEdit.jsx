@@ -14,8 +14,12 @@ import {
   getVendorServiceTag,
 } from "../../../../services/leadMangement";
 import { useNavigate, useParams } from "react-router-dom";
-import { UpdateVendorListById } from "../../../../services/CustomerHandle";
+import {
+  UpdateVendorListById,
+  getLocation,
+} from "../../../../services/CustomerHandle";
 import { Autocomplete, TextField } from "@mui/material";
+import CountryDropdown from "../../../SharedComponents/CountryDropDown";
 
 function UserVendorEdit({ show, close }) {
   const navigate = useNavigate();
@@ -27,6 +31,7 @@ function UserVendorEdit({ show, close }) {
   const [idTypeList, setIdTypeList] = useState();
   const [serviceTagList, setServiceTagList] = useState();
   const [vendorDetails, setvendorDetails] = useState([]);
+  const [location, setLocation] = useState();
 
   useEffect(() => {
     getVendorListById(vendorId)
@@ -55,6 +60,13 @@ function UserVendorEdit({ show, close }) {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
+    getLocation()
+      .then((data) => {
+        setLocation(data);
+      })
+      .catch((error) => {
+        console.log("error while fetching location", error);
+      });
   }, []);
 
   const validationSchema = Yup.object({
@@ -65,7 +77,7 @@ function UserVendorEdit({ show, close }) {
       .email("Invalid email address")
       .required("Email is required"),
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
     // idType: Yup.string().required("ID Type is required"),
     idnumber: Yup.string().required("ID Number is required"),
     companyname: Yup.string()
@@ -79,6 +91,14 @@ function UserVendorEdit({ show, close }) {
     defineServices: Yup.array().required("Define Service is required"),
   });
   const [serviceData, setServiceData] = useState();
+  const selectedCountryObject =
+    location &&
+    location.length > 0 &&
+    location.find(
+      (country) =>
+        country.code === vendorDetails.profileextra.location.country_code
+    );
+  console.log(selectedCountryObject, "selectedCountryObject");
 
   // update vendor details
   const formik = useFormik({
@@ -86,7 +106,7 @@ function UserVendorEdit({ show, close }) {
       name: vendorDetails?.first_name || "",
       email: vendorDetails?.email || "",
       mobile: vendorDetails?.mobile || "",
-      location: vendorDetails?.profileextra?.location || "",
+      location: selectedCountryObject || "",
       idType: vendorDetails.useridentificationdata?.id_type?.id || "",
       idnumber: vendorDetails?.useridentificationdata?.id_number || "",
       companyaddress: vendorDetails?.company_company_user?.address || "",
@@ -112,7 +132,7 @@ function UserVendorEdit({ show, close }) {
             mobile: values.mobile,
             first_name: values.name,
             // last_name: formik.values.last_name,
-            location: values.location,
+            location: values.location?.id,
             useridentificationdata: {
               id_type: values.idType,
               id_number: values.idnumber,
@@ -155,7 +175,7 @@ function UserVendorEdit({ show, close }) {
       name: vendorDetails?.first_name || "",
       email: vendorDetails?.email || "",
       mobile: vendorDetails?.mobile || "",
-      location: vendorDetails?.profileextra?.location || "",
+      location: selectedCountryObject || "",
       idType: vendorDetails.useridentificationdata?.id_type?.id || "",
       idnumber: vendorDetails?.useridentificationdata?.id_number || "",
       companyaddress: vendorDetails?.company_company_user?.address || "",
@@ -168,7 +188,9 @@ function UserVendorEdit({ show, close }) {
       thirdPartyService:
         vendorDetails?.company_company_user?.third_party_ownership || false,
     });
-  }, [vendorDetails]);
+    selectedCountryObject &&
+      formik.setFieldValue("location", selectedCountryObject);
+  }, [vendorDetails, selectedCountryObject]);
   // console.log(formik, "data");
 
   return (
@@ -409,25 +431,10 @@ function UserVendorEdit({ show, close }) {
                               >
                                 Location <span style={{ color: "red" }}>*</span>
                               </label>
-                              <div>
-                                <input
-                                  className="form-control"
-                                  type="text"
-                                  id=""
-                                  name="location"
-                                  placeholder="Location"
-                                  value={formik.values.location}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                                  maxLength={20}
-                                />
-                                {formik.touched.location &&
-                                formik.errors.location ? (
-                                  <div className="error">
-                                    {formik.errors.location}
-                                  </div>
-                                ) : null}
-                              </div>
+                              <CountryDropdown
+                                gccCountries={location}
+                                formik={formik}
+                              />
                             </div>
                             <div className="mt-2">
                               <label

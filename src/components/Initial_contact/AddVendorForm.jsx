@@ -26,7 +26,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
   const handleCloseOffcanvas = () => setOffcanvas(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [idTypeList, setIdTypeList] = useState();
-  const [location, setLocation] = useState();
+
 
   useEffect(() => {
     getVendorListById(vendorId).then((data) => {
@@ -61,14 +61,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-    getLocation()
-      .then((data) => {
-        console.log("location is==", data);
-        setLocation(data.results);
-      })
-      .catch((error) => {
-        console.log("error while fetching location", error);
-      });
+   
   }, []);
 
   console.log(formik.values, "formik.values.location");
