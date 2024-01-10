@@ -1,8 +1,19 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList,getServiceReviewFilter2 } from "../services/review"
+import { CircularProgress } from '@mui/material';
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList,getServiceReviewFilter2 } from "../services/review";
+import { formatDate,removeBaseUrlFromPath } from "../helpers";
+import { getListDataInPagination } from "../services/commonServices";
+import { toast } from 'react-toastify';
+
 
 const Review = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [reviewisLoading, setReviewisLoading] = useState(false)
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
   const [categorylist, setCategorylist] = useState([]);
   const [categorychoose,setCategoryChoose]=useState("")
 
@@ -38,10 +49,8 @@ const Review = () => {
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
-  }, []);
 
-  useEffect(() => {
-    getCategoryist()
+      getCategoryist()
       .then((data) => {
         setCategorylist(data.results);
       })
@@ -62,43 +71,69 @@ const Review = () => {
 
 
   useEffect(() => {
+    setIsLoading(true)
     getServiceFilterList(filtering)
       .then((data) => {
+        setIsLoading(false)
         setserviceFilterList(data);
       })
       .catch((error) => {
+        setIsLoading(false)
         console.error("Error fetching distributor data:", error);
       });
   }, [filtering]);
 
   useEffect(() => {
+    setReviewisLoading(true)
     if(filterdataid.trim()!==""){
       getServiceReviewFilter2(filterdataid,filtering.rating)
       .then((data) => {
+        setReviewisLoading(false)
+        setListPageUrl({ next: data.next, previous: data.previous });
         setfilteridData(data.results);
       })
       .catch((error) => {
+        setReviewisLoading(false)
         console.error("Error fetching distributor data:", error);
       });
     }
    else{
     getServiceReviewFilter(filtering.rating)
     .then((data) => {
+      setReviewisLoading(false)
+      setListPageUrl({ next: data.next, previous: data.previous });
       setfilteridData(data.results);
     })
     .catch((error) => {
+      setReviewisLoading(false)
       console.error("Error fetching distributor data:", error);
     });
-   }
-
-      
-      
+   }   
   }, [filterdataid,filtering.rating]);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
-
+  const handlePagination = async (type) => {
+    setReviewisLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setReviewisLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setfilteridData(data?.results);
+        })
+        .catch((error) => {
+          setReviewisLoading(false);
+          toast.error(error.response.data);
+        });
+  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -177,7 +212,7 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12' style={{height:"50vh",overflowY:"scroll"}}>
-                {servicefilterlist?.map((data) =>
+                {!isLoading && servicefilterlist?.map((data) =>
                   <label key={data.id} class="card mb-4" style={{ display: 'flex' }} onClick={() => setfilterid(data.id)}>
                     <input name="plan" class="radio" type="radio" checked={data.id === filterdataid} />
                     <span class="plan-details">
@@ -195,12 +230,17 @@ const Review = () => {
                     </span>
                   </label>
                 )}
+                {isLoading &&
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vh" }}>
+          <CircularProgress />
+        </div>
+      }
               </div>
             </div>
           </div>
-          <div className='col-lg-8 mx-1'>
+          <div className='col-lg-8 mx-1' style={{position:"relative"}}>
             { 
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className='d-flex justify-content-between align-items-center' >
               <p>Review</p>
               <div className='d-flex align-items-center'>
                 <div>Sort by &nbsp;</div>
@@ -248,6 +288,70 @@ const Review = () => {
                   </div>
                 </div>
               )}
+              {reviewisLoading &&
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+          <CircularProgress />
+        </div>
+      }
+      {filterdataidData.length>10 &&
+      <div className="card-footer d-flex align-items-center" style={{position:"absolute",bottom:0,right:0}}>
+       <ul className=" d-flex m-0 ms-auto" style={{listStyle:"none"}}>
+            <li className={`page-item mx-1 ${!listPageUrl.previous && "disabled"}`} >
+              <a
+                className="page-link"
+                href="#"
+                tabIndex="-1"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 6l-6 6l6 6" />
+                </svg>
+                prev
+              </a>
+            </li>
+
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
+                next
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M9 6l6 6l-6 6" />
+                </svg>
+              </a>
+            </li>
+          </ul>
+          </div>}
             </div>
           </div>
         </div>

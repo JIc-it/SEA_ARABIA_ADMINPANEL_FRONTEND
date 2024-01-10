@@ -16,43 +16,44 @@ export default function DiscountView() {
   const[newService,setNewService]=useState(false)
 
   useEffect(() => {
-    setIsLoading(true)
-    getDiscountOfferView(params.id)
-      .then((data) => {
-        setOfferView(data);
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        setIsLoading(false)
-        toast.error(error.response.data)
-      });
-
-      setIsLoading(true)
-      getOneCompanyList(params.id)
-      .then((data) => {
-        setIsLoading(false)
-          const servicelist=data?.results?.map((data)=>data?.company_service_count)
+    setIsLoading(true);
+  
+    Promise.all([
+      getDiscountOfferView(params.id),
+      getOneCompanyList(params.id),
+    ])
+      .then(([offerData, companyData]) => {
+        setOfferView(offerData);
+  
+        const servicelist = companyData?.results?.map(
+          (data) => data?.company_service_count
+        );
+  
+        if (servicelist && servicelist.length > 0) {
           setOfferView((prev) => {
-                  if (prev.id === params.id) {
-                      return {
-                          ...prev,
-                          servicelist: servicelist.flat(),
-                      };
-                  }
-                  else{
-                    return {
-                      ...prev
-                    }
-                  }
+            if (prev.id === params.id) {
+              return {
+                ...prev,
+                servicelist: servicelist.flat(),
+              };
+            } else {
+              return {
+                ...prev,
+              };
+            }
           });
-          
-         
+        }
       })
       .catch((error) => {
-        setIsLoading(false)
-          console.error("Error fetching data:", error);
+        setIsLoading(false);
+        toast.error(error.response.data);
+        console.error("Error fetching data:", error);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [params.id]);
+  
 
   const navigate = useNavigate()
 
