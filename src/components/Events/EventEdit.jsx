@@ -1,28 +1,21 @@
-import { Offcanvas } from "react-bootstrap";
-import "../../static/css/AddNewLead.css";
-import { colors } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
+import { useParams } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Avatars from "../../assets/images/Avatar.png";
 import { useNavigate } from "react-router-dom";
-import Dropdowns from "../../assets/images/dropdowns.png";
 import foodImg from "../../static/img/food.png";
-import newBooking from "../../static/img/new-booking.png";
-import totalBooking from "../../static/img/total-booking.png";
-import confirmBooking from "../../static/img/confirm-booking.png";
-import cancelBooking from "../../static/img/cancel-booking.png";
-import filterIcon from "../../static/img/Filter.png";
 import CreateAddOn from "./CreateAddOn";
+import {getEventView} from "../../services/EventsPackages"
 import { Radio, Paper, Typography, ButtonGroup, Button, Box, Checkbox } from '@mui/material';
 import TextEditor from "./TextEditor"
 
 function EventEdit({ show, close }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const params=useParams()
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
@@ -37,39 +30,35 @@ function EventEdit({ show, close }) {
   };
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
-    email: Yup.string()
-      .email("Invalid email address")
-      .required("Email is required"),
-    mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
-    idtype: Yup.string().required("ID Type is required"),
-    idnumber: Yup.string().required("ID Number is required"),
-    companyname: Yup.string()
-      .required("Company Name is required")
-      .max(20, "Company Name must be at most 20 characters"),
-    companyaddress: Yup.string().required("Company Address is required"),
-    companyregnumber: Yup.string().required(
-      "Company Register Number is required"
-    ),
-    companywebaddress: Yup.string().required("Company Website is required"),
-    defineservice: Yup.string().required("Define Service is required"),
-  });
+        .required("Name is required")
+        .max(20, "Name must be at most 20 characters"),
+    description: Yup.string()
+        .required("Description is required"),
+    short_description: Yup.string()
+        .required("Short Description is required"),
+    location: Yup.string()
+        .required("Pickup Point is required"),
+    cancellation_policy: Yup.string()
+        .required("Privacy Policy is required"),
+    refund_policy: Yup.string()
+        .required("Refund Policy is required"),
+    price: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
+    capacity: Yup.number().required("Capacity is required") .notOneOf([0], 'Capacity cannot be zero'),
+});
+
 
   const formik = useFormik({
     initialValues: {
       name: "",
-      email: "",
-      mobile: "",
       location: "",
       type: "Package",
-      idnumber: "",
-      companyname: "",
-      companyaddress: "",
-      companyregnumber: "",
-      companywebaddress: "",
-      defineservice: "",
+      description:"",
+      short_description:"",
+      capacity:0,
+      location:"",
+      cancellation_policy:"",
+      price:0,
+
     },
     validationSchema,
     // onSubmit: async (values) => {
@@ -114,6 +103,23 @@ function EventEdit({ show, close }) {
   const handleHoverEffectFalse = () => {
     setHoverEffect(false);
   };
+
+
+  useEffect(() => {
+   
+    getEventView(params.id)
+        .then((data) => {
+            console.log(data, "first-fetch");
+           
+
+            // setIsUpdated(false)
+        }
+        ).catch((error) => {
+            // setIsLoading(false);
+            // setIsUpdated(false)
+            toast.error(error.response.data)
+        })
+}, [params.id])
 
   return (
     <div style={{ height: "100vh" }}>

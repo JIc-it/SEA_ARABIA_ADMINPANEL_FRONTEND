@@ -56,7 +56,7 @@ const EventView = () => {
                                 className="btn btn-info vendor_button"
                                 style={{ borderRadius: "6px" }}
                                 type="button"
-                                onClick={() => navigate(`/service-edit/${oneservice?.id}`)}
+                                onClick={() => navigate(`/event-edit/${oneservice?.id}`)}
                             >
                                 Edit Event &nbsp;
                                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -117,7 +117,7 @@ const EventView = () => {
                                 <div className="col-4 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Location</p>
-                                        <p style={{textTransform:"capitalize"}}>{oneservice?.pickup_point_or_location}</p>
+                                        <p style={{textTransform:"capitalize"}}>{oneservice?.location}</p>
                                     </div>
                                 </div>
                             </div>
@@ -149,7 +149,7 @@ const EventView = () => {
                             <p style={{ fontWeight: "700" }}>Thumbnail</p>
                             <div className="row">
                                     <div className="col-6 mb-3">
-                                        <div >
+                                        <div className='mx-auto'>
                                             <img src={oneservice.image} alt={"image"} className='rounded' style={{ width: "200px",height:"125px" }} />
                                           
                                         </div>

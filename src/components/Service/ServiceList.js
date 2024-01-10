@@ -281,7 +281,7 @@ function ServiceList() {
                     <div className="action_buttons col-4">
 
                         <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-                            <a href="https://seaarabia.jicitsolution.com/service/export-service-list">
+                            <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/service/export-service-list">
                                 Export
                             </a>
                             {/* Export &nbsp; */}

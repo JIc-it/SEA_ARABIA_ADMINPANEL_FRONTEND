@@ -147,7 +147,7 @@ function AllRouting() {
       <Route path="/booking-view/:id" element={<BookingView />} />
 
       <Route path="/events-and-packages" element={<EventListing />} />
-      <Route path="/eventedit/:id" element={<EventEdit />} />
+      <Route path="/event-edit/:id" element={<EventEdit />} />
     </Routes>
   );
 }

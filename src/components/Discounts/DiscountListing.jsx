@@ -175,7 +175,7 @@ const handleopenfilter=()=>{
         <div className="action_buttons col-4">
           
           <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-          <a href="https://seaarabia.jicitsolution.com/offer/export-offer-list/">
+          <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/offer/export-offer-list/">
                                 Export
                             </a>
             {/* Export &nbsp; */}
@@ -238,118 +238,26 @@ const handleopenfilter=()=>{
               <tr>
                 <th className="w-1">
                   <span>Discount Code</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  
                 </th>
                 <th>
                   <span>Campaign Name</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  
                 </th>
                 <th>
                   {" "}
                   <span>Usage</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  
                 </th>
                 <th>
                   <span>limit</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
+                  
                 </th>
                 <th>
                   <span>Expiry</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Action</span>
-                  <svg
-                    className="mx-2"
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 14 14"
-                    fill="none"
-                  >
-                    <path
-                      d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                      stroke="#6E7070"
-                      stroke-width="1.5"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                    />
-                  </svg>
                 </th>
                 <th>
                   <span>Status</span>

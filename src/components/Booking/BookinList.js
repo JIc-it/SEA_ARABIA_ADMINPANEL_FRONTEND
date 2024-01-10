@@ -87,44 +87,6 @@ const BookinList = () => {
   }, []);
 
 
-  const handleExportData = () => {
-    if (bookingList) {
-      const header = [
-        "NAME",
-        "EMAIL",
-        "PHONE",
-        "LOCATION",
-        "CREATED ON",
-        "CREATED BY",
-        "STATUS",
-      ];
-      const csvData = bookingList.map((elem) => {
-        let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.first_name,
-          elem.email,
-          elem.mobile,
-          elem.location,
-          elem.state?.state,
-          formatedDate,
-          elem.created_by,
-          `${elem.status ? elem.status : "-"} `,
-        ];
-      });
-
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Vendor-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
-
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -339,9 +301,8 @@ const BookinList = () => {
                   <button
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
-                    onClick={handleExportData}
                   >
-                    Export &nbsp;
+                    <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/booking/booking-export/">Export &nbsp;</a>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"

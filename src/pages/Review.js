@@ -44,7 +44,7 @@ const Review = () => {
   useEffect(() => {
     getCompanyList()
       .then((data) => {
-        setCompanyList(data.results);
+        setCompanyList(data);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);

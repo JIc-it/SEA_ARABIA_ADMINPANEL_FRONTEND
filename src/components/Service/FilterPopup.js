@@ -43,7 +43,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
     useEffect(() => {
         getCompanyList()
             .then((data) =>
-                setVendorList(data?.results)
+                setVendorList(data)
             ).catch((error) =>
                 console.error(error))
     }, [])
@@ -387,6 +387,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     style={{ width: 320 }}
                                 />
                                 <br />
+                                <div style={{height:categorylist.length>14? "50vh":"",overflowY:categorylist.length>14?"scroll":""}}>
                                 {categorylist.map((data) =>
                                     <div class="form-check">
                                         <input
@@ -404,7 +405,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                         </label>
                                     </div>
                                 )}
-
+</div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -420,6 +421,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     style={{ width: 320 }}
                                 />
                                 <br />
+                                <div style={{height:vendorlist.length>14? "50vh":"",overflowY:vendorlist.length>14?"scroll":""}}>
                                 {vendorlist.map((data) =>
                                     <div class="form-check">
                                         <input
@@ -437,7 +439,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                         </label>
                                     </div>
                                 )}
-
+</div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -453,6 +455,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     style={{ width: 320 }}
                                 />
                                 <br />
+                                <div style={{height:subcategorylist.length>14? "50vh":"",overflowY:subcategorylist.length>14?"scroll":""}}>
                                 {subcategorylist.map((data) =>
                                     <div class="form-check">
                                         <input
@@ -470,7 +473,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                         </label>
                                     </div>
                                 )}
-
+</div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -507,22 +510,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                               
 
                             </div>
-                            <div
-                                class="tab-pane fade"
-                                id="v-pills-settings"
-                                role="tabpanel"
-                                aria-labelledby="v-pills-settings-tab"
-                            >
-                                Customer Type
-                            </div>
-                            <div
-                                class="tab-pane fade"
-                                id="v-pills-status"
-                                role="tabpanel"
-                                aria-labelledby="v-pills-settings-tab"
-                            >
-                                Status
-                            </div>
+                            
 
                         </div>
 

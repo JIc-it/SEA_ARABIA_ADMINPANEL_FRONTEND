@@ -870,30 +870,14 @@ const ServiceAdd = () => {
                                     <p style={{ fontWeight: "550" }}>Profit Method</p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
                                         {ProfitMethods && ProfitMethods.map((data) =>
-                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
-                                                <div className="card p-2">
+                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "", }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
+                                                <div className="card p-2" style={{height:"150px",width:"15vw"}}>
                                                     <div className="d-flex justify-content-between align-items-center">
-                                                        {<div>
-                                                            <svg width={40} height={40} viewBox="0 0 56 56" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                                                <path d="M0 28C0 12.536 12.536 0 28 0C43.464 0 56 12.536 56 28C56 43.464 43.464 56 28 56C12.536 56 0 43.464 0 28Z" fill="#ECF4FF" />
-                                                                <path d="M14.667 27.9987C14.667 22.9704 14.667 20.4562 16.2291 18.8941C17.7912 17.332 20.3053 17.332 25.3337 17.332H30.667C35.6953 17.332 38.2095 17.332 39.7716 18.8941C41.3337 20.4562 41.3337 22.9704 41.3337 27.9987V30.6654C41.3337 35.6937 41.3337 38.2078 39.7716 39.7699C38.2095 41.332 35.6953 41.332 30.667 41.332H25.3337C20.3053 41.332 17.7912 41.332 16.2291 39.7699C14.667 38.2078 14.667 35.6937 14.667 30.6654V27.9987Z" stroke="#252525" strokeWidth="1.5" />
-                                                                <path d="M21.333 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                                <path d="M34.667 17.332V15.332" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                                <path d="M15.333 24H40.6663" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" />
-                                                                <path d="M35.9997 34.6667C35.9997 35.403 35.4027 36 34.6663 36C33.93 36 33.333 35.403 33.333 34.6667C33.333 33.9303 33.93 33.3333 34.6663 33.3333C35.4027 33.3333 35.9997 33.9303 35.9997 34.6667Z" fill="#252525" />
-                                                                <path d="M35.9997 29.3333C35.9997 30.0697 35.4027 30.6667 34.6663 30.6667C33.93 30.6667 33.333 30.0697 33.333 29.3333C33.333 28.597 33.93 28 34.6663 28C35.4027 28 35.9997 28.597 35.9997 29.3333Z" fill="#252525" />
-                                                                <path d="M29.3337 34.6667C29.3337 35.403 28.7367 36 28.0003 36C27.2639 36 26.667 35.403 26.667 34.6667C26.667 33.9303 27.2639 33.3333 28.0003 33.3333C28.7367 33.3333 29.3337 33.9303 29.3337 34.6667Z" fill="#252525" />
-                                                                <path d="M29.3337 29.3333C29.3337 30.0697 28.7367 30.6667 28.0003 30.6667C27.2639 30.6667 26.667 30.0697 26.667 29.3333C26.667 28.597 27.2639 28 28.0003 28C28.7367 28 29.3337 28.597 29.3337 29.3333Z" fill="#252525" />
-                                                                <path d="M22.6667 34.6667C22.6667 35.403 22.0697 36 21.3333 36C20.597 36 20 35.403 20 34.6667C20 33.9303 20.597 33.3333 21.3333 33.3333C22.0697 33.3333 22.6667 33.9303 22.6667 34.6667Z" fill="#252525" />
-                                                                <path d="M22.6667 29.3333C22.6667 30.0697 22.0697 30.6667 21.3333 30.6667C20.597 30.6667 20 30.0697 20 29.3333C20 28.597 20.597 28 21.3333 28C22.0697 28 22.6667 28.597 22.6667 29.3333Z" fill="#252525" />
-                                                            </svg>
-                                                        </div>}
-
-
+                                                        <img src={data.icon} alt={data.name} style={{width:"30px",marginRight:"5px",backgroundColor:"#ECF4FF"}}/>
                                                         <div>
                                                             <p style={{ fontWeight: "550" }}>{data.name}</p>
                                                             <span className="text-wrap" style={{ fontSize: "12px" }}>
-                                                                The vendor gets a fixed amount monthly from the platform. The customers pay extra as service fee.
+                                                                {data?.description}
                                                             </span>
                                                         </div>
                                                         <div class="form-check">
