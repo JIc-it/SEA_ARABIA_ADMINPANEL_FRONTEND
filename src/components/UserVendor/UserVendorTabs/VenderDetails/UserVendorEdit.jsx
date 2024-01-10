@@ -132,7 +132,6 @@ function UserVendorEdit({ show, close }) {
       (country) =>
         country.code === vendorDetails.profileextra.location.country_code
     );
-  console.log(selectedCountryObject, "selectedCountryObject");
 
   // update vendor details
   const formik = useFormik({
@@ -203,7 +202,7 @@ function UserVendorEdit({ show, close }) {
       }
     },
   });
-  console.log(formik);
+
   useEffect(() => {
     formik.setValues({
       name: vendorDetails?.first_name || "",
@@ -225,7 +224,8 @@ function UserVendorEdit({ show, close }) {
     selectedCountryObject &&
       formik.setFieldValue("location", selectedCountryObject);
   }, [vendorDetails, selectedCountryObject]);
-  // console.log(formik, "data");
+
+  console.log(formik.values.defineServices, "formik.values.defineServices ");
 
   return (
     <div className="page-wrapper">
@@ -708,7 +708,16 @@ function UserVendorEdit({ show, close }) {
                                 multiple
                                 size="small"
                                 id="multiple-limit-tags"
-                                options={serviceTagList || []}
+                                options={
+                                  formik.values.defineServices &&
+                                  formik.values.defineServices.length > 0
+                                    ? serviceTagList.filter((item) => {
+                                        return !formik.values.defineServices.some(
+                                          (refItem) => refItem.id === item.id
+                                        );
+                                      })
+                                    : serviceTagList||[]
+                                }
                                 name="defineServices"
                                 getOptionLabel={(option) => `${option.name} `}
                                 value={formik.values.defineServices}

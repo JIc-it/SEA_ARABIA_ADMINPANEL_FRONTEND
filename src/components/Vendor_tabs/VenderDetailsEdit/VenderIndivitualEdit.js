@@ -148,7 +148,8 @@ const VenderIndivitualEdit = () => {
         formik.setFieldValue("phone", formattedPhoneNumber);
         const selectedCountryObject =
           location &&
-          location.length > 0 &&  data.profileextra?.location?.country_code &&
+          location.length > 0 &&
+          data.profileextra?.location?.country_code &&
           location.find(
             (country) =>
               country.code === data.profileextra.location.country_code
@@ -632,7 +633,17 @@ const VenderIndivitualEdit = () => {
                                     multiple
                                     size="small"
                                     id="multiple-limit-tags"
-                                    options={serviceTagList || []}
+                                    options={
+                                      formik.values.defineServices &&
+                                      formik.values.defineServices.length > 0
+                                        ? serviceTagList.filter((item) => {
+                                            return !formik.values.defineServices.some(
+                                              (refItem) =>
+                                                refItem.id === item.id
+                                            );
+                                          })
+                                        : serviceTagList || []
+                                    }
                                     name="defineServices"
                                     getOptionLabel={(option) =>
                                       `${option.name} `
