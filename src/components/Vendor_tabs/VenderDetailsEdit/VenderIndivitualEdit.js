@@ -69,7 +69,15 @@ const VenderIndivitualEdit = () => {
           return /\S/.test(value); // Checks if there is at least one non-whitespace character
         }
       ),
-    phone: Yup.string().required("Phone is required"),
+    phone: Yup.string()
+      .required("Phone is required")
+      .test(
+        "is-at-least-8-digits",
+        "Phone must have at least 8 digits",
+        (value) => {
+          return /^\d{8,}$/.test(value); // Checks if there are at least 8 digits
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),

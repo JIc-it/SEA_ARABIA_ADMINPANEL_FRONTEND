@@ -81,7 +81,15 @@ function UserVendorEdit({ show, close }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    mobile: Yup.string().required("Mobile is required"),
+    mobile: Yup.string()
+      .required("Mobile is required")
+      .test(
+        "is-at-least-8-digits",
+        "Mobile must have at least 8 digits",
+        (value) => {
+          return /^\d{8,}$/.test(value); // Checks if there are at least 8 digits
+        }
+      ),
     location: Yup.mixed().required("Location is required"),
     // idType: Yup.string().required("ID Type is required"),
     idnumber: Yup.string().required("ID Number is required"),
@@ -716,7 +724,7 @@ function UserVendorEdit({ show, close }) {
                                           (refItem) => refItem.id === item.id
                                         );
                                       })
-                                    : serviceTagList||[]
+                                    : serviceTagList || []
                                 }
                                 name="defineServices"
                                 getOptionLabel={(option) => `${option.name} `}

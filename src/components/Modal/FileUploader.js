@@ -1,7 +1,11 @@
 import { useRef } from "react";
 
-export const FileUploader = ({ handleFileChange, formik, className,errorClass }) => {
-
+export const FileUploader = ({
+  handleFileChange,
+  formik,
+  className,
+  errorClass,
+}) => {
   const hiddenFileInput = useRef(null);
 
   const handleClick = (event) => {
@@ -9,8 +13,25 @@ export const FileUploader = ({ handleFileChange, formik, className,errorClass })
   };
 
   const handleChange = (event) => {
-    console.log(event);
-    handleFileChange(event.target.files);
+    const allowedFileTypes = [
+      "application/pdf",
+      "application/msword",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      "application/vnd.ms-excel",
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      "image/jpeg",
+      "image/png",
+      "image/gif",
+    ];
+
+    const selectedFile = event.target.files[0];
+
+    if (selectedFile && allowedFileTypes.includes(selectedFile.type)) {
+      handleFileChange([selectedFile]);
+    } else {
+      console.log("Invalid file type");
+      // You can display an error message or handle the invalid file type as needed
+    }
   };
 
   return (
@@ -43,12 +64,15 @@ export const FileUploader = ({ handleFileChange, formik, className,errorClass })
         </p>
         <p style={{ fontSize: "13px" }}>Upload Document (Max 50Mb) </p>
       </div>
-
       <input
         type="file"
         onChange={handleChange}
         ref={hiddenFileInput}
         style={{ display: "none" }}
+        accept=".pdf, .doc, .docx, 
+        .xls, 
+        .xlsx, 
+        .jpg, .jpeg, .png, .gif"
       />
       {formik.touched.files && formik.errors.files ? (
         <div className={`error mx-4 ${errorClass}`}>{formik.errors.files}</div>

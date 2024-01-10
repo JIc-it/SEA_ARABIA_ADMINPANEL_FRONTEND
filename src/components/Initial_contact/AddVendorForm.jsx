@@ -66,7 +66,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
       });
   }, []);
 
-  console.log(formik.values, "formik.values.location");
 
   return (
     <>

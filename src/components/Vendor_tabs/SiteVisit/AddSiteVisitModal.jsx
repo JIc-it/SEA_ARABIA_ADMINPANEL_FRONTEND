@@ -199,6 +199,9 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.date}
+            pattern="\d{4}-\d{2}-\d{2}" // Enforce yyyy-mm-dd format
+            min="1000-01-01" // Set your minimum date
+            max="9999-12-31"
           />
           {formik.touched.date && formik.errors.date ? (
             <div className="error">{formik.errors.date}</div>

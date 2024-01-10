@@ -40,7 +40,15 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
     email: Yup.string()
       .email("Invalid email address")
       .required("Email is required"),
-    mobile: Yup.string().required("Mobile is required"),
+      mobile: Yup.string()
+      .required("Mobile is required")
+      .test(
+        "is-at-least-8-digits",
+        "Mobile must have at least 8 digits",
+        (value) => {
+          return /^\d{8,}$/.test(value); // Checks if there are at least 8 digits
+        }
+      ),
     location: Yup.mixed().required("Location is required"),
   });
 

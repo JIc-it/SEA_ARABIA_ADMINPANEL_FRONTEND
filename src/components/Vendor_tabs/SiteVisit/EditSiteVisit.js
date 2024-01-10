@@ -26,13 +26,15 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
       date: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required").test(
-        "is-not-blank",
-        "Title must not contain only blank spaces",
-        (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
-        }
-      ),
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // files: Yup.mixed()
       //   .required("Please upload  file")
       //   .test("fileSize", "File size must not exceed 50MB", (value) => {
@@ -44,13 +46,15 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
       //     // Check if the file size is less than or equal to 50MB
       //     return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
       //   }),
-      note: Yup.string().required("Note is required").test(
-        "is-not-blank",
-        "Note must not contain only blank spaces",
-        (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
-        }
-      ),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       time: Yup.string().required("Time is required"),
       date: Yup.string().required("Date is required"),
     }),
@@ -195,6 +199,9 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.date}
+            pattern="\d{4}-\d{2}-\d{2}" // Enforce yyyy-mm-dd format
+            min="1000-01-01" // Set your minimum date
+            max="9999-12-31"
           />
           {formik.touched.date && formik.errors.date ? (
             <div className="error">{formik.errors.date}</div>

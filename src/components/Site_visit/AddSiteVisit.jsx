@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { FileUploader } from "../Modal/FileUploader";
 
 function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
-
   return (
     <div className="card col-11 add_details">
       <div className="card-body">
@@ -41,12 +40,9 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                       formik={formik}
                       handleFileChange={handleFileChange}
                       className="vendor-form-file"
-                      errorClass='error-vendor-form-file'
+                      errorClass="error-vendor-form-file"
                     />
-                    <div
-                      className="upload-filename"
-                      style={{ margin: "0 " }}
-                    >
+                    <div className="upload-filename" style={{ margin: "0 " }}>
                       <label htmlFor="">Uploaded File: </label>
                       <span className="mx-2">{formik.values.files?.name}</span>
                     </div>
@@ -97,6 +93,9 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                         value={formik.values.siteVisitDate || ""}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
+                        pattern="\d{4}-\d{2}-\d{2}" // Enforce yyyy-mm-dd format
+                        min="1000-01-01" // Set your minimum date
+                        max="9999-12-31"
                       />
                       {formik.touched.siteVisitDate &&
                       formik.errors.siteVisitDate ? (
