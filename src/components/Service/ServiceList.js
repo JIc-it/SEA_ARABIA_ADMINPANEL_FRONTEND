@@ -13,6 +13,7 @@ import {formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import FilterPopup from "./FilterPopup";
 
 // import AddNewService from "./AddNewService";
 function ServiceList() {
@@ -23,7 +24,18 @@ function ServiceList() {
       });
     const [servicelist, setServiceList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
-    const [count,setCount]=useState(null)
+    const [count,setCount]=useState(null);
+    const [open,setOpen]=useState(false);
+    const [filters,setFilters]=useState({
+        category:[],
+        sub_category:[],
+        vendor:[],
+        status:false
+    })
+
+    const handleClose=()=>{
+        setOpen(false)
+    }
 
     useEffect(() => {
         setIsLoading(true)
@@ -85,7 +97,7 @@ function ServiceList() {
                     toast.error(error.response.data)};
             });
       }
-      
+      console.log(filters);
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
@@ -258,7 +270,7 @@ function ServiceList() {
                                             Search
                                         </button>
                                     </div>
-                                    <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px" }}>
+                                    <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px" }} onClick={()=>setOpen(true)}>
                                         <img src={filterIcon} alt="filter" width={25} />
                                     </button>
                                 </div>
@@ -269,7 +281,7 @@ function ServiceList() {
                     <div className="action_buttons col-4">
 
                         <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-                            <a href="https://seaarabia.jicitsolution.com/service/export-service-list">
+                            <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/service/export-service-list">
                                 Export
                             </a>
                             {/* Export &nbsp; */}
@@ -526,6 +538,7 @@ function ServiceList() {
                         </div>
                 </div>
             </div>
+            {open && <FilterPopup open={open} handleClose={handleClose} setFilters={setFilters} filters={filters}/>}
         </div >
     );
 }

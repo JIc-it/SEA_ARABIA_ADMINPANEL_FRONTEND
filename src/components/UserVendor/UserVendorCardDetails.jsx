@@ -451,7 +451,7 @@ function UserVendorCardDetails({ venderDetails }) {
             {active === "Services" && (
               <>
                 <button
-                  onClick={() => navigate("/user-vendor/add-service/")}
+                  onClick={() => navigate("/service-add/"+venderDetails?.company_company_user?.id)}
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >
@@ -514,7 +514,7 @@ function UserVendorCardDetails({ venderDetails }) {
                             }}
                           >
                             <Link
-                              to={""}
+                              to={"/service-view/12345"}
                               className="btn btn-sm btn-dark"
                               style={{
                                 padding: "2px 10px",

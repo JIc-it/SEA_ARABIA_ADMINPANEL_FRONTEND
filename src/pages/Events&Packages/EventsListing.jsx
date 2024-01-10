@@ -72,36 +72,7 @@ export default function EventListing() {
         });
   };
 
-  const handleExportData = () => {
-    if (Events) {
-      const header = [
-        "NAME",
-        "TYPE",
-        "CAPACITY",
-        "STATUS",
-      ];
-      const csvData = Events.map((elem) => {
-        let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.name,
-          elem.type,
-          elem.capacity,
-          `${elem.is_active?"Active":"Inactive"} `,
-        ];
-      });
-
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Event-Pacakage-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
+  
 
   return (
     <>
@@ -340,8 +311,10 @@ export default function EventListing() {
                 />
               </svg>
             </button>
-            <button className="btn btn-outline" style={{ borderRadius: "6px" }} onClick={handleExportData}>
-              Export &nbsp;
+            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+             <a  style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/service/export-package-list">
+             Export &nbsp;
+             </a>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -374,102 +347,22 @@ export default function EventListing() {
                 <tr>
                   <th className="w-1">
                     <span>Name</span>
-                    <svg
-                      className="mx-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                        stroke="#6E7070"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </th>
                   
                   <th>
                     {" "}
                     <span>Type</span>
-                    <svg
-                      className="mx-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                        stroke="#6E7070"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </th>
                   <th>
                     <span>Capacity</span>
-                    <svg
-                      className="mx-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                        stroke="#6E7070"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </th>
 
                   <th>
                     <span>Status</span>
-                    <svg
-                      className="mx-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                        stroke="#6E7070"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </th>
 
                   <th>
                     <span>Action</span>
-                    <svg
-                      className="mx-2"
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="14"
-                      height="14"
-                      viewBox="0 0 14 14"
-                      fill="none"
-                    >
-                      <path
-                        d="M7 2.33398L7 11.6673M7 11.6673L10.5 8.16732M7 11.6673L3.5 8.16732"
-                        stroke="#6E7070"
-                        stroke-width="1.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
                   </th>
                 </tr>
               </thead>
@@ -519,8 +412,8 @@ export default function EventListing() {
                             }}
                           >
                             <Link
-                              to="/eventedit/12345"
-                              // to={`/customers/${item.id}`}
+                              // to="/eventedit/12345"
+                              to={`/event-view/${item.id}`}
                               className="btn btn-sm btn-dark"
                               style={{
                                 padding: "6px 10px",

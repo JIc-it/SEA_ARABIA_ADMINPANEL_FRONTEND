@@ -1,8 +1,8 @@
 import React from 'react'
 import { useState, useEffect } from "react";
 import { CircularProgress } from '@mui/material';
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList,getServiceReviewFilter2 } from "../services/review";
-import { formatDate,removeBaseUrlFromPath } from "../helpers";
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter, getCompanyList, getServiceReviewFilter2 } from "../services/review";
+import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import { toast } from 'react-toastify';
 
@@ -15,14 +15,14 @@ const Review = () => {
     previous: null,
   });
   const [categorylist, setCategorylist] = useState([]);
-  const [categorychoose,setCategoryChoose]=useState("")
+  const [categorychoose, setCategoryChoose] = useState("")
 
-  const [subcategorychoose,setSubcategoryChoose]=useState("")
+  const [subcategorychoose, setSubcategoryChoose] = useState("")
   const [subcategorylist, setSubCategorylist] = useState([])
 
   const [servicefilterlist, setserviceFilterList] = useState([])
-  
-  const [companyList,setCompanyList]=useState([])
+
+  const [companyList, setCompanyList] = useState([])
   const [selectedValue, setSelectedValue] = useState("New Lead");
   const [filterdataid, setfilterid] = useState("")
   const [filterdataidData, setfilteridData] = useState([])
@@ -30,7 +30,7 @@ const Review = () => {
     search: null,
     categoryid: null,
     subcategoryid: null,
-    rating:null
+    rating: null
   })
 
   const handlefiltering = (fields) => {
@@ -44,13 +44,13 @@ const Review = () => {
   useEffect(() => {
     getCompanyList()
       .then((data) => {
-        setCompanyList(data.results);
+        setCompanyList(data);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
 
-      getCategoryist()
+    getCategoryist()
       .then((data) => {
         setCategorylist(data.results);
       })
@@ -85,31 +85,31 @@ const Review = () => {
 
   useEffect(() => {
     setReviewisLoading(true)
-    if(filterdataid.trim()!==""){
-      getServiceReviewFilter2(filterdataid,filtering.rating)
-      .then((data) => {
-        setReviewisLoading(false)
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setfilteridData(data.results);
-      })
-      .catch((error) => {
-        setReviewisLoading(false)
-        console.error("Error fetching distributor data:", error);
-      });
+    if (filterdataid.trim() !== "") {
+      getServiceReviewFilter2(filterdataid, filtering.rating)
+        .then((data) => {
+          setReviewisLoading(false)
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setfilteridData(data.results);
+        })
+        .catch((error) => {
+          setReviewisLoading(false)
+          console.error("Error fetching distributor data:", error);
+        });
     }
-   else{
-    getServiceReviewFilter(filtering.rating)
-    .then((data) => {
-      setReviewisLoading(false)
-      setListPageUrl({ next: data.next, previous: data.previous });
-      setfilteridData(data.results);
-    })
-    .catch((error) => {
-      setReviewisLoading(false)
-      console.error("Error fetching distributor data:", error);
-    });
-   }   
-  }, [filterdataid,filtering.rating]);
+    else {
+      getServiceReviewFilter(filtering.rating)
+        .then((data) => {
+          setReviewisLoading(false)
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setfilteridData(data.results);
+        })
+        .catch((error) => {
+          setReviewisLoading(false)
+          console.error("Error fetching distributor data:", error);
+        });
+    }
+  }, [filterdataid, filtering.rating]);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
@@ -120,8 +120,8 @@ const Review = () => {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
+          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+          : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -211,19 +211,19 @@ const Review = () => {
                   </select>
                 </div>
               </div>
-              <div className='col-lg-12' style={{height:"50vh",overflowY:"scroll"}}>
+              <div className='col-lg-12' style={{ height: "50vh", overflowY: "scroll" }}>
                 {!isLoading && servicefilterlist?.map((data) =>
                   <label key={data.id} class="card mb-4" style={{ display: 'flex' }} onClick={() => setfilterid(data.id)}>
                     <input name="plan" class="radio" type="radio" checked={data.id === filterdataid} />
                     <span class="plan-details">
                       <div className='d-flex'>
                         <div className='w-80'>
-                          {data?.service_image?.map((dat)=>
-                          <img width={80} style={{ borderRadius: 5 }} src={dat.image} />
+                          {data?.service_image?.map((dat) =>
+                            <img width={80} style={{ borderRadius: 5 }} src={dat.image} />
                           )}
                         </div>
-                        <div className='w-20' style={{marginLeft:10}}>
-                          <span style={{color: '#68727D'}}>Name</span><br/>
+                        <div className='w-20' style={{ marginLeft: 10 }}>
+                          <span style={{ color: '#68727D' }}>Name</span><br />
                           <span class="plan-type">{data.name}</span>
                         </div>
                       </div>
@@ -231,42 +231,38 @@ const Review = () => {
                   </label>
                 )}
                 {isLoading &&
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vh" }}>
-          <CircularProgress />
-        </div>
-      }
+                  <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vh" }}>
+                    <CircularProgress />
+                  </div>
+                }
               </div>
             </div>
           </div>
-          <div className='col-lg-8 mx-1' style={{position:"relative"}}>
-            { 
-            <div className='d-flex justify-content-between align-items-center' >
-              <p>Review</p>
-              <div className='d-flex align-items-center'>
-                <div>Sort by &nbsp;</div>
-                <div className="status_dropdown">
-                  <select
-                    type="text"
-                    className=""
-                    value={filtering.rating}
-                    onChange={(e)=>{handlefiltering({rating:e.target.value})}}
-                  >
-                    <optgroup label="Rating">
-                    <option value={""}>Choose</option>
-                    <option value={1}>1</option>
-                    <option value={2}>2</option>
-                    <option value={3}>3</option>
-                    <option value={4}>4</option>
-                    <option value={5}>5</option>
-                    </optgroup>
-                  </select>
+          <div className='col-lg-8 mx-1' style={{ position: "relative" }}>
+            {
+              <div className='d-flex justify-content-between align-items-center' >
+                <p>Review</p>
+                <div className='d-flex align-items-center'>
+                  <div>Sort by &nbsp;</div>
+                  <div className="status_dropdown">
+                    <select
+                      type="text"
+                      className=""
+                      value={filtering.rating}
+                      onChange={(e) => { handlefiltering({ rating: e.target.value }) }}
+                    >
+                      <option value={""}>Choose</option>
+                      {[1, 2, 3, 4, 5].map((opt) =>
+                        <option value={opt} key={opt} style={{ color: 'gold' }}>{opt} &#9733;</option>
+                      )}
+                    </select>
+                  </div>
                 </div>
-            </div>
-            </div>
+              </div>
             }
             <div className='row'>
-              {filterdataidData.length===0 &&
-              <div className='text-center' style={{fontWeight:"600",transform:"translateY(30vh)"}}>No Review Found</div>
+              {filterdataidData.length === 0 &&
+                <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Review Found</div>
               }
               {filterdataidData.map((data) =>
                 <div key={data.id} className='col-lg-4'>
@@ -278,7 +274,7 @@ const Review = () => {
                         </svg>
                       </h4>
                       <h5 class="card-subtitle mb-2 text-muted">{data.service}</h5>
-                      <span className='head-text' style={{textTransform:"capitalize"}}>{data?.review_title}</span>
+                      <span className='head-text' style={{ textTransform: "capitalize" }}>{data?.review_title}</span>
                       <p class="card-text">{data?.review_summary}</p>
                       <div style={{ position: 'relative', bottom: 10 }}>
                         <span style={{ color: '#006875' }}>{data?.user}</span><br></br>
@@ -289,69 +285,69 @@ const Review = () => {
                 </div>
               )}
               {reviewisLoading &&
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
-          <CircularProgress />
-        </div>
-      }
-      {filterdataidData.length>10 &&
-      <div className="card-footer d-flex align-items-center" style={{position:"absolute",bottom:0,right:0}}>
-       <ul className=" d-flex m-0 ms-auto" style={{listStyle:"none"}}>
-            <li className={`page-item mx-1 ${!listPageUrl.previous && "disabled"}`} >
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                onClick={() => {
-                  handlePagination("prev");
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+                  <CircularProgress />
+                </div>
+              }
+              {filterdataidData.length > 9 &&
+                <div className="card-footer d-flex align-items-center" style={{ position: "absolute", bottom: 0, right: 0 }}>
+                  <ul className=" d-flex m-0 ms-auto" style={{ listStyle: "none" }}>
+                    <li className={`page-item mx-1 ${!listPageUrl.previous && "disabled"}`} >
+                      <a
+                        className="page-link"
+                        href="#"
+                        tabIndex="-1"
+                        onClick={() => {
+                          handlePagination("prev");
+                        }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M15 6l-6 6l6 6" />
+                        </svg>
+                        prev
+                      </a>
+                    </li>
 
-            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-              <a
-                className="page-link"
-                href="#"
-                onClick={() => {
-                  handlePagination("next");
-                }}
-              >
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
-          </div>}
+                    <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                      <a
+                        className="page-link"
+                        href="#"
+                        onClick={() => {
+                          handlePagination("next");
+                        }}
+                      >
+                        next
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="icon"
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          strokeWidth="2"
+                          stroke="currentColor"
+                          fill="none"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                          <path d="M9 6l6 6l-6 6" />
+                        </svg>
+                      </a>
+                    </li>
+                  </ul>
+                </div>}
             </div>
           </div>
         </div>

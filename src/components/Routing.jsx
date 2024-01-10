@@ -55,6 +55,7 @@ import RefundRequestList from "./Booking/RefundRequestList";
 import RefundHistoryList from "./Booking/RefundHistoryList ";
 import RefundRequestView from "./Booking/RefundRequestView";
 import RefundHistoryView from "./Booking/RefundHistoryView";
+import EventView from "../pages/Events&Packages/EventView";
 
 
 function AllRouting() {
@@ -82,6 +83,7 @@ function AllRouting() {
       <Route path="/trips" element={<Trips />} />
       <Route path="/activities" element={<Activities />} />
       <Route path="/events" element={<Events />} />
+      <Route path="//event-view/:id" element={<EventView />} />
       {/* ///////////////services/////////////////////// */}
       <Route path="/payments" element={<Payments />} />
       <Route path="/discounts-offers" element={<DiscountOffer />} />
@@ -145,7 +147,7 @@ function AllRouting() {
       <Route path="/booking-view/:id" element={<BookingView />} />
 
       <Route path="/events-and-packages" element={<EventListing />} />
-      <Route path="/eventedit/:id" element={<EventEdit />} />
+      <Route path="/event-edit/:id" element={<EventEdit />} />
     </Routes>
   );
 }

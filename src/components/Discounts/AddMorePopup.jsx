@@ -45,7 +45,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
         setIsLoading(true)
         getCompanyListing()
           .then((data) => {
-            setCompanyList(data?.results);
+            setCompanyList(data);
             setIsLoading(false)
           })
           .catch((error) => {
