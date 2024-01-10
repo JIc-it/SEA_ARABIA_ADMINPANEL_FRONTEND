@@ -34,6 +34,7 @@ function AdminPassword({ show, close }) {
         console.log(" admin update list------==", data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching customer data:", error);
       });
   }, [adminId]);

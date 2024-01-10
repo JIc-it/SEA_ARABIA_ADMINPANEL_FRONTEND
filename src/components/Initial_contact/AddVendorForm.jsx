@@ -15,6 +15,7 @@ import {
 import { OnboardContext } from "../../Context/OnboardContext";
 import { getLocation } from "../../services/CustomerHandle";
 import CountryDropdown from "../SharedComponents/CountryDropDown";
+import { toast } from "react-toastify";
 
 const AddVendorInfo = ({ formik, locationList }) => {
   const vendorId = useParams()?.id;
@@ -52,6 +53,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         setServiceTagList(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     getUserIdType()
@@ -59,6 +61,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         setIdTypeList(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, []);

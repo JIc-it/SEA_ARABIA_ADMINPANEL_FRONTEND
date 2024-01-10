@@ -11,6 +11,7 @@ import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
+import { toast } from "react-toastify";
 
 function Table() {
   const dispatch = useDispatch();
@@ -43,6 +44,7 @@ function Table() {
       })
       .catch((error) => {
         setIsLoading(false);
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   };
@@ -57,6 +59,7 @@ function Table() {
       .catch((error) => {
         setIsLoading(false);
         console.error("Error fetching  data:", error);
+        toast.error(error.message);
       });
   }, []);
 
@@ -81,6 +84,7 @@ function Table() {
         })
         .catch((error) => {
           setIsLoading(false);
+          toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };

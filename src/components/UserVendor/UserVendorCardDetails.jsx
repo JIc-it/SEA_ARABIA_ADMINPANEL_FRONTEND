@@ -17,6 +17,7 @@ import Proposal from "./UserVendorTabs/Proposal/Proposal";
 import MOU from "./UserVendorTabs/MOUCharter/MOU";
 import NegotationsList from "./UserVendorTabs/Negotiation/NegotationsList";
 import MiscellaneousList from "./UserVendorTabs/Miscellaneous/MiscellaneousList";
+import { toast } from "react-toastify";
 
 function UserVendorCardDetails({ venderDetails }) {
   const navigate = useNavigate();
@@ -49,6 +50,7 @@ function UserVendorCardDetails({ venderDetails }) {
         setToggled(data.is_active);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log(error);
       });
   };

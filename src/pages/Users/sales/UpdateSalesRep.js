@@ -33,6 +33,7 @@ function UpdateSalesRep({ show, close }) {
         // console.log(" Sales Rep by id------==", data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching Salesrep data:", error);
       });
   }, [salesRepId]);
@@ -44,6 +45,7 @@ function UpdateSalesRep({ show, close }) {
         setLocation(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

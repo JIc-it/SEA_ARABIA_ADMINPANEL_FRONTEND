@@ -76,6 +76,7 @@ export default function AddMouModal({ show, close, setIsRefetch, isRefetch ,comp
           setIsLoading(false);
         } catch (err) {
           console.log(err);
+          toast.error(err.message);
 
           setIsLoading(false);
         }

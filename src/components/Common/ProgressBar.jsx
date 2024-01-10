@@ -181,12 +181,14 @@ function ProgressBar({ locationList }) {
         }
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
 
     siteVisitQualification()
       .then((data) => setQualificationList(data.results))
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error on Fetching list Qualification", error);
       });
     getVendorListById(vendorId);
@@ -478,6 +480,7 @@ function ProgressBar({ locationList }) {
         setServiceTagList(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, []);
@@ -551,6 +554,7 @@ function ProgressBar({ locationList }) {
             dispatch(increment());
           })
           .catch((error) => {
+            toast.error(error.message);
             console.error("Error fetching  data:", error);
           });
       } else {
@@ -611,6 +615,7 @@ function ProgressBar({ locationList }) {
             dispatch(increment());
           })
           .catch((error) => {
+            toast.error(error.message);
             console.error("Error fetching  data:", error);
           });
       } else {
@@ -665,6 +670,7 @@ function ProgressBar({ locationList }) {
           dispatch(increment());
         })
         .catch((error) => {
+          toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
     }

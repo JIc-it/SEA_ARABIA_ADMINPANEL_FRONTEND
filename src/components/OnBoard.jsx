@@ -7,6 +7,7 @@ import { useParams } from "react-router";
 import { OnboardContext } from "../Context/OnboardContext";
 import { useSelector } from "react-redux";
 import { getLocation } from "../services/CustomerHandle";
+import { toast } from "react-toastify";
 
 function OnBoard() {
   const params = useParams();
@@ -21,6 +22,7 @@ function OnBoard() {
         setLocation(data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

@@ -35,6 +35,7 @@ function CreateSalesRep({ show, close }) {
         setLocation(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

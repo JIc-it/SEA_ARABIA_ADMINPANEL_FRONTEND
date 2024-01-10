@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from "react";
 import { getVendorListById } from "../../../services/leadMangement";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import { useNavigate } from "react-router";
+import { toast } from "react-toastify";
 
 export default function LeadDetails({ count }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -15,6 +16,7 @@ export default function LeadDetails({ count }) {
         setLeads(data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorId, count]);

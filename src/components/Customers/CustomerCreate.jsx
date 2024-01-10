@@ -39,6 +39,7 @@ function CustomerCreate({ show, close }) {
         console.log(" customerId by id==", data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
@@ -50,6 +51,7 @@ function CustomerCreate({ show, close }) {
         setLocation(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

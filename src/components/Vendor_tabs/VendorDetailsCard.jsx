@@ -7,6 +7,7 @@ import {
 } from "../../services/leadMangement";
 import { OnboardContext } from "../../Context/OnboardContext";
 import { useSelector } from "react-redux";
+import { toast } from "react-toastify";
 
 function VendorDetailsCard() {
   const { vendorId, isAllowProceed, setIsAllowProceed } =
@@ -22,6 +23,7 @@ function VendorDetailsCard() {
         setUser(data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorId, count]);

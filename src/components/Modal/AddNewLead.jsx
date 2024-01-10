@@ -21,6 +21,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
         setLocation(data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

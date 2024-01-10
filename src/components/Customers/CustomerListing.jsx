@@ -14,6 +14,7 @@ import {
   getCustomerlist,
 } from "../../services/CustomerHandle";
 import { formatDate } from "../../helpers";
+import { toast } from "react-toastify";
 
 export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
@@ -35,6 +36,7 @@ export default function CustomerListing() {
         setListDiscount(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
@@ -60,6 +62,7 @@ export default function CustomerListing() {
       })
       .catch((error) => {
         setIsLoading(false);
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   };

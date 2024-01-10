@@ -11,6 +11,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import ViewSiteVisit from "./ViewSiteVisit";
 import EditSiteVisit from "./EditSiteVisit";
+import { toast } from "react-toastify";
 
 function SiteVisit({ selectedTab }) {
   const { vendorId, companyID } = useContext(OnboardContext);
@@ -56,6 +57,7 @@ function SiteVisit({ selectedTab }) {
         setListPageUrl({ next: data.next, previous: data.previous });
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     setIsLoading(false);
@@ -78,6 +80,7 @@ function SiteVisit({ selectedTab }) {
         })
         .catch((error) => {
           setIsLoading(false);
+          toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };

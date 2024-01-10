@@ -9,6 +9,7 @@ import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import VendorFilterPopup from "./VendorFilterPopup";
+import { toast } from "react-toastify";
 
 export default function Listing() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ export default function Listing() {
       })
       .catch((error) => {
         setIsLoading(false);
+        toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   };
@@ -87,6 +89,7 @@ export default function Listing() {
         })
         .catch((error) => {
           setIsLoading(false);
+          toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };

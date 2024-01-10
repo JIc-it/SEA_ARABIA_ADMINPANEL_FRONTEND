@@ -37,6 +37,7 @@ function CreateNewAdmin({ show, close }) {
         console.log(" admin by id==", data);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching customer data:", error);
       });
   }, [salesRepId]);
@@ -48,6 +49,7 @@ function CreateNewAdmin({ show, close }) {
         setLocation(data.results);
       })
       .catch((error) => {
+        toast.error(error.message);
         console.log("error while fetching location", error);
       });
   }, []);

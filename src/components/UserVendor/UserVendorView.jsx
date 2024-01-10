@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import UserVendorCardDetails from "./UserVendorCardDetails";
 import { getIndivitualUserVendorListById } from "../../services/userVendorsServices";
 import { getCustomerListById } from "../../services/CustomerHandle";
+import { toast } from "react-toastify";
 
 export default function UserVendorView() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function UserVendorView() {
         // console.log("Vendor list =====:", vendorList); // Fix the variable name here
       })
       .catch((error) => {
+        toast.error(error.message);
         console.error("Error fetching distributor data:", error);
       });
   }, [vendorId]);
