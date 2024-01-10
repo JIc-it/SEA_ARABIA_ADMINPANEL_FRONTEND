@@ -301,7 +301,7 @@ const statusCheck=()=>{
 
                     <div className={isMobileView ? "d-flex flex-column" : "d-flex flex-row"}>
                         <div className={isMobileView ? "col-12 card mt-2" : 'col-5 card mt-2 mx-1'} style={{ borderRadius: "8px" }} >
-                            <img src={booking?.service?.service_image[0]?.image} alt="ship" width={100} height={100} className='w-100' style={{height:"200px",borderRadius:"5px"}}/>
+                            <img src={ booking?.service?.service_image && booking?.service?.service_image[0]?.image} alt="ship" width={100} height={100} className='w-100' style={{height:"200px",borderRadius:"5px"}}/>
                             <div className="left_header" style={{marginTop:"-5px"}}>
                                 <div>
                                     <p className="card_content">{booking?.service?.name}</p>

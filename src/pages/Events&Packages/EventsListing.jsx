@@ -519,8 +519,8 @@ export default function EventListing() {
                             }}
                           >
                             <Link
-                              to="/eventedit/12345"
-                              // to={`/customers/${item.id}`}
+                              // to="/eventedit/12345"
+                              to={`/event-view/${item.id}`}
                               className="btn btn-sm btn-dark"
                               style={{
                                 padding: "6px 10px",
