@@ -18,7 +18,6 @@ function DiscountListing() {
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate=useNavigate();
   const [offerslist,setOffersList]=useState([])
-  const [exportdata, setExportdata]=useState([])
  const [isLoading,setIsLoading]=useState(false)
  const [search,setSearch]=useState("")
  const [listPageUrl, setListPageUrl] = useState({
@@ -86,18 +85,7 @@ const handleopenfilter=()=>{
         // setIsLoading(false)
         toast.error(error.response.data);
       });
-  }, [search]);
-
-  useEffect(() => {
-    getExportdata()
-      .then((data) => {
-        setExportdata(data);
-      })
-      .catch((error) => {
-        toast.error(error.response.data);
-      });
   }, []);
-
   
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -120,41 +108,18 @@ const handleopenfilter=()=>{
         });
   };
 
-  
-  // const handleExportData = () => {
-  //   if (offerslist) {
-  //     const header = [
-  //       "DISCOUNT CODE",
-  //       "CAMPAIGN NAME",
-  //       "USAGE",
-  //       "LIMIT",
-  //       "Expiry",
-  //       "STATUS",
-  //     ];
-  //     const csvData = offerslist.map((elem) => {
-  //       // let formatedDate = formatDate(elem.created_at);
-  //       return [
-  //         elem.coupon_code,
-  //         elem.name,
-  //         elem.mobile,
-  //         elem.location,
-  //         formatDate(elem.end_date) ,
-  //         `${elem.is_enable===true ? "Active" : "Inactive"} `,
-  //       ];
-  //     });
-
-  //     const csvContent = [header, ...csvData]
-  //       .map((row) => row.join(","))
-  //       .join("\n");
-  //     const blob = new Blob([csvContent], { type: "text/csv" });
-  //     const url = window.URL.createObjectURL(blob);
-  //     const a = document.createElement("a");
-  //     a.href = url;
-  //     a.download = "Offer-List.csv";
-  //     a.click();
-  //     window.URL.revokeObjectURL(url);
-  //   }
-  // };
+  const handleSearch=()=>{
+    getDiscountOfferList(search)
+    .then((data) => {
+      setListPageUrl({ next: data.next, previous: data.previous });
+      setOffersList(data?.results);
+      // setIsLoading(false)
+    })
+    .catch((error) => {
+      // setIsLoading(false)
+      toast.error(error.response.data);
+    });
+  }
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -192,6 +157,7 @@ const handleopenfilter=()=>{
                   type="button"
                   className="btn search_button"
                   style={{ background: "#006875" }}
+                  onClick={handleSearch}
                 >
                   Search
                 </button>
@@ -209,9 +175,9 @@ const handleopenfilter=()=>{
         <div className="action_buttons col-4">
           
           <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-            <CSVLink style={{textDecorationLine:"none",color:"black"}} data={exportdata} filename={"coupon_data.csv"}>
-              Export 
-            </CSVLink>
+          <a href="https://seaarabia.jicitsolution.com/offer/export-offer-list/">
+                                Export
+                            </a>
             {/* Export &nbsp; */}
             <svg
               xmlns="http://www.w3.org/2000/svg"

@@ -7,7 +7,7 @@ const UpdateOffers="offer/offers";
 const companylisting="company/company-cms-list"
 const serviceOnelisting="service/service-filter-list-cms"
 const getcompanylist="offer/offer-service-info"
-const exportdataURL="offer/export-offer-list/"
+
 
 
 export const getCompanyListing = () => {
@@ -105,12 +105,3 @@ export const getDiscountOfferView = (id) => {
       });
   };
 
-  export const getExportdata = () => {
-    return axiosInstance
-      .get(exportdataURL)
-      .then((response) => response.data)
-      .catch((error) => {
-        console.error("Error while fetching lead request:", error);
-        throw error;
-      });
-  };

@@ -58,7 +58,8 @@ const BookinList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getBookingList(search, selectedValue)
+    const Pass={status:"",search:"",refund_status:""}
+    getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
@@ -145,6 +146,19 @@ const BookinList = () => {
         });
   };
 
+  const handleSearch=()=>{
+    const Pass={status:"",search:search,refund_status:""}
+    getBookingList(Pass)
+      .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
+  }
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -258,10 +272,7 @@ const BookinList = () => {
               <div className="col-12 actions_menu my-2">
                 <div className="action_menu_left col-8">
                   <div>
-                    <form
-                      action=""
-                      method="post"
-                      autocomplete="off"
+                    <div
                       style={{ display: "flex" }}
                     >
                       <div className="input-icon">
@@ -296,7 +307,7 @@ const BookinList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          // onClick={getVendorListData}
+                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -321,7 +332,7 @@ const BookinList = () => {
                           />
                         </svg>
                       </button>
-                    </form>
+                    </div>
                   </div>
                 </div>
                 <div className="action_buttons col-4">
@@ -437,7 +448,7 @@ const BookinList = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.service?.category.map((items)=>
+                                {data?.service?.category?.map((items)=>
                                 items.name
                                 )}
                               </span>

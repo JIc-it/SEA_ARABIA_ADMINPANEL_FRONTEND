@@ -20,9 +20,7 @@ export default function BookingView() {
     const [open,setOpen]=useState(false);
     const [open2,setOpen2]=useState(false);
 
-const cancelBooking=()=>{
-    updateCancellation(params.id).then((data)=>toast.success(data)).catch(err=>toast.error(err.response.data.error))
-}
+
 
     useEffect(() => {
         setIsLoading(true);
@@ -454,13 +452,13 @@ const statusCheck=()=>{
                             <div className='d-flex p-4'>
                                 <div style={{ width: "33%" }}>
                                     <div >
-                                        <p style={{ color:booking?.payment?.status==="Completed"? "#68727D":"#2684FC" }}>Payment Status</p>
+                                        <p >Payment Status</p>
                                         {booking?.payment?.status==="Completed"? 
                                         <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #40C77E", borderRadius: "30px", backgroundColor: "rgba(64, 199, 126, 0.20)", width: "fit-content" }}><img src={tick} alt="success" style={{ backgroundColor: "#40C77E", borderRadius: "50px" }} />
                                         &nbsp; Paid
 
                                     </p>:
-                                        <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #2684FC", borderRadius: "30px", backgroundColor: "#2684FC", width: "fit-content" }}>
+                                        <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #2684FC", borderRadius: "30px", backgroundColor: "#e6f1ff", width: "fit-content" }}>
                                             <svg width={20} height={20} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path opacity="0.4" d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#2684FC" />
                                         <path fillRule="evenodd" clipRule="evenodd" d="M23.1628 12.8372C23.1628 12.3748 23.5376 12 24 12C30.6274 12 36 17.3726 36 24C36 30.6274 30.6274 36 24 36C17.3726 36 12 30.6274 12 24C12 23.5376 12.3748 23.1628 12.8372 23.1628C13.2996 23.1628 13.6744 23.5376 13.6744 24C13.6744 29.7027 18.2973 34.3256 24 34.3256C29.7027 34.3256 34.3256 29.7027 34.3256 24C34.3256 18.2973 29.7027 13.6744 24 13.6744C23.5376 13.6744 23.1628 13.2996 23.1628 12.8372Z" fill="#2684FC" />

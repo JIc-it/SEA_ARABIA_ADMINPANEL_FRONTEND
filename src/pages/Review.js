@@ -1,8 +1,19 @@
 import React from 'react'
 import { useState, useEffect } from "react";
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList } from "../services/review"
+import { CircularProgress } from '@mui/material';
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter,getCompanyList,getServiceReviewFilter2 } from "../services/review";
+import { formatDate,removeBaseUrlFromPath } from "../helpers";
+import { getListDataInPagination } from "../services/commonServices";
+import { toast } from 'react-toastify';
+
 
 const Review = () => {
+  const [isLoading, setIsLoading] = useState(false)
+  const [reviewisLoading, setReviewisLoading] = useState(false)
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
   const [categorylist, setCategorylist] = useState([]);
   const [categorychoose,setCategoryChoose]=useState("")
 
@@ -38,10 +49,8 @@ const Review = () => {
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
       });
-  }, []);
 
-  useEffect(() => {
-    getCategoryist()
+      getCategoryist()
       .then((data) => {
         setCategorylist(data.results);
       })
@@ -62,29 +71,69 @@ const Review = () => {
 
 
   useEffect(() => {
+    setIsLoading(true)
     getServiceFilterList(filtering)
       .then((data) => {
+        setIsLoading(false)
         setserviceFilterList(data);
       })
       .catch((error) => {
+        setIsLoading(false)
         console.error("Error fetching distributor data:", error);
       });
   }, [filtering]);
 
   useEffect(() => {
-    getServiceReviewFilter(filterdataid,filtering.rating)
+    setReviewisLoading(true)
+    if(filterdataid.trim()!==""){
+      getServiceReviewFilter2(filterdataid,filtering.rating)
       .then((data) => {
+        setReviewisLoading(false)
+        setListPageUrl({ next: data.next, previous: data.previous });
         setfilteridData(data.results);
       })
       .catch((error) => {
+        setReviewisLoading(false)
         console.error("Error fetching distributor data:", error);
       });
+    }
+   else{
+    getServiceReviewFilter(filtering.rating)
+    .then((data) => {
+      setReviewisLoading(false)
+      setListPageUrl({ next: data.next, previous: data.previous });
+      setfilteridData(data.results);
+    })
+    .catch((error) => {
+      setReviewisLoading(false)
+      console.error("Error fetching distributor data:", error);
+    });
+   }   
   }, [filterdataid,filtering.rating]);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
   };
-
+  const handlePagination = async (type) => {
+    setReviewisLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setReviewisLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setfilteridData(data?.results);
+        })
+        .catch((error) => {
+          setReviewisLoading(false);
+          toast.error(error.response.data);
+        });
+  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -112,7 +161,7 @@ const Review = () => {
                     value={selectedValue}
                     onChange={handleSelectChange}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {companyList.map((data, index) =>
                       <option key={data.id} value={data.name}>{data.name}</option>
                     )}
@@ -127,16 +176,16 @@ const Review = () => {
                     className="form-select mb-3 status_selector"
                     value={categorychoose}
                     onChange={(e) => {
-                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      const selectedValue = e.target.value === "Choose" ? null : e.target.value;
                       setCategoryChoose(selectedValue);
                       handlefiltering({ categoryid: selectedValue });
                     }}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {categorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
-                    {/* <option value="New Lead">All</option>
+                    {/* <option value="New Lead">Choose</option>
                                         <option value="Yatch">Yatch</option>
                                         <option value="Boat">Boat</option> */}
                   </select>
@@ -150,12 +199,12 @@ const Review = () => {
                     className="form-select mb-3 status_selector"
                     value={subcategorychoose}
                     onChange={(e) => {
-                      const selectedValue = e.target.value === "All" ? null : e.target.value;
+                      const selectedValue = e.target.value === "Choose" ? null : e.target.value;
                       setSubcategoryChoose(selectedValue);
                       handlefiltering({ subcategoryid: selectedValue });
                     }}
                   >
-                    <option value={null}>All</option>
+                    <option value={null}>Choose</option>
                     {subcategorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
@@ -163,7 +212,7 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12' style={{height:"50vh",overflowY:"scroll"}}>
-                {servicefilterlist?.map((data) =>
+                {!isLoading && servicefilterlist?.map((data) =>
                   <label key={data.id} class="card mb-4" style={{ display: 'flex' }} onClick={() => setfilterid(data.id)}>
                     <input name="plan" class="radio" type="radio" checked={data.id === filterdataid} />
                     <span class="plan-details">
@@ -181,12 +230,17 @@ const Review = () => {
                     </span>
                   </label>
                 )}
+                {isLoading &&
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "30vh" }}>
+          <CircularProgress />
+        </div>
+      }
               </div>
             </div>
           </div>
-          <div className='col-lg-8 mx-1'>
+          <div className='col-lg-8 mx-1' style={{position:"relative"}}>
             { 
-            <div className='d-flex justify-content-between align-items-center'>
+            <div className='d-flex justify-content-between align-items-center' >
               <p>Review</p>
               <div className='d-flex align-items-center'>
                 <div>Sort by &nbsp;</div>
@@ -198,7 +252,7 @@ const Review = () => {
                     onChange={(e)=>{handlefiltering({rating:e.target.value})}}
                   >
                     <optgroup label="Rating">
-                    <option value={""}>All</option>
+                    <option value={""}>Choose</option>
                     <option value={1}>1</option>
                     <option value={2}>2</option>
                     <option value={3}>3</option>
@@ -224,16 +278,80 @@ const Review = () => {
                         </svg>
                       </h4>
                       <h5 class="card-subtitle mb-2 text-muted">{data.service}</h5>
-                      <span className='head-text'>{data?.review_title}</span>
+                      <span className='head-text' style={{textTransform:"capitalize"}}>{data?.review_title}</span>
                       <p class="card-text">{data?.review_summary}</p>
                       <div style={{ position: 'relative', bottom: 10 }}>
                         <span style={{ color: '#006875' }}>{data?.user}</span><br></br>
-                        <span>25/07/2023</span>
+                        <span>{new Date(data?.created_at).toLocaleDateString("es-CL")}</span>
                       </div>
                     </div>
                   </div>
                 </div>
               )}
+              {reviewisLoading &&
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+          <CircularProgress />
+        </div>
+      }
+      {filterdataidData.length>10 &&
+      <div className="card-footer d-flex align-items-center" style={{position:"absolute",bottom:0,right:0}}>
+       <ul className=" d-flex m-0 ms-auto" style={{listStyle:"none"}}>
+            <li className={`page-item mx-1 ${!listPageUrl.previous && "disabled"}`} >
+              <a
+                className="page-link"
+                href="#"
+                tabIndex="-1"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M15 6l-6 6l6 6" />
+                </svg>
+                prev
+              </a>
+            </li>
+
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
+                next
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M9 6l6 6l-6 6" />
+                </svg>
+              </a>
+            </li>
+          </ul>
+          </div>}
             </div>
           </div>
         </div>

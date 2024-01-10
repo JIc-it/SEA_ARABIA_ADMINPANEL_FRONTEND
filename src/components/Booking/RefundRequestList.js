@@ -1,19 +1,13 @@
 import React, { useEffect, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
-import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { getBookingList } from "../../services/booking"
+import { getBookingList,getRefundRequestCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -53,6 +47,7 @@ const RefundRequestList = () => {
     setSelectedValue(event.target.value);
   };
   const [bookingList, setBookingList] = useState([]);
+  const [count, setCount] = useState({});
 
   // const getVendorListData = async () => {
   //   setIsLoading(true);
@@ -70,11 +65,26 @@ const RefundRequestList = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    getBookingList(search, selectedValue)
+    const pass={status:"Cancelled",search:"",refund_status:"Pending"}
+    getBookingList(pass)
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
         setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
+
+      getRefundRequestCount()
+      .then((data) => {
+        setIsLoading(false);
+        setCount({
+          refund_request_count:data.refund_request_count,
+          cancelled_by_vendor:data.cancelled_by_vendor,
+          cancelled_by_user:data.cancelled_by_user
+        });
       })
       .catch((error) => {
         setIsLoading(false);
@@ -145,6 +155,20 @@ const RefundRequestList = () => {
         });
   };
 
+  const handleSearch=()=>{
+    const Pass={status:"Cancelled",search:search,refund_status:"Pending"}
+    getBookingList(Pass)
+      .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data)
+      });
+  }
+
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -168,7 +192,7 @@ const RefundRequestList = () => {
 
                       
                     }
-                    firstCount={"198"}
+                    firstCount={count?.refund_request_count}
                     secondLabel={"Cancellation By Vendor"}
                     secondIcon={
                       <svg width="57" height="56" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -186,8 +210,8 @@ const RefundRequestList = () => {
                       </svg>
 
                     }
-                    secondCount={"198"}
-                    thirdLabel={"Total Confirmed Bookings"}
+                    secondCount={count?.cancelled_by_vendor}
+                    thirdLabel={"Cancellation By Customer"}
                     thirdIcon={
                       <svg width="57" height="56" viewBox="0 0 57 56" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <rect x="0.666504" width="56" height="56" rx="8" fill="url(#paint0_linear_2973_59778)"/>
@@ -204,7 +228,7 @@ const RefundRequestList = () => {
                       </svg>
                       
                     }
-                    thirdCount={"198"}
+                    thirdCount={count?.cancelled_by_user}
                     fourthLabel={""}
                     fourthIcon={""}
                     fourthCount={""}
@@ -216,10 +240,7 @@ const RefundRequestList = () => {
               <div className="col-12 actions_menu my-2">
                 <div className="action_menu_left col-8">
                   <div>
-                    <form
-                      action=""
-                      method="post"
-                      autocomplete="off"
+                    <div
                       style={{ display: "flex" }}
                     >
                       <div className="input-icon">
@@ -254,7 +275,7 @@ const RefundRequestList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          // onClick={getVendorListData}
+                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -262,7 +283,7 @@ const RefundRequestList = () => {
                       <button
                         className="btn  filter-button  "
                         style={{ borderRadius: "6px", marginLeft: "10px" }}
-                        onClick={handleOpen}
+                        // onClick={handleOpen}
                         type="button"
                       >
                         <svg
@@ -279,7 +300,7 @@ const RefundRequestList = () => {
                           />
                         </svg>
                       </button>
-                    </form>
+                    </div>
                   </div>
                 </div>
                 <div className="action_buttons col-4">
@@ -362,10 +383,10 @@ const RefundRequestList = () => {
                           <span>Customer Name</span>
                         </th>
                         <th>
-                          <span>Customer Type</span>
+                          <span>Initiated By</span>
                         </th>
                         <th>
-                          <span>Commencement Date</span>
+                          <span>Cancelled On</span>
                         </th>
                         <th>
                           <span>Creation Date</span>
@@ -384,7 +405,6 @@ const RefundRequestList = () => {
                           {bookingList.length>0 && 
                           bookingList.map((data)=>
                           <tr>
-                            {console.log(data)}
                             <td>
                               <span className="text-secondary">
                               {data.booking_id}
@@ -410,12 +430,12 @@ const RefundRequestList = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.user_type}
+                                {data?.user?.role}
                               </span>
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {new Date(data?.start_date).toLocaleDateString("es-CL")}
+                                {new Date(data?.cancelled_date).toLocaleDateString("es-CL")}
                               </span>
                             </td>
                             <td>

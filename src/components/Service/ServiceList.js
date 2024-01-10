@@ -13,8 +13,6 @@ import {formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { CSVLink } from 'react-csv';
-
 
 // import AddNewService from "./AddNewService";
 function ServiceList() {
@@ -26,11 +24,10 @@ function ServiceList() {
     const [servicelist, setServiceList] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const [count,setCount]=useState(null)
-    const[exportdata,setExportData]=useState([])
 
     useEffect(() => {
         setIsLoading(true)
-        getServiceListing(search)
+        getServiceListing()
             .then((data) => {
                 setServiceList(data?.results);
                 setListPageUrl({ next: data.next, previous: data.previous });
@@ -54,18 +51,7 @@ function ServiceList() {
                 {setIsLoading(false);
                     toast.error(error.response.data)};
             });
-
-            getExportList()
-            .then((data) => {
-                setExportData(data);
-                setIsLoading(false)
-            })
-            .catch((error) => {
-                {setIsLoading(false);
-                    toast.error(error.response.data)};
-            });
-
-    }, [search]);
+    }, []);
 
     const handlePagination = async (type) => {
         setIsLoading(true);
@@ -86,41 +72,19 @@ function ServiceList() {
                 setIsLoading(false);
                 toast.error(error.response.data)});
       };
-
-      const handleExportData = () => {
-        if (servicelist) {
-            const header = [
-                "NAME",
-                "CATEGORY",
-                "SUB CATEGORY",
-                "VENDOR",
-                "STATUS",
-                "BOOKINGS"
-            ];
-            const csvData = servicelist.map((elem) => {
-                return [
-                    elem.name,
-                    elem.category.map((data) => data.name).join(','),
-                    elem.sub_category.map((data) => data.name).join(','),
-                    elem.company,
-                    elem.status === true ? "Active" : "Inactive",
-                    elem.total_booking
-                ];
+   
+      const handleSearch=()=>{
+        getServiceListing(search)
+            .then((data) => {
+                setServiceList(data?.results);
+                setListPageUrl({ next: data.next, previous: data.previous });
+                setIsLoading(false)
+            })
+            .catch((error) => {
+                {setIsLoading(false);
+                    toast.error(error.response.data)};
             });
-    
-            const csvContent = [header, ...csvData]
-                .map((row) => row.join(","))
-                .join("\n");
-            const blob = new Blob([csvContent], { type: "text/csv" });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "Service.csv";
-            a.click();
-            window.URL.revokeObjectURL(url);
-        }
-    };
-    
+      }
       
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -257,7 +221,7 @@ function ServiceList() {
                 <div className="col-12 actions_menu my-2">
                     <div className="action_menu_left col-8">
                         <div>
-                            <form action="" method="post" autocomplete="off">
+                            <div>
                                 <div style={{ display: "flex" }}>
                                     <div className="input-icon">
                                         <span className="input-icon-addon">
@@ -289,6 +253,7 @@ function ServiceList() {
                                             type="button"
                                             className="btn search_button"
                                             style={{ background: "#006875" }}
+                                            onClick={handleSearch}
                                         >
                                             Search
                                         </button>
@@ -297,16 +262,16 @@ function ServiceList() {
                                         <img src={filterIcon} alt="filter" width={25} />
                                     </button>
                                 </div>
-                            </form>
+                            </div>
                         </div>
 
                     </div>
                     <div className="action_buttons col-4">
 
                         <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-                            <CSVLink style={{ textDecorationLine: "none", color: "black" }} data={exportdata} filename={"service-list.csv"}>
+                            <a href="https://seaarabia.jicitsolution.com/service/export-service-list">
                                 Export
-                            </CSVLink>
+                            </a>
                             {/* Export &nbsp; */}
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
