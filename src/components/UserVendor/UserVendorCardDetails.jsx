@@ -20,6 +20,7 @@ import MOU from "./UserVendorTabs/MOUCharter/MOU";
 import NegotationsList from "./UserVendorTabs/Negotiation/NegotationsList";
 import MiscellaneousList from "./UserVendorTabs/Miscellaneous/MiscellaneousList";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function UserVendorCardDetails({ venderDetails }) {
   const navigate = useNavigate();
@@ -37,6 +38,7 @@ function UserVendorCardDetails({ venderDetails }) {
   const [isToggled, setToggled] = useState(true);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [isRefetch, setIsRefetch] = useState(false);
+  const [isloadingservice,setIsLoadingService]=useState(false)
 
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
@@ -63,12 +65,15 @@ function UserVendorCardDetails({ venderDetails }) {
   };
 
   useEffect(() => {
+    setIsLoadingService(true)
     getServiceListing(null, venderDetails?.company_company_user?.id)
       .then((data) => {
+        setIsLoadingService(false)
         setListPageUrl({ next: data.next, previous: data.previous });
         setServiceList(data.results);
       })
       .catch((error) => {
+        setIsLoadingService(false)
         toast.error(error.response.data)
       });
   }, [venderDetails?.company_company_user?.id]);
@@ -512,7 +517,7 @@ function UserVendorCardDetails({ venderDetails }) {
                     />
                   </svg>
                 </button>
-                {serviceList.length > 0 && <div
+                {!isloadingservice && serviceList.length > 0 && <div
                   style={{ borderRadius: "5px" }}
                   className="mt-4 w-100 px-2"
                 >
@@ -641,6 +646,11 @@ function UserVendorCardDetails({ venderDetails }) {
                     </div>}
                   </div>
                 </div>}
+                {isloadingservice &&
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "80vh" }}>
+                    <CircularProgress />
+                </div>
+            }
                 {
                   serviceList.length === 0 &&
                   <p style={{ textAlign: "center", marginTop: "10px", fontWeight: "550" }}>No Service Found</p>
