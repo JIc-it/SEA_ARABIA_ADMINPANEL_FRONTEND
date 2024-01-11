@@ -7,8 +7,10 @@ import Avatars from "../../assets/images/Avatar.png";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import AddSiteVisitModal from "../Vendor_tabs/SiteVisit/AddSiteVisitModal";
-
+import { getListDataInPagination } from "../../services/commonServices";
+import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getVendorListById } from "../../services/leadMangement";
+import { getServiceListing } from "../../services/service";
 import {} from "../../services/CustomerHandle";
 import VenderDetailsList from "./UserVendorTabs/VenderDetails/VenderDetailsList";
 import { getUserVendorStatusUpdate } from "../../services/userVendorsServices";
@@ -18,10 +20,15 @@ import MOU from "./UserVendorTabs/MOUCharter/MOU";
 import NegotationsList from "./UserVendorTabs/Negotiation/NegotationsList";
 import MiscellaneousList from "./UserVendorTabs/Miscellaneous/MiscellaneousList";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
 
 function UserVendorCardDetails({ venderDetails }) {
   const navigate = useNavigate();
   const theme = useTheme();
+  const [listPageUrl, setListPageUrl] = useState({
+    next: null,
+    previous: null,
+  });
 
   const vendorId = useParams()?.id;
   // console.log("v-id==", vendorId);
@@ -31,10 +38,12 @@ function UserVendorCardDetails({ venderDetails }) {
   const [isToggled, setToggled] = useState(true);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [isRefetch, setIsRefetch] = useState(false);
+  const [isloadingservice, setIsLoadingService] = useState(false);
 
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const [serviceList, setServiceList] = useState([]);
 
   useEffect(() => {
     venderDetails && setToggled(venderDetails.company_status);
@@ -55,6 +64,37 @@ function UserVendorCardDetails({ venderDetails }) {
       });
   };
 
+  useEffect(() => {
+    setIsLoadingService(true);
+    getServiceListing(null, venderDetails?.company_company_user?.id)
+      .then((data) => {
+        setIsLoadingService(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setServiceList(data.results);
+      })
+      .catch((error) => {
+        setIsLoadingService(false);
+        toast.error(error.response.data);
+      });
+  }, [venderDetails?.company_company_user?.id]);
+
+  const handlePagination = async (type) => {
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setServiceList(data?.results);
+        })
+        .catch((error) => {
+          toast.error(error.response.data);
+        });
+  };
   return (
     <div
       className={
@@ -486,73 +526,181 @@ function UserVendorCardDetails({ venderDetails }) {
                     />
                   </svg>
                 </button>
-                <div
-                  style={{ borderRadius: "5px" }}
-                  className="mt-4 w-100 px-2"
-                >
-                  <div className="table-responsive">
-                    <table className="table">
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Category</th>
-                          <th>Capacity</th>
-                          <th>Location</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <tr>
-                          <td className="d-flex text-dark">
-                            <img
-                              src={Avatars}
-                              width={20}
-                              height={20}
-                              style={{ borderRadius: "50%" }}
-                            />
-                            <p className="mx-2">Achille Lauro</p>
-                          </td>
-                          <td className="text-dark">Jet Ski</td>
-                          <td className="text-dark">-</td>
-                          <td className="text-dark">Kuwait</td>
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={"/service-view/12345"}
-                              className="btn btn-sm btn-dark"
-                              style={{
-                                padding: "2px 10px",
-                                borderRadius: "4px",
-                              }}
+                {!isloadingservice && serviceList.length > 0 && (
+                  <div
+                    style={{ borderRadius: "5px" }}
+                    className="mt-4 w-100 px-2"
+                  >
+                    <div className="table-responsive">
+                      <table className="table">
+                        <thead>
+                          <tr>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Capacity</th>
+                            <th>Location</th>
+                            <th>Action</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {serviceList.length > 0 &&
+                            serviceList.map((data) => (
+                              <tr>
+                                <td className="d-flex text-dark">
+                                  <img
+                                    src={Avatars}
+                                    width={20}
+                                    height={20}
+                                    style={{ borderRadius: "50%" }}
+                                  />
+                                  <p className="mx-2">{data?.name}</p>
+                                </td>
+                                <td className="text-dark">
+                                  {data?.category?.map((cate) => cate)}
+                                </td>
+                                <td className="text-dark">{data?.capacity}</td>
+                                <td className="text-dark">
+                                  {data?.pickup_point_or_location}
+                                </td>
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "baseline",
+                                  }}
+                                >
+                                  <Link
+                                    to={"/service-view/" + data?.id}
+                                    className="btn btn-sm btn-dark"
+                                    style={{
+                                      padding: "2px 10px",
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    View &nbsp;
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="10"
+                                      height="10"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4 12L12 4M12 4H6M12 4V10"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
+                        </tbody>
+                      </table>
+                      {serviceList.length > 0 && (
+                        <div className="d-flex align-items-center">
+                          <ul className="pagination m-0 ms-auto">
+                            <li
+                              className={`page-item  ${
+                                !listPageUrl.previous && "disabled"
+                              }`}
                             >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="10"
-                                height="10"
-                                viewBox="0 0 16 16"
-                                fill="none"
+                              <a
+                                className="page-link"
+                                href="#"
+                                tabIndex="-1"
+                                onClick={() => {
+                                  handlePagination("prev");
+                                }}
                               >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="2"
+                                  stroke="currentColor"
+                                  fill="none"
                                   strokeLinecap="round"
                                   strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
+                                >
+                                  <path
+                                    stroke="none"
+                                    d="M0 0h24v24H0z"
+                                    fill="none"
+                                  />
+                                  <path d="M15 6l-6 6l6 6" />
+                                </svg>
+                                prev
+                              </a>
+                            </li>
+
+                            <li
+                              className={`page-item  ${
+                                !listPageUrl.next && "disabled"
+                              }`}
+                            >
+                              <a
+                                className="page-link"
+                                href="#"
+                                onClick={() => {
+                                  handlePagination("next");
+                                }}
+                              >
+                                next
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  className="icon"
+                                  width="24"
+                                  height="24"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="2"
+                                  stroke="currentColor"
+                                  fill="none"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                >
+                                  <path
+                                    stroke="none"
+                                    d="M0 0h24v24H0z"
+                                    fill="none"
+                                  />
+                                  <path d="M9 6l6 6l-6 6" />
+                                </svg>
+                              </a>
+                            </li>
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
+                )}
+                {isloadingservice && (
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      height: "80vh",
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                )}
+                {serviceList.length === 0 && (
+                  <p
+                    style={{
+                      textAlign: "center",
+                      marginTop: "10px",
+                      fontWeight: "550",
+                    }}
+                  >
+                    No Service Found
+                  </p>
+                )}
               </>
             )}
 

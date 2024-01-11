@@ -6,16 +6,15 @@ import { useTheme } from "@mui/material/styles";
 import { useParams } from "react-router-dom";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-import { getEventView,updateEvent } from "../../services/EventsPackages"
+import { createEvent } from "../../services/EventsPackages"
 import { Typography, ButtonGroup, Button } from '@mui/material';
 import TextEditor from "./TextEditor"
 import UploadPopup from "./UploadModal";
 import CircularProgress from "@mui/material/CircularProgress";
 
-function EventEdit({ show, close }) {
+function EventAdd({ show, close }) {
   const navigate = useNavigate();
   const theme = useTheme();
-  const params = useParams()
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [validateeditor, setValidateEditor] = useState("")
@@ -39,7 +38,21 @@ function EventEdit({ show, close }) {
     refund_policy: Yup.string()
       .required("Refund Policy is required"),
     price: Yup.number().notOneOf([0], 'Price cannot be zero').min(1, 'Must be greater than zero'),
-    capacity: Yup.number().required("Capacity is required").notOneOf([0], 'Capacity cannot be zero').min(1, 'Must be greater than zero') 
+    capacity: Yup.number().required("Capacity is required").notOneOf([0], 'Capacity cannot be zero').min(1, 'Must be greater than zero'),
+    image: Yup.mixed()
+            .test('fileSize', 'File size is too large', (value) => {
+                if (!value) {
+                    return false;
+                }
+                return value.size <= 1 * 1024 * 1024;
+            })
+            .test('fileType', 'Invalid file format', (value) => {
+                if (!value) {
+                    return false;
+                }
+                return /^image\/(jpeg|png|gif)$/i.test(value.type);
+            }),
+  
   });
 
 
@@ -64,90 +77,40 @@ function EventEdit({ show, close }) {
       setIsLoading(true);
 
       if (!isLoading) {
-
+        const formData=new FormData()
         try {
-          if (values.imageURL===null) {
-            const datas = {
-              name: values.name,
-              location: values.location,
-              type:values.type,
-              description:values.description,
-              short_description:values.short_description,
-              capacity: values.capacity,
-              refund_policy:values.refund_policy,
-              cancellation_policy:values.cancellation_policy,
-              price: values.price,
-              is_active: values.is_active,
 
-            }
-            const adminData = await updateEvent(params.id, datas);
-            if (adminData) {
-              setIsLoading(false);
-              toast.success("Updated Successfully")
-            } else {
-              console.error("Error while creating Admin:", adminData.error);
-              setIsLoading(false);
-            }
+        formData.append("name", values?.name)
+        formData.append("type", values?.type)
+        formData.append("short_description", values?.short_description)
+        formData.append("description", values?.description)
+        formData.append("location", values?.location)
+        formData.append("capacity", values?.capacity)
+        formData.append("cancellation_policy", values?.cancellation_policy)
+        formData.append("refund_policy", values?.refund_policy)
+        formData.append("price", values?.price)
+        formData.append("image", values?.image)
+        formData.append("is_active", values?.is_active)
+
+          const adminData = await createEvent(formData);
+
+          if (adminData) {
+            setIsLoading(false);
+            navigate(-1)
+            toast.success("Event Created Successfully")
+          } else {
+            console.error("Error while creating Admin:", adminData.error);
             setIsLoading(false);
           }
-          else {
-            const formData = new FormData()
-            formData.append("name", values?.name)
-            formData.append("type", values?.type)
-            formData.append("short_description", values?.short_description)
-            formData.append("description", values?.description)
-            formData.append("location", values?.location)
-            formData.append("capacity", values?.capacity)
-            formData.append("cancellation_policy", values?.cancellation_policy)
-            formData.append("refund_policy", values?.refund_policy)
-            formData.append("price", values?.price)
-            formData.append("image", values?.image)
-            formData.append("is_active", values?.is_active);
-
-            const adminData = await updateEvent(params.id, formData);
-            if (adminData) {
-              setIsLoading(false);
-              toast.success("Updated Successfully")
-            } else {
-              console.error("Error while creating Admin:", adminData.error);
-              setIsLoading(false);
-            }
-            setIsLoading(false);
-          }
-
+          setIsLoading(false);
         } catch (err) {
           console.log(err);
-          // err.response.data && toast.error(err.response.data);
+          toast.error(err.response.data);
           setIsLoading(false);
         }
       }
     },
   });
-
-  useEffect(() => {
-    setIsLoading(true)
-    getEventView(params.id)
-      .then((data) => {
-        setIsLoading(false)
-        console.log(data, "first-fetch");
-        formik.setFieldValue("name", data?.name)
-        formik.setFieldValue("type", data?.type)
-        formik.setFieldValue("short_description", data?.short_description)
-        formik.setFieldValue("description", data?.description)
-        formik.setFieldValue("location", data?.location)
-        formik.setFieldValue("capacity", data?.capacity)
-        formik.setFieldValue("cancellation_policy", data?.cancellation_policy)
-        formik.setFieldValue("refund_policy", data?.refund_policy)
-        formik.setFieldValue("price", data?.price)
-        formik.setFieldValue("image", data?.image)
-        formik.setFieldValue("is_active", data?.is_active)
-      }
-      ).catch((error) => {
-        setIsLoading(false);
-        
-        toast.error(error.response.data)
-      })
-  }, [params.id])
 
   function submit(e) {
     e.preventDefault();
@@ -187,25 +150,7 @@ function EventEdit({ show, close }) {
                             />
                           </svg>
                         </span>
-                        <p>{formik.values.name}</p>
-                        <span>
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
-                            viewBox="0 0 20 20"
-                            fill="none"
-                          >
-                            <path
-                              d="M8.33301 5L12.7438 9.41074C13.0692 9.73618 13.0692 10.2638 12.7438 10.5893L8.33301 15"
-                              stroke="#68727D"
-                              stroke-width="1.5"
-                              stroke-linecap="round"
-                            />
-                          </svg>
-                        </span>
-
-                        <p>Edit Event</p>
+                        <p>Add New</p>
                       </div>
                     </div>
                   </div>
@@ -314,7 +259,7 @@ function EventEdit({ show, close }) {
                                   fontSize: "13px",
                                 }}
                               >
-                                Name 
+                                Name <span style={{ color: "red" }}>*</span>
                               </label>
                               <input
                                 type="text"
@@ -336,7 +281,7 @@ function EventEdit({ show, close }) {
                             htmlFor=""
                             style={{ paddingBottom: "10px", fontWeight: "550" }}
                           >
-                            Short Description 
+                            Short Description <span style={{ color: "red" }}>*</span>
                           </label>
                           <input
                             type="text"
@@ -356,7 +301,7 @@ function EventEdit({ show, close }) {
                             htmlFor=""
                             style={{ paddingBottom: "10px", fontWeight: "550" }}
                           >
-                            Description 
+                            Description <span style={{ color: "red" }}>*</span>
                           </label>
                           <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor} />
                         </div>
@@ -384,7 +329,7 @@ function EventEdit({ show, close }) {
                                   fontSize: "13px",
                                 }}
                               >
-                                Capacity 
+                                Capacity <span style={{ color: "red" }}>*</span>
                               </label>
                               <input
                                 type="number"
@@ -411,7 +356,7 @@ function EventEdit({ show, close }) {
                                 }}
                               >
                                 Location &nbsp;
-                                
+                                <span style={{ color: "red" }}>*</span>
                               </label>
                               <div style={{ position: "relative" }}>
                                 <input
@@ -476,7 +421,7 @@ function EventEdit({ show, close }) {
                                   fontSize: "13px",
                                 }}
                               >
-                                Price 
+                                Price <span style={{ color: "red" }}>*</span>
                               </label>
                               <div style={{ position: "relative" }}>
                                 <input
@@ -510,7 +455,7 @@ function EventEdit({ show, close }) {
                     >
                       <div className="p-5">
                         <div className="d-flex justify-content-between align-items-center">
-                          <p style={{ fontWeight: "600" }}>Image </p>
+                          <p style={{ fontWeight: "600" }}>Image <span style={{ color: "red" }}>*</span> </p>
                           <button
                           type="button"
                             className="btn btn-primary px-1 py-1"
@@ -523,14 +468,18 @@ function EventEdit({ show, close }) {
                         {open && <UploadPopup open={open} handleClose={handleClose}  image={formik.values.image} imageURL={formik.values.imageURL} formikset={formik.setValues} />}
                         {/* <p style={{ fontWeight: "550" }}>Thumbnail</p> */}
 
-                        <div className="d-flex">
+                        {formik.values.imageURL !==null ? <div className="d-flex">
                           <img
-                            src={formik.values.imageURL === null ? formik.values.image : formik.values.imageURL}
+                            src={formik.values.imageURL}
                             className="me-3 w-50 h-50 rounded"
                           />
 
-                        </div>
-
+                        </div>:
+                        <p style={{textAlign:"center",fontWeight:550}}>Image not found</p>
+                        }
+{formik.touched.image && formik.errors.image ? (
+                                <div className="error">{formik.errors.image}</div>
+                              ) : null}
                       </div>
                     </div>
                   </div>
@@ -556,7 +505,7 @@ function EventEdit({ show, close }) {
                               htmlFor=""
                               style={{ paddingBottom: "10px", fontWeight: "550" }}
                             >
-                              Cancellation Policy 
+                              Cancellation Policy <span style={{ color: "red" }}>*</span>
                             </label>
                             <textarea
                               name="cancellation_policy"
@@ -581,7 +530,7 @@ function EventEdit({ show, close }) {
                               htmlFor=""
                               style={{ paddingBottom: "10px", fontWeight: "550" }}
                             >
-                              Return Policy 
+                              Return Policy <span style={{ color: "red" }}>*</span>
                             </label>
                             <textarea
                               name="refund_policy"
@@ -655,4 +604,4 @@ function EventEdit({ show, close }) {
   );
 }
 
-export default EventEdit;
+export default EventAdd;

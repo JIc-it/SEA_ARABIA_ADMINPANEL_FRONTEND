@@ -13,7 +13,6 @@ import moment from 'moment-timezone';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
-
 export default function DiscountAddNew() {
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
@@ -103,7 +102,7 @@ export default function DiscountAddNew() {
                 if (!value) {
                     return false;
                 }
-                return value.size <= 1 * 1024 * 1024;
+                return value.size <= 5 * 1024 * 1024;
             })
             .test('fileType', 'Invalid file format', (value) => {
                 if (!value) {
@@ -343,7 +342,7 @@ export default function DiscountAddNew() {
                             <div className={isMobileView ? "d-flex flex-column" : 'd-flex'}>
                                 <div className={isMobileView ? "w-100" : 'w-50'}>
                                     <div>
-                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Campaign Name</p>
+                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Campaign Name <span style={{ color: "red" }}>*</span></p>
                                         <input type='text' name="name" value={formik.values.name} className='discount-input' onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                         {formik.touched.name && formik.errors.name ? (
                                             <div className="error">{formik.errors.name}</div>
@@ -396,7 +395,7 @@ export default function DiscountAddNew() {
                                 </div>
                                 <div className={isMobileView ? "w-100" : 'w-50'}>
                                     <div>
-                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code</p>
+                                        <p style={{ fontWeight: 550, fontSize: "14px" }}>Discount Code <span style={{ color: "red" }}>*</span></p>
                                         <input type='text' value={formik.values.coupon_code} name="coupon_code" className='discount-input' onChange={(e) => CouponCode(e.target.value)} onBlur={formik.handleBlur} />
                                         {formik.touched.coupon_code && formik.errors.coupon_code ? (
                                             <div className="error">{formik.errors.coupon_code}</div>
@@ -407,7 +406,7 @@ export default function DiscountAddNew() {
 
                                         <div className='d-flex' style={{ marginTop: "8px" }}>
                                             <div>
-                                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage</p>
+                                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage <span style={{ color: "red" }}>*</span></p>
                                                 <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
                                                         if(e.target.value<=0){
                                                             return formik.setFieldValue("discount_value",0)
@@ -422,7 +421,7 @@ export default function DiscountAddNew() {
                                                 ) : null}
                                             </div>
                                             <div>
-                                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount</p>
+                                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount <span style={{ color: "red" }}>*</span></p>
                                                 <input type='number' value={formik.values.up_to_amount} name='up_to_amount' className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
                                                         if(e.target.value<=0){
                                                             return formik.setFieldValue("up_to_amount",0)
@@ -438,7 +437,7 @@ export default function DiscountAddNew() {
                                             </div>
                                         </div> :
                                         <div style={{ marginTop: "8px" }}>
-                                            <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Amount</p>
+                                            <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Amount <span style={{ color: "red" }}>*</span></p>
                                             <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                             {formik.touched.discount_value && formik.errors.discount_value ? (
                                                 <div className="error">{formik.errors.discount_value}</div>
@@ -500,7 +499,7 @@ export default function DiscountAddNew() {
                             </div>
                             {formik.values.redemption_type === "Limited-Number" &&
                                 <div style={{ marginTop: "8px" }}>
-                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number</p>
+                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number <span style={{ color: "red" }}>*</span></p>
                                     <input type='number' value={formik.values.specify_no} name="specify_no"  onChange={(e)=>{
                                                         if(e.target.value<=0){
                                                             return formik.setFieldValue("specify_no",0)
@@ -555,7 +554,7 @@ export default function DiscountAddNew() {
 
 
                                 <div className={isMobileView ? "w-100" : "w-50"} style={{ marginTop: "8px" }}>
-                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number</p>
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number {formik.values.allow_multiple_redeem==="Multiple-time" && <span style={{ color: "red" }}>*</span>}</p>
                                     <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem==="One-Time"} value={formik.values.multiple_redeem_specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={(e)=>{
                                                         if(e.target.value<=0){
                                                             return formik.setFieldValue("multiple_redeem_specify_no",0)
@@ -572,7 +571,7 @@ export default function DiscountAddNew() {
 
                             </div>
                             <div className={isMobileView ? "w-100" : "w-50"} style={{ marginTop: "8px" }}>
-                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Start Date</p>
+                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Start Date <span style={{ color: "red" }}>*</span></p>
                                 <input type='datetime-local' value={convertAndFormatDateTime(formik?.values?.start_date)} name="start_date" className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                 {formik.touched.start_date && formik.errors.start_date ? (
                                     <div className="error">{formik.errors.start_date}</div>
@@ -617,7 +616,7 @@ export default function DiscountAddNew() {
 
 
                                 <div className={isMobileView ? "w-100" : "w-50"} style={{ marginTop: "8px" }}>
-                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Validity Period</p>
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>Validity Period {formik.values.is_lifetime === false && <span style={{ color: "red" }}>*</span>}</p>
                                     <input type='datetime-local' value={convertAndFormatDateTime(formik.values?.end_date)} name="end_date" disabled={formik.values.is_lifetime === true} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                     {formik.touched.end_date && formik.errors.end_date ? (
                                         <div className="error">{formik.errors.end_date}</div>
@@ -631,7 +630,7 @@ export default function DiscountAddNew() {
                             <p style={{ fontWeight: "600", fontSize: "16px" }}>Applies To</p>
                             <div className='d-flex justify-content-between align-items-center'>
 
-                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Services/Vendors</p>
+                                <p style={{ fontWeight: 550, fontSize: "14px" }}>Services/Vendors <span style={{ color: "red" }}>*</span></p>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div className='mx-2'>Apply to All</div>
                                     <div style={{ display: "flex" }}>
@@ -659,14 +658,6 @@ export default function DiscountAddNew() {
                                         <div className='d-flex justify-content-between'>
                                             <p style={{ fontWeight: "550", fontSize: "14px" }}>{company.name}</p>
                                             <div className='d-flex align-items-center justify-content-between'>
-                                                {/* <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M2.70837 18.334C2.70837 17.9888 2.9882 17.709 3.33337 17.709H16.6667C17.0119 17.709 17.2917 17.9888 17.2917 18.334C17.2917 18.6792 17.0119 18.959 16.6667 18.959H3.33337C2.9882 18.959 2.70837 18.6792 2.70837 18.334Z" fill="#2684FC" />
-                                            <path d="M8.81082 13.1827C9.02294 13.0173 9.21535 12.8249 9.60011 12.4401L14.5307 7.50956C13.8596 7.23026 13.0648 6.77148 12.3131 6.0198C11.5613 5.268 11.1025 4.47307 10.8233 3.80195L5.89259 8.73261L5.89257 8.73264C5.50782 9.11739 5.31542 9.30978 5.14997 9.52191C4.9548 9.77214 4.78746 10.0429 4.65094 10.3294C4.5352 10.5722 4.44916 10.8303 4.27708 11.3466L3.36967 14.0688C3.28499 14.3228 3.35111 14.6029 3.54046 14.7923C3.72981 14.9816 4.00989 15.0477 4.26393 14.963L6.98616 14.0556C7.50238 13.8836 7.76051 13.7975 8.00336 13.6818C8.28983 13.5453 8.56059 13.3779 8.81082 13.1827Z" fill="#2684FC" />
-                                            <path d="M15.8989 6.14139C16.9227 5.11758 16.9227 3.45767 15.8989 2.43387C14.8751 1.41006 13.2151 1.41006 12.1913 2.43387L11.6 3.02523C11.6081 3.04968 11.6165 3.07447 11.6252 3.09959C11.8419 3.72435 12.2509 4.54335 13.0203 5.3127C13.7896 6.08204 14.6086 6.49101 15.2334 6.70776C15.2584 6.71643 15.283 6.72479 15.3074 6.73286L15.8989 6.14139Z" fill="#2684FC" />
-                                        </svg>
-                                        Edit
-                                    </Button> */}
                                                 <svg style={{ cursor: "pointer" }} onClick={() => deletecompany(company.id)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
                                                     <path d="M2.5 5.43586C2.5 5.10712 2.77226 4.84062 3.10811 4.84062H7.09823C7.10364 4.1396 7.17962 3.17855 7.87531 2.51325C8.4228 1.98967 9.1734 1.66602 9.99999 1.66602C10.8266 1.66602 11.5772 1.98967 12.1247 2.51325C12.8204 3.17855 12.8963 4.1396 12.9018 4.84062H16.8919C17.2277 4.84062 17.5 5.10712 17.5 5.43586C17.5 5.7646 17.2277 6.0311 16.8919 6.0311H3.10811C2.77226 6.0311 2.5 5.7646 2.5 5.43586Z" fill="#F6513B" />
                                                     <path fillRule="evenodd" clipRule="evenodd" d="M9.663 18.3327H10.337C12.6559 18.3327 13.8154 18.3327 14.5693 17.5944C15.3231 16.8561 15.4003 15.6451 15.5545 13.2231L15.7768 9.73318C15.8605 8.41902 15.9023 7.76194 15.5241 7.34556C15.1459 6.92917 14.5073 6.92917 13.23 6.92917H6.77004C5.49272 6.92917 4.85407 6.92917 4.47588 7.34556C4.09769 7.76194 4.13953 8.41902 4.22323 9.73319L4.44549 13.2231C4.59975 15.6451 4.67687 16.8561 5.43074 17.5944C6.18461 18.3327 7.34407 18.3327 9.663 18.3327ZM8.53856 10.1564C8.50422 9.79487 8.19794 9.53109 7.85448 9.56725C7.51101 9.6034 7.26042 9.9258 7.29477 10.2873L7.71143 14.6733C7.74578 15.0348 8.05206 15.2986 8.39552 15.2625C8.73899 15.2263 8.98958 14.9039 8.95523 14.5424L8.53856 10.1564ZM12.1455 9.56725C12.489 9.6034 12.7396 9.9258 12.7052 10.2873L12.2886 14.6733C12.2542 15.0348 11.9479 15.2986 11.6045 15.2625C11.261 15.2263 11.0104 14.9039 11.0448 14.5424L11.4614 10.1564C11.4958 9.79487 11.8021 9.53109 12.1455 9.56725Z" fill="#F6513B" />
@@ -677,30 +668,7 @@ export default function DiscountAddNew() {
                                         <p className='typography-dicount-view'>({companywithservice(company.id)} of {companywithservicelength(company.id)} Services Selected )</p>
                                     </div>
 
-                                )}
-                                
-                            {/* <div style={{ border: "1px solid #EAEBF0", borderRadius: "6px", padding: "10px", marginTop: "10px" }}>
-                            <div className='d-flex justify-content-between'>
-                                <p style={{ fontWeight: "550", fontSize: "14px" }}>Salma international</p>
-                                <div className='d-flex align-items-center justify-content-between'>
-                                    <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M2.70837 18.334C2.70837 17.9888 2.9882 17.709 3.33337 17.709H16.6667C17.0119 17.709 17.2917 17.9888 17.2917 18.334C17.2917 18.6792 17.0119 18.959 16.6667 18.959H3.33337C2.9882 18.959 2.70837 18.6792 2.70837 18.334Z" fill="#2684FC" />
-                                            <path d="M8.81082 13.1827C9.02294 13.0173 9.21535 12.8249 9.60011 12.4401L14.5307 7.50956C13.8596 7.23026 13.0648 6.77148 12.3131 6.0198C11.5613 5.268 11.1025 4.47307 10.8233 3.80195L5.89259 8.73261L5.89257 8.73264C5.50782 9.11739 5.31542 9.30978 5.14997 9.52191C4.9548 9.77214 4.78746 10.0429 4.65094 10.3294C4.5352 10.5722 4.44916 10.8303 4.27708 11.3466L3.36967 14.0688C3.28499 14.3228 3.35111 14.6029 3.54046 14.7923C3.72981 14.9816 4.00989 15.0477 4.26393 14.963L6.98616 14.0556C7.50238 13.8836 7.76051 13.7975 8.00336 13.6818C8.28983 13.5453 8.56059 13.3779 8.81082 13.1827Z" fill="#2684FC" />
-                                            <path d="M15.8989 6.14139C16.9227 5.11758 16.9227 3.45767 15.8989 2.43387C14.8751 1.41006 13.2151 1.41006 12.1913 2.43387L11.6 3.02523C11.6081 3.04968 11.6165 3.07447 11.6252 3.09959C11.8419 3.72435 12.2509 4.54335 13.0203 5.3127C13.7896 6.08204 14.6086 6.49101 15.2334 6.70776C15.2584 6.71643 15.283 6.72479 15.3074 6.73286L15.8989 6.14139Z" fill="#2684FC" />
-                                        </svg>
-                                        Edit
-                                    </Button>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
-                                        <path d="M2.5 5.43586C2.5 5.10712 2.77226 4.84062 3.10811 4.84062H7.09823C7.10364 4.1396 7.17962 3.17855 7.87531 2.51325C8.4228 1.98967 9.1734 1.66602 9.99999 1.66602C10.8266 1.66602 11.5772 1.98967 12.1247 2.51325C12.8204 3.17855 12.8963 4.1396 12.9018 4.84062H16.8919C17.2277 4.84062 17.5 5.10712 17.5 5.43586C17.5 5.7646 17.2277 6.0311 16.8919 6.0311H3.10811C2.77226 6.0311 2.5 5.7646 2.5 5.43586Z" fill="#F6513B" />
-                                        <path fillRule="evenodd" clipRule="evenodd" d="M9.663 18.3327H10.337C12.6559 18.3327 13.8154 18.3327 14.5693 17.5944C15.3231 16.8561 15.4003 15.6451 15.5545 13.2231L15.7768 9.73318C15.8605 8.41902 15.9023 7.76194 15.5241 7.34556C15.1459 6.92917 14.5073 6.92917 13.23 6.92917H6.77004C5.49272 6.92917 4.85407 6.92917 4.47588 7.34556C4.09769 7.76194 4.13953 8.41902 4.22323 9.73319L4.44549 13.2231C4.59975 15.6451 4.67687 16.8561 5.43074 17.5944C6.18461 18.3327 7.34407 18.3327 9.663 18.3327ZM8.53856 10.1564C8.50422 9.79487 8.19794 9.53109 7.85448 9.56725C7.51101 9.6034 7.26042 9.9258 7.29477 10.2873L7.71143 14.6733C7.74578 15.0348 8.05206 15.2986 8.39552 15.2625C8.73899 15.2263 8.98958 14.9039 8.95523 14.5424L8.53856 10.1564ZM12.1455 9.56725C12.489 9.6034 12.7396 9.9258 12.7052 10.2873L12.2886 14.6733C12.2542 15.0348 11.9479 15.2986 11.6045 15.2625C11.261 15.2263 11.0104 14.9039 11.0448 14.5424L11.4614 10.1564C11.4958 9.79487 11.8021 9.53109 12.1455 9.56725Z" fill="#F6513B" />
-                                    </svg>
-
-                                </div>
-                            </div>
-                            <p className='typography-dicount-view'>( 1 of 3 Services Selected )</p>
-                        </div> */}
-                        
+                                )}                        
                         </div>
 
                         <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px", marginBottom: "2%" }}>
@@ -742,7 +710,7 @@ export default function DiscountAddNew() {
                                     </div>
                                 </div>
                                 <div className={isMobileView ? "w-100" : 'w-50'} style={{ marginTop: isMobileView ? "5px" : "" }}>
-                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount</p>
+                                    <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount {formik.values.purchase_requirement === true && <span style={{ color: "red" }}>*</span>}</p>
                                     <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount}  onChange={(e)=>{
                                                         if(e.target.value<=0){
                                                             return formik.setFieldValue("min_purchase_amount",0)
@@ -774,7 +742,7 @@ export default function DiscountAddNew() {
                                     On Home Screen
                                 </Typography>
                             </Box>
-                            <p style={{ fontWeight: "600", marginTop: "5px" }}>Image</p>
+                            <p style={{ fontWeight: "600", marginTop: "5px" }}>Image <span style={{ color: "red" }}>*</span> </p>
                             <Box textAlign="center" mt={1} style={{ width: "100%", marginBottom: "5px" }}>
                                 <label htmlFor="file-input" style={{ width: "100%" }}>
                                     <Paper
@@ -807,7 +775,7 @@ export default function DiscountAddNew() {
                                         <Typography variant="body1" style={{ fontSize: "12px" }}>
                                             Drag and Drop or choose your file for upload
                                         </Typography>
-                                        <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 1 MB )</Typography>
+                                        <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 5 MB )</Typography>
                                     </Paper>
                                 </label>
                                 {formik.touched.image && formik.errors.image ? (

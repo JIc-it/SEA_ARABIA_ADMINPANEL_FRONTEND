@@ -255,7 +255,7 @@ const ServiceAdd = () => {
 
                       values.service_image.forEach((item, index) => {
                           formData.append(`image[${index}][image]`, item.image);
-                          formData.append(`image[${index}][thumbnail]`, item.thumbnail);
+                          formData.append(`image[${index}][is_thumbnail]`, item.thumbnail);
                           formData.append(`image[${index}][service]`, adminData.id);
                       });
                                               
@@ -318,7 +318,7 @@ const ServiceAdd = () => {
 
         getCategoryList()
             .then((data) =>
-                setCategoryList(data?.results)
+                setCategoryList(data)
             ).catch((error) =>
                 console.error(error))
 
@@ -333,7 +333,7 @@ const ServiceAdd = () => {
     useEffect(() => {
         getsubcategorylist(categoryId)
             .then((data) =>
-                setSubcategoryList(data?.results)
+                setSubcategoryList(data)
             ).catch((error) =>
                 console.error(error))
     }, [categoryId])
@@ -670,7 +670,7 @@ const ServiceAdd = () => {
                                             htmlFor=""
                                             style={{ paddingBottom: "10px", fontWeight: "600" }}
                                         >
-                                            Description
+                                            Description <span style={{ color: "red" }}>*</span>
                                         </label>
                                         <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor} />
                                     </div>
@@ -679,7 +679,7 @@ const ServiceAdd = () => {
                                         <span style={{ fontWeight: "600" }}>Details</span>
                                         <div className="d-flex mt-2">
                                             <div className="mt-1">
-                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Lounge</span>
+                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Lounge <span style={{ color: "red" }}>*</span></span>
                                                 <div className="mt-2">
                                                     <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("lounge")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
@@ -699,7 +699,7 @@ const ServiceAdd = () => {
 
 
                                             <div className="mt-1 ms-4">
-                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Bedroom</span>
+                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Bedroom <span style={{ color: "red" }}>*</span></span>
                                                 <div className="mt-2">
                                                     <button type="button" onClick={() => handleDecrement("bedroom")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
@@ -721,7 +721,7 @@ const ServiceAdd = () => {
 
 
                                             <div className="mt-1 ms-4">
-                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Toilet</span>
+                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Toilet <span style={{ color: "red" }}>*</span></span>
                                                 <div className="mt-2">
                                                     <button type="button" onClick={() => handleDecrement("toilet")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
@@ -867,7 +867,7 @@ const ServiceAdd = () => {
                             <div className="card mt-2" style={{ width: isMobileView ? "col-12" : "col-8", borderRadius: "8px" }}>
                                 <div className="col-12 p-5">
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
-                                    <p style={{ fontWeight: "550" }}>Profit Method</p>
+                                    <p style={{ fontWeight: "550" }}>Profit Method <span style={{ color: "red" }}>*</span> </p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
                                         {ProfitMethods && ProfitMethods.map((data) =>
                                             <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "", }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
@@ -1100,7 +1100,7 @@ const ServiceAdd = () => {
                                         <span style={{ fontWeight: "600" }}>Set Purchase Limits</span>
                                         <div className="d-flex mt-2">
                                             <div className="mt-1">
-                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Minimum</span>
+                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Minimum <span style={{ color: "red" }}>*</span></span>
                                                 <div className="mt-2">
                                                     <button type="button" className="btn px-1 py-1 mx-1" onClick={() => handleDecrement("purchase_limit_min")}><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
@@ -1120,7 +1120,7 @@ const ServiceAdd = () => {
 
 
                                             <div className="mt-1 ms-4">
-                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Maximum</span>
+                                                <span style={{ color: "#68727D", fontSize: "15px" }}>Maximum <span style={{ color: "red" }}>*</span></span>
                                                 <div className="mt-2">
                                                     <button type="button" onClick={() => handleDecrement("purchase_limit_max")} className="btn px-1 py-1 mx-1"><svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                                         <path d="M3 10H17" stroke="#68727D" strokeWidth={2} strokeLinecap="round" />
@@ -1152,7 +1152,7 @@ const ServiceAdd = () => {
                                                 htmlFor=""
                                                 style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                             >
-                                                Price
+                                                Price <span style={{ color: "red" }}>*</span>
                                             </label>
                                             <button type="button" className='btn btn-blue' style={{ backgroundColor: "#187AF7", padding: "1px 3px" }} onClick={handleModalOpens}>Add Price</button>
                                         </div>
@@ -1175,7 +1175,7 @@ const ServiceAdd = () => {
                             {formik.values.is_date && PerDateopen && <PerDateModal handleClose={handlecloseDate} handleOpen={handleopenDate} open={PerDateopen} formiks={formik.setValues} />}
 
                             <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 p-4">
-                                <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy</p>
+                                <p className="p-2" style={{ fontWeight: "700" }}>Privacy Policy <span style={{ color: "red" }}>*</span></p>
                                 <textarea
                                     name="cancellation_policy"
                                     id=""
@@ -1204,7 +1204,7 @@ const ServiceAdd = () => {
                                     </div>
                                 </div>
 
-                                <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
+                                <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy <span style={{ color: "red" }}>*</span></p>
                                 <textarea
                                     name="refund_policy"
                                     id=""
@@ -1237,7 +1237,7 @@ const ServiceAdd = () => {
                         <div className='col-lg-4'>
                             <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-3 w-100 px-2">
                                 <div className='d-flex justify-content-between align-items-center'>
-                                    <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
+                                    <p className="p-2" style={{ fontWeight: "700" }}>Images <span style={{ color: "red" }}>*</span></p>
                                     <button type='button' onClick={handleOpen} className='btn px-2 py-1' style={{ backgroundColor: "#187AF7", color: "#ffff", fontSize: "12px" }} >Upload</button>
                                 </div>
                                 {open && <UploadPopup setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} formikset={formik.setValues} />}

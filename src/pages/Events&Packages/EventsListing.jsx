@@ -3,12 +3,12 @@ import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import {getEventList,getCount} from "../../services/EventsPackages"
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { CircularProgress } from '@mui/material';
 
 export default function EventListing() {
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const [search, setSearch] = useState("");
   const [Events, setEventList] = useState();
   const [count,setCount]=useState({
 
@@ -19,11 +19,11 @@ export default function EventListing() {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  // const handleOpenOffcanvas = () => setShowOffcanvas(true);
+  const navigate=useNavigate()
 
   useEffect(() => {
-    setIsLoading(true);
-    getEventList()
+   {search.trim()!=="" ? setIsLoading(false):setIsLoading(true)}
+    getEventList(search)
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({
@@ -49,7 +49,7 @@ export default function EventListing() {
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
-  }, []);
+  }, [search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -268,11 +268,14 @@ export default function EventListing() {
                       type="text"
                       className="form-control"
                       placeholder="Input search term"
+                      value={search}
+                      onChange={(e)=>setSearch(e.target.value)}
                     />
                     <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
+                      onClick={(e)=>e.preventDefault()}
                     >
                       Search
                     </button>
@@ -283,13 +286,12 @@ export default function EventListing() {
           </div>
           <div className="action_buttons col-4">
             <button
-              to="/eventsview"
-              // onClick={handleOpenOffcanvas}
+              onClick={()=>navigate("/event-add")}
               className="btn btn-info vendor_button"
               style={{ borderRadius: "6px" }}
               type="button"
             >
-              Add Events/Package + &nbsp;
+              Add Events/Package &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="20"
@@ -389,10 +391,10 @@ export default function EventListing() {
                               fontSize:"14px",
                                 padding: "6px 10px",
                                 borderRadius: "4px",
-                                color: "#40C77E",
+                                color: item.is_active?"#40C77E":"red",
                                 borderRadius:
                                   "var(--Roundness-Round-Inside, 6px)",
-                                background: "rgba(19, 179, 112, 0.20)",
+                                background: item.is_active?"rgba(19, 179, 112, 0.20)": "#ffb3b3",
 
                                 /* Shadow/XSM */
                                 boxShadow:
