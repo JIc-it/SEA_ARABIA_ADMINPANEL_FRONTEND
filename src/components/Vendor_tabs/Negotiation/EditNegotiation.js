@@ -143,7 +143,7 @@ function EditNegotiation({
         <FileUploader formik={formik} handleFileChange={handleFileChange} />
         <div className="upload-filename">
           <label htmlFor="">Uploaded File: </label>
-          <span className="mx-2">
+          <span className="mx-2" style={{ wordBreak: "break-all" }}>
             {formik.values.files ? formik.values.files.name : formatedFileName}
           </span>
         </div>

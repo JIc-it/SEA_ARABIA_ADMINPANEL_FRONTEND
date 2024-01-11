@@ -62,7 +62,7 @@ export const FileUploader = ({
           Drag and Drop or{" "}
           <span style={{ color: "#0A77FF" }}>choose your file </span> for upload
         </p>
-        <p style={{ fontSize: "13px" }}>Upload Document (Max 50Mb) </p>
+        <p style={{ fontSize: "13px" }}>Upload Document (Max 5Mb) </p>
       </div>
       <input
         type="file"

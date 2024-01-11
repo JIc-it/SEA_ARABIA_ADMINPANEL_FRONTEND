@@ -46,7 +46,9 @@ function ViewCharter({ show, close, selectedData }) {
                 justifyContent: "space-between",
               }}
             >
-              <span>{fileName}</span>
+              <div style={{ overflowX: "auto", maxWidth: "260px" }}>
+                <span>{fileName}</span>
+              </div>
               <button
                 className="btn btn-sm btn-info px-4 py-1"
                 onClick={() => {
@@ -67,7 +69,7 @@ function ViewCharter({ show, close, selectedData }) {
             Notes
           </label>
           <br />
-          <span>{selectedData && selectedData.note}</span>
+          <span style={{ wordBreak: "break-all" }}>{selectedData && selectedData.note}</span>
         </div>
         <div style={{ margin: "20px" }}>
           <label

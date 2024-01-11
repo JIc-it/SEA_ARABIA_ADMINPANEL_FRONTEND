@@ -62,7 +62,7 @@ function UserVendorCardDetails({ venderDetails }) {
       }
       style={{ height: "100vh" }}
     >
-      <div className={isMobileView ? "col-12 my-2" : "col-4 my-2"}>
+      <div className={isMobileView ? "col-12 my-2" : "col-5 my-2"}>
         <div
           className="card personal_details"
           style={{ height: "fit-content" }}
@@ -128,9 +128,7 @@ function UserVendorCardDetails({ venderDetails }) {
                       fill="white"
                     />
                   </svg>{" "}
-
                   &nbsp; {venderDetails?.profileextra?.location?.location}
-
                 </p>
               </div>
             </div>
@@ -184,7 +182,7 @@ function UserVendorCardDetails({ venderDetails }) {
                 </div>
                 <div className="vendor_info_new">
                   <span className="heading_name pb-2">Address</span>
-                  <span>
+                  <span style={{ width: "90%" }} className="mx-2">
                     {venderDetails?.company_company_user?.address} &nbsp;
                     <svg
                       width={22}
@@ -237,7 +235,8 @@ function UserVendorCardDetails({ venderDetails }) {
                 className="mail_vendor_button btn btn-outline mx-1"
                 style={{ backgroundColor: "#187AF7", color: "white" }}
                 onClick={() => {
-                  navigate(`/booking-view/1234`);
+                  navigate(`/booking`);
+                  // navigate(`/booking-view/1234`);
                 }}
               >
                 Bookings &nbsp;
@@ -333,10 +332,16 @@ function UserVendorCardDetails({ venderDetails }) {
               <a
                 className="mail_vendor_button btn btn-outline mx-1"
                 onClick={() => {
-                  const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${venderDetails?.email}`;
+                  // Open a new tab
+                  const newTab = window.open("", "_blank");
 
-                  // Open the Gmail compose window in a new tab
-                  const newTab = window.open(gmailComposeUrl, "_blank");
+                  // Redirect the new tab to Gmail with the mailto link
+                  newTab.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${venderDetails?.email}`;
+
+                  // const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${venderDetails?.email}`;
+
+                  // // Open the Gmail compose window in a new tab
+                  // const newTab = window.open(gmailComposeUrl, "_blank");
                   if (newTab) {
                     newTab.focus();
                   }
@@ -362,7 +367,7 @@ function UserVendorCardDetails({ venderDetails }) {
           </div>
         </div>
       </div>
-      <div className={isMobileView ? "col-12 my-2" : "col-8 my-2 mx-2"}>
+      <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>
         <div
           className="card personal_details"
           style={{ height: "fit-content" }}
@@ -451,7 +456,11 @@ function UserVendorCardDetails({ venderDetails }) {
             {active === "Services" && (
               <>
                 <button
-                  onClick={() => navigate("/service-add/"+venderDetails?.company_company_user?.id)}
+                  onClick={() =>
+                    navigate(
+                      "/service-add/" + venderDetails?.company_company_user?.id
+                    )
+                  }
                   className="btn  mt-2 px-4 py-2"
                   style={{ backgroundColor: "#187AF7", color: "white" }}
                 >

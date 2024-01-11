@@ -65,7 +65,7 @@ function Table() {
 
   useEffect(() => {
     getVendorListData();
-  }, [selectedValue, isRefetch]);
+  }, [selectedValue, isRefetch,search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -92,7 +92,7 @@ function Table() {
   return (
     <div>
       <div className="col-12 actions_menu my-2">
-        <div className="action_menu_left col-8">
+        <div className="action_menu_left col-6">
           <div>
             <form action="" method="post" autocomplete="off">
               <div className="input-icon">
@@ -123,14 +123,14 @@ function Table() {
                     setSearch(e.target.value);
                   }}
                 />
-                <button
+                {/* <button
                   type="button"
                   className="btn search_button"
                   style={{ background: "#006875" }}
                   onClick={getVendorListData}
                 >
                   Search
-                </button>
+                </button> */}
               </div>
             </form>
           </div>
@@ -138,7 +138,10 @@ function Table() {
             <label className="form-label">Status</label>
             <select
               type="text"
-              className="form-select mb-3 status_selector"
+              style={{
+                backgroundImage:'url'
+              }}
+              className="form-select mb-3 status_selector one"
               value={selectedValue}
               onChange={handleSelectChange}
             >
@@ -155,7 +158,7 @@ function Table() {
             </select>
           </div>
         </div>
-        <div className="action_buttons col-4">
+        <div className="action_buttons col-6">
           <button
             onClick={handleOpenOffcanvas}
             className="btn btn-info vendor_button"

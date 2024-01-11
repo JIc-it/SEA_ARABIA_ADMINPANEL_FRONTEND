@@ -50,7 +50,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
   useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
-        setServiceTagList(data.results);
+        setServiceTagList(data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -140,7 +140,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   value={formik.values.email}
-                  maxLength={20}
+                  maxLength={35}
                 />
                 {formik.touched.email && formik.errors.email ? (
                   <div className="error">{formik.errors.email}</div>
@@ -260,7 +260,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
                             name="companyAddress"
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
-                            maxLength={20}
+                            maxLength={150}
                             value={formik.values.companyAddress}
                           />
                           {formik.touched.companyAddress &&
@@ -304,7 +304,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
                             className="form-control"
                             placeholder="Company Website"
                             name="companyWebsite"
-                            maxLength={20}
+                            maxLength={150}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                             value={formik.values.companyWebsite}

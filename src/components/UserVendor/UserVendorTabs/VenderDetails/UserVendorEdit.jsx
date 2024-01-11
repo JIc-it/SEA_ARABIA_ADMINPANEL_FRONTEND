@@ -51,7 +51,7 @@ function UserVendorEdit({ show, close }) {
   useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
-        setServiceTagList(data.results);
+        setServiceTagList(data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -234,6 +234,15 @@ function UserVendorEdit({ show, close }) {
   }, [vendorDetails, selectedCountryObject]);
 
   console.log(formik.values.defineServices, "formik.values.defineServices ");
+
+  const serviceListFilterData =
+    formik.values.defineServices && formik.values.defineServices.length > 0
+      ?serviceTagList&&serviceTagList.length>0&& serviceTagList.filter((item) => {
+          return !formik.values.defineServices.some(
+            (refItem) => refItem.id === item.id
+          );
+        })
+      : serviceTagList || [];
 
   return (
     <div className="page-wrapper">
@@ -672,7 +681,7 @@ function UserVendorEdit({ show, close }) {
                                 value={formik.values.companywebaddress}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                maxLength={20}
+                                maxLength={150}
                               />
                               {formik.touched.companywebaddress &&
                               formik.errors.companywebaddress ? (
@@ -716,16 +725,7 @@ function UserVendorEdit({ show, close }) {
                                 multiple
                                 size="small"
                                 id="multiple-limit-tags"
-                                options={
-                                  formik.values.defineServices &&
-                                  formik.values.defineServices.length > 0
-                                    ? serviceTagList.filter((item) => {
-                                        return !formik.values.defineServices.some(
-                                          (refItem) => refItem.id === item.id
-                                        );
-                                      })
-                                    : serviceTagList || []
-                                }
+                                options={serviceListFilterData||[]}
                                 name="defineServices"
                                 getOptionLabel={(option) => `${option.name} `}
                                 value={formik.values.defineServices}

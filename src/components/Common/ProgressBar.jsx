@@ -319,14 +319,14 @@ function ProgressBar({ locationList }) {
       ),
     files: Yup.mixed()
       .required("Please upload file")
-      .test("fileSize", "File size must not exceed 50MB", (value) => {
+      .test("fileSize", "File size must not exceed 5MB", (value) => {
         if (!value) {
           // Handle the case where no file is provided
           return true;
         }
 
-        // Check if the file size is less than or equal to 50MB
-        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+        // Check if the file size is less than or equal to 5MB
+        return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
       }),
     note: Yup.string()
       .required("Note is required")
@@ -359,14 +359,14 @@ function ProgressBar({ locationList }) {
       ),
     files: Yup.mixed()
       .required("Please upload file")
-      .test("fileSize", "File size must not exceed 50MB", (value) => {
+      .test("fileSize", "File size must not exceed 5MB", (value) => {
         if (!value) {
           // Handle the case where no file is provided
           return true;
         }
 
-        // Check if the file size is less than or equal to 50MB
-        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+        // Check if the file size is less than or equal to 5MB
+        return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
       }),
     proposalNote: Yup.string()
       .required("Note is required")
@@ -393,14 +393,14 @@ function ProgressBar({ locationList }) {
       ),
     files: Yup.mixed()
       .required("Please upload file")
-      .test("fileSize", "File size must not exceed 50MB", (value) => {
+      .test("fileSize", "File size must not exceed 5MB", (value) => {
         if (!value) {
           // Handle the case where no file is provided
           return true;
         }
 
-        // Check if the file size is less than or equal to 50MB
-        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+        // Check if the file size is less than or equal to 5MB
+        return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
       }),
     negotiationNote: Yup.string()
       .required("Note is required")
@@ -427,14 +427,14 @@ function ProgressBar({ locationList }) {
       ),
     files: Yup.mixed()
       .required("Please upload file")
-      .test("fileSize", "File size must not exceed 50MB", (value) => {
+      .test("fileSize", "File size must not exceed 5MB", (value) => {
         if (!value) {
           // Handle the case where no file is provided
           return true;
         }
 
-        // Check if the file size is less than or equal to 50MB
-        return value && value.size <= 50 * 1024 * 1024; // 50MB in bytes
+        // Check if the file size is less than or equal to 5MB
+        return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
       }),
     charterNote: Yup.string()
       .required("Note is required")
@@ -489,7 +489,7 @@ function ProgressBar({ locationList }) {
   useEffect(() => {
     getVendorServiceTag()
       .then((data) => {
-        setServiceTagList(data.results);
+        setServiceTagList(data);
       })
       .catch((error) => {
         toast.error(error.message);

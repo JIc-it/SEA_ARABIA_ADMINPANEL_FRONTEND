@@ -2,8 +2,8 @@
 @import "common.scss";
 @import "user-vendor.scss";
 
-body{
-  background-color: #DDECEE;
+body {
+  background-color: #ddecee;
 }
 .switch {
   position: relative;
@@ -12,7 +12,7 @@ body{
   height: 24px;
 }
 
-.switch input { 
+.switch input {
   opacity: 0;
   width: 0;
   height: 0;
@@ -26,8 +26,8 @@ body{
   right: 0;
   bottom: 0;
   background-color: #ccc;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 .slider:before {
@@ -38,16 +38,16 @@ body{
   left: 4px;
   bottom: 4px;
   background-color: white;
-  -webkit-transition: .4s;
-  transition: .4s;
+  -webkit-transition: 0.4s;
+  transition: 0.4s;
 }
 
 input:checked + .slider {
-  background-color: #2196F3;
+  background-color: #2196f3;
 }
 
 input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  box-shadow: 0 0 1px #2196f3;
 }
 
 input:checked + .slider:before {
@@ -64,38 +64,38 @@ input:checked + .slider:before {
 .slider.round:before {
   border-radius: 50%;
 }
-.typography-dicount-view{
+.typography-dicount-view {
   overflow: hidden;
-color: #68727D;
-font-feature-settings: 'clig' off, 'liga' off;
-text-overflow: ellipsis;
-font-size: 14px;
-font-style: normal;
-font-weight: 400;
-line-height: 20px; /* 142.857% */
+  color: #68727d;
+  font-feature-settings: "clig" off, "liga" off;
+  text-overflow: ellipsis;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
 }
-.discount-input{
-  width:90%;
-  height:30px;
-  border-radius:5px;
-  border:1px solid lightgray;
+.discount-input {
+  width: 90%;
+  height: 30px;
+  border-radius: 5px;
+  border: 1px solid lightgray;
   outline: none;
 }
 
-.discount-input:focus{
-  border:none;
-  box-shadow: 0 0 0 3px rgb(112, 112, 241)
+.discount-input:focus {
+  border: none;
+  box-shadow: 0 0 0 3px rgb(112, 112, 241);
 }
 
-.booking-confirmed{
-color: #08A747;
-font-family: Roboto;
-font-size: 20px;
-font-style: normal;
-font-weight: 600;
-line-height: 32px; /* 160% */
-letter-spacing: -0.2px;
-text-transform: capitalize;
+.booking-confirmed {
+  color: #08a747;
+  font-family: Roboto;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 32px; /* 160% */
+  letter-spacing: -0.2px;
+  text-transform: capitalize;
 }
 
 .call_customer_button {
@@ -112,7 +112,6 @@ text-transform: capitalize;
   flex-direction: column;
   align-items: center;
   justify-content: center;
- 
 }
 
 .bottom_button_mobile {
@@ -153,7 +152,7 @@ text-transform: capitalize;
   font-size: 17px;
 }
 
-.call_vendor_button_customer{
+.call_vendor_button_customer {
   background-color: black;
   width: 200px;
   color: white;
@@ -161,11 +160,11 @@ text-transform: capitalize;
   border-radius: 6px;
   height: 45px;
 }
-.call_customer_button_customer:hover{
+.call_customer_button_customer:hover {
   background-color: white;
   color: black;
 }
-.hover-background:hover{
+.hover-background:hover {
   opacity: 0.6;
 }
 
@@ -174,13 +173,19 @@ optgroup {
   margin-top: 10px; /* Add some spacing between optgroups */
 }
 
-.ql-snow{
+.ql-snow {
   // border:1px solid black;
   border-radius: 3px;
 }
 
-@media (max-width:991px){
-.page-wrapper{
-  margin-left: 10px !important;
+@media (max-width: 991px) {
+  .page-wrapper {
+    margin-left: 10px !important;
+  }
 }
+
+select.one {
+ 
+
+
 }

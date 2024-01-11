@@ -94,6 +94,7 @@ const EmailVerification = () => {
                       onBlur={formik.handleBlur}
                       onChange={formik.handleChange}
                       type="email"
+                      maxLength={35}
                       value={formik.values.emailVerification}
                     />
                   </Stack>

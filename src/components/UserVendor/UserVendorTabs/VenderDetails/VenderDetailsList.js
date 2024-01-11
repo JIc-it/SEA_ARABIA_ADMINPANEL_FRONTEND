@@ -152,7 +152,7 @@ const VenderDetailsList = ({ venderDetails }) => {
             <div>
               <p style={{ color: "#68727D" }}>Company Website</p>
               <div className="d-flex justify-content-between">
-                <p style={{ fontWeight: "700" }}>
+                <p style={{ fontWeight: "700", width: "90%" }}>
                   {venderDetails?.company_company_user?.website}
                 </p>
                 <p>
@@ -178,7 +178,7 @@ const VenderDetailsList = ({ venderDetails }) => {
             <div>
               <p style={{ color: "#68727D" }}>Company Address</p>
               <div className="d-flex justify-content-between">
-                <p style={{ fontWeight: "700" }}>
+                <p style={{ fontWeight: "700", width: "90%" }} >
                   {" "}
                   {venderDetails?.company_company_user?.address}
                 </p>

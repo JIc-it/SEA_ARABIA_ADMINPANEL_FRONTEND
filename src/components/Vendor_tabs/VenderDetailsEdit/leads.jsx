@@ -21,7 +21,6 @@ export default function LeadDetails({ count }) {
       });
   }, [vendorId, count]);
 
-  
   return (
     <div class="tab-content home">
       {leads && (
@@ -189,6 +188,7 @@ export default function LeadDetails({ count }) {
                           color: "#323539",
                           fontWeight: "600",
                           textTransform: "capitalize",
+                          width: "95%",
                         }}
                       >
                         {leads.company_company_user?.address}

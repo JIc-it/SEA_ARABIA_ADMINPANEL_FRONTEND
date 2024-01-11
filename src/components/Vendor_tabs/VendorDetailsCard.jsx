@@ -133,7 +133,7 @@ function VendorDetailsCard() {
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Address</p>
-                <p style={{ marginLeft: "5px" }}>
+                <p style={{ marginLeft: "5px",width:'90%' }}>
                   {userdata?.company_company_user?.address}
                 </p>
               </div>
@@ -174,10 +174,16 @@ function VendorDetailsCard() {
             <a
               className="mail_vendor_button btn btn-outline mx-2"
               onClick={() => {
-                const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${userdata?.email}`;
+                // Open a new tab
+                const newTab = window.open("", "_blank");
 
-                // Open the Gmail compose window in a new tab
-                const newTab = window.open(gmailComposeUrl, "_blank");
+                // Redirect the new tab to Gmail with the mailto link
+                newTab.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${userdata?.email}`;
+
+                // const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${venderDetails?.email}`;
+
+                // // Open the Gmail compose window in a new tab
+                // const newTab = window.open(gmailComposeUrl, "_blank");
                 if (newTab) {
                   newTab.focus();
                 }

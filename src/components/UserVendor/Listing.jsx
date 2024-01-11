@@ -67,7 +67,7 @@ export default function Listing() {
 
   useEffect(() => {
     getVendorListData(search, selectedValue);
-  }, [selectedValue, isRefetch]);
+  }, [selectedValue, isRefetch,search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -101,7 +101,7 @@ export default function Listing() {
           <div>
             <form action="" method="post" autocomplete="off">
               <div style={{ display: "flex" }}>
-                <div className="input-icon">
+                <div className="input-icon ">
                   <span className="input-icon-addon">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -128,17 +128,17 @@ export default function Listing() {
                       setSearch(e.target.value);
                     }}
                   />
-                  <button
+                  {/* <button
                     type="button"
                     className="btn search_button"
                     style={{ background: "#006875" }}
                     onClick={getVendorListData}
                   >
                     Search
-                  </button>
+                  </button> */}
                 </div>
                 <button
-                  className="btn  filter-button  "
+                  className="btn  filter-button mx-2 "
                   style={{ borderRadius: "6px" }}
                   onClick={handleOpenFilter}
                   type="button"

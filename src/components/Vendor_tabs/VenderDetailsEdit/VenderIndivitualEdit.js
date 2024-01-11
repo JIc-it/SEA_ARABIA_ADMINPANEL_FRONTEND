@@ -43,7 +43,7 @@ const VenderIndivitualEdit = () => {
       });
     getVendorServiceTag()
       .then((data) => {
-        setServiceTagList(data.results);
+        setServiceTagList(data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -244,6 +244,17 @@ const VenderIndivitualEdit = () => {
     }
   };
 
+  const serviceListFilterData =
+    formik.values.defineServices && formik.values.defineServices.length > 0
+      ? serviceTagList &&
+        serviceTagList.length > 0 &&
+        serviceTagList.filter((item) => {
+          return !formik.values.defineServices.some(
+            (refItem) => refItem.id === item.id
+          );
+        })
+      : serviceTagList || [];
+
   return (
     <div className="page-wrapper">
       <div className="page-body">
@@ -363,7 +374,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
-                        maxLength={20}
+                        maxLength={35}
                       />
                       {formik.touched.email && formik.errors.email ? (
                         <div className="error">{formik.errors.email}</div>
@@ -548,7 +559,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyAddress}
-                                  maxLength={20}
+                                  maxLength={150}
                                 />
                                 {formik.touched.companyAddress &&
                                 formik.errors.companyAddress ? (
@@ -598,7 +609,7 @@ const VenderIndivitualEdit = () => {
                                   onChange={formik.handleChange}
                                   onBlur={formik.handleBlur}
                                   value={formik.values.companyWebsite}
-                                  maxLength={20}
+                                  maxLength={150}
                                 />
                                 {formik.touched.companyWebsite &&
                                 formik.errors.companyWebsite ? (
@@ -641,17 +652,7 @@ const VenderIndivitualEdit = () => {
                                     multiple
                                     size="small"
                                     id="multiple-limit-tags"
-                                    options={
-                                      formik.values.defineServices &&
-                                      formik.values.defineServices.length > 0
-                                        ? serviceTagList.filter((item) => {
-                                            return !formik.values.defineServices.some(
-                                              (refItem) =>
-                                                refItem.id === item.id
-                                            );
-                                          })
-                                        : serviceTagList || []
-                                    }
+                                    options={serviceListFilterData || []}
                                     name="defineServices"
                                     getOptionLabel={(option) =>
                                       `${option.name} `
