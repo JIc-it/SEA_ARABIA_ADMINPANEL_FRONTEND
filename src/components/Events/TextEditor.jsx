@@ -34,21 +34,21 @@ export default function TextEditor({formik,validateeditor,setValidateEditor}){
 
     return (
       <>
-        <ReactQuill
+      <ReactQuill
         theme="snow"
         className="mt-1 p-1"
         name="description"
-        // value={formik.values.description} 
-        // onChange={(value) => {formik.setFieldValue('description', value);setValidateEditor("")}}
+        value={formik.values.description} 
+        onChange={(value) => {formik.setFieldValue('description', value);setValidateEditor("")}}
         modules={modules}
         style={{ height: "15vh" }}
       />
-       {/* {validateeditor.trim()!=="" ? (
+       {validateeditor.trim()!=="" ? (
         <>
         <br></br>
         <div className="error mt-5">{validateeditor}</div>
         </>
-        ) : null} */}
+        ) : null}
       </>
     )
 }

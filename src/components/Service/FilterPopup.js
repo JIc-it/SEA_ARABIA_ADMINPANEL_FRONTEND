@@ -27,7 +27,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
     useEffect(() => {
         getCategoryList()
             .then((data) =>
-                setCategoryList(data?.results)
+                setCategoryList(data)
             ).catch((error) =>
                 console.error(error))
     }, [])
@@ -35,7 +35,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
     useEffect(() => {
         getsubcategorylist()
             .then((data) =>
-                setSubcategoryList(data?.results)
+                setSubcategoryList(data)
             ).catch((error) =>
                 console.error(error))
     }, [])

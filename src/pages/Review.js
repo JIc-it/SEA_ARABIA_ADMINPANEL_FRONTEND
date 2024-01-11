@@ -52,7 +52,7 @@ const Review = () => {
 
     getCategoryist()
       .then((data) => {
-        setCategorylist(data.results);
+        setCategorylist(data);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);
@@ -62,7 +62,7 @@ const Review = () => {
   useEffect(() => {
     getSubCategoryist(categorychoose)
       .then((data) => {
-        setSubCategorylist(data.results);
+        setSubCategorylist(data);
       })
       .catch((error) => {
         console.error("Error fetching distributor data:", error);

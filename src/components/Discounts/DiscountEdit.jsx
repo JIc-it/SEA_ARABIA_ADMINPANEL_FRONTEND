@@ -107,7 +107,7 @@ export default function DiscountEdit() {
               if (typeof context.parent.image === 'string') {
                 return true;
               }
-              return value && value.size <= 1 * 1024 * 1024;
+              return value && value.size <= 5 * 1024 * 1024;
             })
             .test('fileType', 'Invalid file format', (value, context) => {
               if (typeof context.parent.image === 'string') {
@@ -870,7 +870,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 1 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 5 MB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (

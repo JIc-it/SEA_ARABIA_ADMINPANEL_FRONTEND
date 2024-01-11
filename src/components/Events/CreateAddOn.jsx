@@ -127,7 +127,7 @@ function CreateAddOn({ show, close }) {
     });
   }, [customerDetails]);
 
-  console.log("customer formik data", formik);
+
   return (
     <Offcanvas
       show={show}

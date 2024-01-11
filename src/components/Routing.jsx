@@ -56,6 +56,7 @@ import RefundHistoryList from "./Booking/RefundHistoryList ";
 import RefundRequestView from "./Booking/RefundRequestView";
 import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
+import EventAdd from "./Events/EventAdd";
 
 
 function AllRouting() {
@@ -148,6 +149,7 @@ function AllRouting() {
 
       <Route path="/events-and-packages" element={<EventListing />} />
       <Route path="/event-edit/:id" element={<EventEdit />} />
+      <Route path="/event-add" element={<EventAdd />} />
     </Routes>
   );
 }

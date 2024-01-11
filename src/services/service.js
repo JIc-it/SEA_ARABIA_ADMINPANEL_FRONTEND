@@ -26,9 +26,9 @@ export const getCount = () => {
       throw error;
     });
 };
-export const getServiceListing = (search) => {
+export const getServiceListing = (search,companyID) => {
   return axiosInstance
-    .get(ServicelistURL,{params:{search:search}})
+    .get(ServicelistURL,{params:{search:search,company_id:companyID}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -110,8 +110,8 @@ export const UpdateService = (id, data) => {
 };
 export const CreateService = (data) => {
   return axiosInstance
-    .post(`${CreateServiceURL}`, data,{
-      headers: { "Content-Type": "application/json", Accept: "*/*" },
+    .post(`${CreateServiceURL}`, data, {
+      headers: { "Content-Type":'multipart/form-data', Accept: "*/*" },
     })
     .then((response) => response.data)
     .catch((error) => {

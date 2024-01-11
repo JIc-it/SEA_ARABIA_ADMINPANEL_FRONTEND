@@ -369,7 +369,7 @@ const ServiceEdit = () => {
 
         getCategoryList()
             .then((data) =>
-                setCategoryList(data?.results)
+                setCategoryList(data)
             ).catch((error) =>
                 console.error(error))
     }, [])
@@ -377,7 +377,7 @@ const ServiceEdit = () => {
     useEffect(() => {
         getsubcategorylist(categoryId)
             .then((data) =>
-                setSubcategoryList(data?.results)
+                setSubcategoryList(data)
             ).catch((error) =>
                 console.error(error))
     }, [categoryId])
@@ -561,7 +561,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    Category <span style={{ color: "red" }}>*</span>
+                                                    Category
                                                 </label>
                                                 <select
                                                     className="form-control"
@@ -599,7 +599,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    Name <span style={{ color: "red" }}>*</span>
+                                                    Name
                                                 </label>
                                                 <input
                                                     type="text"
@@ -622,7 +622,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    Sub Category <span style={{ color: "red" }}>*</span>
+                                                    Sub Category
                                                 </label>
                                                 <select
                                                     className="form-control"
@@ -659,7 +659,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    ID <span style={{ color: "red" }}>*</span>
+                                                    ID
                                                 </label>
                                                 <div>
                                                     <input
@@ -762,7 +762,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    Capacity <span style={{ color: "red" }}>*</span>
+                                                    Capacity
                                                 </label>
                                                 <input
                                                     type="number"
@@ -790,7 +790,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >Pickup Point
-                                                    <span style={{ color: "red" }}>*</span>
+                                                
                                                 </label>
                                                 <div style={{ position: "relative" }}>
                                                     <input
@@ -837,7 +837,7 @@ const ServiceEdit = () => {
                                                     htmlFor=""
                                                     style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                                 >
-                                                    Amenities <span style={{ color: "red" }}>*</span>
+                                                    Amenities
                                                 </label>
                                                 <select
                                                     className="form-control"
@@ -912,7 +912,7 @@ const ServiceEdit = () => {
                                             htmlFor=""
                                             style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                         >
-                                            Markup Fee <span style={{ color: "red" }}>*</span>
+                                            Markup Fee
                                         </label>
                                         <input
                                             type="number"
@@ -942,7 +942,7 @@ const ServiceEdit = () => {
                                                 htmlFor=""
                                                 style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                             >
-                                                Vendor Percentage <span style={{ color: "red" }}>*</span>
+                                                Vendor Percentage
                                             </label>
                                             <input
                                                 type="number"
@@ -963,7 +963,7 @@ const ServiceEdit = () => {
                                                 htmlFor=""
                                                 style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
                                             >
-                                                Sea Arabia Percentage <span style={{ color: "red" }}>*</span>
+                                                Sea Arabia Percentage
                                             </label>
                                             <input
                                                 type="number"
