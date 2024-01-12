@@ -6,9 +6,11 @@ import { getCompanyListing } from "../services/offers";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import { toast } from 'react-toastify';
+import StarRatingSelect from './StarRatingSelect';
 
 
 const Review = () => {
+  const [selectedRating, setSelectedRating] = useState(null);
   const [isLoading, setIsLoading] = useState(false)
   const [reviewisLoading, setReviewisLoading] = useState(false)
   const [listPageUrl, setListPageUrl] = useState({
@@ -87,7 +89,7 @@ const Review = () => {
   useEffect(() => {
     setReviewisLoading(true)
     if (filterdataid.trim() !== "") {
-      getServiceReviewFilter2(filterdataid, filtering.rating)
+      getServiceReviewFilter2(filterdataid, selectedRating?.value)
         .then((data) => {
           setReviewisLoading(false)
           setListPageUrl({ next: data.next, previous: data.previous });
@@ -99,7 +101,7 @@ const Review = () => {
         });
     }
     else {
-      getServiceReviewFilter(filtering.rating)
+      getServiceReviewFilter(selectedRating?.value)
         .then((data) => {
           setReviewisLoading(false)
           setListPageUrl({ next: data.next, previous: data.previous });
@@ -110,7 +112,7 @@ const Review = () => {
           console.error("Error fetching distributor data:", error);
         });
     }
-  }, [filterdataid, filtering.rating]);
+  }, [filterdataid, selectedRating]);
 
   const handleSelectChange = (event) => {
     setSelectedValue(event.target.value);
@@ -186,9 +188,6 @@ const Review = () => {
                     {categorylist.map((data, index) =>
                       <option key={data.id} value={data.id}>{data.name}</option>
                     )}
-                    {/* <option value="New Lead">Choose</option>
-                                        <option value="Yatch">Yatch</option>
-                                        <option value="Boat">Boat</option> */}
                   </select>
                 </div>
               </div>
@@ -246,17 +245,10 @@ const Review = () => {
                 <div className='d-flex align-items-center'>
                   <div>Sort by &nbsp;</div>
                   <div className="status_dropdown">
-                    <select
-                      type="text"
-                      className=""
-                      value={filtering.rating}
-                      onChange={(e) => { handlefiltering({ rating: e.target.value }) }}
-                    >
-                      <option value={""}>Choose</option>
-                      {[1, 2, 3, 4, 5].map((opt) =>
-                        <option value={opt} key={opt} style={{ color: 'gold' }}>{opt} &#9733;</option>
-                      )}
-                    </select>
+                      <StarRatingSelect
+                        value={selectedRating}
+                        onChange={(value) => setSelectedRating(value)}
+                      />
                   </div>
                 </div>
               </div>
@@ -266,17 +258,14 @@ const Review = () => {
                 <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Review Found</div>
               }
               {filterdataidData.map((data) =>
-                <div key={data.id} className='col-lg-4'>
+                <div key={data.id} className='col-lg-4 mb-2 mt-2'>
                   <div class="card">
                     <div class="card-body">
-                      <h4 class="card-title">{data.rating}
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <path d="M8.00004 11.513L12.12 13.9997L11.0267 9.31301L14.6667 6.15967L9.87337 5.75301L8.00004 1.33301L6.12671 5.75301L1.33337 6.15967L4.97337 9.31301L3.88004 13.9997L8.00004 11.513Z" fill="#E8C301" fill-opacity="0.6" />
-                        </svg>
+                      <h4 class="card-title">{data.rating} ⭐
                       </h4>
                       <h5 class="card-subtitle mb-2 text-muted">{data.service}</h5>
-                      <span className='head-text' style={{ textTransform: "capitalize" }}>{data?.review_title}</span>
-                      <p class="card-text">{data?.review_summary}</p>
+                      {/* <span className='head-text' style={{ textTransform: "capitalize" }}>{data?.review_title}</span> */}
+                      <p class="card-text">{data?.review}</p>
                       <div style={{ position: 'relative', bottom: 10 }}>
                         <span style={{ color: '#006875' }}>{data?.user}</span><br></br>
                         <span>{new Date(data?.created_at).toLocaleDateString("es-CL")}</span>
@@ -290,10 +279,10 @@ const Review = () => {
                   <CircularProgress />
                 </div>
               }
-              {filterdataidData.length > 9 &&
-                <div className="card-footer d-flex align-items-center" style={{ position: "absolute", bottom: 0, right: 0 }}>
+              {
+                <div className="card-footer d-flex align-items-center" style={{ position: "absolute", bottom: 0, right: 0,display:"flex" }}>
                   <ul className=" d-flex m-0 ms-auto" style={{ listStyle: "none" }}>
-                    <li className={`page-item mx-1 ${!listPageUrl.previous && "disabled"}`} >
+                    <li className={`page-item mx-5 ${!listPageUrl.previous && "disabled"}`} style={{color:!listPageUrl.previous? "gray":"black"}}>
                       <a
                         className="page-link"
                         href="#"
@@ -321,7 +310,7 @@ const Review = () => {
                       </a>
                     </li>
 
-                    <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+                    <li className={`page-item  ${!listPageUrl.next && "disabled"}`} style={{color:!listPageUrl.next ? "gray":"black"}}>
                       <a
                         className="page-link"
                         href="#"

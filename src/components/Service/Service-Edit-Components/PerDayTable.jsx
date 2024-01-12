@@ -21,7 +21,7 @@ export default function PerDayTable({data,formik,setIsUpdated}) {
     }
 
     const handleremove = (index,id) => {
-        if(index){
+        if(index !== undefined && index !== null){
             formik((prev) => {
                 const updatedServicePriceService = [...prev.service_price_service];
                 updatedServicePriceService.splice(index, 1);
@@ -40,7 +40,7 @@ export default function PerDayTable({data,formik,setIsUpdated}) {
                 toast.error(error.response.data))
         }
       };
-      const check=data?.some((data)=>data.day)  
+      const check=data?.find((data)=>data.day)  
     return (
         <div className="">
             <div className="table-responsive">

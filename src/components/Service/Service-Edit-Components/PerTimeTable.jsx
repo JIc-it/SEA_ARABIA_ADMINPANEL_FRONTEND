@@ -22,7 +22,7 @@ export default function PerTimeTable({data,formik,setIsUpdated}) {
     }
 
     const handleremove = (index,id) => {
-        if(index){
+        if(index !== undefined && index !== null){
             formik((prev) => {
                 const updatedServicePriceService = [...prev.service_price_service];
                 updatedServicePriceService.splice(index, 1);
@@ -52,7 +52,7 @@ const convertTo12HourFormat = (time24) => {
     return `${formattedHours.toString().padStart(2, '0')}:${minutes} ${period}`;
   };
 
-  const check=data?.some((data)=>data.time)  
+  const check=data?.find((data)=>data.time)  
     return (
         <div className="">
             <div className="table-responsive">

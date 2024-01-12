@@ -81,7 +81,7 @@ const ServiceEdit = () => {
                 return schema.notRequired();
             }
         }),
-        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        
         lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
         bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
         toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
@@ -181,20 +181,6 @@ const ServiceEdit = () => {
                     return dat
                 }
             })
-
-            // function removeServiceKey(values) {
-
-            //     if (values.hasOwnProperty("service_price_service")) {
-
-            //         values.service_price_service.forEach(item => {
-            //             if (item.hasOwnProperty("service")) {
-            //                 delete item.service;
-            //             }
-            //         });
-            //     }
-
-            //     return values.service_price_service
-            // }
 
             const data = {
                 is_verified: values.is_verified,
@@ -523,7 +509,7 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-
+console.log(formik.values.service_price_service);
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -986,9 +972,10 @@ const ServiceEdit = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Critreion</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-center'}>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: true, is_duration: false, is_day: false, is_time: false, is_date: false, purchase_limit_min: 0, purchase_limit_max: 0 }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: true, is_duration: false, is_day: false, is_time: false, is_date: false, purchase_limit_min: 0, purchase_limit_max: 0,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',
@@ -1002,9 +989,10 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_destination} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: true, is_day: false, is_time: false, is_date: false, per_head_booking: false, purchase_limit_min: 0, purchase_limit_max: 0 }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: true, is_day: false, is_time: false, is_date: false, per_head_booking: false, purchase_limit_min: 0, purchase_limit_max: 0,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1019,9 +1007,10 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_duration} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: true, is_time: false, is_date: false, per_head_booking: false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: true, is_time: false, is_date: false, per_head_booking: false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1036,9 +1025,10 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_day} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: true, is_date: false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: true, is_date: false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1053,9 +1043,10 @@ const ServiceEdit = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_time} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: false, is_date: true }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: false, is_date: true,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1077,6 +1068,7 @@ const ServiceEdit = () => {
                                             onClick={() => { formik.setFieldValue("per_head_booking", false); formik.setFieldValue("purchase_limit_min", 0); formik.setFieldValue("purchase_limit_max", 0); }}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',

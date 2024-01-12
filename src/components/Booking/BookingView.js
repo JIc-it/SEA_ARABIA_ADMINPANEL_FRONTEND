@@ -446,7 +446,7 @@ const statusCheck=()=>{
                                 <div style={{ borderBottom: "2px solid #e1e3ea" }}></div>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ fontWeight: "500" }}>Total</span>
-                                    <span style={{ color: "#006875", fontWeight: "500" }}>{booking?.payment?.amount} KWD</span>
+                                    <span style={{ color: "#006875", fontWeight: "500" }}>{booking?.payment?.amount +""+"KWD"} </span>
                                 </div>
                             </div>
                             <div className='d-flex p-4'>
@@ -537,7 +537,7 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Amount</p>
-                                        <p>{booking?.is_refunded && booking?.refund_amount} KWD</p>
+                                        <p>{booking?.is_refunded && booking?.refund_amount+""+"KWD"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Details</p>

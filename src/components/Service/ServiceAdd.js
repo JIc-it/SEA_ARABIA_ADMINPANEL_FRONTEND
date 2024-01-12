@@ -13,16 +13,16 @@ import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
 import TextEditor from './TextEditor';
 import { Radio, Paper, Typography } from '@mui/material';
-import PerDestinationTable from './Service-Edit-Components/PerDestinationTable';
-import PerDurationTable from "./Service-Edit-Components/PerDurationTable"
-import PerDayTable from './Service-Edit-Components/PerDayTable';
-import PerTimeTable from './Service-Edit-Components/PerTimeTable';
-import PerDateTable from './Service-Edit-Components/PerDateTable';
-import PerDestinationModal from './Service-Edit-Components/PerDestinationModal';
-import PerDurationModal from './Service-Edit-Components/PerDurationModal ';
-import PerDayModal from './Service-Edit-Components/PerDayModal';
-import PerTimeModal from './Service-Edit-Components/PerTimeModal';
-import PerDateModal from './Service-Edit-Components/PerDateModal';
+import PerDestinationTable from './Service-Add-Components/PerDestinationTable';
+import PerDurationTable from "./Service-Add-Components/PerDurationTable"
+import PerDayTable from './Service-Add-Components/PerDayTable';
+import PerTimeTable from './Service-Add-Components/PerTimeTable';
+import PerDateTable from './Service-Add-Components/PerDateTable';
+import PerDestinationModal from './Service-Add-Components/PerDestinationModal';
+import PerDurationModal from './Service-Add-Components/PerDurationModal ';
+import PerDayModal from './Service-Add-Components/PerDayModal';
+import PerTimeModal from './Service-Add-Components/PerTimeModal';
+import PerDateModal from './Service-Add-Components/PerDateModal';
 
 
 const ServiceAdd = () => {
@@ -202,67 +202,53 @@ const ServiceAdd = () => {
                 return values.service_price_service
             }
 
-            const data = {
-                company: params.id,
-                // price_type:"549385a5-bcc6-4b5d-8609-24c985fa2f6c",
-                is_verified: values.is_verified,
-                is_active: values.is_active,
-                is_top_suggestion: values.is_top_suggestion,
-                is_premium: values.is_premium,
-                is_destination: values.is_destination,
-                is_duration: values.is_duration,
-                is_date: values.is_date,
-                is_day: values.is_day,
-                is_time: values.is_time,
-                is_refundable:values.is_refundable,
-                type: values.type,
-                name: values.name,
-                machine_id: values.machine_id,
-                description: values.description,
-                lounge: values.lounge,
-                bedroom: values.bedroom,
-                toilet: values.toilet,
-                capacity: values.capacity,
-                pickup_point_or_location: values.pickup_point_or_location,
-                cancellation_policy: values.cancellation_policy,
-                refund_policy: values.refund_policy,
-                category: values.category[0]?.id,
-                sub_category: values.sub_category[0]?.id,
-                amenities: formattedAmenities,
-                profit_method: values.profit_method.id,
-                markup_fee: values.markup_fee,
-                vendor_percentage: values.vendor_percentage,
-                sea_arabia_percentage: values.sea_arabia_percentage,
-                per_head_booking: values.per_head_booking,
-                purchase_limit_min: values.purchase_limit_min,
-                purchase_limit_max: values.purchase_limit_max,
-                service_price_service: removeServiceKey(values)
-            }
+            const formData = new FormData();
 
+            formData.append("company_id", params.id,);
+            formData.append("is_verified",values.is_verified);
+            formData.append("is_top_suggestion",values.is_top_suggestion);
+            formData.append("is_premium",values.is_premium);
+            formData.append("is_destination",values.is_destination);
+            formData.append("is_duration",values.is_duration);
+            formData.append("is_day",values.is_day);
+            formData.append("is_time",values.is_time);
+            formData.append("is_date",values.is_date);
+            formData.append("is_refundable",values.is_refundable);
+            formData.append("type",values.type);
+            formData.append("category",values.category[0]?.id);
+            formData.append("sub_category",values.sub_category[0]?.id);
+            formData.append("name",values.name);
+            formData.append("machine_id",values.machine_id);
+            formData.append("description",values.description);
+            formData.append("lounge",values.lounge);
+            formData.append("bedroom",values.bedroom);
+            formData.append("toilet",values.toilet);
+            formData.append("capacity",values.capacity);
+            formData.append("amenities",formattedAmenities);
+            formData.append("pickup_point_or_location",values.pickup_point_or_location);
+            formData.append("cancellation_policy",values.cancellation_policy);
+            formData.append("refund_policy",values.refund_policy);
+            formData.append("is_active",values.is_active);
+            // formData.append('profit_method',values.profit_method.id);
+            formData.append("markup_fee", values.markup_fee);
+            formData.append("vendor_percentage",values.vendor_percentage);
+            formData.append("sea_arabia_percentage",values.sea_arabia_percentage);
+            formData.append("per_head_booking",values.per_head_booking);
+            formData.append("purchase_limit_min",values.purchase_limit_min);
+            formData.append("purchase_limit_max",values.purchase_limit_max);
+            formData.append("service_price_service",removeServiceKey(values));
+            values.service_image.forEach((item, index) => {
+                formData.append(`images[${index}][image]`, item.image);
+                formData.append(`images[${index}][is_thumbnail]`, item.thumbnail);
+            });
 
             if (!isLoading) {
 
                 try {
-                    const adminData = await CreateService(data);
+                    const adminData = await CreateService(formData);
 
                     if (adminData) {
                         setIsLoading(false);
-                        //   window.location.reload();
-                
-
-                      // Append non-file data
-                      const formData = new FormData();
-
-                      values.service_image.forEach((item, index) => {
-                          formData.append(`image[${index}][image]`, item.image);
-                          formData.append(`image[${index}][is_thumbnail]`, item.thumbnail);
-                          formData.append(`image[${index}][service]`, adminData.id);
-                      });
-                                              
-                        
-                        const clearTimeout=setTimeout(()=>{
-                            AddMultipleImage(formData).then((data) => console.log(data,"data")).catch((err) => console.log(err))
-                        },5000)
                         toast.success("Service Created Successfully")
                         setIsUpdated(true)
                         clearTimeout(clearTimeout)
@@ -972,9 +958,10 @@ const ServiceAdd = () => {
                                     <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Critreion</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-center'}>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: true, is_duration: false, is_day: false, is_time: false, is_date: false, purchase_limit_min: 0, purchase_limit_max: 0 }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: true, is_duration: false, is_day: false, is_time: false, is_date: false, purchase_limit_min: 0, purchase_limit_max: 0,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 alignItems: 'center',
                                                 border: '1px solid lightgray',
@@ -988,9 +975,10 @@ const ServiceAdd = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_destination} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: true, is_day: false, is_time: false, is_date: false, per_head_booking: false, purchase_limit_min: 0, purchase_limit_max: 0 }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: true, is_day: false, is_time: false, is_date: false, per_head_booking: false, purchase_limit_min: 0, purchase_limit_max: 0,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1005,9 +993,10 @@ const ServiceAdd = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_duration} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: true, is_time: false, is_date: false, per_head_booking: false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: true, is_time: false, is_date: false, per_head_booking: false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1022,9 +1011,10 @@ const ServiceAdd = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_day} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: true, is_date: false }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: true, is_date: false,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
@@ -1039,9 +1029,10 @@ const ServiceAdd = () => {
                                             <Radio name={formik.values.price_cretrion} checked={formik.values.is_time} />
                                         </Paper>
                                         <Paper
-                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: false, is_date: true }))}
+                                            onClick={() => updateFormValues(({ ...formik.values, is_destination: false, is_duration: false, is_day: false, is_time: false, is_date: true,service_price_service:[] }))}
                                             style={{
                                                 display: 'flex',
+                                                cursor:"pointer",
                                                 justifyContent: 'space-between',
                                                 marginTop: isMobileView ? "5px" : "",
                                                 alignItems: 'center',
