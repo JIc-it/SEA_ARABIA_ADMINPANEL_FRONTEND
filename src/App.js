@@ -16,6 +16,7 @@ import { getLocation } from "./services/CustomerHandle";
 
 function App() {
 const [gccCountriesList, setGccCountriesList] = useState([])
+
   useEffect(() => {
     getLocation()
       .then((data) => {

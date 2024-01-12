@@ -12,6 +12,8 @@ import StepConnector, {
 } from "@mui/material/StepConnector";
 
 import { useDispatch, useSelector } from "react-redux";
+import { useContext } from "react";
+import { OnboardContext } from "../../Context/OnboardContext";
 
 const QontoStepIconRoot = styled("div")(({ theme, ownerState }) => ({
   color: theme.palette.mode === "dark" ? theme.palette.grey[700] : "#eaeaf0",
@@ -107,7 +109,8 @@ const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
 
 function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
-console.log(props,'props');
+  const { isOnBoard } = useContext(OnboardContext);
+  console.log(isOnBoard);
   return (
     <ColorlibStepIconRoot
       ownerState={{ completed, active }}
@@ -310,7 +313,7 @@ console.log(props,'props');
         </svg>
       )}
 
-      {props.icon === 7 && (
+      {props.icon === 7 && isOnBoard ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width="28"
@@ -318,21 +321,47 @@ console.log(props,'props');
           viewBox="0 0 28 28"
           fill="none"
         >
-          <path
-            d="M19.833 10.502C22.3705 10.5161 23.7448 10.6286 24.6412 11.5251C25.6663 12.5502 25.6663 14.2001 25.6663 17.4999V18.6666C25.6663 21.9664 25.6663 23.6163 24.6412 24.6415C23.6161 25.6666 21.9662 25.6666 18.6663 25.6666H9.33301C6.03318 25.6666 4.38326 25.6666 3.35813 24.6415C2.33301 23.6163 2.33301 21.9664 2.33301 18.6666L2.33301 17.4999C2.33301 14.2001 2.33301 12.5502 3.35813 11.5251C4.25458 10.6286 5.62881 10.5161 8.16634 10.502"
+          <circle
+            opacity="0.5"
+            cx="14.0007"
+            cy="13.9987"
+            r="11.6667"
             stroke="white"
             stroke-width="2"
-            stroke-linecap="round"
           />
           <path
-            opacity="1"
-            d="M14 17.5L14 2.33333M14 2.33333L17.5 6.41667M14 2.33333L10.5 6.41667"
+            d="M9.91602 14.582L12.2493 16.9154L18.0827 11.082"
             stroke="white"
             stroke-width="2"
             stroke-linecap="round"
             stroke-linejoin="round"
           />
         </svg>
+      ) : (
+        props.icon === 7 && (
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="28"
+            height="28"
+            viewBox="0 0 28 28"
+            fill="none"
+          >
+            <path
+              d="M19.833 10.502C22.3705 10.5161 23.7448 10.6286 24.6412 11.5251C25.6663 12.5502 25.6663 14.2001 25.6663 17.4999V18.6666C25.6663 21.9664 25.6663 23.6163 24.6412 24.6415C23.6161 25.6666 21.9662 25.6666 18.6663 25.6666H9.33301C6.03318 25.6666 4.38326 25.6666 3.35813 24.6415C2.33301 23.6163 2.33301 21.9664 2.33301 18.6666L2.33301 17.4999C2.33301 14.2001 2.33301 12.5502 3.35813 11.5251C4.25458 10.6286 5.62881 10.5161 8.16634 10.502"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+            <path
+              opacity="1"
+              d="M14 17.5L14 2.33333M14 2.33333L17.5 6.41667M14 2.33333L10.5 6.41667"
+              stroke="white"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        )
       )}
     </ColorlibStepIconRoot>
   );
@@ -365,6 +394,7 @@ const steps = [
   { title: "MOU / Charter", label: "MOU / Charter Details" },
   { title: "Ready to Onboard", label: "Vendor Onboard" },
 ];
+
 export default function ProgressBarComponent() {
   const count = useSelector((state) => state.counter.value);
 

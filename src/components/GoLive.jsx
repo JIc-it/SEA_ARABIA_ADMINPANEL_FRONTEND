@@ -5,7 +5,7 @@ import { useNavigate } from "react-router";
 import { OnboardContext } from "../Context/OnboardContext";
 Modal.setAppElement("#root");
 
-function GoLive({ userData }) {
+function GoLive({ userData, setIsOnBoard }) {
   const navigate = useNavigate();
   const { vendorId } = useContext(OnboardContext);
   const customStyles = {
@@ -65,8 +65,10 @@ function GoLive({ userData }) {
     goLive(userData?.company_company_user?.id)
       .then((data) => {
         if (data) {
+          setIsOnBoard(false);
           setIsOpenSuccess(true);
           setIsConfirm(false);
+          setIsOnBoard(true);
         }
       })
       .catch((error) => {
@@ -141,6 +143,8 @@ function GoLive({ userData }) {
                             <button
                               className="btn my-2"
                               onClick={() => {
+                                setIsOnBoard(false);
+
                                 navigate(`/user-vendor/${vendorId}`);
                               }}
                               style={{

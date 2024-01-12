@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Flags from "react-flags-select";
-import { getLocation } from "../../services/CustomerHandle";
 
 const CountryDropdown = ({ gccCountries, formik }) => {
-  const [location, setLocation] = useState([]);
-
   const handleCountryChange = (countryCode) => {
     const selectedCountryObject =
       gccCountries &&
@@ -13,20 +10,9 @@ const CountryDropdown = ({ gccCountries, formik }) => {
     formik.setFieldValue("location", selectedCountryObject);
   };
 
-  useEffect(() => {
-    getLocation()
-      .then((data) => {
-        console.log("drop down  component location is==", data);
-        setLocation(data);
-      })
-      .catch((error) => {
-        console.log("error while fetching location", error);
-      });
-  }, []);
-
   return (
     <div>
-      {/* <Flags
+      <Flags
         countries={
           gccCountries && gccCountries.length > 0
             ? gccCountries.map((country) => country.code)
@@ -47,8 +33,8 @@ const CountryDropdown = ({ gccCountries, formik }) => {
         onSelect={handleCountryChange}
         showSelectedLabel={true}
         showOptionLabel={true}
-      /> */}
-      <Flags
+      />
+      {/* <Flags
         countries={
           gccCountries && gccCountries.length > 0
             ? gccCountries.map((country) => country.code)
@@ -57,7 +43,6 @@ const CountryDropdown = ({ gccCountries, formik }) => {
         customLabels={
           gccCountries &&
           gccCountries.length > 0 &&
-          location.length > 0 &&
           gccCountries.reduce(
             (labels, country) => ({
               ...labels,
@@ -72,7 +57,7 @@ const CountryDropdown = ({ gccCountries, formik }) => {
         onSelect={handleCountryChange}
         showSelectedLabel={true}
         showOptionLabel={true}
-      />
+      /> */}
       {formik.touched.location && formik.errors.location ? (
         <div className="error">{formik.errors.location}</div>
       ) : null}

@@ -66,7 +66,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
       });
   }, []);
 
-
   return (
     <>
       <div

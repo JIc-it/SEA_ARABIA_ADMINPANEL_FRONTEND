@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { toast } from "react-toastify";
 
 export const FileUploader = ({
   handleFileChange,
@@ -24,11 +25,23 @@ export const FileUploader = ({
       "image/gif",
     ];
 
+    const disallowedFileTypes = [
+      "application/x-rar-compressed",
+      "application/zip",
+      "application/x-msdownload", // exe
+      // Add more disallowed file types as needed
+    ];
+
     const selectedFile = event.target.files[0];
 
-    if (selectedFile && allowedFileTypes.includes(selectedFile.type)) {
+    if (
+      selectedFile &&
+      allowedFileTypes.includes(selectedFile.type) &&
+      !disallowedFileTypes.includes(selectedFile.type)
+    ) {
       handleFileChange([selectedFile]);
     } else {
+      toast.error("Invalid file type");
       console.log("Invalid file type");
       // You can display an error message or handle the invalid file type as needed
     }
@@ -69,10 +82,7 @@ export const FileUploader = ({
         onChange={handleChange}
         ref={hiddenFileInput}
         style={{ display: "none" }}
-        accept=".pdf, .doc, .docx, 
-        .xls, 
-        .xlsx, 
-        .jpg, .jpeg, .png, .gif"
+        accept=".pdf, .doc, .docx, .xls, .xlsx, .jpg, .jpeg, .png, .gif"
       />
       {formik.touched.files && formik.errors.files ? (
         <div className={`error mx-4 ${errorClass}`}>{formik.errors.files}</div>

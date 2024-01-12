@@ -184,8 +184,6 @@ optgroup {
   }
 }
 
-select.one {
- 
-
-
+.status_dropdown .form-select {
+  --tblr-form-select-bg-img: url('/assets/images/down-arrow.png');
 }

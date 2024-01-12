@@ -26,7 +26,7 @@ export default function MiscellaneousList() {
   const handleCloseViewMiscellaneous = () => {
     setIsViewMiscellaneous(false);
   };
-  
+
   const handleViewMiscellaneous = (data) => {
     setIsViewMiscellaneous(true);
     setSelectedData(data);
@@ -229,7 +229,7 @@ export default function MiscellaneousList() {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No Miscellaneous Found
+                              No attachment notes found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
                               Add Your Miscellaneous here

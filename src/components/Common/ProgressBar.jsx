@@ -37,7 +37,7 @@ import {
 import { toast } from "react-toastify";
 Modal.setAppElement("#root");
 
-function ProgressBar({ locationList }) {
+function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
   const customStyles = {
     content: {
       top: "50%",
@@ -193,10 +193,6 @@ function ProgressBar({ locationList }) {
       });
     getVendorListById(vendorId);
   }, [vendorId]);
-
-  const qualificationSchema = Yup.object().shape({
-    id: Yup.string().required(),
-  });
 
   const initialValueForProposals = {
     proposalTitle: "",
@@ -710,7 +706,7 @@ function ProgressBar({ locationList }) {
   };
 
   const dispatch = useDispatch();
-  console.log(formik.values.location, "formik.values.location");
+
   return (
     <div>
       <div className="col-12">
@@ -790,7 +786,7 @@ function ProgressBar({ locationList }) {
                     {logo}
                   </div>
                 ))} */}
-                  <ProgressBarComponent />
+                  <ProgressBarComponent isOnBoard={isOnBoard} />
                 </div>
               </div>
             </div>
@@ -827,7 +823,7 @@ function ProgressBar({ locationList }) {
             />
           )}
           {count === 6 && (
-            <GoLive userData={userdata} handleFileChange={handleFileChange} />
+            <GoLive userData={userdata} handleFileChange={handleFileChange} setIsOnBoard={setIsOnBoard} isOnBoard={isOnBoard} />
           )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           {count != 6 && (

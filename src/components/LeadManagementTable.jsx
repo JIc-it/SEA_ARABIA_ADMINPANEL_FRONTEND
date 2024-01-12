@@ -12,6 +12,7 @@ import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
 import { toast } from "react-toastify";
+import downArrow from "../../src/assets/images/down-arrow.png";
 
 function Table() {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ function Table() {
 
   useEffect(() => {
     getVendorListData();
-  }, [selectedValue, isRefetch,search]);
+  }, [selectedValue, isRefetch, search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -138,10 +139,8 @@ function Table() {
             <label className="form-label">Status</label>
             <select
               type="text"
-              style={{
-                backgroundImage:'url'
-              }}
-              className="form-select mb-3 status_selector one"
+             
+              className="form-select mb-3 status_selector "
               value={selectedValue}
               onChange={handleSelectChange}
             >
@@ -191,10 +190,7 @@ function Table() {
             href="https://seaarabia.jicitsolution.com/account/vendor-list-export/"
             download="vendor_list.csv"
           >
-            <button
-              className="btn btn-outline"
-              style={{ borderRadius: "6px" }}
-            >
+            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
               Export &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"

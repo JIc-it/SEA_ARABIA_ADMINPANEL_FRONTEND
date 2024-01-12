@@ -14,6 +14,7 @@ function OnBoard() {
   const vendorId = params.id;
   const companyID = params.companyID;
   const [location, setLocation] = useState();
+  const [isOnBoard, setIsOnBoard] = useState(false);
 
   useEffect(() => {
     getLocation()
@@ -28,14 +29,20 @@ function OnBoard() {
   }, []);
 
   return (
-    <OnboardContext.Provider value={{ vendorId, companyID }}>
+    <OnboardContext.Provider
+      value={{ vendorId, companyID, setIsOnBoard, isOnBoard }}
+    >
       <div className="page-wrapper">
         <div className="page-body">
           <div className="container-xl">
-            <ProgressBar locationList={location} />
+            <ProgressBar
+              locationList={location}
+              isOnBoard={isOnBoard}
+              setIsOnBoard={setIsOnBoard}
+            />
             <div className="col-12 content_section">
               <VendorDetailsCard />
-              <VendorTabs locationList={location}/>
+              <VendorTabs locationList={location} />
             </div>
           </div>
         </div>
