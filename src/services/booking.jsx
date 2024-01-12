@@ -40,7 +40,7 @@ export const updateRefund = (id,data) => {
 
 export const updateCancellation = (id) => {
   return axiosInstance
-    .put(`${cancellationrequestURL}/${id}`)
+    .put(`${cancellationrequestURL}/${id}/`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

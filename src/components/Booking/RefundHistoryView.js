@@ -198,15 +198,15 @@ const statusCheck=()=>{
                             <div className='px-5 m-3' style={{ backgroundColor: "#F8F8F8", borderRadius: "8px" }}>
                                 <div className='d-flex justify-content-between align-items-center mt-3'>
                                     <p style={{ color: "#68727D" }}>Name</p>
-                                    <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
+                                    <p style={{textTransform:"capitalize"}}>{booking?.first_name}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Email</p>
-                                    <p>{booking?.user?.email}</p>
+                                    <p>{booking?.email}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <p style={{ color: "#68727D" }}>Phone number</p>
-                                    <p>{booking?.user?.mobile}</p>
+                                    <p>{booking?.phone_number}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Total Number of People</p>
@@ -274,21 +274,21 @@ const statusCheck=()=>{
                                 <div style={{ width: "33%" }}>
                                     <div >
                                         <p style={{ color: "#68727D" }}>Customer ID</p>
-                                        <p>{booking?.user?.account_id}</p>
+                                        <p>{booking?.user_type!=="Guest" ? booking?.user?.account_id:booking?.user_type==="Registered"?booking?.guest?.account_id:"None"}</p>
                                     </div>
                                     
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Customer Name</p>
-                                        <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
+                                        <p style={{textTransform:"capitalize"}}>{booking?.user_type!=="Guest" ? booking?.user?.first_name:booking?.user_type==="Registered"?booking?.guest?.first_name:"None"}</p>
                                     </div>
                                    
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Customer Email</p>
-                                        <p>{booking?.user?.email}</p>
+                                        <p>{booking?.user_type!=="Guest" ? booking?.user?.email:booking?.user_type==="Registered"?booking?.guest?.email:"None"}</p>
                                     </div>
                                     
                                     
@@ -326,7 +326,7 @@ const statusCheck=()=>{
                                                 fill="white"
                                             />
                                         </svg>
-                                        &nbsp; SS56DG2355D
+                                        &nbsp; {booking?.service?.service_id}
                                     </p>
                                     &nbsp;
                                     <p className="card_content">
@@ -390,10 +390,7 @@ const statusCheck=()=>{
                                     <path fillRule="evenodd" clipRule="evenodd" d="M9.5 1.5C6.18629 1.5 3.5 4.50194 3.5 7.875C3.5 11.2216 5.41499 14.8593 8.4028 16.2558C9.09931 16.5814 9.90069 16.5814 10.5972 16.2558C13.585 14.8593 15.5 11.2216 15.5 7.875C15.5 4.50194 12.8137 1.5 9.5 1.5ZM9.5 9C10.3284 9 11 8.32843 11 7.5C11 6.67157 10.3284 6 9.5 6C8.67157 6 8 6.67157 8 7.5C8 8.32843 8.67157 9 9.5 9Z" fill="#68727D" />
                                 </svg></p>
                                 <p style={{ color: "#68727D" }}>Destination: &nbsp;</p>
-                                <p style={{textTransform:"capitalize"}}>{booking?.service?.service_price_service?.map((dat)=>
-                                dat?.location?.name
-                                
-                                )}</p>
+                                <p style={{textTransform:"capitalize"}}>{booking?.destination}</p>
 
                             </div>
                         </div>
@@ -454,22 +451,22 @@ const statusCheck=()=>{
                             <div className='d-flex p-4'>
                                 <div style={{ width: "33%" }}>
                                     <div >
-                                        <p style={{ color:booking?.payment?.status==="Completed"? "#68727D":"#2684FC" }}>Payment Status</p>
+                                        <p style={{  color: "#68727D" }}>Payment Status</p>
                                         {booking?.payment?.status==="Completed"? 
                                         <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #40C77E", borderRadius: "30px", backgroundColor: "rgba(64, 199, 126, 0.20)", width: "fit-content" }}><img src={tick} alt="success" style={{ backgroundColor: "#40C77E", borderRadius: "50px" }} />
                                         &nbsp; Paid
 
                                     </p>:
-                                        <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #2684FC", borderRadius: "30px", backgroundColor: "#2684FC", width: "fit-content" }}>
-                                            <svg width={20} height={20} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                        <path opacity="0.4" d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#2684FC" />
-                                        <path fillRule="evenodd" clipRule="evenodd" d="M23.1628 12.8372C23.1628 12.3748 23.5376 12 24 12C30.6274 12 36 17.3726 36 24C36 30.6274 30.6274 36 24 36C17.3726 36 12 30.6274 12 24C12 23.5376 12.3748 23.1628 12.8372 23.1628C13.2996 23.1628 13.6744 23.5376 13.6744 24C13.6744 29.7027 18.2973 34.3256 24 34.3256C29.7027 34.3256 34.3256 29.7027 34.3256 24C34.3256 18.2973 29.7027 13.6744 24 13.6744C23.5376 13.6744 23.1628 13.2996 23.1628 12.8372Z" fill="#2684FC" />
-                                        <path opacity="0.5" fillRule="evenodd" clipRule="evenodd" d="M20.7624 13.282C20.9289 13.7134 20.7142 14.1981 20.2829 14.3646C20.125 14.4255 19.969 14.4902 19.8149 14.5586C19.3923 14.7462 18.8976 14.5557 18.71 14.1331C18.5224 13.7105 18.7129 13.2158 19.1355 13.0282C19.3147 12.9487 19.4962 12.8734 19.6799 12.8025C20.1112 12.636 20.5959 12.8507 20.7624 13.282ZM16.9091 15.339C17.228 15.6739 17.2151 16.2038 16.8803 16.5227C16.7578 16.6393 16.6383 16.7588 16.5217 16.8812C16.2028 17.2161 15.6729 17.229 15.338 16.9101C15.0032 16.5912 14.9903 16.0613 15.3092 15.7265C15.4445 15.5843 15.5834 15.4455 15.7255 15.3101C16.0603 14.9913 16.5903 15.0042 16.9091 15.339ZM14.1321 18.711C14.5547 18.8986 14.7452 19.3933 14.5576 19.8159C14.4893 19.9699 14.4245 20.126 14.3636 20.2838C14.1971 20.7152 13.7124 20.9299 13.2811 20.7634C12.8497 20.5969 12.635 20.1122 12.8015 19.6808C12.8724 19.4972 12.9477 19.3157 13.0272 19.1365C13.2149 18.7139 13.7095 18.5234 14.1321 18.711Z" fill="#2684FC" />
-                                        <path opacity="0.5" d="M24.0003 19.8125C24.4627 19.8125 24.8375 20.1873 24.8375 20.6497V24.2776H28.4654C28.9278 24.2776 29.3026 24.6524 29.3026 25.1148C29.3026 25.5772 28.9278 25.952 28.4654 25.952H24.0003C23.5379 25.952 23.1631 25.5772 23.1631 25.1148V20.6497C23.1631 20.1873 23.5379 19.8125 24.0003 19.8125Z" fill="#2684FC" />
-                                    </svg>
-                                        &nbsp; Pending
+                                        <p className="px-2 py-1" style={{ fontWeight: "500", border: "2px solid #2684FC", borderRadius: "30px", backgroundColor: "#e6f1ff", width: "fit-content" }}>
+                                        <svg width={20} height={20} viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.4" d="M24 44C35.0457 44 44 35.0457 44 24C44 12.9543 35.0457 4 24 4C12.9543 4 4 12.9543 4 24C4 35.0457 12.9543 44 24 44Z" fill="#2684FC" />
+                                    <path fillRule="evenodd" clipRule="evenodd" d="M23.1628 12.8372C23.1628 12.3748 23.5376 12 24 12C30.6274 12 36 17.3726 36 24C36 30.6274 30.6274 36 24 36C17.3726 36 12 30.6274 12 24C12 23.5376 12.3748 23.1628 12.8372 23.1628C13.2996 23.1628 13.6744 23.5376 13.6744 24C13.6744 29.7027 18.2973 34.3256 24 34.3256C29.7027 34.3256 34.3256 29.7027 34.3256 24C34.3256 18.2973 29.7027 13.6744 24 13.6744C23.5376 13.6744 23.1628 13.2996 23.1628 12.8372Z" fill="#2684FC" />
+                                    <path opacity="0.5" fillRule="evenodd" clipRule="evenodd" d="M20.7624 13.282C20.9289 13.7134 20.7142 14.1981 20.2829 14.3646C20.125 14.4255 19.969 14.4902 19.8149 14.5586C19.3923 14.7462 18.8976 14.5557 18.71 14.1331C18.5224 13.7105 18.7129 13.2158 19.1355 13.0282C19.3147 12.9487 19.4962 12.8734 19.6799 12.8025C20.1112 12.636 20.5959 12.8507 20.7624 13.282ZM16.9091 15.339C17.228 15.6739 17.2151 16.2038 16.8803 16.5227C16.7578 16.6393 16.6383 16.7588 16.5217 16.8812C16.2028 17.2161 15.6729 17.229 15.338 16.9101C15.0032 16.5912 14.9903 16.0613 15.3092 15.7265C15.4445 15.5843 15.5834 15.4455 15.7255 15.3101C16.0603 14.9913 16.5903 15.0042 16.9091 15.339ZM14.1321 18.711C14.5547 18.8986 14.7452 19.3933 14.5576 19.8159C14.4893 19.9699 14.4245 20.126 14.3636 20.2838C14.1971 20.7152 13.7124 20.9299 13.2811 20.7634C12.8497 20.5969 12.635 20.1122 12.8015 19.6808C12.8724 19.4972 12.9477 19.3157 13.0272 19.1365C13.2149 18.7139 13.7095 18.5234 14.1321 18.711Z" fill="#2684FC" />
+                                    <path opacity="0.5" d="M24.0003 19.8125C24.4627 19.8125 24.8375 20.1873 24.8375 20.6497V24.2776H28.4654C28.9278 24.2776 29.3026 24.6524 29.3026 25.1148C29.3026 25.5772 28.9278 25.952 28.4654 25.952H24.0003C23.5379 25.952 23.1631 25.5772 23.1631 25.1148V20.6497C23.1631 20.1873 23.5379 19.8125 24.0003 19.8125Z" fill="#2684FC" />
+                                </svg>
+                                    &nbsp; Pending
 
-                                    </p>}
+                                </p>}
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Transaction ID</p>
@@ -518,15 +515,15 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled By</p>
-                                        <p>{booking?.cancelled_by!==null? booking?.cancelled_by:""}</p>
+                                        <p>{booking?.cancelled_by?.username!==null?  booking?.cancelled_by?.username:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled On</p>
-                                        <p>{new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}</p>
+                                        <p>{booking?.cancelled_date?.trim()!=="" ||booking?.cancelled_date!== null ?new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancellation Reason</p>
-                                        <p>{booking?.cancellation_reason}</p>
+                                        <p>{booking?.cancellation_reason ? booking?.cancellation_reason :"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p style={{visibility:"hidden"}}>NO</p>
@@ -539,19 +536,19 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Amount</p>
-                                        <p>{booking?.is_refunded && booking?.refund_amount} KWD</p>
+                                        <p>{booking?.is_refunded ? booking?.refund_amount+""+"KWD":"None"} </p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Details</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_details}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_details:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Status</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_status}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_status:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Type</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_type}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_type:"None"}</p>
                                     </div>
                                 </div>}
                                 

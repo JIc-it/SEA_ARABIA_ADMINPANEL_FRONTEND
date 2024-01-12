@@ -158,7 +158,7 @@ function CustomerHeaders(props) {
                     style={{ fontSize: "18px", fontWeight: "700" }}
                   >
                     {count?.user_count}
-                    {/* {totalGuestUser} */}
+                
                   </div>
                 </div>
               </div>

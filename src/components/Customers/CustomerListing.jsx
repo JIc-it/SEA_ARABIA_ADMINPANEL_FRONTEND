@@ -10,6 +10,7 @@ import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
 
 import {
+  customerExport,
   getCustomerSearch,
   getCustomerlist,
 } from "../../services/CustomerHandle";
@@ -28,7 +29,7 @@ export default function CustomerListing() {
   });
 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-
+  const [exportedData, setExportedData] = useState();
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {
@@ -74,6 +75,28 @@ export default function CustomerListing() {
     const data = { search: search, status: selectedValue, role: "User" };
     getCustomerSearch(data).then((res) => setListDiscount(res?.results));
   }, [selectedValue, isRefetch, search]);
+
+  // const handleExportCustomerData = () => {
+  //   const queryParams = {
+  //     fields: [
+  //       "NAME",
+  //       "EMAIL",
+  //       "PHONE",
+  //       "LOCATION",
+  //       "CREATED ON",
+  //       "CREATED BY",
+  //       "STATUS",
+  //     ],
+  //   };
+
+  //   customerExport(queryParams)
+  //     .then((data) => {
+  //       setExportedData(data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error exporting customer data:", error);
+  //     });
+  // };
 
   const handleExportCustomerData = () => {
     if (listDiscount) {

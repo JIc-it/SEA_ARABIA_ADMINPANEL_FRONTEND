@@ -22,7 +22,7 @@ export default function PerTimeTable({data,formik,setIsUpdated}) {
     }
 
     const handleremove = (index,id) => {
-        if(index){
+        if(index !== undefined && index !== null){
             formik((prev) => {
                 const updatedServicePriceService = [...prev.service_price_service];
                 updatedServicePriceService.splice(index, 1);

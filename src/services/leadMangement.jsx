@@ -29,6 +29,7 @@ const proposalUpdateUrl = "company/proposal-update";
 const negotiationUpdateUrl = "company/negotiation-update";
 const charterUpdateUrl = "company/mou-update";
 const exportVendorList = "account/vendor-list-export/";
+const salesCount = "/account/sales-rep-count";
 
 export const createVenderLead = (data) => {
   return axiosInstance
@@ -342,6 +343,19 @@ export const handleVendorExport = () => {
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getsalesTotalCount = () => {
+  return axiosInstance
+    .get(salesCount)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        "Error while fetching total count of customer request:",
+        error
+      );
       throw error;
     });
 };

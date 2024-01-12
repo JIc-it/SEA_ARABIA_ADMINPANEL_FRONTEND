@@ -17,6 +17,7 @@ import {
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
 import { getLocation } from "../../../services/CustomerHandle";
+import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
@@ -275,24 +276,7 @@ function UpdateAdmin({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <select
-              className="form-control"
-              id=""
-              name="location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="" label="Select a location" />
-              {location.map((item) => {
-                return (
-                  <option key={item?.id} value={item.id} label={item.location}>
-                    {item?.location}
-                  </option>
-                );
-              })}
-              {/* Add more options as needed */}
-            </select>
+            <CountryDropdown />
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}

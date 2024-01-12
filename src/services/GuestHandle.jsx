@@ -1,5 +1,6 @@
 import axiosInstance from "./authHandle";
 const getIndivitualAdminListUrl = "/account/vendor-list-details";
+const adminCount = "account/admin-card-count";
 
 const adminlistCreateUrl = "/account/user-create";
 const updateDetails = "account/users-update";
@@ -18,12 +19,25 @@ export const getAdminSearch = (data) => {
       throw error;
     });
 };
+
+export const getAdminTotalCount = () => {
+  return axiosInstance
+    .get(adminCount)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        "Error while fetching total count of customer request:",
+        error
+      );
+      throw error;
+    });
+};
 export const getAdminListById = (adminId) => {
   return axiosInstance
     .get(`${getIndivitualAdminListUrl}/${adminId}`)
-    .then((response) => response.data)
+    .then((response) => response?.data)
     .catch((error) => {
-      console.error("Error while fetching :", error);
+      console.error("Error while fetching admin data:", error);
       throw error;
     });
 };

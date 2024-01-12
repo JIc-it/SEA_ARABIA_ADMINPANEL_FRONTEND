@@ -22,7 +22,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
     }
 
     const handleremove = (index,id) => {
-        if(index){
+        if(index !== undefined && index !== null){
             formik((prev) => {
                 const updatedServicePriceService = [...prev.service_price_service];
                 updatedServicePriceService.splice(index, 1);
@@ -42,7 +42,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
         }
       };
 
-      const check=data?.find((data)=>data.duration_hour)  
+      const check=data?.some((data)=>!data.location)  
 
     return (
         <div className="">
@@ -66,7 +66,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {check && data?.map((dat,i)=>
+                        {check===true && data?.map((dat,i)=>
                         <tr>
                         <td>
                             <span className="text-secondary">
@@ -120,7 +120,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                     </tr>
                         )
                         }
-                        {data?.length===0 || !check ?
+                        {data?.length===0 || check===false ?
                         <tr>
                             <td>No Data</td>
                         </tr>

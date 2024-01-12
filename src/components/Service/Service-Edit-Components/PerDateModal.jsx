@@ -247,7 +247,7 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
                                                  <span style={{ color: "red" }}>*</span>
                                             </label>
                                             <select
-                                                
+                                                disabled={!formik.values.is_range}
                                                 name="end_date"
                                                 className="form-control"
                                                 placeholder="Name"
