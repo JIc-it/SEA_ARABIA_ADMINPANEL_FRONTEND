@@ -6,17 +6,18 @@ const CountryDropdown = ({ gccCountries, formik }) => {
   const [location, setLocation] = useState([]);
 
   const handleCountryChange = (countryCode) => {
-    const selectedCountryObject = gccCountries.find(
-      (country) => country.code === countryCode
-    );
+    const selectedCountryObject =
+      gccCountries &&
+      gccCountries.length > 0 &&
+      gccCountries.find((country) => country.code === countryCode);
     formik.setFieldValue("location", selectedCountryObject);
   };
 
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("drop down  component location is==", data.results);
-        setLocation(data.results);
+        console.log("drop down  component location is==", data);
+        setLocation(data);
       })
       .catch((error) => {
         console.log("error while fetching location", error);
@@ -60,9 +61,9 @@ const CountryDropdown = ({ gccCountries, formik }) => {
           gccCountries.reduce(
             (labels, country) => ({
               ...labels,
-              [country.code]: `${country.label} (${
-                location.find((loc) => loc.id === country.code)?.name
-              })`,
+              // [country.code]: `${country.label} (${
+              //   location.find((loc) => loc.id === country.code)?.name
+              // })`,
             }),
             {}
           )
