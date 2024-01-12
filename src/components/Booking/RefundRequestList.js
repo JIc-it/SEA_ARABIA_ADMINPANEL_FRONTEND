@@ -376,7 +376,7 @@ const RefundRequestList = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.service?.category.map((items)=>
+                                {data?.service?.category?.map((items)=>
                                 items.name
                                 )}
                               </span>
