@@ -146,7 +146,7 @@ function AddNewLead({ show, close, setIsRefetch, isRefetch }) {
             placeholder="Email"
             value={formik.values.email}
             onChange={formik.handleChange}
-            maxLength={35}
+            maxLength={50}
             onBlur={formik.handleBlur}
           />
           {formik.touched.email && formik.errors.email ? (

@@ -374,7 +374,7 @@ const VenderIndivitualEdit = () => {
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                         value={formik.values.email}
-                        maxLength={35}
+                        maxLength={50}
                       />
                       {formik.touched.email && formik.errors.email ? (
                         <div className="error">{formik.errors.email}</div>
