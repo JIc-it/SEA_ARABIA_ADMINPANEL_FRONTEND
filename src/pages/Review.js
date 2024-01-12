@@ -1,7 +1,8 @@
 import React from 'react'
 import { useState, useEffect } from "react";
 import { CircularProgress } from '@mui/material';
-import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter, getCompanyList, getServiceReviewFilter2 } from "../services/review";
+import { getCategoryist, getSubCategoryist, getServiceFilterList, getServiceReviewFilter, getServiceReviewFilter2 } from "../services/review";
+import { getCompanyListing } from "../services/offers";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import { toast } from 'react-toastify';
@@ -42,7 +43,7 @@ const Review = () => {
   }
 
   useEffect(() => {
-    getCompanyList()
+    getCompanyListing()
       .then((data) => {
         setCompanyList(data);
       })

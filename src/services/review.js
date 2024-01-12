@@ -1,14 +1,5 @@
 import axiosInstance from "./authHandle";
 
-export const getCompanyList = () => {
-  return axiosInstance
-    .get("company/company-cms-list")
-    .then((response) => response.data)
-    .catch((error) => {
-      console.error("Error while fetching lead request:", error);
-      throw error;
-    });
-};
 export const getCategoryist = () => {
   return axiosInstance
     .get("main/category-list")
