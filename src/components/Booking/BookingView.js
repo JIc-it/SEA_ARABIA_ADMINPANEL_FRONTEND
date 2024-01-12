@@ -196,15 +196,15 @@ const statusCheck=()=>{
                             <div className='px-5 m-3' style={{ backgroundColor: "#F8F8F8", borderRadius: "8px" }}>
                                 <div className='d-flex justify-content-between align-items-center mt-3'>
                                     <p style={{ color: "#68727D" }}>Name</p>
-                                    <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
+                                    <p style={{textTransform:"capitalize"}}>{booking?.first_name}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Email</p>
-                                    <p>{booking?.user?.email}</p>
+                                    <p>{booking?.email}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <p style={{ color: "#68727D" }}>Phone number</p>
-                                    <p>{booking?.user?.mobile}</p>
+                                    <p>{booking?.phone_number}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Total Number of People</p>
@@ -272,21 +272,21 @@ const statusCheck=()=>{
                                 <div style={{ width: "33%" }}>
                                     <div >
                                         <p style={{ color: "#68727D" }}>Customer ID</p>
-                                        <p>{booking?.user?.account_id}</p>
+                                        <p>{booking?.user_type!=="Guest" ? booking?.user?.account_id:booking?.user_type==="Registered"?booking?.guest?.account_id:"None"}</p>
                                     </div>
                                     
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Customer Name</p>
-                                        <p style={{textTransform:"capitalize"}}>{booking?.user?.first_name}</p>
+                                        <p style={{textTransform:"capitalize"}}>{booking?.user_type!=="Guest" ? booking?.user?.first_name:booking?.user_type==="Registered"?booking?.guest?.first_name:"None"}</p>
                                     </div>
                                    
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Customer Email</p>
-                                        <p>{booking?.user?.email}</p>
+                                        <p>{booking?.user_type!=="Guest" ? booking?.user?.email:booking?.user_type==="Registered"?booking?.guest?.email:"None"}</p>
                                     </div>
                                     
                                     
@@ -324,7 +324,7 @@ const statusCheck=()=>{
                                                 fill="white"
                                             />
                                         </svg>
-                                        &nbsp; SS56DG2355D
+                                        &nbsp; {booking?.service?.service_id}
                                     </p>
                                     &nbsp;
                                     <p className="card_content">
@@ -388,10 +388,7 @@ const statusCheck=()=>{
                                     <path fillRule="evenodd" clipRule="evenodd" d="M9.5 1.5C6.18629 1.5 3.5 4.50194 3.5 7.875C3.5 11.2216 5.41499 14.8593 8.4028 16.2558C9.09931 16.5814 9.90069 16.5814 10.5972 16.2558C13.585 14.8593 15.5 11.2216 15.5 7.875C15.5 4.50194 12.8137 1.5 9.5 1.5ZM9.5 9C10.3284 9 11 8.32843 11 7.5C11 6.67157 10.3284 6 9.5 6C8.67157 6 8 6.67157 8 7.5C8 8.32843 8.67157 9 9.5 9Z" fill="#68727D" />
                                 </svg></p>
                                 <p style={{ color: "#68727D" }}>Destination: &nbsp;</p>
-                                <p style={{textTransform:"capitalize"}}>{booking?.service?.service_price_service?.map((dat)=>
-                                dat?.location?.name
-                                
-                                )}</p>
+                                <p style={{textTransform:"capitalize"}}>{booking?.destination}</p>
 
                             </div>
                         </div>
@@ -516,15 +513,15 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled By</p>
-                                        <p>{booking?.cancelled_by!==null? booking?.cancelled_by:""}</p>
+                                        <p>{booking?.cancelled_by?.username!==null?  booking?.cancelled_by?.username:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled On</p>
-                                        <p>{new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})}</p>
+                                        <p>{booking?.cancelled_date?.trim()!=="" ||booking?.cancelled_date!== null ?new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancellation Reason</p>
-                                        <p>{booking?.cancellation_reason}</p>
+                                        <p>{booking?.cancellation_reason ? booking?.cancellation_reason :"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p style={{visibility:"hidden"}}>NO</p>
@@ -537,19 +534,19 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Amount</p>
-                                        <p>{booking?.is_refunded && booking?.refund_amount+""+"KWD"}</p>
+                                        <p>{booking?.is_refunded ? booking?.refund_amount+""+"KWD":"None"} </p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Details</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_details}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_details:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Status</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_status}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_status:"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Type</p>
-                                        <p>{ booking?.is_refunded && booking?.refund_type}</p>
+                                        <p>{ booking?.is_refunded ? booking?.refund_type:"None"}</p>
                                     </div>
                                 </div>}
                                 
