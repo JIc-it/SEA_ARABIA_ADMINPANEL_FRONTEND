@@ -49,23 +49,9 @@ const RefundRequestList = () => {
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
 
-  // const getVendorListData = async () => {
-  //   setIsLoading(true);
-  //   getVendorList(search, selectedValue)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("Error fetching  data:", error);
-  //     });
-  // };
-
   useEffect(() => {
-    setIsLoading(true);
-    const pass={status:"Cancelled",search:"",refund_status:"Pending"}
+    {search.trim()!=="" ? setIsLoading(false):setIsLoading(true);}
+    const pass={status:"Cancelled",search:search,refund_status:"Pending"}
     getBookingList(pass)
       .then((data) => {
         setIsLoading(false);
@@ -76,22 +62,23 @@ const RefundRequestList = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
+  }, [search]);
 
-      getRefundRequestCount()
-      .then((data) => {
-        setIsLoading(false);
-        setCount({
-          refund_request_count:data.refund_request_count,
-          cancelled_by_vendor:data.cancelled_by_vendor,
-          cancelled_by_user:data.cancelled_by_user
-        });
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.response.data)
-      });
-  }, []);
-
+useEffect(()=>{
+  getRefundRequestCount()
+  .then((data) => {
+    setIsLoading(false);
+    setCount({
+      refund_request_count:data.refund_request_count,
+      cancelled_by_vendor:data.cancelled_by_vendor,
+      cancelled_by_user:data.cancelled_by_user
+    });
+  })
+  .catch((error) => {
+    setIsLoading(false);
+    toast.error(error.response.data)
+  });
+},[])
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -113,20 +100,6 @@ const RefundRequestList = () => {
           console.error("Error fetching  data:", error);
         });
   };
-
-  const handleSearch=()=>{
-    const Pass={status:"Cancelled",search:search,refund_status:"Pending"}
-    getBookingList(Pass)
-      .then((data) => {
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setBookingList(data?.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.response.data)
-      });
-  }
 
   return (
     <div>
@@ -234,7 +207,6 @@ const RefundRequestList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -463,15 +435,22 @@ const RefundRequestList = () => {
                           )
                           }
                         </>
-                      ) : (
+                      ) :(
                         <tr>
                           <td colSpan={"8"} align="center">
                             <CircularProgress />
                           </td>
                         </tr>
-                      )}
+                      )
+                      }
                     </tbody>
                   </table>
+                  {
+                    bookingList.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">

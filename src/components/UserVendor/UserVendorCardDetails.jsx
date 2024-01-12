@@ -688,7 +688,7 @@ function UserVendorCardDetails({ venderDetails }) {
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
-                      height: "80vh",
+                      height: "5vh",
                     }}
                   >
                     <CircularProgress />

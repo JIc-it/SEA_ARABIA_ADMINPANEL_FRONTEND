@@ -152,7 +152,7 @@ const ServiceAdd = () => {
             is_day: false,
             is_time: false,
             is_refundable:false,
-            type: "",
+            type: false,
             category: [],
             sub_category: [],
             name: "",
@@ -185,7 +185,13 @@ const ServiceAdd = () => {
         onSubmit: async (values) => {
             setIsLoading(true);
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
-            const formattedAmenities = amenitiesmappedid.join(', ');
+            const formattedAmenities = amenitiesmappedid.join(',');
+
+            const categorymappedid = values.category.map((data) => { return data.id })
+            const formattedcategory = categorymappedid.join(',');
+
+            const subcategorymappedid = values.sub_category.map((data) => { return data.id })
+            const formattedsubcategory = subcategorymappedid.join(',');
 
 
             function removeServiceKey(values) {
@@ -202,21 +208,32 @@ const ServiceAdd = () => {
                 return values.service_price_service
             }
 
+            const returnTrueFalse=(value)=>{
+                if(value===true){
+                    return "True"
+                }
+                else{
+                    return "False"
+                }
+            }
             const formData = new FormData();
 
-            formData.append("company_id", params.id,);
-            formData.append("is_verified",values.is_verified);
-            formData.append("is_top_suggestion",values.is_top_suggestion);
-            formData.append("is_premium",values.is_premium);
-            formData.append("is_destination",values.is_destination);
-            formData.append("is_duration",values.is_duration);
-            formData.append("is_day",values.is_day);
-            formData.append("is_time",values.is_time);
-            formData.append("is_date",values.is_date);
-            formData.append("is_refundable",values.is_refundable);
-            formData.append("type",values.type);
-            formData.append("category",values.category[0]?.id);
-            formData.append("sub_category",values.sub_category[0]?.id);
+            formData.append("company", params.id,);
+            formData.append("is_verified",returnTrueFalse(values.is_verified));
+            formData.append("is_top_suggestion",returnTrueFalse(values.is_top_suggestion));
+            formData.append("is_premium",returnTrueFalse(values.is_premium));
+            formData.append("is_sail_with_activity",returnTrueFalse(true));
+            formData.append("is_destination",returnTrueFalse(values.is_destination));
+            formData.append("is_duration",returnTrueFalse(values.is_duration));
+            formData.append("is_day",returnTrueFalse(values.is_day));
+            formData.append("is_time",returnTrueFalse(values.is_time));
+            formData.append("is_date",returnTrueFalse(values.is_date));
+            formData.append("is_refundable",returnTrueFalse(values.is_refundable));
+            formData.append("is_recommended",returnTrueFalse(true));
+            formData.append("is_active",returnTrueFalse(values.is_active));
+            formData.append("type",returnTrueFalse(values.type));
+            formData.append("category",formattedcategory);
+            formData.append("sub_category",formattedsubcategory);
             formData.append("name",values.name);
             formData.append("machine_id",values.machine_id);
             formData.append("description",values.description);
@@ -228,18 +245,18 @@ const ServiceAdd = () => {
             formData.append("pickup_point_or_location",values.pickup_point_or_location);
             formData.append("cancellation_policy",values.cancellation_policy);
             formData.append("refund_policy",values.refund_policy);
-            formData.append("is_active",values.is_active);
-            // formData.append('profit_method',values.profit_method.id);
+            formData.append('profit_method',values.profit_method.id);
             formData.append("markup_fee", values.markup_fee);
             formData.append("vendor_percentage",values.vendor_percentage);
             formData.append("sea_arabia_percentage",values.sea_arabia_percentage);
-            formData.append("per_head_booking",values.per_head_booking);
+            formData.append("per_head_booking",returnTrueFalse(values.per_head_booking));
             formData.append("purchase_limit_min",values.purchase_limit_min);
             formData.append("purchase_limit_max",values.purchase_limit_max);
-            formData.append("service_price_service",removeServiceKey(values));
+            formData.append("prices",removeServiceKey(values));
             values.service_image.forEach((item, index) => {
                 formData.append(`images[${index}][image]`, item.image);
-                formData.append(`images[${index}][is_thumbnail]`, item.thumbnail);
+                formData.append(`images[${index}][is_thumbnail]`, returnTrueFalse(item.thumbnail));
+                formData.append(`images[${index}][is_active]`, returnTrueFalse(true));
             });
 
             if (!isLoading) {
@@ -315,7 +332,7 @@ const ServiceAdd = () => {
                 console.error(error))
     }, [])
 
-
+console.log([formik.values.category[0]?.id]);
     useEffect(() => {
         getsubcategorylist(categoryId)
             .then((data) =>

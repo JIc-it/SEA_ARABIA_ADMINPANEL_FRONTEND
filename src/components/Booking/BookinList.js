@@ -57,8 +57,8 @@ const BookinList = () => {
   
 
   useEffect(() => {
-    setIsLoading(true);
-    const Pass={status:"",search:"",refund_status:""}
+    {search.trim()!=="" ? setIsLoading(false):setIsLoading(true);}
+    const Pass={status:"",search:search,refund_status:""}
     getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
@@ -69,7 +69,9 @@ const BookinList = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
+  }, [search]);
 
+  useEffect(()=>{
     getBookingCount()
       .then((data) => {
         setIsLoading(false);
@@ -84,8 +86,7 @@ const BookinList = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
-  }, []);
-
+  },[])
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -269,7 +270,6 @@ const BookinList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -505,6 +505,12 @@ const BookinList = () => {
                       )}
                     </tbody>
                   </table>
+                  {
+                    bookingList.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">

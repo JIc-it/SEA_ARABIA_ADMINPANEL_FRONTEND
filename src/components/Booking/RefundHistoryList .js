@@ -49,23 +49,9 @@ const RefundHistoryList  = () => {
   const [bookingList, setBookingList] = useState([]);
   const [count,setCount]=useState({})
 
-  // const getVendorListData = async () => {
-  //   setIsLoading(true);
-  //   getVendorList(search, selectedValue)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("Error fetching  data:", error);
-  //     });
-  // };
-
   useEffect(() => {
-    setIsLoading(true);
-    const statuspass={status:"Cancelled",refund_status:"Completed"}
+    {search.trim()!=="" ? setIsLoading(false):setIsLoading(true);}
+    const statuspass={status:"Cancelled",refund_status:"Completed",search:search}
     getBookingList(statuspass)
       .then((data) => {
         setIsLoading(false);
@@ -76,8 +62,10 @@ const RefundHistoryList  = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
+  }, [search]);
 
-      getRefundHistoryCount()
+  useEffect(()=>{
+    getRefundHistoryCount()
       .then((data) => {
         setIsLoading(false);
         setCount({
@@ -90,8 +78,7 @@ const RefundHistoryList  = () => {
         setIsLoading(false);
         toast.error(error.response.data)
       });
-  }, []);
-
+  },[])
 
 
   
@@ -115,20 +102,6 @@ const RefundHistoryList  = () => {
           console.error("Error fetching  data:", error);
         });
   };
-
-  const handleSearch=()=>{
-    const Pass={status:"Cancelled",search:search,refund_status:"Completed"}
-    getBookingList(Pass)
-      .then((data) => {
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setBookingList(data?.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.response.data)
-      });
-  }
 
   return (
     <div>
@@ -236,7 +209,6 @@ const RefundHistoryList  = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          onClick={handleSearch}
                         >
                           Search
                         </button>
@@ -474,6 +446,12 @@ const RefundHistoryList  = () => {
                       )}
                     </tbody>
                   </table>
+                  {
+                    bookingList.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">
