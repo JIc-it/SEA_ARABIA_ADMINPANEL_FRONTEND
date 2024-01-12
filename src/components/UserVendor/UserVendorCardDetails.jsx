@@ -65,17 +65,21 @@ function UserVendorCardDetails({ venderDetails }) {
   };
 
   useEffect(() => {
-    setIsLoadingService(true);
-    getServiceListing(null, venderDetails?.company_company_user?.id)
-      .then((data) => {
-        setIsLoadingService(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setServiceList(data.results);
-      })
-      .catch((error) => {
-        setIsLoadingService(false);
-        toast.error(error.response.data);
-      });
+    const companyId = venderDetails?.company_company_user?.id;
+  
+    if (companyId) {
+      setIsLoadingService(true);
+      getServiceListing(null, companyId)
+        .then((data) => {
+          setIsLoadingService(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setServiceList(data.results);
+        })
+        .catch((error) => {
+          setIsLoadingService(false);
+          toast.error(error.response.data);
+        });
+    }
   }, [venderDetails?.company_company_user?.id]);
 
   const handlePagination = async (type) => {

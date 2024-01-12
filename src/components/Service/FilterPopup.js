@@ -5,7 +5,7 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { getCategoryList, getsubcategorylist } from "../../services/service"
-import { getCompanyList } from "../../services/review"
+import { getCompanyListing } from "../../services/offers"
 
 export default function FilterPopup({ open, handleClose, setFilters,filters }) {
     const [active, setActive] = useState("Category")
@@ -41,7 +41,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
     }, [])
 
     useEffect(() => {
-        getCompanyList()
+        getCompanyListing()
             .then((data) =>
                 setVendorList(data)
             ).catch((error) =>

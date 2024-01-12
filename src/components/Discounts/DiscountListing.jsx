@@ -60,32 +60,19 @@ const handleopenfilter=()=>{
   
 
   useEffect(() => {
-    setIsLoading(true)
-    getDiscountOfferList()
-      .then((data) => {
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setOffersList(data?.results);
-        setIsLoading(false)
-      })
-      .catch((error) => {
-        setIsLoading(false)
-        toast.error(error.response.data);
-      });
-  }, []);
-
-  useEffect(() => {
-    // setIsLoading(true)
+    {search.trim()!=="" ? setIsLoading(false):setIsLoading(true)}
     getDiscountOfferList(search)
       .then((data) => {
-        setListPageUrl({ next: data.next, previous: data.previous });
+        setListPageUrl({ next: data?.next, previous: data?.previous });
         setOffersList(data?.results);
-        // setIsLoading(false)
+        setIsLoading(false)
       })
       .catch((error) => {
-        // setIsLoading(false)
-        toast.error(error.response.data);
+        setIsLoading(false)
+        toast.error(error?.response?.data);
       });
-  }, []);
+  }, [search]);
+
   
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -111,13 +98,13 @@ const handleopenfilter=()=>{
   const handleSearch=()=>{
     getDiscountOfferList(search)
     .then((data) => {
-      setListPageUrl({ next: data.next, previous: data.previous });
+      setListPageUrl({ next: data?.next, previous: data?.previous });
       setOffersList(data?.results);
       // setIsLoading(false)
     })
     .catch((error) => {
       // setIsLoading(false)
-      toast.error(error.response.data);
+      toast.error(error?.response?.data);
     });
   }
   return (
@@ -157,7 +144,6 @@ const handleopenfilter=()=>{
                   type="button"
                   className="btn search_button"
                   style={{ background: "#006875" }}
-                  onClick={handleSearch}
                 >
                   Search
                 </button>

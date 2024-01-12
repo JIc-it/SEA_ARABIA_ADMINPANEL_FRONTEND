@@ -35,21 +35,23 @@ export default function EventListing() {
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
-
-      getCount()
-      .then((data) => {
-        setCount({
-          
-            total_events_count: data?.total_events_count,
-            total_packages_count: data?.total_packages_count,
-            active_events_count: data?.active_events_count,
-            active_packages_count: data?.active_packages_count
-        });
-      })
-      .catch((error) => {
-        console.error("Error fetching sales rep List data:", error);
-      });
   }, [search]);
+
+  useEffect(()=>{
+    getCount()
+    .then((data) => {
+      setCount({
+        
+          total_events_count: data?.total_events_count,
+          total_packages_count: data?.total_packages_count,
+          active_events_count: data?.active_events_count,
+          active_packages_count: data?.active_packages_count
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching sales rep List data:", error);
+    });
+  },[])
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -275,7 +277,6 @@ export default function EventListing() {
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
-                      onClick={(e)=>e.preventDefault()}
                     >
                       Search
                     </button>

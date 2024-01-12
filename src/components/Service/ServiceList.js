@@ -15,7 +15,6 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import FilterPopup from "./FilterPopup";
 
-// import AddNewService from "./AddNewService";
 function ServiceList() {
     const [search,setSearch]=useState(null)
     const [listPageUrl, setListPageUrl] = useState({
@@ -38,8 +37,8 @@ function ServiceList() {
     }
 
     useEffect(() => {
-        setIsLoading(true)
-        getServiceListing()
+        {search!==null ? setIsLoading(false):setIsLoading(true)}
+        getServiceListing(search)
             .then((data) => {
                 setServiceList(data?.results);
                 setListPageUrl({ next: data.next, previous: data.previous });
@@ -49,21 +48,7 @@ function ServiceList() {
                 {setIsLoading(false);
                     toast.error(error.response.data)};
             });
-
-        getCount()
-            .then((data) => {
-                setCount({
-                    total_machines:data?.total_machines,
-                    active_machine_count:data?.active_machine_count,
-                    inactive_machine_count:data?.inactive_machine_count,
-                    total_vendor_count:data?.total_vendor_count
-                });
-            })
-            .catch((error) => {
-                {setIsLoading(false);
-                    toast.error(error.response.data)};
-            });
-    }, []);
+    }, [search]);
 
     const handlePagination = async (type) => {
         setIsLoading(true);
@@ -85,19 +70,22 @@ function ServiceList() {
                 toast.error(error.response.data)});
       };
    
-      const handleSearch=()=>{
-        getServiceListing(search)
-            .then((data) => {
-                setServiceList(data?.results);
-                setListPageUrl({ next: data.next, previous: data.previous });
-                setIsLoading(false)
-            })
-            .catch((error) => {
-                {setIsLoading(false);
-                    toast.error(error.response.data)};
+      useEffect(()=>{
+        getCount()
+        .then((data) => {
+            setCount({
+                total_machines:data?.total_machines,
+                active_machine_count:data?.active_machine_count,
+                inactive_machine_count:data?.inactive_machine_count,
+                total_vendor_count:data?.total_vendor_count
             });
-      }
-      console.log(filters);
+        })
+        .catch((error) => {
+            {setIsLoading(false);
+                toast.error(error.response.data)};
+        });
+      },[])
+      
     return (
         <div className="page" style={{ height: "100vh", top: 20 }}>
             <div className="container">
@@ -265,7 +253,6 @@ function ServiceList() {
                                             type="button"
                                             className="btn search_button"
                                             style={{ background: "#006875" }}
-                                            onClick={handleSearch}
                                         >
                                             Search
                                         </button>
