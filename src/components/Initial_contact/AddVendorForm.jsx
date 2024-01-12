@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 
 const AddVendorInfo = ({ formik, locationList }) => {
   const vendorId = useParams()?.id;
-
+  console.log("location list", locationList);
   //  const vendorId=OnboardContextData.vendorId
   const [showCanvas, setOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setOffcanvas(true);
@@ -65,7 +65,6 @@ const AddVendorInfo = ({ formik, locationList }) => {
         console.error("Error fetching  data:", error);
       });
   }, []);
-
 
   return (
     <>

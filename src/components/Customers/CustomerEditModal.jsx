@@ -13,6 +13,7 @@ import {
   getLocation,
 } from "../../services/CustomerHandle";
 import { useParams } from "react-router-dom";
+import CountryDropdown from "../SharedComponents/CountryDropDown";
 
 function CustomerEditModal({ show, close }) {
   const theme = useTheme();
@@ -24,7 +25,6 @@ function CustomerEditModal({ show, close }) {
   const [customerDetails, setCustomerDetails] = useState([]);
   const [location, setLocation] = useState([]);
 
-  
   useEffect(() => {
     getLocation()
       .then((data) => {
@@ -276,7 +276,7 @@ function CustomerEditModal({ show, close }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <select
+            {/* <select
               className="form-control"
               id=""
               name="location"
@@ -291,7 +291,8 @@ function CustomerEditModal({ show, close }) {
                 );
               })}
               {/* Add more options as needed */}
-            </select>
+            {/* </select> */}
+            <CountryDropdown />
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
@@ -344,7 +345,6 @@ function CustomerEditModal({ show, close }) {
           ) : null}
         </div>
 
-        
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""

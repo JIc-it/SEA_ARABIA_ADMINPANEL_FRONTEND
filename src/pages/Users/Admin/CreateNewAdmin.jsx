@@ -11,42 +11,36 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateAdminListById,
   createAdmin,
+  getAdminListById,
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
-function CreateNewAdmin({ show, close }) {
+function CreateNewAdmin({ show, close, locationList }) {
   const theme = useTheme();
-  const adminId = useParams()?.adminId;
+  const adminId = useParams();
+  console.log("adminId", adminId);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
+  const [fieldValue, setFieldValue] = useState();
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
 
   useEffect(() => {
-    getSalesRepListById(salesRepId)
-      .then((data) => {
-        setAdminDetails(data);
-        console.log(" admin by id==", data);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error("Error fetching customer data:", error);
-      });
-  }, [salesRepId]);
-
-  useEffect(() => {
     getLocation()
       .then((data) => {
         console.log("location is==", data.results);
-        setLocation(data.results);
+        const loc = locationList.find(
+          (country) => country.code === data.profileextra.location.country_code
+        );
+        setLocation(loc);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -278,63 +272,8 @@ function CreateNewAdmin({ show, close }) {
             Location <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            {" "}
-            {/* <select
-              className="form-control"
-              id=""
-              name="location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="" label="Select a location" />
-              {location.map((item) => {
-                return (
-                  <option key={item?.id} value={item.id} label={item?.location}>
-                    {`${item?.location} ${item?.country_flag}`}
-                  </option>
-                );
-              })}
-              {/* Add more options as needed */}
-            {/* </select> */}
-            {/* {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-            </svg> */}
-            {/* <div style={{ position: "relative" }}> */}
-            <CountryDropdown
-              className="form-control"
-              value={formik.values.location} // Set the selected value to the formik values
-              onChange={(val) => formik.setFieldValue("location", val)}
-            />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
+            <CountryDropdown gccCountries={locationList} formik={formik} />
+
             {/* </div> */}
           </div>
         </div>

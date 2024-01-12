@@ -3,6 +3,8 @@ const getIndivitualVendorListUrl = "/account/vendor-list-details";
 const updateVendorDetails = "account/vendor-add-details";
 const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
+const exportData = "/account/customer-list-export/";
+
 // const serviceDetails = "main/category-list";
 const guestUserURL = "account/guest-user/list";
 const customerCreateUrl = "/account/user-create";
@@ -44,6 +46,16 @@ export const getCustomerListById = (customerId) => {
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching customer request:", error);
+      throw error;
+    });
+};
+
+export const customerExport = (queryParams) => {
+  return axiosInstance
+    .get(`${exportData}`, { params: queryParams })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching customer export request:", error);
       throw error;
     });
 };

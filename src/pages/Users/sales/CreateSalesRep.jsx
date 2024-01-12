@@ -15,6 +15,7 @@ import {
 import { Link, useParams } from "react-router-dom";
 import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
 import { passwordRegex } from "../../../helpers";
+import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
@@ -268,28 +269,8 @@ function CreateSalesRep({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <select
-              className="form-control"
-              id=""
-              name="location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            >
-              <option value="" label="Select a location" />
-              {location?.map((item) => {
-                return (
-                  <option
-                    key={item?.id}
-                    value={item.id}
-                    label={item.location}
-                  />
-                );
-              })}
-
-              {/* Add more options as needed */}
-            </select>
-            {formik.touched.location && formik.errors.location ? (
+            <CountryDropdown />
+            {formik?.touched?.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
             <svg
