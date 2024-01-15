@@ -16,7 +16,7 @@ export default function LeadDetails({ count }) {
         setLeads(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorId, count]);

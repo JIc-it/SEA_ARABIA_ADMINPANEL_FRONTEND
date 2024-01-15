@@ -18,7 +18,7 @@ export default function UserVendorView() {
         // console.log("Vendor list =====:", vendorList); // Fix the variable name here
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching distributor data:", error);
       });
   }, [vendorId]);

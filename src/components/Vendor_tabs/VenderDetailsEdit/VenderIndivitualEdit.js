@@ -38,7 +38,7 @@ const VenderIndivitualEdit = () => {
         setLocation(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log("error while fetching location", error);
       });
     getVendorServiceTag()
@@ -46,7 +46,7 @@ const VenderIndivitualEdit = () => {
         setServiceTagList(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     getUserIdType()
@@ -54,7 +54,7 @@ const VenderIndivitualEdit = () => {
         setIdTypeList(data.results);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, []);
@@ -198,7 +198,7 @@ const VenderIndivitualEdit = () => {
         );
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorId, location]);
@@ -239,7 +239,7 @@ const VenderIndivitualEdit = () => {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
       // Handle error
     }
   };

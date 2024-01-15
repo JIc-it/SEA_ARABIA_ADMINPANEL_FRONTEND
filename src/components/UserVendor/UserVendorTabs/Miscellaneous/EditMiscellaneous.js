@@ -76,7 +76,7 @@ function EditMiscellaneous({
           setIsLoading(false);
         } catch (err) {
           console.log(err);
-          toast.error(err.message);
+          // toast.error(err.message);
 
           setIsLoading(false);
         }

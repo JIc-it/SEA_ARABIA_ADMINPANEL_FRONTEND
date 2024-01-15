@@ -103,7 +103,7 @@ function AddSiteVisitModal({ show, close, title, setIsRefetch, isRefetch }) {
           setIsLoading(false);
         } catch (err) {
           console.log(err);
-          toast.error(err.message);
+          // toast.error(err.message);
           setIsLoading(false);
         }
       }

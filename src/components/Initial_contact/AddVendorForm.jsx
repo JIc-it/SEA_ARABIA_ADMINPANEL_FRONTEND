@@ -53,7 +53,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         setServiceTagList(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     getUserIdType()
@@ -61,7 +61,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         setIdTypeList(data.results);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, []);

@@ -43,7 +43,7 @@ function UserVendorEdit({ show, close }) {
         setvendorDetails(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching vendor data:", error);
       });
   }, [vendorId]);
@@ -54,7 +54,7 @@ function UserVendorEdit({ show, close }) {
         setServiceTagList(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     getUserIdType()
@@ -62,7 +62,7 @@ function UserVendorEdit({ show, close }) {
         setIdTypeList(data.results);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorDetails]);

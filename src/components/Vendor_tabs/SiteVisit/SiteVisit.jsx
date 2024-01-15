@@ -57,7 +57,7 @@ function SiteVisit({ selectedTab }) {
         setListPageUrl({ next: data.next, previous: data.previous });
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
     setIsLoading(false);
@@ -80,7 +80,7 @@ function SiteVisit({ selectedTab }) {
         })
         .catch((error) => {
           setIsLoading(false);
-          toast.error(error.message);
+          // toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };

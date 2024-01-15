@@ -181,14 +181,14 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
         }
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
 
     siteVisitQualification()
       .then((data) => setQualificationList(data.results))
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error on Fetching list Qualification", error);
       });
     getVendorListById(vendorId);
@@ -488,7 +488,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
         setServiceTagList(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, []);
@@ -562,7 +562,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
             dispatch(increment());
           })
           .catch((error) => {
-            toast.error(error.message);
+            // toast.error(error.message);
             console.error("Error fetching  data:", error);
           });
       } else {
@@ -572,7 +572,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
       // Handle error
     }
   };
@@ -602,7 +602,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
       // Handle error
     }
   };
@@ -623,7 +623,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
             dispatch(increment());
           })
           .catch((error) => {
-            toast.error(error.message);
+            // toast.error(error.message);
             console.error("Error fetching  data:", error);
           });
       } else {
@@ -632,7 +632,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
       // Handle error
     }
   };
@@ -664,7 +664,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
-      toast.error(error.message);
+      // toast.error(error.message);
       // Handle error
     }
   };
@@ -678,7 +678,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
           dispatch(increment());
         })
         .catch((error) => {
-          toast.error(error.message);
+          // toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
     }

@@ -59,7 +59,7 @@ function UserVendorCardDetails({ venderDetails }) {
         setToggled(data.is_active);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.log(error);
       });
   };

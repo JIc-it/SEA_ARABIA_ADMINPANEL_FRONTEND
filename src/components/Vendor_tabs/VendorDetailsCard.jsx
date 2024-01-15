@@ -23,7 +23,7 @@ function VendorDetailsCard() {
         setUser(data);
       })
       .catch((error) => {
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   }, [vendorId, count]);

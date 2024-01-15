@@ -87,34 +87,37 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   },
 }));
 
-const ColorlibStepIconRoot = styled("div")(({ theme, ownerState }) => ({
-  backgroundColor:
-    theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
-  zIndex: 1,
-  color: "#fff",
-  width: 50,
-  height: 50,
-  display: "flex",
-  borderRadius: "50%",
-  justifyContent: "center",
-  alignItems: "center",
-  ...(ownerState.active && {
-    backgroundColor: "#187AF7",
-    boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
-  }),
-  ...(ownerState.completed && {
-    backgroundColor: "#187AF7",
-  }),
-}));
+const ColorlibStepIconRoot = styled("div")(
+  ({ theme, ownerState, isOnBoard }) => ({
+    backgroundColor:
+      theme.palette.mode === "dark" ? theme.palette.grey[700] : "#ccc",
+    zIndex: 1,
+    color: "#fff",
+    width: 50,
+    height: 50,
+    display: "flex",
+    borderRadius: "50%",
+    justifyContent: "center",
+    alignItems: "center",
+    ...(ownerState.active && {
+      backgroundColor: `${isOnBoard ? "#08A747" : "#187AF7"}`,
+      boxShadow: "0 4px 10px 0 rgba(0,0,0,.25)",
+    }),
+    ...(ownerState.completed && {
+      backgroundColor: "#187AF7",
+    }),
+  })
+);
 
 function ColorlibStepIcon(props) {
   const { active, completed, className } = props;
   const { isOnBoard } = useContext(OnboardContext);
-  console.log(isOnBoard);
+
   return (
     <ColorlibStepIconRoot
       ownerState={{ completed, active }}
       className={className}
+      isOnBoard={isOnBoard}
     >
       {props.icon === 1 && (
         <svg
@@ -397,6 +400,8 @@ const steps = [
 
 export default function ProgressBarComponent() {
   const count = useSelector((state) => state.counter.value);
+  console.log(count, "countcount");
+  const { isOnBoard } = useContext(OnboardContext);
 
   return (
     <div className="col-12">
@@ -406,16 +411,26 @@ export default function ProgressBarComponent() {
           activeStep={count}
           connector={<ColorlibConnector />}
         >
-          {steps.map((step, index) => (
-            <Step key={index}>
-              <StepLabel StepIconComponent={ColorlibStepIcon}>
-                <p style={{ margin: "0px", fontWeight: "600" }}>{step.title}</p>
-                <p style={{ fontSize: "12px", paddingTop: "5px" }}>
-                  {step.label}
-                </p>
-              </StepLabel>
-            </Step>
-          ))}
+          {steps.map((step, index) => {
+            let lastStepCheck =
+              count === 6 &&
+              isOnBoard &&
+              steps[steps.length - 1] &&
+              step.title === "Ready to Onboard";
+
+            return (
+              <Step key={index}>
+                <StepLabel StepIconComponent={ColorlibStepIcon}>
+                  <p style={{ margin: "0px", fontWeight: "600" }}>
+                    {`${lastStepCheck ? "Onboard" : step.title}`}
+                  </p>
+                  <p style={{ fontSize: "12px", paddingTop: "5px" }}>
+                    {`${lastStepCheck ? "Vendor Onboarded" : step.label}`}
+                  </p>
+                </StepLabel>
+              </Step>
+            );
+          })}
         </Stepper>
       </Stack>
     </div>

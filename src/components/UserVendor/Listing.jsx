@@ -60,7 +60,7 @@ export default function Listing() {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   };
@@ -89,7 +89,7 @@ export default function Listing() {
         })
         .catch((error) => {
           setIsLoading(false);
-          toast.error(error.message);
+          // toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };

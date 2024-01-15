@@ -93,7 +93,7 @@ function AddSiteVisitModal({
           }
           setIsLoading(false);
         } catch (err) {
-          toast.error(err.message);
+          // toast.error(err.message);
           console.log(err);
 
           setIsLoading(false);

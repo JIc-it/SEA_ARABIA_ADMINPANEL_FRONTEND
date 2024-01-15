@@ -45,7 +45,7 @@ function Table() {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.message);
+        // toast.error(error.message);
         console.error("Error fetching  data:", error);
       });
   };
@@ -60,7 +60,7 @@ function Table() {
       .catch((error) => {
         setIsLoading(false);
         console.error("Error fetching  data:", error);
-        toast.error(error.message);
+        // toast.error(error.message);
       });
   }, []);
 
@@ -85,7 +85,7 @@ function Table() {
         })
         .catch((error) => {
           setIsLoading(false);
-          toast.error(error.message);
+          // toast.error(error.message);
           console.error("Error fetching  data:", error);
         });
   };
