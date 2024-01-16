@@ -369,7 +369,7 @@ export default function EventListing() {
                   </th>
                 </tr>
               </thead>
-              {Events && Events.length > 0 ? (
+              {Events && Events.length > 0 && (
                 <>
                   {Events.map((item) => {
                     return (
@@ -446,12 +446,13 @@ export default function EventListing() {
                     );
                   })}
                 </>
-              ) : (
-                <tr>
-                  <td className="error">No Records Found</td>
-                </tr>
               )}
             </table>
+            {Events?.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
           </div>
           <div className="d-flex align-items-center">
             <ul className="pagination m-0 ms-auto">

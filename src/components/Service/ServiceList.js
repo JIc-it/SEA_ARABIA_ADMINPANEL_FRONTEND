@@ -398,6 +398,14 @@ function ServiceList() {
                                     )}
 
 
+                                
+                                {servicelist.length === 0 &&
+                                    (
+                                        <tr>
+                                            <td rowSpan={8}>No Record Found</td>
+                                        </tr>
+                                    )
+                                }
                                 {isLoading &&
                                     (
                                         <tr>
@@ -407,63 +415,9 @@ function ServiceList() {
                                         </tr>
                                     )
                                 }
-                                {/* <tr>
-                                    <td>
-                                        <span className="text-secondary">
-                                            Achille Lauro
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Round Trip Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">
-                                            StarLauro Cruises
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Active</span>
-                                    </td>
-
-                                    <td>
-                                        <span className="text-secondary">160</span>
-                                    </td>
-                                    <td
-                                        style={{
-                                            display: "flex",
-                                            gap: "10px",
-                                            alignItems: "baseline",
-                                        }}
-                                    >
-                                        <Link
-                                            to={""}
-                                            className="btn btn-sm btn-info"
-                                            style={{ padding: "6px 10px", borderRadius: "4px" }}
-                                        >
-                                            View &nbsp;
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="16"
-                                                height="16"
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-                                                <path
-                                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                                    stroke="white"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </Link>
-                                    </td>
-                                </tr> */}
                             </tbody>
                         </table>
+                        
                     </div>
                     <div className="d-flex align-items-center">
                         <ul className="pagination m-0 ms-auto">

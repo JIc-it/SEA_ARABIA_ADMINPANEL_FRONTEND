@@ -111,7 +111,7 @@ export const UpdateService = (id, data) => {
 export const CreateService = (data) => {
   return axiosInstance
     .post(`${CreateServiceURL}`, data, {
-      headers: { "Content-Type":'multipart/form-data', Accept: "*/*" },
+      headers: { "Content-Type": "application/json", Accept: "*/*"},
     })
     .then((response) => response.data)
     .catch((error) => {
@@ -122,7 +122,7 @@ export const CreateService = (data) => {
 
 export const AddImage = (data) => {
   return axiosInstance
-    .post(`${addImageURl}`, data)
+    .post(`${addImageURl}`, data,{headers:{"Content-Type":'multipart/form-data', Accept: "*/*" }})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

@@ -431,7 +431,6 @@ const ServiceEdit = () => {
         SetThumbNail(id, data)
             .then((datas) => {
                 toast.success(datas);
-                toast.error(datas)
             }
             ).catch((error) =>
                 toast.error(error.response.data))
@@ -868,9 +867,9 @@ console.log(formik.values.service_price_service);
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
                                     <p style={{ fontWeight: "550" }}>Profit Method</p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
-                                        {ProfitMethods && ProfitMethods.map((data) =>
-                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
-                                                <div className="card p-2"  style={{height:"150px",width:"15vw"}}>
+                                        {ProfitMethods && ProfitMethods.reverse().map((data) =>
+                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: 0, sea_arabia_percentage: 0, vendor_percentage: 0 })) }}>
+                                                <div className="card p-2"  style={{height:"200px",width:"15vw"}}>
                                                 <div className="d-flex justify-content-between align-items-center">
                                                         <img src={data.icon} alt={data.name} style={{width:"30px",marginRight:"5px",backgroundColor:"#ECF4FF"}}/>
                                                         <div>
