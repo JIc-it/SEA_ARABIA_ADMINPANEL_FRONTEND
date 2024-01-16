@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://seaarabia.jicitsolution.com/";
+const API_BASE_URL = "https://api.seaarabia.jicitsolution.com/";
 const REFRESH_URL = "api/token/refresh/";
 const VERIFY_URL = "api/token/verify/";
 const GENERATE_URL = "api/token/";
