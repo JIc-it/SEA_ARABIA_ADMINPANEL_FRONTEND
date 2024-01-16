@@ -3,7 +3,7 @@ import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -16,9 +16,12 @@ import { Link, useParams } from "react-router-dom";
 import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
 import { passwordRegex } from "../../../helpers";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
+import { AppContext } from "../../../Context/AppContext";
 
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
+  const locationContext = useContext(AppContext);
+  console.log("context in sales", locationContext);
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
@@ -29,22 +32,7 @@ function CreateSalesRep({ show, close }) {
   const [customerDetails, setCustomerDetails] = useState([]);
   const [location, setLocation] = useState([]);
 
-  useEffect(() => {
-    getLocation()
-      .then((data) => {
-        console.log("location is==", data.results);
-        setLocation(data.results);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.log("error while fetching location", error);
-      });
-  }, []);
-
   const validationSchema = Yup.object({
-    // name: Yup.string()
-    //   .required("Name is required")
-    //   .max(20, "Name must be at most 20 characters"),
     first_name: Yup.string()
       .required("First name is required")
       .max(20, "First name must be at most 20 characters"),
@@ -67,8 +55,15 @@ function CreateSalesRep({ show, close }) {
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+
     gender: Yup.string().required("Gender is required"),
+
+    location: Yup.object({
+      id: Yup.string().required("Location ID is required"),
+      name: Yup.string().required("Location name is required"),
+      label: Yup.string().required("Location label is required"),
+      code: Yup.string().required("Location code is required"),
+    }),
   });
 
   const formik = useFormik({
@@ -93,7 +88,7 @@ function CreateSalesRep({ show, close }) {
             email: values.email,
             password: values.password,
             mobile: values.mobile,
-            location: values.location,
+            location: values.location.id,
             gender: values.gender,
           };
 
@@ -269,8 +264,15 @@ function CreateSalesRep({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <CountryDropdown />
-            {formik?.touched?.location && formik.errors.location ? (
+            <CountryDropdown
+              gccCountries={locationContext?.gccCountriesList}
+              formik={formik}
+              onChange={(selectedCountry) => {
+                // Update the "location" field in the formik values
+                formik.setFieldValue("location", selectedCountry);
+              }}
+            />
+            {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
             <svg

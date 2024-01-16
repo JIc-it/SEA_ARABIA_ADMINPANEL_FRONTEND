@@ -3,7 +3,7 @@ import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -18,17 +18,23 @@ import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
+import { AppContext } from "../../../Context/AppContext";
 
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
   console.log("admin id ===", adminId);
+  const locationContext = useContext(AppContext);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
 
   useEffect(() => {
     getAdminListById(adminId)
@@ -65,7 +71,12 @@ function UpdateAdmin({ show, close }) {
       .required("Email is required"),
 
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.object({
+      id: Yup.string().required("Location ID is required"),
+      name: Yup.string().required("Location name is required"),
+      label: Yup.string().required("Location label is required"),
+      code: Yup.string().required("Location code is required"),
+    }).required("Location is required"),
   });
 
   const formik = useFormik({
@@ -75,7 +86,7 @@ function UpdateAdmin({ show, close }) {
       email: adminDetails?.email || "",
 
       mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      location: adminDetails?.profileextra?.location?.country || "",
 
       // Add other fields as needed
     },
@@ -91,9 +102,11 @@ function UpdateAdmin({ show, close }) {
             last_name: values.last_name,
             email: values.email,
             mobile: values.mobile,
-            profileextra: {
-              location: values.location,
-            },
+            // profileextra: {
+            //   location: values.location.id,
+            // },
+            location: values.location.id,
+            gender: values.gender,
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
@@ -127,7 +140,7 @@ function UpdateAdmin({ show, close }) {
 
       email: adminDetails?.email || "",
       mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location || "",
+      location: adminDetails?.profileextra?.location?.country|| "",
 
       // defineservice: adminDetails?.useridentificationdata?.,
       // Add other fields as needed
@@ -237,6 +250,39 @@ function UpdateAdmin({ show, close }) {
           ) : null}
         </div>
         <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Gender <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <select
+              className="form-control"
+              id=""
+              name="gender"
+              value={formik.values.gender}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            >
+              <option value="" label="Select a gender" />
+              {gender.map((item) => (
+                <option key={item.id} value={item.id} label={item.label}>
+                  {item.label}
+                </option>
+              ))}
+              {/* Add more options as needed */}
+            </select>
+            {formik.touched.gender && formik.errors.gender ? (
+              <div className="error">{formik.errors.gender}</div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
             <label
@@ -276,7 +322,14 @@ function UpdateAdmin({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <CountryDropdown />
+            <CountryDropdown
+              gccCountries={locationContext?.gccCountriesList}
+              formik={formik}
+              onChange={(selectedCountry) => {
+                // Update the "location" field in the formik values
+                formik.setFieldValue("location", selectedCountry);
+              }}
+            />
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}

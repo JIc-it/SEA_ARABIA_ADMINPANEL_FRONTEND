@@ -11,7 +11,7 @@ function CustomerView() {
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        console.log("BREAD scrumb customer detail is ---", data);
+       
         setCustomerDetails(data);
       })
       .catch((error) => {

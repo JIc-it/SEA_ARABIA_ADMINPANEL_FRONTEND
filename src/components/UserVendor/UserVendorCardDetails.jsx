@@ -31,7 +31,8 @@ function UserVendorCardDetails({ venderDetails }) {
   });
 
   const vendorId = useParams()?.id;
-  // console.log("v-id==", vendorId);
+
+  console.log("v-id==", vendorId);
   const customerId = useParams()?.customerId;
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Services");

@@ -13,7 +13,7 @@ function CustomerHeaders(props) {
   useEffect(() => {
     getCustomerTotalCount()
       .then((data) => {
-        console.log("customer-Count", data);
+        // console.log("customer-Count", data);
         setCount(data);
 
         // setCustomerId(data.results[0]?.id);

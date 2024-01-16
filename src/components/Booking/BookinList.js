@@ -6,16 +6,16 @@ import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
-import { getBookingList,getBookingCount } from "../../services/booking"
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css'
-
+import { getBookingList, getBookingCount } from "../../services/booking";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { getBookingData } from "../../services/CustomerHandle";
 
 const style = {
   position: "absolute",
@@ -30,10 +30,12 @@ const style = {
 };
 
 const BookinList = () => {
+  const customerId = useParams()?.id;
+  console.log("customerid", customerId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
- 
+
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
@@ -54,11 +56,11 @@ const BookinList = () => {
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
 
-  
-
   useEffect(() => {
-    {search.trim()!=="" ? setIsLoading(false):setIsLoading(true);}
-    const Pass={status:"",search:search,refund_status:""}
+    {
+      search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
+    }
+    const Pass = { status: "", search: search, refund_status: "" };
     getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
@@ -67,26 +69,26 @@ const BookinList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data)
+        toast.error(error.response.data);
       });
   }, [search]);
 
-  useEffect(()=>{
+  useEffect(() => {
     getBookingCount()
       .then((data) => {
         setIsLoading(false);
         setCount({
-          total_booking:data?.total_booking,
-          today_booking:data?.today_booking,
-          total_confirmed_booking:data?.total_confirmed_booking,
-          total_cancelled_booking:data?.total_cancelled_booking
+          total_booking: data?.total_booking,
+          today_booking: data?.today_booking,
+          total_confirmed_booking: data?.total_confirmed_booking,
+          total_cancelled_booking: data?.total_cancelled_booking,
         });
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data)
+        toast.error(error.response.data);
       });
-  },[])
+  }, []);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -109,8 +111,8 @@ const BookinList = () => {
         });
   };
 
-  const handleSearch=()=>{
-    const Pass={status:"",search:search,refund_status:""}
+  const handleSearch = () => {
+    const Pass = { status: "", search: search, refund_status: "" };
     getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
@@ -119,9 +121,10 @@ const BookinList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data)
+        toast.error(error.response.data);
       });
-  }
+  };
+  
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -235,9 +238,7 @@ const BookinList = () => {
               <div className="col-12 actions_menu my-2">
                 <div className="action_menu_left col-8">
                   <div>
-                    <div
-                      style={{ display: "flex" }}
-                    >
+                    <div style={{ display: "flex" }}>
                       <div className="input-icon">
                         <span className="input-icon-addon">
                           <svg
@@ -302,7 +303,12 @@ const BookinList = () => {
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
                   >
-                    <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/booking/booking-export/">Export &nbsp;</a>
+                    <a
+                      style={{ textDecoration: "none" }}
+                      href="https://seaarabia.jicitsolution.com/booking/booking-export/"
+                    >
+                      Export &nbsp;
+                    </a>
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -395,106 +401,116 @@ const BookinList = () => {
                     <tbody>
                       {!isLoading ? (
                         <>
-                          {bookingList.length>0 && 
-                          bookingList.map((data)=>
-                          <tr>
-                            {console.log(data)}
-                            <td>
-                              <span className="text-secondary">
-                              {data.booking_id}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">{data.booking_item}</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {data?.service?.category?.map((items)=>
-                                items.name
-                                )}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">{data?.service?.company}</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {data?.first_name}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {data?.user_type}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {new Date(data?.start_date).toLocaleDateString("es-CL")}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {new Date(data?.created_at).toLocaleDateString("es-CL")}
-                              </span>
-                            </td>
-                            <td>
-                              <span
-                                className="badge  text-blue-fg "
-                                style={{
-                                  width: "100px",
-                                  padding: "7px 9px 5px 9px ",
-                                  borderRadius: "4px",
-                                  background:data?.status==="Completed"? "#13B370":data?.status==="Unsuccessful"?"#DC7932":data?.status==="Cancelled"?"#DE4E21":"#2684FC",
-                                  
-                                }}
-                              >
-                                {data?.status ? data?.status: "-"}
-                              </span>
-                            </td>
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                to={`/booking-view/${data?.id}/`}
-                               
-
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "7px 10px 5px 10px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                              >
-                                View &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
+                          {bookingList.length > 0 &&
+                            bookingList.map((data) => (
+                              <tr>
+                                {console.log(data)}
+                                <td>
+                                  <span className="text-secondary">
+                                    {data.booking_id}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data.booking_item}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.service?.category?.map(
+                                      (items) => items.name
+                                    )}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.service?.company}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.first_name}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.user_type}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {new Date(
+                                      data?.start_date
+                                    ).toLocaleDateString("es-CL")}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {new Date(
+                                      data?.created_at
+                                    ).toLocaleDateString("es-CL")}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span
+                                    className="badge  text-blue-fg "
+                                    style={{
+                                      width: "100px",
+                                      padding: "7px 9px 5px 9px ",
+                                      borderRadius: "4px",
+                                      background:
+                                        data?.status === "Completed"
+                                          ? "#13B370"
+                                          : data?.status === "Unsuccessful"
+                                          ? "#DC7932"
+                                          : data?.status === "Cancelled"
+                                          ? "#DE4E21"
+                                          : "#2684FC",
+                                    }}
+                                  >
+                                    {data?.status ? data?.status : "-"}
+                                  </span>
+                                </td>
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "baseline",
+                                  }}
                                 >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
-                          </tr>
-                          
-                          )
-                          }
+                                  <Link
+                                    to={`/booking-view/${data?.id}/`}
+                                    className="btn btn-sm btn-info"
+                                    style={{
+                                      padding: "7px 10px 5px 10px",
+                                      borderRadius: "4px",
+                                      borderRadius:
+                                        "var(--roundness-round-inside, 6px)",
+                                      background: "#187AF7",
+                                      boxSShadow:
+                                        "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                                    }}
+                                  >
+                                    View &nbsp;
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4 12L12 4M12 4H6M12 4V10"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
                         </>
                       ) : (
                         <tr>
@@ -505,12 +521,13 @@ const BookinList = () => {
                       )}
                     </tbody>
                   </table>
-                  {
-                    bookingList.length === 0 &&
-                    (<div style={{ height: "5vh", marginTop: "50px" }} >
-                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
-                    </div>)
-                  }
+                  {bookingList.length === 0 && (
+                    <div style={{ height: "5vh", marginTop: "50px" }}>
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>
+                        No Record Found
+                      </p>
+                    </div>
+                  )}
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">

@@ -41,6 +41,38 @@ export default function CustomerListing() {
         console.error("Error fetching Customer List data:", error);
       });
   }, []);
+
+  // export
+  const handleExportCustomerData = () => {
+    customerExport()
+      .then((response) => {
+        // Assuming the response.data is the CSV content
+        const csvData = response.data;
+
+        // Convert the CSV data to a Blob
+        const blob = new Blob([csvData], { type: "text/csv" });
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "exported_data.csv";
+
+        // Append the link to the document
+        document.body.appendChild(link);
+
+        // Trigger the download
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
+
+        console.log("Exported Customer data successfully!");
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error.message);
+      });
+  };
+
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -49,7 +81,7 @@ export default function CustomerListing() {
     setIsLoading(true);
     getCustomerSearch()
       .then((data) => {
-        console.log("Search ---:", data);
+        // console.log("Search ---:", data);
         if (data) {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
@@ -75,66 +107,6 @@ export default function CustomerListing() {
     const data = { search: search, status: selectedValue, role: "User" };
     getCustomerSearch(data).then((res) => setListDiscount(res?.results));
   }, [selectedValue, isRefetch, search]);
-
-  // const handleExportCustomerData = () => {
-  //   const queryParams = {
-  //     fields: [
-  //       "NAME",
-  //       "EMAIL",
-  //       "PHONE",
-  //       "LOCATION",
-  //       "CREATED ON",
-  //       "CREATED BY",
-  //       "STATUS",
-  //     ],
-  //   };
-
-  //   customerExport(queryParams)
-  //     .then((data) => {
-  //       setExportedData(data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error exporting customer data:", error);
-  //     });
-  // };
-
-  const handleExportCustomerData = () => {
-    if (listDiscount) {
-      const header = [
-        "NAME",
-        "EMAIL",
-        "PHONE",
-        "LOCATION",
-        "CREATED ON",
-        "CREATED BY",
-        "STATUS",
-      ];
-      const csvData = listDiscount.map((elem) => {
-        let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.first_name,
-          elem.email,
-          elem.mobile,
-          elem.location,
-          elem.state?.state,
-          formatedDate,
-          elem.created_by,
-          `${elem.status ? elem.status : "-"} `,
-        ];
-      });
-
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "Customer-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
-  };
 
   return (
     <div style={{ height: "100vh" }}>
@@ -383,6 +355,7 @@ export default function CustomerListing() {
                     let formatedDate = item.created_at;
                     return (
                       <tr>
+                        {console.log("item listDiscount", item)}
                         <td>
                           <span className="text-secondary">
                             {item.first_name}
@@ -395,7 +368,9 @@ export default function CustomerListing() {
                           <span className="text-secondary">{item.mobile}</span>
                         </td>
                         <td>
-                          <span className="text-secondary">India</span>
+                          <span className="text-secondary">
+                            {item?.location}
+                          </span>
                         </td>
                         <td>
                           <span className="text-secondary">08 OCT,2022</span>

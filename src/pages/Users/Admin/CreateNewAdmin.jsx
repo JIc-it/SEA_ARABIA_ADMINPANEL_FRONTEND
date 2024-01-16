@@ -7,21 +7,20 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
-import {
-  UpdateAdminListById,
-  createAdmin,
-  getAdminListById,
-  getSalesRepListById,
-} from "../../../services/GuestHandle";
+import { useContext } from "react";
+import { createAdmin } from "../../../services/GuestHandle";
+import { AppContext } from "../../../Context/AppContext";
 import { useParams } from "react-router-dom";
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 function CreateNewAdmin({ show, close, locationList }) {
   const theme = useTheme();
   const adminId = useParams();
-  console.log("adminId", adminId);
+
   const [isRefetch, setIsRefetch] = useState();
+
+  const locationContext = useContext(AppContext);
+
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
@@ -32,21 +31,6 @@ function CreateNewAdmin({ show, close, locationList }) {
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
-
-  useEffect(() => {
-    getLocation()
-      .then((data) => {
-        console.log("location is==", data.results);
-        const loc = locationList.find(
-          (country) => country.code === data.profileextra.location.country_code
-        );
-        setLocation(loc);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.log("error while fetching location", error);
-      });
-  }, []);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -70,9 +54,14 @@ function CreateNewAdmin({ show, close, locationList }) {
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
-
+    gender: Yup.string().required("Gender is required"),
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+    location: Yup.object({
+      id: Yup.string().required("Location ID is required"),
+      name: Yup.string().required("Location name is required"),
+      label: Yup.string().required("Location label is required"),
+      code: Yup.string().required("Location code is required"),
+    }).required("Location is required"),
   });
 
   const formik = useFormik({
@@ -89,6 +78,9 @@ function CreateNewAdmin({ show, close, locationList }) {
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
+
+      // const selectedCountry = locationContext && locationContext.length>0 && data.profile
+
       if (!isLoading) {
         try {
           const data = {
@@ -99,7 +91,7 @@ function CreateNewAdmin({ show, close, locationList }) {
             password: values.password,
             mobile: values.mobile,
 
-            location: values.location,
+            location: values.location.id,
             gender: values.gender,
           };
 
@@ -248,7 +240,7 @@ function CreateNewAdmin({ show, close, locationList }) {
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a gender" />
-              {gender.map((item) => (
+              {gender?.map((item) => (
                 <option key={item.id} value={item.id} label={item.label}>
                   {item.label}
                 </option>
@@ -258,23 +250,6 @@ function CreateNewAdmin({ show, close, locationList }) {
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}
-          </div>
-        </div>
-        <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{
-              paddingBottom: "10px",
-              fontWeight: "600",
-              fontSize: "13px",
-            }}
-          >
-            Location <span style={{ color: "red" }}>*</span>
-          </label>
-          <div style={{ position: "relative" }}>
-            <CountryDropdown gccCountries={locationList} formik={formik} />
-
-            {/* </div> */}
           </div>
         </div>
         <div style={{ margin: "20px" }}>
@@ -304,6 +279,33 @@ function CreateNewAdmin({ show, close, locationList }) {
             ) : null}
           </div>
         </div>
+        <div style={{ margin: "20px" }}>
+          <label
+            htmlFor=""
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
+          >
+            Location <span style={{ color: "red" }}>*</span>
+          </label>
+          <div style={{ position: "relative" }}>
+            <CountryDropdown
+              gccCountries={locationContext?.gccCountriesList}
+              formik={formik}
+              onChange={(selectedCountry) => {
+                // Update the "location" field in the formik values
+                formik.setFieldValue("location", selectedCountry);
+              }}
+            />
+            {formik.touched.location && formik.errors.location ? (
+              <div className="error">{formik.errors.location}</div>
+            ) : null}
+            {/* </div> */}
+          </div>
+        </div>
+
         <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">

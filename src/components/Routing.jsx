@@ -57,7 +57,7 @@ import RefundRequestView from "./Booking/RefundRequestView";
 import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
 import EventAdd from "./Events/EventAdd";
-
+import BookinList from "./Booking/BookinList";
 
 function AllRouting() {
   return (
@@ -70,11 +70,12 @@ function AllRouting() {
         element={<VenderIndivitualEdit />}
       ></Route>
       <Route path="/booking" element={<Bookings />} />
+      <Route path="/booking/:id" element={<BookinList />} />
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
-      <Route path="/refunds-request" element={<RefundRequestList/>} />
-      <Route path="/refunds-request/:id" element={<RefundRequestView/>} />
+      <Route path="/refunds-request" element={<RefundRequestList />} />
+      <Route path="/refunds-request/:id" element={<RefundRequestView />} />
       <Route path="/refunds-history" element={<RefundHistoryList />} />
       <Route path="/refunds-history/:id" element={<RefundHistoryView />} />
       {/* //////////Refund//////////////////// */}

@@ -3,6 +3,7 @@ import guestUserImg from "../../static/img/guest-user.png";
 import filterIcon from "../../static/img/Filter.png";
 import { Link } from "react-router-dom";
 import {
+  customerExport,
   getGuestUserRequest,
   getTotalGuestUser,
 } from "../../services/CustomerHandle.jsx";
@@ -102,6 +103,37 @@ const GuestUser = () => {
         })
       : [];
 
+  // export
+  const handleExportGuestData = () => {
+    customerExport()
+      .then((response) => {
+        // Assuming the response.data is the CSV content
+        const csvData = response.data;
+
+        // Convert the CSV data to a Blob
+        const blob = new Blob([csvData], { type: "text/csv" });
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "exported_data.csv";
+
+        // Append the link to the document
+        document.body.appendChild(link);
+
+        // Trigger the download
+        link.click();
+
+        // Remove the link from the document
+        document.body.removeChild(link);
+
+        console.log("Exported Customer data successfully!");
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error.message);
+      });
+  };
+
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -152,7 +184,11 @@ const GuestUser = () => {
             </div>
           </div>
           <div className="action_buttons col-4">
-            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
+            <button
+              className="btn btn-outline"
+              style={{ borderRadius: "6px" }}
+              onClick={handleExportGuestData}
+            >
               Export &nbsp;
               <svg
                 xmlns="http://www.w3.org/2000/svg"
