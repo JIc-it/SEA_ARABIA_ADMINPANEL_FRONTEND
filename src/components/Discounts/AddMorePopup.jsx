@@ -15,6 +15,7 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import CircularProgress from "@mui/material/CircularProgress";
+import ServiceList from '../Service/ServiceList';
 
 const style = {
     position: 'absolute',
@@ -53,30 +54,40 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
           });
       }, []);
 
-    useEffect(()=>{
+    useEffect(() => {
         // setIsLoading(true)
         getOneServiceListing(idset)
-        .then((data) => {
-            // setIsLoading(false)
-            setCompanyList((prev) => {
-                const updatedList = prev?.map((company) => {
-                    if (company.id === idset) {
-                        return {
-                            ...company,
-                            companyData: data,
-                        };
-                    }
-                    return company;
-                });
+            .then((data) => {
+                // setIsLoading(false)
+                setCompanyList((prev) => {
+                    const updatedList = prev?.map((company) => {
+                        if (company.id === idset) {
+                            return {
+                                ...company,
+                                companyData: data,
+                            };
+                        }
+                        return company;
+                    });
 
-                return updatedList;
+                    return updatedList;
+                });
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
             });
-            setServiceListing(data)
-        })
-        .catch((error) => {
-            console.error("Error fetching data:", error);
-        });
-    },[idset])
+    }, [idset])
+
+    useEffect(() => {
+        getOneServiceListing()
+            .then((data) => {
+                setServiceListing(data)
+                console.log(data, "oneservice");
+            })
+            .catch((error) => {
+                console.error("Error fetching data:", error);
+            });
+    }, [])
 
     const lowercasedFilter = search.toLowerCase();
     const filteredData = companylist?.filter(item => {

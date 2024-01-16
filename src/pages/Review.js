@@ -235,6 +235,11 @@ const Review = () => {
                     <CircularProgress />
                   </div>
                 }
+                  {servicefilterlist.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
               </div>
             </div>
           </div>
@@ -255,7 +260,7 @@ const Review = () => {
             }
             <div className='row'>
               {filterdataidData.length === 0 &&
-                <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Review Found</div>
+                <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Record Found</div>
               }
               {filterdataidData.map((data) =>
                 <div key={data.id} className='col-lg-4 mb-2 mt-2'>

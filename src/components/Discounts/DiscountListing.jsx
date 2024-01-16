@@ -322,7 +322,7 @@ const handleopenfilter=()=>{
                 </>
               ) : (
                 <tr>
-                  <td className="error">No Records Found</td>
+                  <td className="error">No Record Found</td>
                 </tr>
               )} 
 
