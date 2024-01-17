@@ -749,7 +749,7 @@ function SideBar() {
                   </div>
                 </div>
               </li> */}
-              <li
+              {/* <li
                 className={`nav-item dropdown ${
                   activeLink === "/service" ? "active" : ""
                 }`}
@@ -783,8 +783,134 @@ function SideBar() {
                   </svg>
                   <span className="nav-link-title">&nbsp; Service</span>
                 </a>
+              </li> */}
+              <li
+                className={`nav-item dropdown 
+                  ${openDropdown === "/booking" ? "active" : ""}
+                }`}
+                style={{
+                  color: activeLink === "/" ? "#006875" : "",
+                  fontSize: activeLink === "/" ? "17px" : "",
+                }}
+              >
+                <a
+                  className={`nav-link dropdown-toggle`}
+                  href="/booking"
+                  data-bs-toggle="dropdown"
+                  data-bs-auto-close="false"
+                  role="button"
+                  onClick={() => handleDropdownToggle("/booking")}
+                  // aria-expanded="false"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                  >
+                    <path
+                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                      stroke="#68727D"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                      stroke="#68727D"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="nav-link-title">Service Management</span>
+                </a>
+                <div className="dropdown-menu">
+                  <div className="dropdown-menu-columns">
+                    <div className="dropdown-menu-column">
+                      <a
+                        className={`dropdown-item ${
+                          (activeLink === "/Service" ? "active" : ""
+                          )
+                        }`}
+                        style={{
+                          color: activeLink === "/Service" ? "#006875" : "",
+                        }}
+                        href="/Service"
+                        // onClick={handleBookingClick}
+                        // style={{ color: "#006875" }}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="16"
+                          viewBox="0 0 22 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                            fill="#006875"
+                            cancellation-booking
+                          />
+                        </svg>
+                        &nbsp; Service{" "}
+                      </a>
+                      <a
+                        className={`dropdown-item ${
+                          activeLink === "/availability" ? "active" : ""
+                        }`}
+                        style={{
+                          color:
+                            activeLink === "/availability"
+                              ? "#006875"
+                              : "",
+                        }}
+                        // onClick={handleBookingCancellationClick}
+                        href="/availability"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="16"
+                          viewBox="0 0 22 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                            fill="#68727D"
+                          />
+                        </svg>
+                        &nbsp; Availablity
+                      </a>
+                      <a
+                        className={`dropdown-item ${
+                          activeLink === "/calendar" ? "active" : ""
+                        }`}
+                        // onClick={handleBookingHistoryClick}
+                        style={{
+                          color:
+                            activeLink === "/calendar"
+                              ? "#006875"
+                              : "",
+                        }}
+                        href="/calendar"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="22"
+                          height="16"
+                          viewBox="0 0 22 16"
+                          fill="none"
+                        >
+                          <path
+                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                            fill="#68727D"
+                          />
+                        </svg>
+                        &nbsp; Calendar
+                      </a>
+                    </div>
+                  </div>
+                </div>
               </li>
-
               <li
                 className={`nav-item ${
                   activeLink === "/payments" ? "active" : ""

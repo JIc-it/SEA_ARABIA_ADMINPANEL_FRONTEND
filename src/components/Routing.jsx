@@ -58,6 +58,8 @@ import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
 import EventAdd from "./Events/EventAdd";
 import BookinList from "./Booking/BookinList";
+import Availability from "./Service/Availability";
+import Calendar from "./Service/Calendar";
 
 function AllRouting() {
   return (
@@ -151,6 +153,9 @@ function AllRouting() {
       <Route path="/events-and-packages" element={<EventListing />} />
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
+      <Route path="/availability" element={<Availability />} />
+      <Route path="/calendar" element={<Calendar />} />
+
     </Routes>
   );
 }
