@@ -41,7 +41,7 @@ function ServiceList() {
         getServiceListing(search)
             .then((data) => {
                 setServiceList(data?.results);
-                setListPageUrl({ next: data.next, previous: data.previous });
+                setListPageUrl({ next: data?.next, previous: data?.previous });
                 setIsLoading(false)
             })
             .catch((error) => {
@@ -62,7 +62,7 @@ function ServiceList() {
           getListDataInPagination(convertedUrl)
             .then((data) => {
               setIsLoading(false);
-              setListPageUrl({ next: data.next, previous: data.previous });
+              setListPageUrl({ next: data?.next, previous: data?.previous });
               setServiceList(data?.results);
             })
             .catch((error) => {
@@ -326,13 +326,13 @@ function ServiceList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isLoading && servicelist.length > 0 &&
+                                {!isLoading && servicelist?.length > 0 &&
 
-                                    servicelist.map((data) =>
+                                    servicelist?.map((data) =>
                                         <tr>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.name}
+                                                    {data?.name}
                                                 </span>
                                             </td>
 
@@ -340,7 +340,7 @@ function ServiceList() {
                                             {<span className="text-secondary">{data?.category[0]}</span>}
                                             <br></br>
                                             {<span className="text-secondary">{data?.category[1]}</span>}
-                                                {data.category.length> 2 && <span className="text-secondary">...,</span>}
+                                                {data?.category.length> 2 && <span className="text-secondary">...,</span>}
 
                                             </td>
 
@@ -348,20 +348,20 @@ function ServiceList() {
                                             {<span className="text-secondary">{data?.sub_category[0]}</span>}
                                             <br></br>
                                             {<span className="text-secondary">{data?.sub_category[1]}</span>}
-                                                {data.sub_category.length> 2 && <span className="text-secondary">...,</span>}
+                                                {data?.sub_category.length> 2 && <span className="text-secondary">...,</span>}
 
                                             </td>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.company}
+                                                    {data?.company}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span className="text-secondary">{data.is_active === true ? "Active" : "Inactive"}</span>
+                                                <span className="text-secondary">{data?.is_active === true ? "Active" : "Inactive"}</span>
                                             </td>
 
                                             <td>
-                                                <span className="text-secondary">{data.total_booking}</span>
+                                                <span className="text-secondary">{data?.total_booking}</span>
                                             </td>
                                             <td
                                                 style={{
@@ -371,7 +371,7 @@ function ServiceList() {
                                                 }}
                                             >
                                                 <Link
-                                                    to={"/service-view/"+data.id}
+                                                    to={"/service-view/"+data?.id}
                                                     className="btn btn-sm btn-info"
                                                     style={{ padding: "6px 10px", borderRadius: "4px" }}
                                                 >
