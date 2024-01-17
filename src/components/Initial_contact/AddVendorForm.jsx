@@ -33,7 +33,8 @@ const AddVendorInfo = ({ formik, locationList }) => {
       formik.setFieldValue("fullName", data.first_name);
       formik.setFieldValue("last_name", data.last_name);
       formik.setFieldValue("email", data.email);
-      formik.setFieldValue("phone", data.mobile);
+      const updatedNumber = data.mobile.replace("+965 ", "");
+      formik.setFieldValue("phone", updatedNumber);
       const selectedCountryObject =
         locationList &&
         locationList.length > 0 &&

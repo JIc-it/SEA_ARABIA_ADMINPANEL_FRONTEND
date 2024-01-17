@@ -71,11 +71,13 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
   [`&.${stepConnectorClasses.active}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundColor: "#187AF7",
+      margin:'0 13px'
     },
   },
   [`&.${stepConnectorClasses.completed}`]: {
     [`& .${stepConnectorClasses.line}`]: {
       backgroundColor: "#187AF7",
+      margin:'0 13px'
     },
   },
   [`& .${stepConnectorClasses.line}`]: {
@@ -84,6 +86,7 @@ const ColorlibConnector = styled(StepConnector)(({ theme }) => ({
     backgroundColor:
       theme.palette.mode === "dark" ? theme.palette.grey[800] : "#eaeaf0",
     borderRadius: 1,
+    margin:'0 13px'
   },
 }));
 

@@ -3,6 +3,7 @@ import { getUserVendorCard } from "../../services/userVendorsServices";
 
 export default function UserVendorHeader() {
   const [vendorCount, setVendorCount] = useState();
+  
   useEffect(() => {
     getUserVendorCard()
       .then((data) => {

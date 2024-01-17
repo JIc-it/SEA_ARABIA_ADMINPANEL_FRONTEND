@@ -569,8 +569,7 @@ function SideBar() {
                     <div className="dropdown-menu-column">
                       <a
                         className={`dropdown-item ${
-                          (activeLink === "/booking" ? "active" : ""
-                          )
+                          activeLink === "/booking" ? "active" : ""
                         }`}
                         style={{
                           color: activeLink === "/booking" ? "#006875" : "",
@@ -600,9 +599,7 @@ function SideBar() {
                         }`}
                         style={{
                           color:
-                            activeLink === "/refunds-request"
-                              ? "#006875"
-                              : "",
+                            activeLink === "/refunds-request" ? "#006875" : "",
                         }}
                         onClick={handleBookingCancellationClick}
                         href="/refunds-request"
@@ -628,9 +625,7 @@ function SideBar() {
                         onClick={handleBookingHistoryClick}
                         style={{
                           color:
-                            activeLink === "/refunds-history"
-                              ? "#006875"
-                              : "",
+                            activeLink === "/refunds-history" ? "#006875" : "",
                         }}
                         href="/refunds-history"
                       >
@@ -1053,6 +1048,45 @@ function SideBar() {
                     </div>
                   </div>
                 </div>
+              </li>
+
+              <li
+                className={`nav-item  ${
+                  activeLink === "/analytics" ? "active" : ""
+                }`}
+              >
+                <a
+                  className="nav-link"
+                  href="/permissions"
+                  style={{
+                    color: activeLink === "/analytics" ? "#006875" : "",
+                    fontSize: activeLink === "/dashboard" ? "17px" : "",
+                  }}
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="22"
+                    height="22"
+                    viewBox="0 0 22 22"
+                    fill="none"
+                  >
+                    <path
+                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                      stroke="#68727D"
+                      strokeWidth="1.5"
+                    />
+                    <path
+                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                      stroke="#68727D"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                  <span className="nav-link-title">
+                    {" "}
+                    &nbsp; Roles & Permissions{" "}
+                  </span>
+                </a>
               </li>
               <li
                 className={`nav-item  ${

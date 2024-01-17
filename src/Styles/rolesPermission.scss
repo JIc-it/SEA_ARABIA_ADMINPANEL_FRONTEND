@@ -1,0 +1,10 @@
+.permission-card {
+  background: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 0 5px #ccc;
+  height: 16rem;
+  .title {
+    border-bottom: 1px solid #ccc;
+    padding: 1rem;
+  }
+}

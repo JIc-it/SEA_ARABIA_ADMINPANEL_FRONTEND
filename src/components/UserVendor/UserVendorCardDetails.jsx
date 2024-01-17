@@ -66,7 +66,7 @@ function UserVendorCardDetails({ venderDetails }) {
 
   useEffect(() => {
     const companyId = venderDetails?.company_company_user?.id;
-  
+
     if (companyId) {
       setIsLoadingService(true);
       getServiceListing(null, companyId)
@@ -113,9 +113,7 @@ function UserVendorCardDetails({ venderDetails }) {
         >
           <div className="card-body">
             <div className="left_header_new">
-              <div>
-                <p className="card_content">{venderDetails?.first_name}</p>
-              </div>
+              <p className="card_content pt-0 ">{venderDetails?.first_name}</p>
               <div className="card_header_contents">
                 <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
@@ -137,7 +135,7 @@ function UserVendorCardDetails({ venderDetails }) {
                     />
                   </svg>{" "}
                   &nbsp; {venderDetails?.account_id}{" "}
-                  <p style={{ marginLeft: "5px" }}>| &nbsp;</p>
+                  <p style={{ marginLeft: "3px" }}>| &nbsp;</p>
                 </p>
                 <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
@@ -155,7 +153,7 @@ function UserVendorCardDetails({ venderDetails }) {
                     />
                   </svg>{" "}
                   &nbsp; {venderDetails?.role}{" "}
-                  <p style={{ marginLeft: "5px" }}>| &nbsp;</p>
+                  <p style={{ marginLeft: "3px" }}>| &nbsp;</p>
                 </p>
                 <p className="card_content" style={{ display: "inline-flex" }}>
                   <svg
@@ -172,7 +170,7 @@ function UserVendorCardDetails({ venderDetails }) {
                       fill="white"
                     />
                   </svg>{" "}
-                  &nbsp; {venderDetails?.profileextra?.location?.location}
+                  &nbsp; {venderDetails?.profileextra?.location?.country}
                 </p>
               </div>
             </div>

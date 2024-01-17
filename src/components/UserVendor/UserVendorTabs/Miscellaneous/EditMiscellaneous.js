@@ -29,21 +29,37 @@ function EditMiscellaneous({
       // date: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required").test(
-        "is-not-blank",
-        "Title must not contain only blank spaces",
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
+      files: Yup.mixed().test(
+        "fileSize",
+        "File size must not exceed 5MB",
         (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
+
+          // Check if the file size is less than or equal to 5MB
+          return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
         }
       ),
-      //   files: Yup.string().required("Please upload  file"),
-      note: Yup.string().required("Note is required").test(
-        "is-not-blank",
-        "Note must not contain only blank spaces",
-        (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
-        }
-      ),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),

@@ -229,10 +229,10 @@ export default function MiscellaneousList() {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No attachment notes found
+                              No Attachment / Note found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
-                              Add Your Miscellaneous here
+                              Add Your Attachment / Note here
                             </p>
                           </div>
                         </div>

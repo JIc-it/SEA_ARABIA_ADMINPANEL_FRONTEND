@@ -34,16 +34,16 @@ function VendorDetailsCard() {
       <div className="card personal_details">
         <div className="card-body">
           <div className="left_header">
-            <div>
+         
               <p
                 className="card_content"
                 style={{ textTransform: "capitalize" }}
               >
                 {userdata?.first_name}
               </p>
-            </div>
+          
             <div className="card_header_contents">
-              <p className="card_content">
+              <p className="card_content pb-3">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="21"

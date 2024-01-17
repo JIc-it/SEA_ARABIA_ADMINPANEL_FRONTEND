@@ -57,6 +57,7 @@ import RefundRequestView from "./Booking/RefundRequestView";
 import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
 import EventAdd from "./Events/EventAdd";
+import RolePermission from "../pages/RolePermission";
 
 
 function AllRouting() {
@@ -131,6 +132,7 @@ function AllRouting() {
         element={<AdminActivityLog />}
       />
       {/* ///////////////User/////////////////////// */}
+      <Route path="/permissions" element={<RolePermission />} />
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />

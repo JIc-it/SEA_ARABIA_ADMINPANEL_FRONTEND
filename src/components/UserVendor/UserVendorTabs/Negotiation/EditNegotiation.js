@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
 import { updateNegotiationAttachment } from "../../../../services/leadMangement";
 import { FileUploader } from "../../../Modal/FileUploader";
+import { API_BASE_URL } from "../../../../services/authHandle";
 
 function EditNegotiation({
   show,
@@ -16,8 +17,7 @@ function EditNegotiation({
   companyID,
 }) {
   const [isLoading, setIsLoading] = useState(false);
-  var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/negotiation/attachment/";
+  var substringToRemove = `${API_BASE_URL}assets/media/company/negotiation/attachment/`;
   const formatedFileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -40,7 +40,19 @@ function EditNegotiation({
             return /\S/.test(value); // Checks if there is at least one non-whitespace character
           }
         ),
-      //   files: Yup.string().required("Please upload  file"),
+      files: Yup.mixed().test(
+        "fileSize",
+        "File size must not exceed 5MB",
+        (value) => {
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
+
+          // Check if the file size is less than or equal to 5MB
+          return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
+        }
+      ),
       note: Yup.string()
         .required("Note is required")
         .test(
