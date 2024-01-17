@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountEdit() {
+    const [servicelisting,setServiceListing]=useState([])
     const [isLoading, setIsLoading] = useState(false)
     const params=useParams()
     const theme = useTheme();
@@ -318,7 +319,7 @@ const convertAndFormatDateTime = (dateTimeString) => {
 const updateServiceIndex = (id, name,servid, companyData) => {
     formik.setValues((prev) => {
         const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
-        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company === id);
+        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company_id === id);
 
         // Update companies list
         const updatedCompanyList =
@@ -338,12 +339,12 @@ const updateServiceIndex = (id, name,servid, companyData) => {
             existingServiceIndex !== -1
                 ? [
                       ...prev.services.slice(0, existingServiceIndex),
-                      ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
+                      ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
                       ...prev.services.slice(existingServiceIndex + 1),
                   ]
                 : [
                       ...prev.services,
-                      ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
+                      ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
                   ];
 
         return {
@@ -355,10 +356,9 @@ const updateServiceIndex = (id, name,servid, companyData) => {
 };
 
 
-
 const updateOneServiceIndex = (id, name, companyid, companyName) => {
     formik.setValues((prev) => {
-        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company === companyid);
+        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company_id === companyid);
         const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === companyid);
 
         // Update companies list
@@ -370,7 +370,7 @@ const updateOneServiceIndex = (id, name, companyid, companyName) => {
         // Update services list
         const updatedList =
             existingServiceIndex === -1
-                ? [...prev.services, { id: id, name: name, company: companyid }]
+                ? [...prev.services, { id: id, name: name, company_id: companyid }]
                 : prev.services;
 
         return {
@@ -389,7 +389,7 @@ const CouponCode = (data) => {
 
 function companywithservice(companyid){
  
-    const serviceCount = formik?.values.services?.map((dat)=>dat.company_id===companyid) || 0;
+    const serviceCount = formik?.values.services?.filter((dat)=>dat.company_id===companyid) || 0;
     return serviceCount.length
 
 }
@@ -400,7 +400,8 @@ function companywithservicelength(companyid){
   return serviceCount.length
 
 }
-const [servicelisting,setServiceListing]=useState([])
+
+
 
 if(!isLoading){
     return (
@@ -876,8 +877,9 @@ if(!isLoading){
                             {formik.touched.image && formik.errors.image ? (
                                 <div className="error">{formik.errors.image}</div>
                             ) : null} 
-                            {!formik?.values?.image?.name && formik?.values?.image?.includes("https://") && <img className='my-3 w-25' src={formik?.values?.image}/>}
-                            {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
+                            {formik?.values?.image?.name ? <span className='my-3'>File Name : {formik.values?.image?.name}</span>:
+                            <img className='my-3 w-25 rounded' src={formik?.values?.image} alt={formik?.values?.image} />
+                            }
                         </Box>
                     </div>
                     <hr style={{borderBottom:"2px solid black"}}/>

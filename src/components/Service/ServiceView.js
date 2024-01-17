@@ -26,7 +26,6 @@ const ServiceView = () => {
         getOneService(params.id)
             .then((data) => {
                 setOneService(data);
-                console.log(data,"fetched");
                 setIsLoading(false)
             })
             .catch((error) => {
@@ -157,7 +156,7 @@ const ServiceView = () => {
                            
                                 <div className="col-6 px-2">
                                     <div>
-                                        <p style={{ color: "#68727D" }}>{oneservice?.profit_method?.name==="Upselling With Markup"? "Markup Fee":oneservice?.profit_method?.name==="Revenue Sharing"?"Sea Arabia Percentage":null}</p>
+                                        <p style={{ color: "#68727D" }}>{oneservice?.profit_method?.name==="Upselling With Markup"? "Markup Fee":oneservice?.profit_method?.name==="Revenue Sharing"? `Sea Arabia Percentage - ${oneservice.sea_arabia_percentage}% , Vendor Percentage - ${oneservice.vendor_percentage}%`:null}</p>
                                         <p style={{ fontWeight: "700" }}>{oneservice?.profit_method?.name==="Upselling With Markup" && oneservice?.markup_fee}</p>
                                     </div>
                                 </div>
@@ -280,7 +279,7 @@ const ServiceView = () => {
                                                         <span className="text-secondary"> {dat.day}</span>
                                                     </td>
                                                     <td>
-                                                        <span className="text-secondary">{dat.end_day}</span>
+                                                        <span className="text-secondary">{dat.is_range===false ?dat.end_day:"-"}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-secondary">{dat.price} KWD</span>
@@ -325,7 +324,7 @@ const ServiceView = () => {
                                                         <span className="text-secondary"> {dat.time}</span>
                                                     </td>
                                                     <td>
-                                                        <span className="text-secondary"> {dat.end_time} Hours</span>
+                                                        <span className="text-secondary"> {dat.is_range===false ?dat.end_time:"-"} Hours</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-secondary">{dat.price} KWD</span>
@@ -368,7 +367,7 @@ const ServiceView = () => {
                                                         <span className="text-secondary"> {dat.date} </span>
                                                     </td>
                                                     <td>
-                                                        <span className="text-secondary">{dat.end_date}</span>
+                                                        <span className="text-secondary">{dat.is_range===false ?dat.end_date:"-"}</span>
                                                     </td>
                                                     <td>
                                                         <span className="text-secondary">{dat.price} KWD</span>

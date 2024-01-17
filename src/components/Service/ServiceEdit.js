@@ -52,8 +52,6 @@ const ServiceEdit = () => {
             .required("Machine ID is required"),
         description: Yup.string()
             .required("Description is required"),
-        capacity: Yup.number()
-            .required("Capacity is required"),
         pickup_point_or_location: Yup.string()
             .required("Pickup Point is required"),
         cancellation_policy: Yup.string()
@@ -82,10 +80,10 @@ const ServiceEdit = () => {
             }
         }),
         
-        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
-        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
-        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
-        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero').max(10, 'Lounge must be less than or equal to 10'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero').max(10, 'Bedroom must be less than or equal to 10'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero').max(10, 'Toilet must be less than or equal to 10'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero').max(10, 'Capacity must be less than or equal to 10'),
         markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
             if (profit_method.name === "Upselling With Markup") {
                 return schema
@@ -431,7 +429,6 @@ const ServiceEdit = () => {
         SetThumbNail(id, data)
             .then((datas) => {
                 toast.success(datas);
-                toast.error(datas)
             }
             ).catch((error) =>
                 toast.error(error.response.data))
@@ -868,9 +865,9 @@ console.log(formik.values.service_price_service);
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
                                     <p style={{ fontWeight: "550" }}>Profit Method</p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
-                                        {ProfitMethods && ProfitMethods.map((data) =>
-                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
-                                                <div className="card p-2"  style={{height:"150px",width:"15vw"}}>
+                                        {ProfitMethods && ProfitMethods.reverse().map((data) =>
+                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "" }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: 0, sea_arabia_percentage: 0, vendor_percentage: 0 })) }}>
+                                                <div className="card p-2"  style={{height:"200px",width:"15vw"}}>
                                                 <div className="d-flex justify-content-between align-items-center">
                                                         <img src={data.icon} alt={data.name} style={{width:"30px",marginRight:"5px",backgroundColor:"#ECF4FF"}}/>
                                                         <div>

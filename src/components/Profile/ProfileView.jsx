@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import CustomerCardDetails from "./CustomerCardDetails";
-import { getCustomerListById } from "../../services/CustomerHandle";
+import { getProfileData } from "../../services/Profile";
+import ProfileCardDetails from "./ProfileCardDetails";
 
-function CustomerView() {
+function ProfileView() {
   const navigate = useNavigate();
   const customerId = useParams()?.customerId;
 
   const [customerDetails, setCustomerDetails] = useState([]);
   useEffect(() => {
-    getCustomerListById(customerId)
+    getProfileData()
       .then((data) => {
        
         setCustomerDetails(data);
@@ -17,7 +17,7 @@ function CustomerView() {
       .catch((error) => {
         console.error("Error fetching customer data:", error);
       });
-  }, [customerId]);
+  }, []);
   return (
     <>
       <div className="page">
@@ -31,29 +31,10 @@ function CustomerView() {
                       style={{ cursor: "pointer" }}
                       onClick={() => navigate("/customers")}
                     >
-                      <p>Users</p>
+                      <p>Profile</p>
                     </div>
-                    <span>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
-                      >
-                        <path
-                          d="M8.33301 5L12.7438 9.41074C13.0692 9.73618 13.0692 10.2638 12.7438 10.5893L8.33301 15"
-                          stroke="#68727D"
-                          stroke-width="1.5"
-                          stroke-linecap="round"
-                        />
-                      </svg>
-                    </span>
-                    {customerDetails?.role === "User" ? (
-                      <p>Customers</p>
-                    ) : (
-                      <span></span>
-                    )}
+                    
+                    
 
                     <span>
                       <svg
@@ -99,7 +80,7 @@ function CustomerView() {
                 &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
               </div>
             </div>
-            <CustomerCardDetails />
+            <ProfileCardDetails data={customerDetails} />
           </div>
         </div>
       </div>
@@ -107,4 +88,4 @@ function CustomerView() {
   );
 }
 
-export default CustomerView;
+export default ProfileView;

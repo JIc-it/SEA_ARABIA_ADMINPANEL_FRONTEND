@@ -21,6 +21,7 @@ const CustomerActivityLog = () => {
     setIsLoading(true);
     getUserVendorActivityLog(customerId)
       .then((data) => {
+        console.log("activity log list", data.results);
         setActivityList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })

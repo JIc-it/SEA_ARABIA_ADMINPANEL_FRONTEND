@@ -4,7 +4,7 @@ const updateVendorDetails = "account/vendor-add-details";
 const updateCustomerDetails = "account/users-update";
 const customerCount = "account/user-count-admin";
 const exportData = "/account/customer-list-export/";
-
+const customerBooking = "/booking/userbased-individual-booking";
 // const serviceDetails = "main/category-list";
 const guestUserURL = "account/guest-user/list";
 const customerCreateUrl = "/account/user-create";
@@ -57,6 +57,15 @@ export const customerExport = (queryParams) => {
     .catch((error) => {
       console.error("Error while fetching customer export request:", error);
       throw error;
+    });
+};
+
+export const customerBookingList = (customerId) => {
+  return axiosInstance
+    .get(`${customerBooking}${customerId}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching individual booking list", error);
     });
 };
 
@@ -130,24 +139,16 @@ export const getLocation = () => {
       console.error("Error while fetching location request:", error);
     });
 };
-
-// export const getServiceDataById = (customerId) => {
-//   return axiosInstance
-//     .get(`${serviceDetails}/${customerId}`)
-//     .then((response) => response.data)
-//     .catch((error) => {
-//       console.error(
-//         "Error while fetching customer service details request:",
-//         error
-//       );
-//     });
-// };
-// export const getVendorServiceDataById = () => {
-//   return axiosInstance
-//     .get(serviceDetails)
-//     .then((response) => response.data)
-//     .catch((error) => {
-//       console.error("Error while fetching lead request:", error);
-//       throw error;
-//     });
-// };
+const activityData = "/report/log-list";
+export const getActivityData = (customerId, data) => {
+  return axiosInstance
+    .get(`${activityData}/${customerId}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error(
+        "Error --while fetching customer booking details request:",
+        error
+      );
+      throw error; // Propagate the error for further handling
+    });
+};

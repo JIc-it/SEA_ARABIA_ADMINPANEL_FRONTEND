@@ -7,7 +7,7 @@ import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import UploadPopup from './Service-Add-Components/UploadModal';
-import { getCategoryList, getsubcategorylist, getamenitieslist, CreateService, AddMultipleImage, getProfitMethod } from "../../services/service"
+import { getCategoryList, getsubcategorylist, getamenitieslist, CreateService, AddImage, getProfitMethod } from "../../services/service"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import CircularProgress from "@mui/material/CircularProgress";
@@ -31,7 +31,6 @@ const ServiceAdd = () => {
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const params = useParams()
     const [isupdated, setIsUpdated] = useState(false);
-
 
     const AmenitiesobjectSchema = Yup.object({
         id: Yup.string().required(),
@@ -71,14 +70,12 @@ const ServiceAdd = () => {
         amenities: Yup.array().of(AmenitiesobjectSchema).min(1, 'Amenities is required'),
         category: Yup.array().of(CategoryobjectSchema).min(1, 'Category is required'),
         sub_category: Yup.array().of(SubcategoryobjectSchema).min(1, 'Sub-Category is required'),
-        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Image is required').max(8,"Image must be less than or equal to 8"),
         service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
         machine_id: Yup.string()
             .required("Machine ID is required"),
         description: Yup.string()
             .required("Description is required"),
-        capacity: Yup.number()
-            .required("Capacity is required"),
         pickup_point_or_location: Yup.string()
             .required("Pickup Point is required"),
         cancellation_policy: Yup.string()
@@ -134,10 +131,14 @@ const ServiceAdd = () => {
             }
         }),
 
-        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
-        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
-        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
-        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero')
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero').max(10, 'Lounge must be less than or equal to 10'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero').max(10, 'Bedroom must be less than or equal to 10'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero').max(10, 'Toilet must be less than or equal to 10'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero').max(10, 'Capacity must be less than or equal to 10'),
+        profit_method: Yup.object({
+            id: Yup.string().required('ID is required'),
+            name: Yup.string().required('Profit Method is required'),
+        })
     });
 
     const formik = useFormik({
@@ -169,8 +170,8 @@ const ServiceAdd = () => {
             service_image: [],
 
             profit_method: {
-                id:"630540c7-acd5-478c-999f-62f912e35b66",
-                name:"OwnerShip"
+                id:"",
+                name:""
             },
             markup_fee: 0,
             vendor_percentage: 0,
@@ -216,59 +217,88 @@ const ServiceAdd = () => {
                     return "False"
                 }
             }
-            const formData = new FormData();
+            
 
-            formData.append("company", params.id,);
-            formData.append("is_verified",returnTrueFalse(values.is_verified));
-            formData.append("is_top_suggestion",returnTrueFalse(values.is_top_suggestion));
-            formData.append("is_premium",returnTrueFalse(values.is_premium));
-            formData.append("is_sail_with_activity",returnTrueFalse(true));
-            formData.append("is_destination",returnTrueFalse(values.is_destination));
-            formData.append("is_duration",returnTrueFalse(values.is_duration));
-            formData.append("is_day",returnTrueFalse(values.is_day));
-            formData.append("is_time",returnTrueFalse(values.is_time));
-            formData.append("is_date",returnTrueFalse(values.is_date));
-            formData.append("is_refundable",returnTrueFalse(values.is_refundable));
-            formData.append("is_recommended",returnTrueFalse(true));
-            formData.append("is_active",returnTrueFalse(values.is_active));
-            formData.append("type",returnTrueFalse(values.type));
-            formData.append("category",formattedcategory);
-            formData.append("sub_category",formattedsubcategory);
-            formData.append("name",values.name);
-            formData.append("machine_id",values.machine_id);
-            formData.append("description",values.description);
-            formData.append("lounge",values.lounge);
-            formData.append("bedroom",values.bedroom);
-            formData.append("toilet",values.toilet);
-            formData.append("capacity",values.capacity);
-            formData.append("amenities",formattedAmenities);
-            formData.append("pickup_point_or_location",values.pickup_point_or_location);
-            formData.append("cancellation_policy",values.cancellation_policy);
-            formData.append("refund_policy",values.refund_policy);
-            formData.append('profit_method',values.profit_method.id);
-            formData.append("markup_fee", values.markup_fee);
-            formData.append("vendor_percentage",values.vendor_percentage);
-            formData.append("sea_arabia_percentage",values.sea_arabia_percentage);
-            formData.append("per_head_booking",returnTrueFalse(values.per_head_booking));
-            formData.append("purchase_limit_min",values.purchase_limit_min);
-            formData.append("purchase_limit_max",values.purchase_limit_max);
-            formData.append("prices",removeServiceKey(values));
-            values.service_image.forEach((item, index) => {
-                formData.append(`images[${index}][image]`, item.image);
-                formData.append(`images[${index}][is_thumbnail]`, returnTrueFalse(item.thumbnail));
-                formData.append(`images[${index}][is_active]`, returnTrueFalse(true));
-            });
-
+            const data = {
+                is_verified: returnTrueFalse(values.is_verified),
+                is_active: returnTrueFalse(values.is_active),
+                is_top_suggestion: returnTrueFalse(values.is_top_suggestion),
+                is_premium: returnTrueFalse(values.is_premium),
+                is_sail_with_activity: returnTrueFalse(values.is_sail_with_activity),
+                is_recommended: returnTrueFalse(values.is_recommended),
+                company: params.id,
+                type: returnTrueFalse(values.type),
+                category: formattedcategory,
+                sub_category:formattedsubcategory,
+                name: values.name,
+                machine_id:values.machine_id,
+                description:values.description,
+                lounge: values.lounge,
+                bedroom: values.bedroom,
+                toilet: values.toilet,
+                capacity: values.capacity,
+                amenities: formattedAmenities,
+                pickup_point_or_location:values.pickup_point_or_location,
+                cancellation_policy:values.cancellation_policy,
+                refund_policy:values.refund_policy,
+                is_duration: returnTrueFalse(values.is_duration),
+                is_date: returnTrueFalse(values.is_date),
+                is_day: returnTrueFalse(values.is_day),
+                is_time: returnTrueFalse(values.is_time),
+                is_destination: returnTrueFalse(values.is_destination),
+                profit_method: values.profit_method.id,
+                vendor_percentage: values.vendor_percentage,
+                sea_arabia_percentage:values.sea_arabia_percentage,
+                markup_fee:values.markup_fee,
+                per_head_booking: returnTrueFalse(values.per_head_booking),
+                purchase_limit_min:values.purchase_limit_min,
+                purchase_limit_max: values.purchase_limit_max,
+                is_refundable: returnTrueFalse(values.is_refundable),
+                prices:values.service_price_service.map((dat)=>{
+                   return {
+                    is_active: returnTrueFalse(dat.is_active),
+                    name: dat.name,
+                    price: dat.price,
+                    is_range: returnTrueFalse(dat.is_range),
+                    location: dat.location,
+                    duration_hour: dat.duration_hour,
+                    duration_minute: dat.duration_minute,
+                    duration_day: dat.duration_day,
+                    time: dat.time,
+                    end_time: dat.end_time,
+                    day: dat.day,
+                    end_day: dat.end_day,
+                    date: dat.date,
+                    end_date: dat.end_date
+                   }
+                })
+            }
+        
             if (!isLoading) {
 
                 try {
-                    const adminData = await CreateService(formData);
+                    const adminData = await CreateService(data);
 
                     if (adminData) {
                         setIsLoading(false);
-                        toast.success("Service Created Successfully")
+                        
+                        values.service_image.forEach((item, index) => {
+                            const formData = new FormData();
+                            formData.append('image', item.image);
+                            formData.append('service', adminData.id);
+                            formData.append('is_thumbnail', returnTrueFalse(item.thumbnail));
+
+                            // Using setTimeout to add a delay between each AddImage call
+                            setTimeout(() => {
+                                AddImage(formData)
+                                    .then((data) => console.log(data))
+                                    .catch((err) => console.log(err));
+                            }, index * 1000);
+                        });
+                          
+                        
+                        toast.success("Created Successfully")
                         setIsUpdated(true)
-                        clearTimeout(clearTimeout)
 
                     } else {
                         console.error("Error while creating Admin:", adminData.error);
@@ -278,6 +308,8 @@ const ServiceAdd = () => {
                 } catch (err) {
                     console.log(err);
                     setIsLoading(false);
+                }finally{
+                    navigate(-1)
                 }
             }
         },
@@ -332,7 +364,7 @@ const ServiceAdd = () => {
                 console.error(error))
     }, [])
 
-console.log([formik.values.category[0]?.id]);
+
     useEffect(() => {
         getsubcategorylist(categoryId)
             .then((data) =>
@@ -405,6 +437,7 @@ console.log([formik.values.category[0]?.id]);
                 service_image: updatedServicePriceService,
             };
         });
+        toast.success("Removed Succesfully")
     }
 
 
@@ -429,9 +462,11 @@ console.log([formik.values.category[0]?.id]);
                     service_image: updatedService_image
                 };
             }
+            
 
 
         });
+        toast.success("Added Successfully")
     }
     const [validateeditor, setValidateEditor] = useState("")
 
@@ -872,9 +907,9 @@ console.log([formik.values.category[0]?.id]);
                                     <p style={{ fontWeight: "600" }}>Pricing</p>
                                     <p style={{ fontWeight: "550" }}>Profit Method <span style={{ color: "red" }}>*</span> </p>
                                     <div style={{ display: "flex", flexDirection: isMobileView ? "column" : "row" }}>
-                                        {ProfitMethods && ProfitMethods.map((data) =>
-                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "", }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: null, sea_arabia_percentage: null, vendor_percentage: null })) }}>
-                                                <div className="card p-2" style={{height:"150px",width:"15vw"}}>
+                                        {ProfitMethods && ProfitMethods.reverse().map((data) =>
+                                            <div className={`${isMobileView}? "col-12":"col-4" mx-1`} style={{ marginBottom: isMobileView ? "5px" : "", }} onClick={() => { updateFormValues(({ ...formik.values, profit_method: { id: data.id, name: data.name }, markup_fee: 0, sea_arabia_percentage: 0, vendor_percentage: 0 })) }}>
+                                                <div className="card p-2" style={{height:"200px",width:"15vw"}}>
                                                     <div className="d-flex justify-content-between align-items-center">
                                                         <img src={data.icon} alt={data.name} style={{width:"30px",marginRight:"5px",backgroundColor:"#ECF4FF"}}/>
                                                         <div>
@@ -893,7 +928,9 @@ console.log([formik.values.category[0]?.id]);
                                             </div>
                                         )}
                                     </div>
-
+                                    {formik.touched.profit_method?.name && formik.errors.profit_method?.name ? (
+                                                    <div className="error">{formik.errors.profit_method?.name}</div>
+                                                ) : null}
                                 </div>
                                 {formik.values.profit_method.name === "Upselling With Markup" &&
                                     <div className='w-50 mx-5'>

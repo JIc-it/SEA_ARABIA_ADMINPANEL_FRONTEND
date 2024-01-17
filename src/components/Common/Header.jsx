@@ -1,9 +1,41 @@
 import { useNavigate } from "react-router";
 import { logoutRequest } from "../../services/authHandle";
 import { toast } from "react-toastify";
+import { useState,useEffect } from "react";
+import HeaderOffCanvas from "./HeaderOffCanvas";
+import { getNotificationList } from "../../services/Notification"
 
 function Header() {
   const navigate = useNavigate();
+  const [open,setOpen]=useState(false)
+  const [notifycount,setNotifycount]=useState(0)
+  const [isLoading, setIsLoading] = useState(false);
+  const [listPageUrl, setListPageUrl] = useState({
+      next: null,
+      previous: null,
+  });
+  const [data, setdata] = useState([])
+
+  useEffect(() => {
+    setIsLoading(true)
+    getNotificationList()
+        .then((data) => {
+            setIsLoading(false)
+            setdata(data.results);
+            setNotifycount(data.results.length)
+            setListPageUrl({
+                next: data.next,
+                previous: data.previous,
+            })
+        })
+        .catch((error) => {
+            {
+                setIsLoading(false);
+                toast.error(error.response.data)
+            };
+        });
+}, [])
+
   return (
     <header className="navbar navbar-expand-md d-none d-lg-flex d-print-none">
       <div className="container-xl" style={{ marginRight: "15px" }}>
@@ -44,13 +76,13 @@ function Header() {
                 <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
               </svg>
             </a>
-            <div className="nav-item dropdown d-none d-md-flex me-3">
+            <div className="nav-item dropdown d-none d-md-flex me-3" onClick={()=>setOpen(true)}>
               <a
                 href="#"
                 className="nav-link px-0"
-                data-bs-toggle="dropdown"
-                tabIndex="-1"
-                aria-label="Show notifications"
+                // data-bs-toggle="dropdown"
+                // tabIndex="-1"
+                // aria-label="Show notifications"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -68,58 +100,21 @@ function Header() {
                   <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
                   <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                 </svg>
-                <span className="badge bg-red"></span>
+                {notifycount!==0 && <span className="badge bg-red"></span>}
               </a>
-              <div className="dropdown-menu dropdown-menu-arrow dropdown-menu-end dropdown-menu-card">
-                <div className="card">
-                  <div className="card-header">
-                    <h3 className="card-title">Last updates</h3>
-                  </div>
-                  <div className="list-group list-group-flush list-group-hoverable">
-                    {/* notfications */}
-                    <div className="list-group-item">
-                      <div className="row align-items-center">
-                        <div className="col-auto">
-                          <span className="status-dot status-dot-animated bg-red d-block"></span>
-                        </div>
-                        <div className="col text-truncate">
-                          <a href="#" className="text-body d-block">
-                            Example 1
-                          </a>
-                          <div className="d-block text-secondary text-truncate mt-n1">
-                            Change deprecated html tags to text decoration
-                            classNamees (#29604)
-                          </div>
-                        </div>
-                        <div className="col-auto">
-                          <a href="#" className="list-group-item-actions">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              className="icon text-muted"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                              strokeWidth="2"
-                              stroke="currentColor"
-                              fill="none"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path
-                                stroke="none"
-                                d="M0 0h24v24H0z"
-                                fill="none"
-                              />
-                              <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z" />
-                            </svg>
-                          </a>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+             
             </div>
+            {open && <HeaderOffCanvas
+            isLoading={isLoading} 
+            setIsLoading={setIsLoading}
+            listPageUrl={listPageUrl} 
+            setListPageUrl={setListPageUrl}
+            data={data} 
+            setdata={setdata}
+            countset={setNotifycount}
+              open={open}
+              setOpen={setOpen}
+            />}
           </div>
           <div className="nav-item dropdown">
             <button
@@ -141,20 +136,21 @@ function Header() {
               </div>
             </button>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              <a href="#" className="dropdown-item">
+              {/* <a href="#" className="dropdown-item">
                 Status
-              </a>
-              <a href="./profile.html" className="dropdown-item">
+              </a> */}
+              <a href="/profile" className="dropdown-item">
                 Profile
               </a>
-              <button href="#" className="dropdown-item">
+              {/* <button href="#" className="dropdown-item">
                 Feedback
-              </button>
-              <div className="dropdown-divider"></div>
-              <a href="./settings.html" className="dropdown-item">
+              </button> */}
+              {/* <div className="dropdown-divider"></div> */}
+              {/* <a href="./settings.html" className="dropdown-item">
                 Settings
-              </a>
+              </a> */}
               <a
+              href="#"
                 className="dropdown-item"
                 onClick={async () => {
                   const logoutData = await logoutRequest();

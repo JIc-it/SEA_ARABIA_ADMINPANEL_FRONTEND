@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountAddNew() {
+    const [servicelisting, setServiceListing] = useState([])
     const [isLoading, setIsLoading] = useState(false)
     const theme = useTheme();
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
@@ -225,7 +226,7 @@ export default function DiscountAddNew() {
         formik.setValues((prev) => ({
             ...prev,
             companies: (prev?.companies || []).filter((company) => company.id !== id),
-            services: (prev?.services || []).filter((service) => service.company !== id)
+            services: (prev?.services || []).filter((service) => service.company_id !== id)
         }));
     };
 
@@ -233,7 +234,7 @@ export default function DiscountAddNew() {
     const updateServiceIndex = (id, name,servid, companyData) => {
         formik.setValues((prev) => {
             const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
-            const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company === id);
+            const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company_id === id);
     
             // Update companies list
             const updatedCompanyList =
@@ -253,12 +254,12 @@ export default function DiscountAddNew() {
                 existingServiceIndex !== -1
                     ? [
                           ...prev.services.slice(0, existingServiceIndex),
-                          ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
+                          ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
                           ...prev.services.slice(existingServiceIndex + 1),
                       ]
                     : [
                           ...prev.services,
-                          ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company: id })),
+                          ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
                       ];
     
             return {
@@ -273,7 +274,7 @@ export default function DiscountAddNew() {
 
     const updateOneServiceIndex = (id, name, companyid, companyName) => {
         formik.setValues((prev) => {
-            const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company === companyid);
+            const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company_id === companyid);
             const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === companyid);
     
             // Update companies list
@@ -285,7 +286,7 @@ export default function DiscountAddNew() {
             // Update services list
             const updatedList =
                 existingServiceIndex === -1
-                    ? [...prev.services, { id: id, name: name, company: companyid }]
+                    ? [...prev.services, { id: id, name: name, company_id: companyid }]
                     : prev.services;
     
             return {
@@ -296,11 +297,9 @@ export default function DiscountAddNew() {
         });
     };
     
-
-
     function companywithservice(companyid) {
 
-        const serviceCount = formik?.values.services?.map((dat) => dat.company_id === companyid) || 0;
+        const serviceCount = formik?.values.services?.filter((dat) => dat.company_id === companyid) || 0;
         return serviceCount.length
 
     }
@@ -312,8 +311,7 @@ export default function DiscountAddNew() {
 
     }
 
-    const [servicelisting, setServiceListing] = useState([])
-
+    
     if (!isLoading) {
         return (
             <>

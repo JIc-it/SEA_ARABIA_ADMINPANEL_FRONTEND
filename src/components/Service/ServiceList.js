@@ -41,7 +41,7 @@ function ServiceList() {
         getServiceListing(search)
             .then((data) => {
                 setServiceList(data?.results);
-                setListPageUrl({ next: data.next, previous: data.previous });
+                setListPageUrl({ next: data?.next, previous: data?.previous });
                 setIsLoading(false)
             })
             .catch((error) => {
@@ -62,7 +62,7 @@ function ServiceList() {
           getListDataInPagination(convertedUrl)
             .then((data) => {
               setIsLoading(false);
-              setListPageUrl({ next: data.next, previous: data.previous });
+              setListPageUrl({ next: data?.next, previous: data?.previous });
               setServiceList(data?.results);
             })
             .catch((error) => {
@@ -326,13 +326,13 @@ function ServiceList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {!isLoading && servicelist.length > 0 &&
+                                {!isLoading && servicelist?.length > 0 &&
 
-                                    servicelist.map((data) =>
+                                    servicelist?.map((data) =>
                                         <tr>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.name}
+                                                    {data?.name}
                                                 </span>
                                             </td>
 
@@ -340,7 +340,7 @@ function ServiceList() {
                                             {<span className="text-secondary">{data?.category[0]}</span>}
                                             <br></br>
                                             {<span className="text-secondary">{data?.category[1]}</span>}
-                                                {data.category.length> 2 && <span className="text-secondary">...,</span>}
+                                                {data?.category.length> 2 && <span className="text-secondary">...,</span>}
 
                                             </td>
 
@@ -348,20 +348,20 @@ function ServiceList() {
                                             {<span className="text-secondary">{data?.sub_category[0]}</span>}
                                             <br></br>
                                             {<span className="text-secondary">{data?.sub_category[1]}</span>}
-                                                {data.sub_category.length> 2 && <span className="text-secondary">...,</span>}
+                                                {data?.sub_category.length> 2 && <span className="text-secondary">...,</span>}
 
                                             </td>
                                             <td>
                                                 <span className="text-secondary">
-                                                    {data.company}
+                                                    {data?.company}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span className="text-secondary">{data.is_active === true ? "Active" : "Inactive"}</span>
+                                                <span className="text-secondary">{data?.is_active === true ? "Active" : "Inactive"}</span>
                                             </td>
 
                                             <td>
-                                                <span className="text-secondary">{data.total_booking}</span>
+                                                <span className="text-secondary">{data?.total_booking}</span>
                                             </td>
                                             <td
                                                 style={{
@@ -371,7 +371,7 @@ function ServiceList() {
                                                 }}
                                             >
                                                 <Link
-                                                    to={"/service-view/"+data.id}
+                                                    to={"/service-view/"+data?.id}
                                                     className="btn btn-sm btn-info"
                                                     style={{ padding: "6px 10px", borderRadius: "4px" }}
                                                 >
@@ -398,6 +398,14 @@ function ServiceList() {
                                     )}
 
 
+                                
+                                {servicelist.length === 0 &&
+                                    (
+                                        <tr>
+                                            <td rowSpan={8}>No Record Found</td>
+                                        </tr>
+                                    )
+                                }
                                 {isLoading &&
                                     (
                                         <tr>
@@ -407,63 +415,9 @@ function ServiceList() {
                                         </tr>
                                     )
                                 }
-                                {/* <tr>
-                                    <td>
-                                        <span className="text-secondary">
-                                            Achille Lauro
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Round Trip Boat</span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">
-                                            StarLauro Cruises
-                                        </span>
-                                    </td>
-                                    <td>
-                                        <span className="text-secondary">Active</span>
-                                    </td>
-
-                                    <td>
-                                        <span className="text-secondary">160</span>
-                                    </td>
-                                    <td
-                                        style={{
-                                            display: "flex",
-                                            gap: "10px",
-                                            alignItems: "baseline",
-                                        }}
-                                    >
-                                        <Link
-                                            to={""}
-                                            className="btn btn-sm btn-info"
-                                            style={{ padding: "6px 10px", borderRadius: "4px" }}
-                                        >
-                                            View &nbsp;
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="16"
-                                                height="16"
-                                                viewBox="0 0 16 16"
-                                                fill="none"
-                                            >
-                                                <path
-                                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                                    stroke="white"
-                                                    strokeWidth="1.5"
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                />
-                                            </svg>
-                                        </Link>
-                                    </td>
-                                </tr> */}
                             </tbody>
                         </table>
+                        
                     </div>
                     <div className="d-flex align-items-center">
                         <ul className="pagination m-0 ms-auto">

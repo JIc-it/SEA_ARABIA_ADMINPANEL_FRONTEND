@@ -26,11 +26,12 @@ const Review = () => {
   const [servicefilterlist, setserviceFilterList] = useState([])
 
   const [companyList, setCompanyList] = useState([])
-  const [selectedValue, setSelectedValue] = useState("New Lead");
+  const [selectedValue, setSelectedValue] = useState("");
   const [filterdataid, setfilterid] = useState("")
   const [filterdataidData, setfilteridData] = useState([])
   const [filtering, setFiltering] = useState({
     search: null,
+    company:null,
     categoryid: null,
     subcategoryid: null,
     rating: null
@@ -162,11 +163,15 @@ const Review = () => {
                     type="text"
                     className="form-select mb-3 status_selector"
                     value={selectedValue}
-                    onChange={handleSelectChange}
+                    onChange={(e)=>{
+                      const selectedValue = e.target.value === "Choose" ? null : e.target.value;
+                      handlefiltering({company:selectedValue});
+                      setSelectedValue(selectedValue)
+                    }}
                   >
                     <option value={null}>Choose</option>
                     {companyList.map((data, index) =>
-                      <option key={data.id} value={data.name}>{data.name}</option>
+                      <option key={data.id} value={data.id}>{data.name}</option>
                     )}
                   </select>
                 </div>
@@ -218,9 +223,8 @@ const Review = () => {
                     <span class="plan-details">
                       <div className='d-flex'>
                         <div className='w-80'>
-                          {data?.service_image?.map((dat) =>
-                            <img width={80} style={{ borderRadius: 5 }} src={dat.image} />
-                          )}
+                          {
+                            <img width={80} style={{ borderRadius: 5 }} src={data?.service_image[0]?.image} />}
                         </div>
                         <div className='w-20' style={{ marginLeft: 10 }}>
                           <span style={{ color: '#68727D' }}>Name</span><br />
@@ -235,6 +239,11 @@ const Review = () => {
                     <CircularProgress />
                   </div>
                 }
+                  {servicefilterlist.length === 0 &&
+                    (<div style={{ height: "5vh", marginTop: "50px" }} >
+                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
+                    </div>)
+                  }
               </div>
             </div>
           </div>
@@ -255,7 +264,7 @@ const Review = () => {
             }
             <div className='row'>
               {filterdataidData.length === 0 &&
-                <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Review Found</div>
+                <div className='text-center' style={{ fontWeight: "600", transform: "translateY(30vh)" }}>No Record Found</div>
               }
               {filterdataidData.map((data) =>
                 <div key={data.id} className='col-lg-4 mb-2 mt-2'>

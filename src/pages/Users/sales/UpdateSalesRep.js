@@ -1,7 +1,7 @@
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -13,10 +13,11 @@ import { useParams } from "react-router-dom";
 
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
+import { AppContext } from "../../../Context/AppContext";
 
 function UpdateSalesRep({ show, close }) {
   const theme = useTheme();
-
+  const locationContext = useContext(AppContext);
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const salesRepId = useParams()?.salesRepId;
@@ -64,8 +65,14 @@ function UpdateSalesRep({ show, close }) {
       .required("Email is required"),
 
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.string().required("Location is required"),
+
     gender: Yup.string().required("Gender is required"),
+    location: Yup.object({
+      id: Yup.string().required("Location ID is required"),
+      name: Yup.string().required("Location name is required"),
+      label: Yup.string().required("Location label is required"),
+      code: Yup.string().required("Location code is required"),
+    }).required("Location is required"),
   });
 
   const formik = useFormik({
@@ -95,9 +102,9 @@ function UpdateSalesRep({ show, close }) {
             password: values.password,
             confirmPassword: values.confirmPassword,
             mobile: values.mobile,
-            profileextra: {
-              location: values.location,
-            },
+            location: values.location.id,
+            gender: values.gender,
+            
           };
 
           const salesData = await UpdateSalesRepListById(salesRepId, data);
@@ -298,32 +305,7 @@ function UpdateSalesRep({ show, close }) {
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-            </svg>
+          
           </div>
         </div>
         {/* <div style={{ margin: "20px" }}>
@@ -392,8 +374,15 @@ function UpdateSalesRep({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             {" "}
-            <CountryDropdown />
-            {formik?.touched?.location && formik.errors.location ? (
+            <CountryDropdown
+              gccCountries={locationContext?.gccCountriesList}
+              formik={formik}
+              onChange={(selectedCountry) => {
+                // Update the "location" field in the formik values
+                formik.setFieldValue("location", selectedCountry);
+              }}
+            />
+            {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
             <svg

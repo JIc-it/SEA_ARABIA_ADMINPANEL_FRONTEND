@@ -19,7 +19,7 @@ import Pen from "../../../assets/images/Pen 2.png";
 
 function AdminDetails() {
   const theme = useTheme();
-  const navigate= useNavigate()
+  const navigate = useNavigate();
   const adminId = useParams()?.adminId;
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
@@ -313,7 +313,7 @@ function AdminDetails() {
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            {adminDetails?.profileextra?.location?.location}
+                            {adminDetails?.profileextra?.location?.country}
                           </p>
                           <p>
                             <svg
