@@ -32,7 +32,6 @@ const ServiceAdd = () => {
     const params = useParams()
     const [isupdated, setIsUpdated] = useState(false);
 
-
     const AmenitiesobjectSchema = Yup.object({
         id: Yup.string().required(),
         image: Yup.string().required(),
@@ -137,7 +136,11 @@ const ServiceAdd = () => {
         lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
         bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
         toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
-        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero')
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
+        profit_method: Yup.object({
+            id: Yup.string().required('ID is required'),
+            name: Yup.string().required('Profit Method is required'),
+        })
     });
 
     const formik = useFormik({
@@ -169,8 +172,8 @@ const ServiceAdd = () => {
             service_image: [],
 
             profit_method: {
-                id:"630540c7-acd5-478c-999f-62f912e35b66",
-                name:"OwnerShip"
+                id:"",
+                name:""
             },
             markup_fee: 0,
             vendor_percentage: 0,
@@ -434,6 +437,7 @@ const ServiceAdd = () => {
                 service_image: updatedServicePriceService,
             };
         });
+        toast.success("Removed Succesfully")
     }
 
 
@@ -458,9 +462,11 @@ const ServiceAdd = () => {
                     service_image: updatedService_image
                 };
             }
+            
 
 
         });
+        toast.success("Added Successfully")
     }
     const [validateeditor, setValidateEditor] = useState("")
 
@@ -922,7 +928,9 @@ const ServiceAdd = () => {
                                             </div>
                                         )}
                                     </div>
-
+                                    {formik.touched.profit_method?.name && formik.errors.profit_method?.name ? (
+                                                    <div className="error">{formik.errors.profit_method?.name}</div>
+                                                ) : null}
                                 </div>
                                 {formik.values.profit_method.name === "Upselling With Markup" &&
                                     <div className='w-50 mx-5'>
