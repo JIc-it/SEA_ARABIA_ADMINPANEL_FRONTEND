@@ -51,6 +51,7 @@ function CustomerEditModal({ show, close }) {
       code: Yup.string().required("Location code is required"),
     }).required("Location is required"),
   });
+  
 
   useEffect(() => {
     getCustomerListById(customerId)
@@ -75,6 +76,7 @@ function CustomerEditModal({ show, close }) {
 
       // Add other fields as needed
     },
+    
     enableReinitialize: true,
     validationSchema,
     onSubmit: async (values) => {
@@ -122,11 +124,12 @@ function CustomerEditModal({ show, close }) {
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profile_extra?.location || "",
-      gender: customerDetails?.profile_extra?.gender || "",
-      dob: customerDetails?.profile_extra?.dob || "",
+      location: customerDetails?.profileextra?.location?.country?.code || "",
+      gender: customerDetails?.profileextra?.gender || "",
+      dob: customerDetails?.profileextra?.dob || "",
     });
   }, [customerDetails]);
+  console.log("gwnder--", customerDetails?.profileextra?.gender);
 
   console.log("customer formik data", formik);
   return (
@@ -273,6 +276,7 @@ function CustomerEditModal({ show, close }) {
             <CountryDropdown
               gccCountries={locationContext?.gccCountriesList}
               formik={formik}
+              selected={formik.values.location}
               onChange={(selectedCountry) => {
                 // Update the "location" field in the formik values
                 formik.setFieldValue("location", selectedCountry);
@@ -315,13 +319,15 @@ function CustomerEditModal({ show, close }) {
           <select
             name="gender"
             className="form-select"
-            value={formik.values.gender}
-            onChange={(e) => {
-              formik.handleChange(e);
-              formik.setFieldValue("gender", e.target.value);
-            }}
+            value={formik?.values?.gender}
+            onChange={formik.handleChange}
+            // onChange={(e) => {
+            //   formik.handleChange(e);
+            //   formik.setFieldValue("gender", e.target.value);
+            // }}
             onBlur={formik.handleBlur}
           >
+           
             <option value="male">Male</option>
             <option value="female">Female</option>
           </select>

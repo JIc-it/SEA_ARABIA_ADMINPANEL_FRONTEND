@@ -214,8 +214,7 @@ function CreateNewAdmin({ show, close, locationList }) {
                 onBlur={formik.handleBlur}
               />
             </div>
-          </div>
-          {formik.touched.mobile && formik.errors.mobile ? (
+          </div>*          {formik.touched.mobile && formik.errors.mobile ? (
             <div className="error">{formik.errors.mobile}</div>
           ) : null}
         </div>

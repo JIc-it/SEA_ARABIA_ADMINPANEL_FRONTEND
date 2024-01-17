@@ -28,7 +28,7 @@ function CustomerCardDetails() {
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
   const customerId = useParams()?.customerId;
   console.log("customerId", customerId);
-
+  const id = useParams()?.customerId;
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
@@ -39,6 +39,10 @@ function CustomerCardDetails() {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
+
+  const handleBookingButtonClick = () => {
+    navigate(`/customer/bookings/${customerId}?fromUserDetails=true`);
+  };
 
   return (
     <div
@@ -56,7 +60,7 @@ function CustomerCardDetails() {
               <div>
                 <p className="card_content">{customerDetails.first_name}</p>
               </div>
-             
+
               <div className="card_header_contents">
                 <p className="card_content">
                   <svg
@@ -128,10 +132,7 @@ function CustomerCardDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button btn "
-                onClick={() => {
-                  navigate(`/booking`);
-                  // navigate(`/booking-view/1234`);
-                }}
+                onClick={handleBookingButtonClick}
               >
                 Bookings &nbsp;
                 <svg

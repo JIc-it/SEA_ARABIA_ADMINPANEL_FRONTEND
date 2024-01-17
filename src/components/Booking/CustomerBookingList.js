@@ -6,13 +6,7 @@ import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
-import {
-  Link,
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-} from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -21,11 +15,7 @@ import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  customerBookingList,
-  customerIndividualBookingList,
-  getBookingData,
-} from "../../services/CustomerHandle";
+import { getBookingData } from "../../services/CustomerHandle";
 
 const style = {
   position: "absolute",
@@ -39,7 +29,7 @@ const style = {
   p: 4,
 };
 
-const BookinList = () => {
+const CustomerBookinList = () => {
   const customerId = useParams()?.id;
   console.log("customerid", customerId);
   const [open, setOpen] = React.useState(false);
@@ -67,16 +57,6 @@ const BookinList = () => {
   const [count, setCount] = useState({});
 
   useEffect(() => {
-    customerBookingList(customerId)
-      .then((data) => {
-        console.log("bookinhg list data", data.response);
-      })
-      .catch((error) => {
-        console.error("error to fetch customer booking list", error);
-      });
-  }, []);
-
-  useEffect(() => {
     {
       search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
     }
@@ -92,33 +72,6 @@ const BookinList = () => {
         toast.error(error.response.data);
       });
   }, [search]);
-
-  // const location = useLocation();
-  // const isNavigatedFromUserDetails = location.state?.fromUserDetails;
-  // console.log("isNavigatedFromUserDetails", isNavigatedFromUserDetails);
-  // useEffect(() => {
-  //   // Fetch customer-specific bookings using the customerId
-  //   // Use isNavigatedFromUserDetails to decide which API to call
-  //   const fetchCustomerBookings = async () => {
-  //     try {
-  //       if (isNavigatedFromUserDetails) {
-  //         const response = await customerBookingList(customerId);
-  //         setBookingList(response.data.response);
-  //       } else {
-  //         const response = await getBookingList({
-  //           status: "",
-  //           search: "",
-  //           refund_status: "",
-  //         });
-  //         setBookingList(response?.results);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching customer bookings:", error);
-  //     }
-  //   };
-
-  //   fetchCustomerBookings();
-  // }, [customerId, isNavigatedFromUserDetails]);
 
   useEffect(() => {
     getBookingCount()
@@ -171,7 +124,7 @@ const BookinList = () => {
         toast.error(error.response.data);
       });
   };
-
+  
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
