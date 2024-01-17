@@ -36,6 +36,7 @@
     "react-scripts": "5.0.1",
     "react-select": "^5.7.7",
     "react-simple-offcanvas": "^1.0.9",
+    "react-spring": "^9.7.3",
     "react-stepper-horizontal": "^1.0.11",
     "react-toastify": "^9.1.3",
     "sass": "^1.69.5",

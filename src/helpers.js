@@ -19,7 +19,7 @@ export const passwordRegex =
 
 export const removeBaseUrlFromPath = (originalString) => {
   var modifiedString = originalString.replace(
-    "https://seaarabia.jicitsolution.com/",
+    "http://api.seaarabia.jicitsolution.com/",
     ""
   );
   return modifiedString;
@@ -40,7 +40,7 @@ export const convertedDateAndTime = (datetimeString) => {
 
 export const removeFolderPath = (originalUrl) => {
   var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/miscellaneous/attachment/";
+    "http://api.seaarabia.jicitsolution.com/assets/media/company/miscellaneous/attachment/";
 
   var newUrl = originalUrl.replace(substringToRemove, "");
   return newUrl;
