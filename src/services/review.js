@@ -20,7 +20,7 @@ export const getSubCategoryist = (id) => {
 };
 export const getServiceFilterList = (data) => {
   return axiosInstance
-    .get("service/service-filter-list-cms",{params:{search:data.search,category:data?.categoryid,sub_category:data?.subcategoryid}})
+    .get("service/service-filter-list-cms",{params:{search:data.search,company:data?.company,category:data?.categoryid,sub_category:data?.subcategoryid}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
