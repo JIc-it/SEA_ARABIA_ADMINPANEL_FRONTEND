@@ -58,10 +58,7 @@ import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
 import EventAdd from "./Events/EventAdd";
 import BookinList from "./Booking/BookinList";
-<<<<<<< HEAD
 import ProfileView from "./Profile/ProfileView";
-=======
->>>>>>> 8cdf43adc87f910cf7fa90651ee74d7e3ef46a9b
 import Availability from "./Service/Availability";
 import Calendar from "./Service/Calendar";
 
