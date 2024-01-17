@@ -289,14 +289,14 @@ const ServiceAdd = () => {
                             formData.append('image', item.image);
                             formData.append('service', adminData.id);
                             formData.append('is_thumbnail', returnTrueFalse(item.thumbnail));
-                          
+
                             // Using setTimeout to add a delay between each AddImage call
                             setTimeout(() => {
-                              AddImage(formData)
-                                .then((data) => console.log(data))
-                                .catch((err) => console.log(err));
+                                AddImage(formData)
+                                    .then((data) => console.log(data))
+                                    .catch((err) => console.log(err));
                             }, index * 1000);
-                          });
+                        });
                           
                         
                         toast.success("Created Successfully")
@@ -310,6 +310,8 @@ const ServiceAdd = () => {
                 } catch (err) {
                     console.log(err);
                     setIsLoading(false);
+                }finally{
+                    navigate(-1)
                 }
             }
         },
