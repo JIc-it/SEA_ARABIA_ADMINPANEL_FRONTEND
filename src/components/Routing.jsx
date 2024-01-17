@@ -158,15 +158,9 @@ function AllRouting() {
       <Route path="/events-and-packages" element={<EventListing />} />
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
-<<<<<<< HEAD
       <Route path="/profile" element={<ProfileView />} />
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
-=======
-      <Route path="/availability" element={<Availability />} />
-      <Route path="/calendar" element={<Calendar />} />
-
->>>>>>> 8cdf43adc87f910cf7fa90651ee74d7e3ef46a9b
     </Routes>
   );
 }
