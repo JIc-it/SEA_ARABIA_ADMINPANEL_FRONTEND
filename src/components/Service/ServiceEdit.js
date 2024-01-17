@@ -52,8 +52,6 @@ const ServiceEdit = () => {
             .required("Machine ID is required"),
         description: Yup.string()
             .required("Description is required"),
-        capacity: Yup.number()
-            .required("Capacity is required"),
         pickup_point_or_location: Yup.string()
             .required("Pickup Point is required"),
         cancellation_policy: Yup.string()
@@ -82,10 +80,10 @@ const ServiceEdit = () => {
             }
         }),
         
-        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
-        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
-        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
-        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero').max(10, 'Lounge must be less than or equal to 10'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero').max(10, 'Bedroom must be less than or equal to 10'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero').max(10, 'Toilet must be less than or equal to 10'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero').max(10, 'Capacity must be less than or equal to 10'),
         markup_fee: Yup.number().when("profit_method", ([profit_method], schema) => {
             if (profit_method.name === "Upselling With Markup") {
                 return schema

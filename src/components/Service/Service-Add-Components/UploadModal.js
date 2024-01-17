@@ -6,13 +6,15 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { Paper } from '@mui/material';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {AddImage} from "../../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
+import ReactCrop from 'react-image-crop';
+import 'react-image-crop/dist/ReactCrop.css'
 
 const style = {
     position: 'absolute',
@@ -31,7 +33,16 @@ const style = {
 
 export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated,formikset }) {
     const [isLoading, setIsLoading] = useState(false);
-   
+    const [Image,setImage]=useState(null);
+    const [viewImage,setViewImage]=useState(null);
+    const [crop, setCrop] = useState({
+        unit: 'px', // Can be 'px' or '%'
+        x: 0,
+        y: 0,
+        width: 360,
+        height: 250
+      })
+  
 
     const validationSchema = Yup.object({
         image: Yup.mixed()        
@@ -39,7 +50,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                 if (!value) {
                   return false;
                 }
-                return value.size <= 100 * 1024;
+                return value.size <= 300 * 1024;
               })
               .test('fileType', 'Invalid file format', (value) => {
                 if (!value) {
@@ -80,52 +91,46 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
 
         })
         handleClose()
-        // const formdata=new FormData()
-        // formdata.append("image",values.image);
-        // formdata.append("service",values.service);
-
-        //     if (!isLoading) {
-        //       try {
-        //     const adminData = await AddImage(formdata);
-
-        //     if (adminData) {
-        //       setIsLoading(false);
-        //       handleClose()
-        //     toast.success("Updated Successfully")
-        //     setIsUpdated(true)
-
-        //     } else {
-        //         setIsLoading(false);
-        //         toast.error(adminData.error.response.data)
-        //       console.error("Error while creating Admin:", adminData.error);
-        //     }
-        //     setIsLoading(false);
-        //       }catch (err) {
-        //           setIsLoading(false);
-        //         toast.error(err.response.data)
-        //         console.log(err);
-        //       }
-        //     }
         },
-    });
+    }); 
 
-      const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        formik.setFieldValue("image", file);
-    
+    const handleFileChange = (e) => {
+        let file = e.target.files?.[0];
+                setImage(file)
         if (file) {
-          const reader = new FileReader();
+            // Use FileReader to read the file as a Data URL
+            const reader = new FileReader();
     
-          reader.onloadend = () => {
-  
-            formik.setFieldValue("url", reader.result);
-          };
+            reader.onloadend = () => {
+                // reader.result contains the Data URL
+                const dataUrl = reader.result;
+                console.log(dataUrl);
     
-          reader.readAsDataURL(file);
+                // Do whatever you need with the Data URL (e.g., set it in the state)
+                setViewImage(dataUrl);
+            };
+    
+            // Read the file as a Data URL
+            reader.readAsDataURL(file);
         }
-      };
+    };
+    
+    
+    useEffect(() => {
+    const handleMouseMove = () => {
 
+      const imageUrl = viewImage // Replace with your image URL logic
+      setViewImage(imageUrl);
+    };
 
+    document.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [viewImage]);
+
+    console.log(formik.values,crop);
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
@@ -140,7 +145,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
             >
                <Box sx={style}>
                     <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                        Upload Image
+                        {Image===null ? "Upload Image" :"Crop Image"}
                     </Typography>
                     <IconButton
                         edge="end"
@@ -152,7 +157,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                         <CloseIcon />
                     </IconButton>
                     <form onSubmit={formik.handleSubmit}>
-                        <Box textAlign="center" mt={1} style={{ width: "100%", marginBottom: "5px" }}>
+                       {viewImage===null && <Box textAlign="center" mt={1} style={{ width: "100%", marginBottom: "5px" }}>
                             <label htmlFor="file-input" style={{ width: "100%" }}>
                                 <Paper
                                     elevation={3}
@@ -187,6 +192,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                                     </Typography>
                                     <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 100 KB )</Typography>
                                 </Paper>
+                                    
                             </label>
                             {formik.touched.image && formik.errors.image ? (
                                 <div className="error">{formik.errors.image}</div>
@@ -205,7 +211,27 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
                                
                                )}
                             </div>
-                        </Box>
+                        </Box>}
+                            {viewImage !==null &&
+                                <div className='d-flex flex-column'>
+                                    <ReactCrop crop={crop} onChange={c => {
+                                        setCrop({
+                                            unit: "px",
+                                            x: c.x,
+                                            y: c.y,
+                                            width: 360,
+                                            height: 250
+                                          })
+                                    }
+
+                                    } className='mt-5 mb-5'>
+                                        <img src={viewImage} width={100} height={100} style={{ width: "1000px", height: "400px" }} />
+
+                                    </ReactCrop>
+                                    <span style={{textAlign:"center"}}>Width: {crop.width}px - Height: {crop.height}px</span>
+                                    <button className='btn btn-small mt-3'>Crop</button>
+                                </div>
+                            }
                         <hr></hr>
                         <div className='d-flex justify-content-end'>
                             <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>
