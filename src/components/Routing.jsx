@@ -71,6 +71,7 @@ function AllRouting() {
       ></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route path="/booking/:id" element={<BookinList />} />
+     
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}

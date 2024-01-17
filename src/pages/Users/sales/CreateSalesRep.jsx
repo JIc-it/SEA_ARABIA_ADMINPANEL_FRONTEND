@@ -231,20 +231,18 @@ function CreateSalesRep({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             <select
-              className="form-control"
-              id=""
               name="gender"
-              value={formik.values.gender}
+              className="form-select"
+              value={formik?.values?.gender}
               onChange={formik.handleChange}
+              // onChange={(e) => {
+              //   formik.handleChange(e);
+              //   formik.setFieldValue("gender", e.target.value);
+              // }}
               onBlur={formik.handleBlur}
             >
-              <option value="" label="Select a gender" />
-              {gender?.map((item) => (
-                <option key={item.id} value={item.id} label={item.label}>
-                  {item.label}
-                </option>
-              ))}
-              {/* Add more options as needed */}
+              <option value="male">Male</option>
+              <option value="female">Female</option>
             </select>
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>

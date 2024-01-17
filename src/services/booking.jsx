@@ -1,16 +1,23 @@
 import axiosInstance from "./authHandle";
 
-const bookingList="booking/bookings/admin"
-const booking="booking/admin-booking-view"
-const refundinitiateURL="booking/initilize-refund-admin"
-const cancellationrequestURL="booking/booking-cancellation"
-const bookingCountURL="booking/admin-booking-count"
-const refundrequestCountURL="booking/admin-refund-count"
-const refundhistoryCountURL="booking/admin-refund-history-count"
+const bookingList = "booking/bookings/admin";
+
+const booking = "booking/admin-booking-view";
+const refundinitiateURL = "booking/initilize-refund-admin";
+const cancellationrequestURL = "booking/booking-cancellation";
+const bookingCountURL = "booking/admin-booking-count";
+const refundrequestCountURL = "booking/admin-refund-count";
+const refundhistoryCountURL = "booking/admin-refund-history-count";
 
 export const getBookingList = (data) => {
   return axiosInstance
-    .get(bookingList,{params:{status:data.status,search:data.search,refund_status:data.refund_status}})
+    .get(bookingList, {
+      params: {
+        status: data.status,
+        search: data.search,
+        refund_status: data.refund_status,
+      },
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -28,9 +35,9 @@ export const getBooking = (id) => {
     });
 };
 
-export const updateRefund = (id,data) => {
+export const updateRefund = (id, data) => {
   return axiosInstance
-    .put(`${refundinitiateURL}/${id}`,data)
+    .put(`${refundinitiateURL}/${id}`, data)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

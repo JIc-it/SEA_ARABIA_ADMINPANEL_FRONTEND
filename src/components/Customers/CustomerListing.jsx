@@ -373,10 +373,14 @@ export default function CustomerListing() {
                           </span>
                         </td>
                         <td>
-                          <span className="text-secondary">08 OCT,2022</span>
+                          <span className="text-secondary">
+                            {item?.created_at}
+                          </span>
                         </td>
                         <td>
-                          <span className="text-secondary">80</span>
+                          <span className="text-secondary">
+                            {item?.total_booking}
+                          </span>
                         </td>
 
                         <td
