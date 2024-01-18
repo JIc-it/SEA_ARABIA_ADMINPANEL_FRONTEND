@@ -15,17 +15,14 @@ import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 function CreateNewAdmin({ show, close, locationList }) {
   const theme = useTheme();
-  const adminId = useParams();
-
   const [isRefetch, setIsRefetch] = useState();
 
   const locationContext = useContext(AppContext);
 
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const salesRepId = useParams()?.salesRepId;
-  const [adminDetails, setAdminDetails] = useState();
-  const [location, setLocation] = useState([]);
+ 
+
   const [fieldValue, setFieldValue] = useState();
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
@@ -116,7 +113,7 @@ function CreateNewAdmin({ show, close, locationList }) {
       }
     },
   });
-  console.log("formik of admin", formik);
+  // console.log("formik of admin", formik);
   return (
     <Offcanvas
       show={show}

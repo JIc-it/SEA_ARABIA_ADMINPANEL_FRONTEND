@@ -38,7 +38,7 @@ const Admin = () => {
   useEffect(() => {
     getAdminTotalCount()
       .then((data) => {
-        console.log("admin count", data);
+        // console.log("admin count", data);
         setCount(data);
       })
       .catch((error) => {
@@ -116,7 +116,7 @@ const Admin = () => {
         // Remove the link from the document
         document.body.removeChild(link);
 
-        console.log("Exported Customer data successfully!");
+        // console.log("Exported Customer data successfully!");
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);
@@ -440,7 +440,8 @@ const Admin = () => {
                           <td>
                             <span className="text-secondary">
                               {" "}
-                              {item?.location}
+                              
+                              {item?.location}{item?.profileextra?.location?.country}
                             </span>
                           </td>
 

@@ -101,7 +101,7 @@ function CustomerPasswordReset({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
+  // console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({

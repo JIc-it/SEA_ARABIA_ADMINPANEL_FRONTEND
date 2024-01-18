@@ -27,12 +27,11 @@ function CustomerCardDetails() {
   const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
   const customerId = useParams()?.customerId;
-  console.log("customerId", customerId);
-  const id = useParams()?.customerId;
+
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        console.log("customer detail is ---", data);
+        // console.log("customer detail is ---", data);
         setCustomerDetails(data);
       })
       .catch((error) => {

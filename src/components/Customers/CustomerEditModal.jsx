@@ -56,7 +56,7 @@ function CustomerEditModal({ show, close }) {
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        console.log("cus detail is ---", data);
+        // console.log("cus detail is ---", data);
         setCustomerDetails(data);
       })
       .catch((error) => {
@@ -110,7 +110,7 @@ function CustomerEditModal({ show, close }) {
             setIsLoading(false);
           }
         } catch (err) {
-          console.log(err);
+          // console.log(err);
           err.response.data.email && toast.error(err.response.data.email[0]);
           err.response.data.mobile && toast.error(err.response.data.mobile[0]);
           setIsLoading(false);
@@ -129,9 +129,8 @@ function CustomerEditModal({ show, close }) {
       dob: customerDetails?.profileextra?.dob || "",
     });
   }, [customerDetails]);
-  console.log("gwnder--", customerDetails?.profileextra?.gender);
+ 
 
-  console.log("customer formik data", formik);
   return (
     <Offcanvas
       show={show}

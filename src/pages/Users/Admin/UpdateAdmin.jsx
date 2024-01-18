@@ -23,12 +23,12 @@ import { AppContext } from "../../../Context/AppContext";
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-  console.log("admin id ===", adminId);
+
   const locationContext = useContext(AppContext);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const salesRepId = useParams()?.salesRepId;
+ 
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([
@@ -40,7 +40,7 @@ function UpdateAdmin({ show, close }) {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin update list------==", data);
+        // console.log(" admin update list------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -50,7 +50,7 @@ function UpdateAdmin({ show, close }) {
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("location is==", data.results);
+        // console.log("location is==", data.results);
         setLocation(data.results);
       })
       .catch((error) => {
@@ -110,7 +110,7 @@ function UpdateAdmin({ show, close }) {
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin updated detail is ---", adminData);
+          // console.log("Admin updated detail is ---", adminData);
           if (adminData) {
             setIsLoading(false);
             window.location.reload();

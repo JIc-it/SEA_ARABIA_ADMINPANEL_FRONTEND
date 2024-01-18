@@ -63,6 +63,9 @@ import BookinList from "./Booking/BookinList";
 import ProfileView from "./Profile/ProfileView";
 import Availability from "./Service/Availability";
 import Calendar from "./Service/Calendar";
+import SalesPassword from "../pages/Users/sales/SalesPassword";
+import SalesActivityLog from "../pages/Users/sales/salesActivityLog";
+import ProfileActivityLogs from "./Profile/ProfileActivityLogs";
 
 function AllRouting() {
   return (
@@ -76,7 +79,7 @@ function AllRouting() {
       ></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route path="/booking/:id" element={<BookinList />} />
-     
+
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
       {/* //////////Refund//////////////////// */}
@@ -129,12 +132,12 @@ function AllRouting() {
       />
       <Route
         path="/sales-activity-log/:salesRepId/:salesRep"
-        element={<AdminActivityLog />}
+        element={<SalesActivityLog />}
       />
       <Route path="/admin" element={<Admin />} />
       <Route path="/admin/:adminId" element={<AdminView />} />
       <Route
-        path="/admin-activity-log/:adminId/:admin"
+        path="/admin-activity-log/:id/:admin"
         element={<AdminActivityLog />}
       />
       {/* ///////////////User/////////////////////// */}
@@ -159,6 +162,7 @@ function AllRouting() {
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
       <Route path="/profile" element={<ProfileView />} />
+      <Route path="/profile-activity-log/:id" element={<ProfileActivityLogs />}/>
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>

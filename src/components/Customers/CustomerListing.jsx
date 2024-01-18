@@ -33,7 +33,7 @@ export default function CustomerListing() {
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {
-        console.log("customer-list", data.results);
+        // console.log("customer-list", data.results);
         setListDiscount(data.results);
       })
       .catch((error) => {
@@ -66,7 +66,7 @@ export default function CustomerListing() {
         // Remove the link from the document
         document.body.removeChild(link);
 
-        console.log("Exported Customer data successfully!");
+        // console.log("Exported Customer data successfully!");
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);

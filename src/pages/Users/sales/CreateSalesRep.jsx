@@ -65,16 +65,16 @@ function CreateSalesRep({ show, close }) {
       code: Yup.string().required("Location code is required"),
     }),
   });
-
   const formik = useFormik({
     initialValues: {
       first_name: "",
       last_name: "",
       email: "",
       password: "",
+      gender: "",
       location: "",
       mobile: "",
-      gender: ",",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -86,22 +86,23 @@ function CreateSalesRep({ show, close }) {
             last_name: values.last_name,
             role: "Staff",
             email: values.email,
+            dob: values.dob,
             password: values.password,
             mobile: values.mobile,
+
             location: values.location.id,
             gender: values.gender,
           };
 
           const staffData = await createSalesRep(data);
-
           console.log("sales rep -- console", staffData);
           if (staffData) {
             setIsRefetch(!isRefetch);
-            toast.success("Staff Added Successfully.");
+            toast.success("Customer Added Successfully.");
             close();
             setIsLoading(false);
           } else {
-            console.error("Error while creating staff:", staffData.error);
+            console.error("Error while creating Customer:", staffData.error);
             setIsLoading(false);
           }
           setIsLoading(false);
@@ -114,6 +115,7 @@ function CreateSalesRep({ show, close }) {
       }
     },
   });
+ 
 
   console.log("sales formik data", formik);
   return (

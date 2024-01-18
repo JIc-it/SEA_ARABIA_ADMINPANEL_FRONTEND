@@ -6,15 +6,19 @@ import ProfileCardDetails from "./ProfileCardDetails";
 function ProfileView() {
   const navigate = useNavigate();
   const customerId = useParams()?.customerId;
-
+const [isLoading,setIsloading]=useState(false)
   const [customerDetails, setCustomerDetails] = useState([]);
   useEffect(() => {
+    setIsloading(true)
     getProfileData()
       .then((data) => {
-       
-        setCustomerDetails(data);
+        setIsloading(false)
+        if(data){
+          setCustomerDetails(data)
+        }
       })
       .catch((error) => {
+        setIsloading(false)
         console.error("Error fetching customer data:", error);
       });
   }, []);
@@ -80,7 +84,7 @@ function ProfileView() {
                 &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
               </div>
             </div>
-            <ProfileCardDetails data={customerDetails} />
+            <ProfileCardDetails data={customerDetails} isLoading={isLoading}/>
           </div>
         </div>
       </div>
