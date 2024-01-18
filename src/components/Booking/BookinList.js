@@ -488,9 +488,7 @@ const BookinList = () => {
                                 </td>
                                 <td>
                                   <span className="text-secondary">
-                                    {new Date(
-                                      data?.start_date
-                                    ).toLocaleDateString("es-CL")}
+                                    {data?.slot_start_date}
                                   </span>
                                 </td>
                                 <td>
