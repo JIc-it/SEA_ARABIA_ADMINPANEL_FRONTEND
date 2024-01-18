@@ -1,40 +1,38 @@
 import { useNavigate } from "react-router";
 import { logoutRequest } from "../../services/authHandle";
 import { toast } from "react-toastify";
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import HeaderOffCanvas from "./HeaderOffCanvas";
-import { getNotificationList } from "../../services/Notification"
+import { getNotificationList } from "../../services/Notification";
 
 function Header() {
   const navigate = useNavigate();
-  const [open,setOpen]=useState(false)
-  const [notifycount,setNotifycount]=useState(0)
+  const [open, setOpen] = useState(false);
+  const [notifycount, setNotifycount] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [listPageUrl, setListPageUrl] = useState({
-      next: null,
-      previous: null,
+    next: null,
+    previous: null,
   });
-  const [data, setdata] = useState([])
+  const [data, setdata] = useState([]);
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     getNotificationList()
-        .then((data) => {
-            setIsLoading(false)
-            setdata(data.results);
-            setNotifycount(data.results.length)
-            setListPageUrl({
-                next: data.next,
-                previous: data.previous,
-            })
-        })
-        .catch((error) => {
-            {
-                setIsLoading(false);
-                toast.error(error.response.data)
-            };
+      .then((data) => {
+        setIsLoading(false);
+        setdata(data.results);
+        setNotifycount(data.results.length);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
         });
-}, [])
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data);
+      });
+  }, []);
 
   return (
     <header className="navbar navbar-expand-md d-none d-lg-flex d-print-none">
@@ -76,7 +74,10 @@ function Header() {
                 <path d="M3 12h1m8 -9v1m8 8h1m-9 8v1m-6.4 -15.4l.7 .7m12.1 -.7l-.7 .7m0 11.4l.7 .7m-12.1 -.7l-.7 .7" />
               </svg>
             </a>
-            <div className="nav-item dropdown d-none d-md-flex me-3" onClick={()=>setOpen(true)}>
+            <div
+              className="nav-item dropdown d-none d-md-flex me-3"
+              onClick={() => setOpen(true)}
+            >
               <a
                 href="#"
                 className="nav-link px-0"
@@ -100,21 +101,22 @@ function Header() {
                   <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
                   <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                 </svg>
-                {notifycount!==0 && <span className="badge bg-red"></span>}
+                {notifycount !== 0 && <span className="badge bg-red"></span>}
               </a>
-             
             </div>
-            {open && <HeaderOffCanvas
-            isLoading={isLoading} 
-            setIsLoading={setIsLoading}
-            listPageUrl={listPageUrl} 
-            setListPageUrl={setListPageUrl}
-            data={data} 
-            setdata={setdata}
-            countset={setNotifycount}
-              open={open}
-              setOpen={setOpen}
-            />}
+            {open && (
+              <HeaderOffCanvas
+                isLoading={isLoading}
+                setIsLoading={setIsLoading}
+                listPageUrl={listPageUrl}
+                setListPageUrl={setListPageUrl}
+                data={data}
+                setdata={setdata}
+                countset={setNotifycount}
+                open={open}
+                setOpen={setOpen}
+              />
+            )}
           </div>
           <div className="nav-item dropdown">
             <button
@@ -150,7 +152,7 @@ function Header() {
                 Settings
               </a> */}
               <a
-              href="#"
+                href="#"
                 className="dropdown-item"
                 onClick={async () => {
                   const logoutData = await logoutRequest();

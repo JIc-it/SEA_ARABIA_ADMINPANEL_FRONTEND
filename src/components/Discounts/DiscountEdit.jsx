@@ -28,7 +28,7 @@ export default function DiscountEdit() {
     const serviceObjectSchema = Yup.object({
         id: Yup.string().required(),
         name: Yup.string().required(),
-        company: Yup.string().required(),
+        company_id: Yup.string().required(),
     });
 
     const companyObjectSchema = Yup.object({
@@ -49,6 +49,7 @@ export default function DiscountEdit() {
         .required("Start Date is required"),
     discount_value: Yup.number()
         .required("Value is Required")
+        .max(100,"Specify Percentage must be less than or equal to 100")
         .min(1, 'Must be greater than zero'),
     up_to_amount: Yup.number().when("discount_type", ([discount_type], schema) => {
         if (discount_type === "Percentage") {
@@ -108,7 +109,7 @@ export default function DiscountEdit() {
               if (typeof context.parent.image === 'string') {
                 return true;
               }
-              return value && value.size <= 5 * 1024 * 1024;
+              return value && value.size <= 300* 1024;
             })
             .test('fileType', 'Invalid file format', (value, context) => {
               if (typeof context.parent.image === 'string') {
@@ -205,7 +206,7 @@ export default function DiscountEdit() {
               }catch (err) {
                 console.log(err);
                 setIsLoading(false);
-                toast.error(err.response.data)
+                toast.error(err.message)
               }
             }
         },
@@ -496,30 +497,14 @@ if(!isLoading){
                                     <div className='d-flex' style={{ marginTop: "8px" }}>
                                         <div>
                                         <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Percentage</p>
-                                            <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
-                                                        if(e.target.value<=0){
-                                                            return formik.setFieldValue("discount_value",0)
-                                                        }
-                                                        else{
-                                                            formik.setFieldValue("discount_value",e.target.value)
-                                                        }
-                                                        
-                                                    }} onBlur={formik.handleBlur}/>
+                                            <input type='number' name="discount_value" value={formik.values.discount_value} className='discount-input' style={{ width: "90%" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
                                             {formik.touched.discount_value && formik.errors.discount_value ? (
                                         <div className="error">{formik.errors.discount_value}</div>
                                     ) : null}
                                         </div>
                                         <div>
                                         <p style={{ fontWeight: 550, fontSize: "14px" }}>Upto Amount</p>
-                                        <input type='number' value={formik.values.up_to_amount} name='up_to_amount' className='discount-input' style={{ width: "90%" }}  onChange={(e)=>{
-                                                        if(e.target.value<=0){
-                                                            return formik.setFieldValue("up_to_amount",0)
-                                                        }
-                                                        else{
-                                                            formik.setFieldValue("up_to_amount",e.target.value)
-                                                        }
-                                                        
-                                                    }} onBlur={formik.handleBlur} />
+                                        <input type='number' value={formik.values.up_to_amount} name='up_to_amount' className='discount-input' style={{ width: "90%" }}  onChange={formik.handleChange} onBlur={formik.handleBlur} />
                                             {formik.touched.up_to_amount && formik.errors.up_to_amount ? (
                                         <div className="error">{formik.errors.up_to_amount}</div>
                                     ) : null}
@@ -589,15 +574,7 @@ if(!isLoading){
                         {formik.values.redemption_type==="Limited-Number" &&
                             <div style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Specify Number</p>
-                                <input type='number' value={formik.values.specify_no} name="specify_no"  onChange={(e)=>{
-                                                        if(e.target.value<=0){
-                                                            return formik.setFieldValue("specify_no",0)
-                                                        }
-                                                        else{
-                                                            formik.setFieldValue("specify_no",e.target.value)
-                                                        }
-                                                        
-                                                    }} onBlur={formik.handleBlur} className='discount-input' style={{ width: "50%" }} />
+                                <input type='number' value={formik.values.specify_no} name="specify_no"  onChange={formik.handleChange} onBlur={formik.handleBlur} className='discount-input' style={{ width: "50%" }} />
                                 {formik.touched.specify_no && formik.errors.specify_no ? (
                                         <div className="error">{formik.errors.specify_no}</div>
                                     ) : null}
@@ -644,15 +621,7 @@ if(!isLoading){
 
                             <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Specify Number</p>
-                                <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem==="One-Time"} value={formik.values.multiple_redeem_specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={(e)=>{
-                                                        if(e.target.value<=0){
-                                                            return formik.setFieldValue("multiple_redeem_specify_no",0)
-                                                        }
-                                                        else{
-                                                            formik.setFieldValue("multiple_redeem_specify_no",e.target.value)
-                                                        }
-                                                        
-                                                    }} onBlur={formik.handleBlur}/>
+                                <input type='number' name="multiple_redeem_specify_no" disabled={formik.values.allow_multiple_redeem==="One-Time"} value={formik.values.multiple_redeem_specify_no}  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
                                 {formik.touched.multiple_redeem_specify_no && formik.errors.multiple_redeem_specify_no ? (
                                         <div className="error">{formik.errors.multiple_redeem_specify_no}</div>
                                     ) : null}
@@ -661,7 +630,7 @@ if(!isLoading){
                         </div>
                         <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Start Date</p>
-                                <input type='datetime-local' value={convertAndFormatDateTime(formik?.values?.start_date)} name="start_date"  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                <input type='datetime-local' value={convertAndFormatDateTime(formik?.values?.start_date)} name="start_date"  className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur} min="2024-01-01T00:00:00"/>
                                 {formik.touched.start_date && formik.errors.start_date ? (
                                         <div className="error">{formik.errors.start_date}</div>
                                     ) : null}
@@ -706,7 +675,7 @@ if(!isLoading){
 
                             <div className={isMobileView?"w-100":"w-50"} style={{ marginTop: "8px" }}>
                                 <p style={{ fontWeight: 550, fontSize: "14px" }}>Validity Period</p>
-                                <input type='datetime-local' value={convertAndFormatDateTime(formik.values?.end_date)} name="end_date" disabled={formik.values.is_lifetime === true} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur}/>
+                                <input type='datetime-local' value={convertAndFormatDateTime(formik.values?.end_date)} name="end_date" disabled={formik.values.is_lifetime === true} className='discount-input' style={{ padding: "5px" }} onChange={formik.handleChange} onBlur={formik.handleBlur} min="2024-01-01T00:00:00"/>
                                 {formik.touched.end_date && formik.errors.end_date ? (
                                         <div className="error">{formik.errors.end_date}</div>
                                     ) : null}
@@ -807,15 +776,7 @@ if(!isLoading){
                             </div>
                             <div className={isMobileView?"w-100":'w-50'} style={{marginTop:isMobileView?"5px":""}}>
                                 <p style={{ fontWeight: 500, fontSize: "16px" }}>Minimum Purchase Amount</p>
-                                <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount}  onChange={(e)=>{
-                                                        if(e.target.value<=0){
-                                                            return formik.setFieldValue("min_purchase_amount",0)
-                                                        }
-                                                        else{
-                                                            formik.setFieldValue("min_purchase_amount",e.target.value)
-                                                        }
-                                                        
-                                                    }} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === false} />
+                                <input type='number' name="min_purchase_amount" className='discount-input' value={formik.values.min_purchase_amount}  onChange={formik.handleChange} onBlur={formik.handleBlur} disabled={formik.values.purchase_requirement === false} />
                                 {formik.touched.min_purchase_amount && formik.errors.min_purchase_amount ? (
                                         <div className="error">{formik.errors.min_purchase_amount}</div>
                                     ) : null}            
@@ -871,7 +832,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 5 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 300 KB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (

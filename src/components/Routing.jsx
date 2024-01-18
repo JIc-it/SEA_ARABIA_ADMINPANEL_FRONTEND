@@ -65,6 +65,7 @@ import Availability from "./Service/Availability";
 import Calendar from "./Service/Calendar";
 import SalesPassword from "../pages/Users/sales/SalesPassword";
 import SalesActivityLog from "../pages/Users/sales/salesActivityLog";
+import ProfileActivityLogs from "./Profile/ProfileActivityLogs";
 
 function AllRouting() {
   return (
@@ -112,7 +113,7 @@ function AllRouting() {
       />
 
       {/* <Route path="/customers-edit/:id" element={<CustomerEdit />} /> */}
-      <Route path="/customers/booking/:id" element={<CustomersBookingView />} />
+      <Route path="/booking/:id" element={<CustomersBookingView />} />
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
       <Route
@@ -140,7 +141,7 @@ function AllRouting() {
         element={<AdminActivityLog />}
       />
       {/* ///////////////User/////////////////////// */}
-      <Route path="/permissions" element={<RolePermission />} />
+      <Route path="/permissions/:id/:userName" element={<RolePermission />} />
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
@@ -161,6 +162,7 @@ function AllRouting() {
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
       <Route path="/profile" element={<ProfileView />} />
+      <Route path="/profile-activity-log/:id" element={<ProfileActivityLogs />}/>
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>

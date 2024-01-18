@@ -157,10 +157,10 @@ const VenderIndivitualEdit = () => {
         const selectedCountryObject =
           location &&
           location.length > 0 &&
-          data.profileextra?.location?.country_code &&
+          data?.profileextra?.location?.country_code &&
           location.find(
             (country) =>
-              country.code === data.profileextra.location.country_code
+              country.code === data?.profileextra?.location?.country_code
           );
         console.log(selectedCountryObject, "selectedCountryObject");
         selectedCountryObject &&

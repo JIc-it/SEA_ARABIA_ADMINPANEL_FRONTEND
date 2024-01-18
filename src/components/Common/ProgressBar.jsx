@@ -125,7 +125,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
           locationList.length > 0 &&
           locationList.find(
             (country) =>
-              country.code === data.profileextra.location?.country_code
+              country.code === data?.profileextra?.location?.country_code
           );
         console.log(selectedCountryObject, "selectedCountryObject");
         selectedCountryObject &&

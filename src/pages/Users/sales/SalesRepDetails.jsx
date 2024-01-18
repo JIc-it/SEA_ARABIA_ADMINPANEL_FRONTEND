@@ -18,7 +18,6 @@ function SalesRepDetails() {
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
-
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
@@ -135,7 +134,14 @@ function SalesRepDetails() {
             </div>
 
             <div className="bottom_button">
-              <a className="call_vendor_button btn ">
+              <a
+                className="call_vendor_button btn "
+                onClick={() => {
+                  navigate(
+                    `/permissions/${salesRepDetails?.id}/${salesRepDetails?.first_name}`
+                  );
+                }}
+              >
                 Permissions &nbsp;
                 <svg
                   width={20}

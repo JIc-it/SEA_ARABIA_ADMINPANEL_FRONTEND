@@ -4,6 +4,7 @@ const vendorUserCardUrl = "account/vendor-count-admin";
 const getIndivitualVendorListUrl = "account/vendor-details";
 const updateStatus = "company/company-active-update";
 const activityUrl = "report/log-list";
+const getPermissionUrl = "account/custom_permission/retrieve";
 
 export const getUserVendorCard = () => {
   return axiosInstance
@@ -40,6 +41,16 @@ export const getUserVendorStatusUpdate = (id, status) => {
 export const getUserVendorActivityLog = (id) => {
   return axiosInstance
     .get(`${activityUrl}/${id}/`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getUserPermissionData = (userId) => {
+  return axiosInstance
+    .get(`${getPermissionUrl}/${userId}/`)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
