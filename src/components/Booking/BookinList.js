@@ -49,12 +49,6 @@ const BookinList = () => {
   const { pathname, state } = location;
 
   // Log the values for demonstration purposes
-<<<<<<< HEAD
-  console.log('Pathname:', pathname);
-
-  console.log('State:', state);
-=======
->>>>>>> 4834d86cdbb428338d8d1fb2c42aaa1169fa48f1
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
