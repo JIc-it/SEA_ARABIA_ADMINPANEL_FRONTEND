@@ -14,8 +14,9 @@ import {
   getCustomerSearch,
   getCustomerlist,
 } from "../../services/CustomerHandle";
-import { formatDate } from "../../helpers";
+import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { toast } from "react-toastify";
+import { getListDataInPagination } from "../../services/commonServices";
 
 export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
@@ -99,7 +100,29 @@ export default function CustomerListing() {
         console.error("Error fetching  data:", error);
       });
   };
-
+  const handlePagination = async (type) => {
+    setIsLoading(true);
+    let convertedUrl =
+      type === "next"
+        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        : type === "prev"
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
+    convertedUrl &&
+      getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          const filteredResults = data.results.filter(
+            (item) => item.role === "User"
+          );
+          setListDiscount(filteredResults);
+        })
+        .catch((error) => {
+          setIsLoading(false);
+          console.error("Error fetching  data:", error);
+        });
+  };
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
@@ -355,7 +378,7 @@ export default function CustomerListing() {
                     let formatedDate = item.created_at;
                     return (
                       <tr>
-                        {console.log("item listDiscount", item)}
+                       
                         <td>
                           <span className="text-secondary">
                             {item.first_name}
@@ -425,15 +448,16 @@ export default function CustomerListing() {
             </tbody>
           </table>
         </div>
-        {/* <div className="card-footer d-flex align-items-center">
-         
+        <div className="card-footer d-flex align-items-center">
           <ul className="pagination m-0 ms-auto">
-            <li className="page-item disabled">
+            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
               <a
                 className="page-link"
                 href="#"
                 tabIndex="-1"
-                aria-disabled="true"
+                onClick={() => {
+                  handlePagination("prev");
+                }}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -453,8 +477,15 @@ export default function CustomerListing() {
                 prev
               </a>
             </li>
-            <li className="page-item">
-              <a className="page-link" href="#">
+
+            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
+              <a
+                className="page-link"
+                href="#"
+                onClick={() => {
+                  handlePagination("next");
+                }}
+              >
                 next
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -474,7 +505,7 @@ export default function CustomerListing() {
               </a>
             </li>
           </ul>
-        </div> */}
+        </div>
       </div>
     </div>
   );

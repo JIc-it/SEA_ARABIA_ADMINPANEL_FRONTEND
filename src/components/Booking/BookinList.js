@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
 import Table from "../LeadManagementTable";
@@ -12,6 +12,7 @@ import {
   useLocation,
   useNavigate,
   useParams,
+  useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -42,6 +43,17 @@ const style = {
 const BookinList = () => {
   const customerId = useParams()?.id;
   console.log("customerid", customerId);
+
+  const location = useLocation();
+
+  const { pathname, state } = location;
+
+  // Log the values for demonstration purposes
+  console.log('Pathname:', pathname);
+  console.log('Search:', search);
+  console.log('State:', state);
+
+  console.log("location is==", location);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -65,60 +77,56 @@ const BookinList = () => {
   };
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
-
-  useEffect(() => {
-    customerBookingList(customerId)
-      .then((data) => {
-        console.log("bookinhg list data", data.response);
-      })
-      .catch((error) => {
-        console.error("error to fetch customer booking list", error);
-      });
-  }, []);
-
-  useEffect(() => {
-    {
-      search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
-    }
-    const Pass = { status: "", search: search, refund_status: "" };
-    getBookingList(Pass)
-      .then((data) => {
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setBookingList(data?.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.response.data);
-      });
-  }, [search]);
-
-  // const location = useLocation();
-  // const isNavigatedFromUserDetails = location.state?.fromUserDetails;
-  // console.log("isNavigatedFromUserDetails", isNavigatedFromUserDetails);
+  // new api
   // useEffect(() => {
-  //   // Fetch customer-specific bookings using the customerId
-  //   // Use isNavigatedFromUserDetails to decide which API to call
-  //   const fetchCustomerBookings = async () => {
-  //     try {
-  //       if (isNavigatedFromUserDetails) {
-  //         const response = await customerBookingList(customerId);
-  //         setBookingList(response.data.response);
-  //       } else {
-  //         const response = await getBookingList({
-  //           status: "",
-  //           search: "",
-  //           refund_status: "",
-  //         });
-  //         setBookingList(response?.results);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching customer bookings:", error);
-  //     }
-  //   };
+  //   customerBookingList(customerId)
+  //     .then((data) => {
+  //       console.log("bookinhg list data", data.response);
+  //     })
+  //     .catch((error) => {
+  //       console.error("error to fetch customer booking list", error);
+  //     });
+  // }, []);
+  // old api
+  // useEffect(() => {
+  //   {
+  //     search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
+  //   }
+  //   const Pass = { status: "", search: search, refund_status: "" };
+  //   getBookingList(Pass)
+  //     .then((data) => {
+  //       setIsLoading(false);
+  //       setListPageUrl({ next: data.next, previous: data.previous });
+  //       setBookingList(data?.results);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       toast.error(error.response.data);
+  //     });
+  // }, [search]);
 
-  //   fetchCustomerBookings();
-  // }, [customerId, isNavigatedFromUserDetails]);
+  useEffect(() => {
+    // Fetch customer-specific bookings using the customerId
+    const fetchCustomerBookings = async () => {
+      try {
+        if (customerId) {
+          const response = await customerBookingList(customerId);
+          setBookingList(response.data.response);
+        } else {
+          const response = await getBookingList({
+            status: "",
+            search: "",
+            refund_status: "",
+          });
+          setBookingList(response?.results);
+        }
+      } catch (error) {
+        console.error("Error fetching customer bookings:", error);
+      }
+    };
+
+    fetchCustomerBookings();
+  }, [customerId]);
 
   useEffect(() => {
     getBookingCount()
@@ -577,10 +585,6 @@ const BookinList = () => {
                   )}
                 </div>
                 <div className="card-footer d-flex align-items-center">
-                  {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
                   <ul className="pagination m-0 ms-auto">
                     <li
                       className={`page-item  ${
