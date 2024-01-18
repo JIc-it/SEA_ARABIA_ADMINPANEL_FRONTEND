@@ -18,7 +18,6 @@ function SalesRepDetails() {
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
-
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
