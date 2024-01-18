@@ -27,6 +27,7 @@ import {
   customerIndividualBookingList,
   getBookingData,
 } from "../../services/CustomerHandle";
+import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
   position: "absolute",
@@ -355,7 +356,7 @@ const BookinList = () => {
                   >
                     <a
                       style={{ textDecoration: "none" }}
-                      href="https://seaarabia.jicitsolution.com/booking/booking-export/"
+                      href={`${API_BASE_URL}booking/booking-export/`}
                     >
                       Export &nbsp;
                     </a>
