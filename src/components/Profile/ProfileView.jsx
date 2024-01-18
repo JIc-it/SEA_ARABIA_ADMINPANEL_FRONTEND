@@ -13,7 +13,9 @@ const [isLoading,setIsloading]=useState(false)
     getProfileData()
       .then((data) => {
         setIsloading(false)
-        setCustomerDetails(data);
+        if(data){
+          setCustomerDetails(data)
+        }
       })
       .catch((error) => {
         setIsloading(false)

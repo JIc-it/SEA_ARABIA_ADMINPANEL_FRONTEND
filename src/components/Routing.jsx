@@ -65,6 +65,7 @@ import Availability from "./Service/Availability";
 import Calendar from "./Service/Calendar";
 import SalesPassword from "../pages/Users/sales/SalesPassword";
 import SalesActivityLog from "../pages/Users/sales/salesActivityLog";
+import ProfileActivityLogs from "./Profile/ProfileActivityLogs";
 
 function AllRouting() {
   return (
@@ -161,6 +162,7 @@ function AllRouting() {
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
       <Route path="/profile" element={<ProfileView />} />
+      <Route path="/profile-activity-log/:id" element={<ProfileActivityLogs />}/>
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>

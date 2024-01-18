@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../src/Styles/global.scss";
+import { jwtDecode } from "jwt-decode";
 // import 'react-flags-select/css/react-flags-select.css'; // Import the styles
 
 import MainPage from "./pages/MainPage";
@@ -10,12 +11,19 @@ import EmailVerification from "./pages/EmailVerification";
 import VerificationCode from "./pages/VerificationCode";
 import ResetLoginPassword from "./pages/ResetLoginPassword";
 import { useProSidebar } from "react-pro-sidebar";
-import { AppContext } from "./Context/AppContext";
+import { AppContext,UserContext } from "./Context/AppContext";
 import { useEffect, useState } from "react";
 import { getLocation } from "./services/CustomerHandle";
 
 function App() {
 const [gccCountriesList, setGccCountriesList] = useState([])
+const [userid,setUserId]=useState(null)
+const AccessToken=localStorage.getItem("access_token")
+
+useEffect(()=>{
+  const userId=jwtDecode(AccessToken);
+  setUserId(userId.user_id)
+},[AccessToken])
 
   useEffect(() => {
     getLocation()
@@ -56,6 +64,7 @@ const [gccCountriesList, setGccCountriesList] = useState([])
   return (
     <Router>
       <AppContext.Provider value={{gccCountriesList}}>
+        <UserContext.Provider value={userid}>
         <div className="page">
           <ToastContainer
             position="top-right"
@@ -81,6 +90,7 @@ const [gccCountriesList, setGccCountriesList] = useState([])
             <Route path="/*" element={<MainPage />} />
           </Routes>
         </div>
+        </UserContext.Provider>
       </AppContext.Provider>
     </Router>
   );

@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangePasword from "./ChangePassword";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useContext } from "react";
+import { UserContext } from "../../Context/AppContext";
 
 function ProfileCardDetails({ data,isLoading }) {
     const theme = useTheme();
@@ -13,8 +15,9 @@ function ProfileCardDetails({ data,isLoading }) {
     const [open,setOpen]=useState(false)
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const [active, setActive] = useState("Details");
-
+    const UserId = useContext(UserContext);
     const [customerDetails, setCustomerDetails] = useState([]);
+
 
     return (
         <>
@@ -127,7 +130,7 @@ function ProfileCardDetails({ data,isLoading }) {
                                 className="mail_vendor_button btn btn-outline"
                                 onClick={() => {
                                     navigate(
-                                        `/customer-activity-log/${customerDetails?.id}/${customerDetails?.first_name}`
+                                        `/profile-activity-log/${UserId}/`
                                     );
                                 }}
                             >
