@@ -13,6 +13,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
 import { toast } from "react-toastify";
 import downArrow from "../../src/assets/images/down-arrow.png";
+import { API_BASE_URL } from "../services/authHandle";
 
 function Table() {
   const dispatch = useDispatch();
@@ -95,51 +96,40 @@ function Table() {
       <div className="col-12 actions_menu my-2">
         <div className="action_menu_left col-6">
           <div>
-            <form action="" method="post" autocomplete="off">
-              <div className="input-icon">
-                <span className="input-icon-addon">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
-                    <path d="M21 21l-6 -6" />
-                  </svg>
-                </span>
-
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="Input search term"
-                  onChange={(e) => {
-                    setSearch(e.target.value);
-                  }}
-                />
-                {/* <button
-                  type="button"
-                  className="btn search_button"
-                  style={{ background: "#006875" }}
-                  onClick={getVendorListData}
+            <div className="input-icon">
+              <span className="input-icon-addon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  stroke="currentColor"
+                  fill="none"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
-                  Search
-                </button> */}
-              </div>
-            </form>
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0" />
+                  <path d="M21 21l-6 -6" />
+                </svg>
+              </span>
+
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Input search term"
+                onChange={(e) => {
+                  setSearch(e.target.value);
+                }}
+              />
+            </div>
           </div>
           <div className="status_dropdown">
             <label className="form-label">Status</label>
             <select
               type="text"
-             
               className="form-select mb-3 status_selector "
               value={selectedValue}
               onChange={handleSelectChange}
@@ -187,7 +177,7 @@ function Table() {
             </svg>
           </button>
           <a
-            href="https://seaarabia.jicitsolution.com/account/vendor-list-export/"
+            href={`${API_BASE_URL}account/vendor-list-export/`}
             download="vendor_list.csv"
           >
             <button className="btn btn-outline" style={{ borderRadius: "6px" }}>

@@ -2,20 +2,18 @@ import { useContext, useEffect, useState } from "react";
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  updateCharterAttachment,
-} from "../../../services/leadMangement";
+import { updateCharterAttachment } from "../../../services/leadMangement";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
 import CircularProgress from "@mui/material/CircularProgress";
+import { API_BASE_URL } from "../../../services/authHandle";
 
 function EditCharter({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
 
-  var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/mou_or_charter/attachment/";
+  var substringToRemove = `${API_BASE_URL}assets/media/company/mou_or_charter/attachment/`;
   const formatedFileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -29,21 +27,37 @@ function EditCharter({ show, close, setIsRefetch, isRefetch, selectedData }) {
       // date: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required").test(
-        "is-not-blank",
-        "Title must not contain only blank spaces",
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
+      files: Yup.mixed().test(
+        "fileSize",
+        "File size must not exceed 5MB",
         (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
+
+          // Check if the file size is less than or equal to 5MB
+          return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
         }
       ),
-      //   files: Yup.string().required("Please upload  file"),
-      note: Yup.string().required("Note is required").test(
-        "is-not-blank",
-        "Note must not contain only blank spaces",
-        (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
-        }
-      ),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),

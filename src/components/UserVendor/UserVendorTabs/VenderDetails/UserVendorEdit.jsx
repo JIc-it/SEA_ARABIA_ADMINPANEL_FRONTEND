@@ -237,7 +237,9 @@ function UserVendorEdit({ show, close }) {
 
   const serviceListFilterData =
     formik.values.defineServices && formik.values.defineServices.length > 0
-      ?serviceTagList&&serviceTagList.length>0&& serviceTagList.filter((item) => {
+      ? serviceTagList &&
+        serviceTagList.length > 0 &&
+        serviceTagList.filter((item) => {
           return !formik.values.defineServices.some(
             (refItem) => refItem.id === item.id
           );
@@ -359,14 +361,14 @@ function UserVendorEdit({ show, close }) {
                               </label>
 
                               <input
-                                type="text"
+                                type="email"
                                 placeholder="Email"
                                 className="form-control"
                                 name="email"
                                 value={formik.values.email}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                maxLength={20}
+                                maxLength={50}
                               />
                               {formik.touched.email && formik.errors.email ? (
                                 <div className="error">
@@ -725,7 +727,7 @@ function UserVendorEdit({ show, close }) {
                                 multiple
                                 size="small"
                                 id="multiple-limit-tags"
-                                options={serviceListFilterData||[]}
+                                options={serviceListFilterData || []}
                                 name="defineServices"
                                 getOptionLabel={(option) => `${option.name} `}
                                 value={formik.values.defineServices}

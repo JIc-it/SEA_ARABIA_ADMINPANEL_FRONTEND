@@ -2,11 +2,11 @@ import { Offcanvas } from "react-bootstrap";
 import { useState } from "react";
 import { convertedDateAndTime, removeFolderPath } from "../../../helpers";
 import FileViewer from "../FileViewer";
+import { API_BASE_URL } from "../../../services/authHandle";
 
 function ViewCharter({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
-  var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/mou_or_charter/attachment/";
+  var substringToRemove = `${API_BASE_URL}assets/media/company/mou_or_charter/attachment/`;
 
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
@@ -69,7 +69,9 @@ function ViewCharter({ show, close, selectedData }) {
             Notes
           </label>
           <br />
-          <span style={{ wordBreak: "break-all" }}>{selectedData && selectedData.note}</span>
+          <span style={{ wordBreak: "break-all" }}>
+            {selectedData && selectedData.note}
+          </span>
         </div>
         <div style={{ margin: "20px" }}>
           <label

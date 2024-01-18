@@ -402,7 +402,7 @@ const VenderIndivitualEdit = () => {
                             value=""
                             id={formik.values.location?.id}
                           >
-                            {formik.values.location?.location}
+                            {formik.values.location?.country}
                           </option> */}
                       {/* {location &&
                             location.length > 0 &&

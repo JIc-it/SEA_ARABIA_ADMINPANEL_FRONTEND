@@ -4,11 +4,11 @@ import { useState } from "react";
 
 import { convertedDateAndTime, removeFolderPath } from "../../../helpers";
 import FileViewer from "../FileViewer";
+import { API_BASE_URL } from "../../../services/authHandle";
 
 function ViewProposal({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
-  var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/proposal/attachment/";
+  var substringToRemove = `${API_BASE_URL}assets/media/company/proposal/attachment/`;
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -71,7 +71,9 @@ function ViewProposal({ show, close, selectedData }) {
             Notes
           </label>
           <br />
-          <span style={{ wordBreak: "break-all" }}>{selectedData && selectedData.note}</span>
+          <span style={{ wordBreak: "break-all" }}>
+            {selectedData && selectedData.note}
+          </span>
         </div>
         <div style={{ margin: "20px" }}>
           <label

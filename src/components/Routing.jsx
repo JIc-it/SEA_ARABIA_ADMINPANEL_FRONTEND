@@ -57,7 +57,10 @@ import RefundRequestView from "./Booking/RefundRequestView";
 import RefundHistoryView from "./Booking/RefundHistoryView";
 import EventView from "../pages/Events&Packages/EventView";
 import EventAdd from "./Events/EventAdd";
+import RolePermission from "../pages/RolePermission";
+
 import BookinList from "./Booking/BookinList";
+import ProfileView from "./Profile/ProfileView";
 import Availability from "./Service/Availability";
 import Calendar from "./Service/Calendar";
 import SalesPassword from "../pages/Users/sales/SalesPassword";
@@ -137,6 +140,7 @@ function AllRouting() {
         element={<AdminActivityLog />}
       />
       {/* ///////////////User/////////////////////// */}
+      <Route path="/permissions" element={<RolePermission />} />
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />
@@ -156,6 +160,7 @@ function AllRouting() {
       <Route path="/events-and-packages" element={<EventListing />} />
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
+      <Route path="/profile" element={<ProfileView />} />
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>

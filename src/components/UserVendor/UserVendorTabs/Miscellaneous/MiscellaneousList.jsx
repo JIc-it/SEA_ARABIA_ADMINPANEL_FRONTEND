@@ -4,11 +4,13 @@ import CircularProgress from "@mui/material/CircularProgress";
 import ViewMiscellaneous from "./ViewMiscellaneous";
 import EditMiscellaneous from "./EditMiscellaneous";
 import { getMiscellaneousList } from "../../../../services/leadMangement";
-import { convertedDateAndTime, removeBaseUrlFromPath } from "../../../../helpers";
+import {
+  convertedDateAndTime,
+  removeBaseUrlFromPath,
+} from "../../../../helpers";
 import { getListDataInPagination } from "../../../../services/commonServices";
 
-export default function MiscellaneousList({companyID}) {
-
+export default function MiscellaneousList({ companyID }) {
   const [isRefetch, setIsRefetch] = useState(false);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [isViewMiscellaneous, setIsViewMiscellaneous] = useState(false);
@@ -25,7 +27,7 @@ export default function MiscellaneousList({companyID}) {
   const handleCloseViewMiscellaneous = () => {
     setIsViewMiscellaneous(false);
   };
-  
+
   const handleViewMiscellaneous = (data) => {
     setIsViewMiscellaneous(true);
     setSelectedData(data);
@@ -83,13 +85,15 @@ export default function MiscellaneousList({companyID}) {
       <div class="tab-pane active show" id="tabs-home-7">
         <div>
           <div style={{ paddingBottom: "20px" }}>
-           { showOffcanvas&&<AddOthersModal
-              show={showOffcanvas}
-              close={handleCloseOffcanvas}
-              isRefetch={isRefetch}
-              setIsRefetch={setIsRefetch}
-              companyID={companyID}
-            />}
+            {showOffcanvas && (
+              <AddOthersModal
+                show={showOffcanvas}
+                close={handleCloseOffcanvas}
+                isRefetch={isRefetch}
+                setIsRefetch={setIsRefetch}
+                companyID={companyID}
+              />
+            )}
             <button
               onClick={handleOpenOffcanvas}
               class="btn"
@@ -229,10 +233,10 @@ export default function MiscellaneousList({companyID}) {
                         <div>
                           <div class="home_contents">
                             <p style={{ fontWeight: "700", fontSize: "16px" }}>
-                              No Miscellaneous Found
+                              No Attachment / Note found
                             </p>
                             <p style={{ fontSize: "14px", color: "#68727D" }}>
-                              Add Your Miscellaneous here
+                              Add Your Attachment / Note here
                             </p>
                           </div>
                         </div>

@@ -4,11 +4,11 @@ import { useState } from "react";
 
 import { convertedDateAndTime } from "../../../../helpers";
 import FileViewer from "../../../Vendor_tabs/FileViewer";
+import { API_BASE_URL } from "../../../../services/authHandle";
 
 function ViewProposal({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
-  var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/proposal/attachment/";
+  var substringToRemove = `${API_BASE_URL}assets/media/company/proposal/attachment/`;
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -48,7 +48,7 @@ function ViewProposal({ show, close, selectedData }) {
                 justifyContent: "space-between",
               }}
             >
-              <div >
+              <div>
                 <span style={{ wordBreak: "break-all" }}>{fileName}</span>
               </div>
               <button

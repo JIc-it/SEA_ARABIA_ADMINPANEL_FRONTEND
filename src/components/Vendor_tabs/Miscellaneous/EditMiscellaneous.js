@@ -2,9 +2,7 @@ import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useContext, useEffect, useState } from "react";
-import {
-  updateMiscellaneousAttachment,
-} from "../../../services/leadMangement";
+import { updateMiscellaneousAttachment } from "../../../services/leadMangement";
 import { FileUploader } from "../../Modal/FileUploader";
 import { toast } from "react-toastify";
 import { OnboardContext } from "../../../Context/OnboardContext";
@@ -20,7 +18,7 @@ function EditMiscellaneous({
 }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const formik = useFormik({
     initialValues: {
       title: "",
@@ -31,26 +29,41 @@ function EditMiscellaneous({
       // date: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required").test(
-        "is-not-blank",
-        "Title must not contain only blank spaces",
+      title: Yup.string()
+        .required("Title is required")
+        .test(
+          "is-not-blank",
+          "Title must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
+      files: Yup.mixed().test(
+        "fileSize",
+        "File size must not exceed 5MB",
         (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
+
+          // Check if the file size is less than or equal to 5MB
+          return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
         }
       ),
-      //   files: Yup.string().required("Please upload  file"),
-      note: Yup.string().required("Note is required").test(
-        "is-not-blank",
-        "Note must not contain only blank spaces",
-        (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
-        }
-      ),
+      note: Yup.string()
+        .required("Note is required")
+        .test(
+          "is-not-blank",
+          "Note must not contain only blank spaces",
+          (value) => {
+            return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          }
+        ),
       // time: Yup.string().required("Time is required"),
       // date: Yup.string().required("Date is required"),
     }),
     onSubmit: async (values) => {
-  
       setIsLoading(true);
 
       if (!isLoading) {
@@ -201,7 +214,7 @@ function EditMiscellaneous({
                 backgroundColor: "#006875",
               }}
             >
-               {isLoading ? <CircularProgress /> : "Edit"}
+              {isLoading ? <CircularProgress /> : "Edit"}
             </button>
           </div>
         </div>

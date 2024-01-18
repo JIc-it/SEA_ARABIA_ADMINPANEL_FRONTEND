@@ -2,12 +2,13 @@ import { Offcanvas } from "react-bootstrap";
 import { useState } from "react";
 import { convertedDateAndTime } from "../../../../helpers";
 import FileViewer from "../../../Vendor_tabs/FileViewer";
+import { API_BASE_URL } from "../../../../services/authHandle";
 
 function ViewNegotiation({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
 
   var substringToRemove =
-    "https://seaarabia.jicitsolution.com/assets/media/company/negotiation/attachment/";
+    `${API_BASE_URL}assets/media/company/negotiation/attachment/`;
 
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");

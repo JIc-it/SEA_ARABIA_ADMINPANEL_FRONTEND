@@ -70,14 +70,12 @@ const ServiceAdd = () => {
         amenities: Yup.array().of(AmenitiesobjectSchema).min(1, 'Amenities is required'),
         category: Yup.array().of(CategoryobjectSchema).min(1, 'Category is required'),
         sub_category: Yup.array().of(SubcategoryobjectSchema).min(1, 'Sub-Category is required'),
-        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Service Image is required'),
+        service_image: Yup.array().of(ServiceImagebjectSchema).min(1, 'Image is required').max(8,"Image must be less than or equal to 8"),
         service_price_service: Yup.array().of(servicepriceserviceobjectSchema).min(1, 'Price is required'),
         machine_id: Yup.string()
             .required("Machine ID is required"),
         description: Yup.string()
             .required("Description is required"),
-        capacity: Yup.number()
-            .required("Capacity is required"),
         pickup_point_or_location: Yup.string()
             .required("Pickup Point is required"),
         cancellation_policy: Yup.string()
@@ -133,10 +131,10 @@ const ServiceAdd = () => {
             }
         }),
 
-        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero'),
-        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero'),
-        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero'),
-        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero'),
+        lounge: Yup.number().notOneOf([0], 'Lounge cannot be zero').max(10, 'Lounge must be less than or equal to 10'),
+        bedroom: Yup.number().notOneOf([0], 'Bedroom cannot be zero').max(10, 'Bedroom must be less than or equal to 10'),
+        toilet: Yup.number().notOneOf([0], 'Toilet cannot be zero').max(10, 'Toilet must be less than or equal to 10'),
+        capacity: Yup.number().notOneOf([0], 'Capacity cannot be zero').max(10, 'Capacity must be less than or equal to 10'),
         profit_method: Yup.object({
             id: Yup.string().required('ID is required'),
             name: Yup.string().required('Profit Method is required'),

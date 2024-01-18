@@ -35,6 +35,8 @@ import {
   updateVendorStatus,
 } from "../../services/leadMangement";
 import { toast } from "react-toastify";
+import CircularProgress from "@mui/material/CircularProgress";
+
 Modal.setAppElement("#root");
 
 function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
@@ -70,6 +72,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
     lineHeight: "28px", // You can also specify "155.556%" as a string if needed
     letterSpacing: "-0.18px",
   };
+
   const buttonDiv = {
     display: "flex",
     alignItems: "center",
@@ -85,11 +88,10 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
     width: "150px",
     fontWeight: 500,
   };
-  const [serviceTagList, setServiceTagList] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [buttonState, setButtonState] = useState(true);
   const count = useSelector((state) => state.counter.value);
-  // console.log(count);
+  const [isLoading, setIsLoading] = useState(false);
   const { vendorId, companyID } = useContext(OnboardContext);
   const [userdata, setUserData] = useState([]);
   const [qualificationlist, setQualificationList] = useState([]);
@@ -116,7 +118,8 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
         formik.setFieldValue("fullName", data.first_name);
         formik.setFieldValue("last_name", data.last_name);
         formik.setFieldValue("email", data.email);
-        formik.setFieldValue("phone", data.mobile);
+        const updatedNumber = data.mobile.replace("+965 ", "");
+        formik.setFieldValue("phone", updatedNumber);
         const selectedCountryObject =
           locationList &&
           locationList.length > 0 &&
@@ -482,18 +485,8 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
     enableReinitialize: true,
   });
 
-  useEffect(() => {
-    getVendorServiceTag()
-      .then((data) => {
-        setServiceTagList(data);
-      })
-      .catch((error) => {
-        // toast.error(error.message);
-        console.error("Error fetching  data:", error);
-      });
-  }, []);
-
   const updateInitialContact = async () => {
+    setIsLoading(true);
     try {
       const definesevices = formik.values.defineServices.map(
         (datas) => datas.id
@@ -536,14 +529,17 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       }
       console.log("Update API response :", response);
       // Handle success or error
+      setIsLoading(false);
     } catch (error) {
       console.error("API error:", error);
       toast.error(error.response.data.error);
       // Handle error
+      setIsLoading(false);
     }
   };
 
   const updateSiteVisit = async () => {
+    setIsLoading(true);
     try {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
@@ -570,14 +566,18 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       }
       console.log("API response:", response);
       // Handle success or error
+      setIsLoading(false);
     } catch (error) {
       console.error("API error:", error);
+      toast.error("site visit adding failed ");
+      setIsLoading(false);
       // toast.error(error.message);
       // Handle error
     }
   };
 
   const updateProposal = async () => {
+    setIsLoading(true);
     try {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
@@ -600,14 +600,18 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
         toast.error("Failed to add the proposal. Please try again.");
       }
       // Handle success or error
+      setIsLoading(false);
     } catch (error) {
+      toast.error("Failed to add the proposal. Please try again.");
       console.error("API error:", error);
       // toast.error(error.message);
       // Handle error
+      setIsLoading(false);
     }
   };
 
   const updateNegotiation = async () => {
+    setIsLoading(true);
     try {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
@@ -630,14 +634,18 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
         toast.error("Negotiation adding failed ");
       }
       // Handle success or error
+      setIsLoading(false);
     } catch (error) {
       console.error("API error:", error);
+      toast.error("Negotiation adding failed ");
       // toast.error(error.message);
       // Handle error
+      setIsLoading(false);
     }
   };
 
   const updateCharter = async () => {
+    setIsLoading(true);
     try {
       const formdata = new FormData();
       formdata.append("company", userdata?.company_company_user?.id);
@@ -664,9 +672,13 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       // Handle success or error
     } catch (error) {
       console.error("API error:", error);
+      toast.error(
+        "Failed to submit MOU/Charter details. Please check your input and try again."
+      );
       // toast.error(error.message);
       // Handle error
     }
+    setIsLoading(false);
   };
 
   const handleConfirm = () => {
@@ -823,7 +835,12 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
             />
           )}
           {count === 6 && (
-            <GoLive userData={userdata} handleFileChange={handleFileChange} setIsOnBoard={setIsOnBoard} isOnBoard={isOnBoard} />
+            <GoLive
+              userData={userdata}
+              handleFileChange={handleFileChange}
+              setIsOnBoard={setIsOnBoard}
+              isOnBoard={isOnBoard}
+            />
           )}
           {/* ////////////////////////////////////proceed and revert button//////////////////////////// */}
           {count != 6 && (
@@ -856,61 +873,65 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
                     width: "120px",
                   }}
                   onClick={() => {
-                    formik.submitForm();
-                    count === 0 && setIsOpen(true);
+                    if (!isLoading) {
+                      formik.submitForm();
+                      count === 0 && setIsOpen(true);
+                    }
                   }}
                 >
-                  Proceed
+                  {isLoading ? <CircularProgress /> : "Proceed"}
                 </button>
-                <Modal
-                  isOpen={isOpen}
-                  onRequestClose={() => setIsOpen(false)}
-                  style={customStyles}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="32"
-                    height="32"
-                    viewBox="0 0 32 32"
-                    fill="none"
+                {isOpen && !isLoading && (
+                  <Modal
+                    isOpen={isOpen}
+                    onRequestClose={() => setIsOpen(false)}
+                    style={customStyles}
                   >
-                    <path
-                      d="M16.0003 21.3477V14.681M16.0003 10.681V10.6677M29.3337 16.0013C29.3337 23.3651 23.3641 29.3346 16.0003 29.3346C8.63653 29.3346 2.66699 23.3651 2.66699 16.0013C2.66699 8.63751 8.63653 2.66797 16.0003 2.66797C23.3641 2.66797 29.3337 8.63751 29.3337 16.0013Z"
-                      stroke="#252525"
-                      stroke-width="2"
-                      stroke-linecap="round"
-                    />
-                  </svg>
-                  <div style={{ marginTop: "5px" }}>
-                    <div style={{ display: "flex", flexDirection: "column" }}>
-                      <p style={paraHeaderStyle}>Confirm The Action</p>
-                      <p style={paragraphStyle}>
-                        {buttonState
-                          ? "Are you sure you want to proceed"
-                          : "Are you sure want to revert"}
-                      </p>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="32"
+                      height="32"
+                      viewBox="0 0 32 32"
+                      fill="none"
+                    >
+                      <path
+                        d="M16.0003 21.3477V14.681M16.0003 10.681V10.6677M29.3337 16.0013C29.3337 23.3651 23.3641 29.3346 16.0003 29.3346C8.63653 29.3346 2.66699 23.3651 2.66699 16.0013C2.66699 8.63751 8.63653 2.66797 16.0003 2.66797C23.3641 2.66797 29.3337 8.63751 29.3337 16.0013Z"
+                        stroke="#252525"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                    <div style={{ marginTop: "5px" }}>
+                      <div style={{ display: "flex", flexDirection: "column" }}>
+                        <p style={paraHeaderStyle}>Confirm The Action</p>
+                        <p style={paragraphStyle}>
+                          {buttonState
+                            ? "Are you sure you want to proceed"
+                            : "Are you sure want to revert"}
+                        </p>
+                      </div>
+                      <div style={buttonDiv}>
+                        <button
+                          onClick={() => {
+                            setIsOpen(false);
+                          }}
+                          className="btn btn-outline"
+                          style={cancelStyle}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handleConfirm}
+                          className="btn btn-info"
+                          style={proceedStyle}
+                          type="submit"
+                        >
+                          Confirm
+                        </button>
+                      </div>
                     </div>
-                    <div style={buttonDiv}>
-                      <button
-                        onClick={() => {
-                          setIsOpen(false);
-                        }}
-                        className="btn btn-outline"
-                        style={cancelStyle}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        onClick={handleConfirm}
-                        className="btn btn-info"
-                        style={proceedStyle}
-                        type="submit"
-                      >
-                        Confirm
-                      </button>
-                    </div>
-                  </div>
-                </Modal>
+                  </Modal>
+                )}
               </div>
             </div>
           )}

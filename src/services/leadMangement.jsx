@@ -31,6 +31,8 @@ const charterUpdateUrl = "company/mou-update";
 const exportVendorList = "account/vendor-list-export/";
 const salesCount = "/account/sales-rep-count";
 
+const fileUploadApiTimeOut=20000
+
 export const createVenderLead = (data) => {
   return axiosInstance
     .post(vendorLeadUrl, data)
@@ -115,7 +117,9 @@ export const submitSiteVisit = (data) => {
   return axiosInstance
     .post(
       createSiteVist,
-      data
+      data,{
+        timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+      }
       //   {
       //   headers: { "Content-Type": "application/json", Accept: "*/*" },
       // }
@@ -153,7 +157,9 @@ export const submitProposal = (data) => {
   return axiosInstance
     .post(
       createPropsal,
-      data
+      data,{
+        timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+      }
       //    {
       //   headers: { "Content-Type": "application/json", Accept: "*/*" },
       // }
@@ -179,7 +185,9 @@ export const submitNegotiation = (data) => {
   return axiosInstance
     .post(
       createNegotation,
-      data
+      data,{
+        timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+      }
       //    {
       //   headers: { "Content-Type": "application/json", Accept: "*/*" },
       // }
@@ -205,7 +213,9 @@ export const submitCharter = (data) => {
   return axiosInstance
     .post(
       createMOU,
-      data
+      data,{
+        timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+      }
       //   {
       //   headers: { "Content-Type": "application/json", Accept: "*/*" },
       // }
@@ -249,7 +259,9 @@ export const getMiscellaneousList = (companyID) => {
 
 export const addMiscellaneousAttachment = (data) => {
   return axiosInstance
-    .post(miscellaneousAddUrl, data)
+    .post(miscellaneousAddUrl, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -259,7 +271,9 @@ export const addMiscellaneousAttachment = (data) => {
 
 export const updateMiscellaneousAttachment = (id, data) => {
   return axiosInstance
-    .put(`${miscellaneousUpdateUrl}/${id}`, data)
+    .put(`${miscellaneousUpdateUrl}/${id}`, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -299,7 +313,9 @@ export const updateVendorStatus = (id, status) => {
 
 export const updateSiteVisitAttachment = (id, data) => {
   return axiosInstance
-    .put(`${siteVisitUpdateUrl}/${id}`, data)
+    .put(`${siteVisitUpdateUrl}/${id}`, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -309,7 +325,9 @@ export const updateSiteVisitAttachment = (id, data) => {
 
 export const updatProposalAttachment = (id, data) => {
   return axiosInstance
-    .put(`${proposalUpdateUrl}/${id}`, data)
+    .put(`${proposalUpdateUrl}/${id}`, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -319,7 +337,9 @@ export const updatProposalAttachment = (id, data) => {
 
 export const updateNegotiationAttachment = (id, data) => {
   return axiosInstance
-    .put(`${negotiationUpdateUrl}/${id}`, data)
+    .put(`${negotiationUpdateUrl}/${id}`, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -329,7 +349,9 @@ export const updateNegotiationAttachment = (id, data) => {
 
 export const updateCharterAttachment = (id, data) => {
   return axiosInstance
-    .put(`${charterUpdateUrl}/${id}`, data)
+    .put(`${charterUpdateUrl}/${id}`, data,{
+      timeout: fileUploadApiTimeOut || axiosInstance.defaults.timeout,
+    })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
