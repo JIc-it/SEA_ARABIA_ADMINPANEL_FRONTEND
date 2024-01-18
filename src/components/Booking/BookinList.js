@@ -42,18 +42,13 @@ const style = {
 
 const BookinList = () => {
   const customerId = useParams()?.id;
-  console.log("customerid", customerId);
 
   const location = useLocation();
 
   const { pathname, state } = location;
 
   // Log the values for demonstration purposes
-  console.log('Pathname:', pathname);
-  console.log('Search:', search);
-  console.log('State:', state);
 
-  console.log("location is==", location);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -459,7 +454,6 @@ const BookinList = () => {
                           {bookingList.length > 0 &&
                             bookingList.map((data) => (
                               <tr>
-                                {console.log(data)}
                                 <td>
                                   <span className="text-secondary">
                                     {data.booking_id}
