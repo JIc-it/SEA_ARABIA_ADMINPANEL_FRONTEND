@@ -206,7 +206,7 @@ export default function DiscountEdit() {
               }catch (err) {
                 console.log(err);
                 setIsLoading(false);
-                toast.error(err.response.data)
+                toast.error(err.message)
               }
             }
         },
