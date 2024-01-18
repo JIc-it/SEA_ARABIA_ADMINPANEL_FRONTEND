@@ -1,74 +1,66 @@
 export const permissions = [
   {
-    title: "Dashboard",
+    title: "Vendor Management",
     permissionCategory: [
-      {
-        item: "Total Stats",
-        value: true,
-      },
-      {
-        item: "Month Overview",
-        value: false,
-      },
-      {
-        item: "Weekly Sale & Purchases",
-        value: true,
-      },
-      {
-        item: "Monthly Cashflow",
-        value: true,
-      },
-      {
-        item: "Notifications",
-        value: false,
-      },
+      { item: "Lead", value: true },
+      { item: "Onboard Operation", value: false },
+      { item: "View", value: true },
+      { item: "Action", value: false },
     ],
   },
   {
-    title: "User Management",
+    title: "Booking",
     permissionCategory: [
-      {
-        item: "Access",
-        value: true,
-      },
-      {
-        item: "Own Profile",
-        value: false,
-      },
+      { item: "View", value: false },
+      { item: "Edit", value: false },
+      { item: "Action", value: false },
+      { item: "Cancel", value: true },
+      { item: "Refund", value: true },
     ],
   },
   {
-    title: "Products",
+    title: "Service Management",
     permissionCategory: [
-      {
-        item: "Access",
-        value: true,
-      },
-      {
-        item: "Edit",
-        value: false,
-      },
-      {
-        item: "Create",
-        value: true,
-      },
-      {
-        item: "View",
-        value: true,
-      },
-      {
-        item: "Delete",
-        value: false,
-      },
-      {
-        item: "Category",
-        value: false,
-      },
-      {
-        item: "Print Barcodes",
-        value: false,
-      },
+      { item: "Create", value: false },
+      { item: "View", value: false },
+      { item: "Edit", value: true },
+      { item: "Action", value: false },
+      { item: "Availability", value: false },
+      { item: "Calendar", value: true },
     ],
   },
-  //////////////////////////////////////////////
+  {
+    title: "Offer",
+    permissionCategory: [
+      { item: "Create", value: true },
+      { item: "View", value: false },
+      { item: "Edit", value: false },
+      { item: "Status", value: false },
+      { item: "Action", value: true },
+    ],
+  },
+  {
+    title: "Users",
+    permissionCategory: [
+      { item: "Create", value: true },
+      { item: "View", value: false },
+      { item: "Edit", value: false },
+      { item: "Reset Password", value: false },
+      { item: "Action", value: false },
+      { item: "Permission", value: true },
+    ],
+  },
+  {
+    title: "Review",
+    permissionCategory: [{ item: "View", value: true }],
+  },
+  {
+    title: "Events and Packages",
+    permissionCategory: [
+      { item: "Create", value: true },
+      { item: "View", value: false },
+      { item: "Edit", value: true },
+      { item: "Action", value: false },
+    ],
+  },
 ];
