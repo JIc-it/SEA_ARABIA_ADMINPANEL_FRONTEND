@@ -128,12 +128,12 @@ export default function DiscountEdit() {
             name: "",
             coupon_code: "",
             discount_type: "",
-            discount_value: null,
-            up_to_amount: null,
+            discount_value: 0,
+            up_to_amount: 0,
             redemption_type: "",
-            specify_no: null,
+            specify_no: 0,
             allow_multiple_redeem: "",
-            multiple_redeem_specify_no: null,
+            multiple_redeem_specify_no: 0,
             start_date: "",
             is_lifetime: false,
             end_date: "",
@@ -143,7 +143,7 @@ export default function DiscountEdit() {
             services: [],
             companies: [],
             purchase_requirement: true,
-            min_purchase_amount: null,
+            min_purchase_amount: 0,
         },
         validationSchema,
         onSubmit: async (values) => {
@@ -554,7 +554,7 @@ if(!isLoading){
                                     <Typography variant="body1">Unlimited</Typography>
                                     <Radio  name={formik.values.redemption_type} checked={formik.values.redemption_type === "Unlimited"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:null })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0 })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -597,7 +597,7 @@ if(!isLoading){
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"One-Time",multiple_redeem_specify_no:null })}
+                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"One-Time",multiple_redeem_specify_no:0 })}
                                     >
                                         One Time
                                     </Button>
@@ -832,7 +832,7 @@ if(!isLoading){
                                     <Typography variant="body1" style={{fontSize:"12px"}}>
                                     Drag and Drop or choose your file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 5 MB )</Typography>
+                                    <Typography variant="body2" style={{fontSize:"12px",color:"#68727D"}}>Upload Image ( Max 300 KB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (

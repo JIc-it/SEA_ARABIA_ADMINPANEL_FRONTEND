@@ -27,6 +27,7 @@ import {
   customerIndividualBookingList,
   getBookingData,
 } from "../../services/CustomerHandle";
+import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
   position: "absolute",
@@ -42,18 +43,19 @@ const style = {
 
 const BookinList = () => {
   const customerId = useParams()?.id;
-  console.log("customerid", customerId);
 
   const location = useLocation();
 
   const { pathname, state } = location;
 
   // Log the values for demonstration purposes
+<<<<<<< HEAD
   console.log('Pathname:', pathname);
 
   console.log('State:', state);
+=======
+>>>>>>> 4834d86cdbb428338d8d1fb2c42aaa1169fa48f1
 
-  console.log("location is==", location);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -360,7 +362,7 @@ const BookinList = () => {
                   >
                     <a
                       style={{ textDecoration: "none" }}
-                      href="https://seaarabia.jicitsolution.com/booking/booking-export/"
+                      href={`${API_BASE_URL}booking/booking-export/`}
                     >
                       Export &nbsp;
                     </a>
@@ -459,7 +461,6 @@ const BookinList = () => {
                           {bookingList.length > 0 &&
                             bookingList.map((data) => (
                               <tr>
-                                {console.log(data)}
                                 <td>
                                   <span className="text-secondary">
                                     {data.booking_id}

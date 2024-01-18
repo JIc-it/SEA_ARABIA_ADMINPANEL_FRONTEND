@@ -184,6 +184,17 @@ const Calendar = () => {
                                             <p></p>
                                             )} */}
                                         </span><br />
+                                        {
+                                            filterdataidData?.time?.map((time, index) => {
+                                                if (time?.make_slot_available === true) {
+                                                    return (
+                                                        <div style={{ display: 'flex' }}>
+                                                            <span className="card-text">{time?.time}</span><br />
+                                                        </div>
+                                                    )
+                                                }
+                                            })
+                                        }
                                     </div>
                                 </div>
                             </div>
