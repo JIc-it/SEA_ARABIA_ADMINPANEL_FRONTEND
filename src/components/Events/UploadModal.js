@@ -37,7 +37,7 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
                 if (!value) {
                   return false;
                 }
-                return value.size <= 5* 1024 * 1024;
+                return value.size <= 300 * 1024;
               })
               .test('fileType', 'Invalid file format', (value) => {
                 if (!value) {
@@ -141,7 +141,7 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
                                     <Typography variant="body1" style={{ fontSize: "12px" }}>
                                         Drag and Drop or <span style={{ color: "#187AF7" }}>choose your</span> file for upload
                                     </Typography>
-                                    <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 5 MB )</Typography>
+                                    <Typography variant="body2" style={{ fontSize: "12px", color: "#68727D" }}>Upload Image ( Max 300 KB )</Typography>
                                 </Paper>
                             </label>
                             {formik.touched.image && formik.errors.image ? (

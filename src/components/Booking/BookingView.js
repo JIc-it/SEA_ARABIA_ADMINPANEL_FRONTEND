@@ -196,15 +196,15 @@ const statusCheck=()=>{
                             <div className='px-5 m-3' style={{ backgroundColor: "#F8F8F8", borderRadius: "8px" }}>
                                 <div className='d-flex justify-content-between align-items-center mt-3'>
                                     <p style={{ color: "#68727D" }}>Name</p>
-                                    <p style={{textTransform:"capitalize"}}>{booking?.first_name}</p>
+                                    <p style={{textTransform:"capitalize"}}>{booking?.user_type==="Registered"? booking.user?.first_name:booking.guest?.first_name}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Email</p>
-                                    <p>{booking?.email}</p>
+                                    <p>{booking?.user_type==="Registered"? booking.user?.email:booking.guest?.email}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <p style={{ color: "#68727D" }}>Phone number</p>
-                                    <p>{booking?.phone_number}</p>
+                                    <p>{booking?.user_type==="Registered"? booking.user?.mobile:booking.guest?.mobile}</p>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center '>
                                     <p style={{ color: "#68727D" }}>Total Number of People</p>
