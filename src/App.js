@@ -21,8 +21,10 @@ const [userid,setUserId]=useState(null)
 const AccessToken=localStorage.getItem("access_token")
 
 useEffect(()=>{
-  const userId=jwtDecode(AccessToken);
+  if(AccessToken){
+    const userId=jwtDecode(AccessToken);
   setUserId(userId.user_id)
+  }
 },[AccessToken])
 
   useEffect(() => {
