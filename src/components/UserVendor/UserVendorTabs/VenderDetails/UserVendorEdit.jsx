@@ -138,7 +138,7 @@ function UserVendorEdit({ show, close }) {
     vendorDetails?.profileextra?.location &&
     gccCountriesList.find(
       (country) =>
-        country.code === vendorDetails.profileextra.location.country_code
+        country.code === vendorDetails?.profileextra?.location.country_code
     );
 
   // update vendor details

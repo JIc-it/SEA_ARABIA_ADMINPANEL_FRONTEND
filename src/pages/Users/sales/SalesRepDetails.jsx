@@ -135,8 +135,15 @@ function SalesRepDetails() {
             </div>
 
             <div className="bottom_button">
-              <a className="call_vendor_button btn ">
-                Bookings &nbsp;
+              <a
+                className="call_vendor_button btn "
+                onClick={() => {
+                  navigate(
+                    `/permissions/${salesRepDetails?.id}/${salesRepDetails?.first_name}`
+                  );
+                }}
+              >
+                Permissions &nbsp;
                 <svg
                   width={20}
                   height={20}

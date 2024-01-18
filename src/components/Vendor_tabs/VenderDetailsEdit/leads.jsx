@@ -124,7 +124,7 @@ export default function LeadDetails({ count }) {
                           textTransform: "capitalize",
                         }}
                       >
-                        {leads.profileextra?.location?.country}
+                        {leads?.profileextra?.location?.country}
                       </p>
                       <svg
                         xmlns="http://www.w3.org/2000/svg"

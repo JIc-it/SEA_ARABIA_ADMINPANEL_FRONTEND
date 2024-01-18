@@ -138,7 +138,7 @@ function AllRouting() {
         element={<AdminActivityLog />}
       />
       {/* ///////////////User/////////////////////// */}
-      <Route path="/permissions" element={<RolePermission />} />
+      <Route path="/permissions/:id/:userName" element={<RolePermission />} />
       <Route path="/review" element={<Review />} />
       <Route path="/add-on-services" element={<AddOnServiceList />} />
       <Route path="/add-vendor-details/:id" element={<AddVendorInfo />} />

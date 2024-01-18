@@ -121,7 +121,14 @@ function AdminDetails() {
             </div>
 
             <div className="bottom_button">
-              <a className="call_vendor_button btn ">
+              <a
+                className="call_vendor_button btn "
+                onClick={() => {
+                  navigate(
+                    `/permissions/${adminDetails?.id}/${adminDetails?.first_name}`
+                  );
+                }}
+              >
                 Permissions &nbsp;
                 <svg
                   width={20}

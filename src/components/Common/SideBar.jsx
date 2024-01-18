@@ -1176,7 +1176,7 @@ function SideBar() {
                 </div>
               </li>
 
-              <li
+              {/* <li
                 className={`nav-item  ${
                   activeLink === "/analytics" ? "active" : ""
                 }`}
@@ -1213,7 +1213,7 @@ function SideBar() {
                     &nbsp; Roles & Permissions{" "}
                   </span>
                 </a>
-              </li>
+              </li> */}
               <li
                 className={`nav-item  ${
                   activeLink === "/review" ? "active" : ""
