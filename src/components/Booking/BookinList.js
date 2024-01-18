@@ -27,6 +27,7 @@ import {
   customerIndividualBookingList,
   getBookingData,
 } from "../../services/CustomerHandle";
+import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
   position: "absolute",
@@ -48,6 +49,12 @@ const BookinList = () => {
   const { pathname, state } = location;
 
   // Log the values for demonstration purposes
+<<<<<<< HEAD
+  console.log('Pathname:', pathname);
+
+  console.log('State:', state);
+=======
+>>>>>>> 4834d86cdbb428338d8d1fb2c42aaa1169fa48f1
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -83,45 +90,45 @@ const BookinList = () => {
   //     });
   // }, []);
   // old api
-  // useEffect(() => {
-  //   {
-  //     search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
-  //   }
-  //   const Pass = { status: "", search: search, refund_status: "" };
-  //   getBookingList(Pass)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       toast.error(error.response.data);
-  //     });
-  // }, [search]);
-
   useEffect(() => {
-    // Fetch customer-specific bookings using the customerId
-    const fetchCustomerBookings = async () => {
-      try {
-        if (customerId) {
-          const response = await customerBookingList(customerId);
-          setBookingList(response.data.response);
-        } else {
-          const response = await getBookingList({
-            status: "",
-            search: "",
-            refund_status: "",
-          });
-          setBookingList(response?.results);
-        }
-      } catch (error) {
-        console.error("Error fetching customer bookings:", error);
-      }
-    };
+    {
+      search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
+    }
+    const Pass = { status: "", search: search, refund_status: "" };
+    getBookingList(Pass)
+      .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data);
+      });
+  }, [search]);
 
-    fetchCustomerBookings();
-  }, [customerId]);
+  // useEffect(() => {
+  //   // Fetch customer-specific bookings using the customerId
+  //   const fetchCustomerBookings = async () => {
+  //     try {
+  //       if (customerId) {
+  //         const response = await customerBookingList(customerId);
+  //         setBookingList(response.data.response);
+  //       } else {
+  //         const response = await getBookingList({
+  //           status: "",
+  //           search: "",
+  //           refund_status: "",
+  //         });
+  //         setBookingList(response?.results);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching customer bookings:", error);
+  //     }
+  //   };
+
+  //   fetchCustomerBookings();
+  // }, [customerId]);
 
   useEffect(() => {
     getBookingCount()
@@ -355,7 +362,7 @@ const BookinList = () => {
                   >
                     <a
                       style={{ textDecoration: "none" }}
-                      href="https://seaarabia.jicitsolution.com/booking/booking-export/"
+                      href={`${API_BASE_URL}booking/booking-export/`}
                     >
                       Export &nbsp;
                     </a>
