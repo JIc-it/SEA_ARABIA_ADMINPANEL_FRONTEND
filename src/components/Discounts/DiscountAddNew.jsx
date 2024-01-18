@@ -98,19 +98,6 @@ export default function DiscountAddNew() {
             }
         }),
 
-        image: Yup.mixed()
-            .test('fileSize', 'File size is too large', (value) => {
-                if (!value) {
-                    return false;
-                }
-                return value.size <= 5 * 1024 * 1024;
-            })
-            .test('fileType', 'Invalid file format', (value) => {
-                if (!value) {
-                    return false;
-                }
-                return /^image\/(jpeg|png|gif)$/i.test(value.type);
-            }),
             services: Yup.array().of(serviceObjectSchema).min(1, 'service is required'),    
             companies: Yup.array().of(companyObjectSchema).min(1, 'Vendor / Service is required'),    
     });
@@ -200,8 +187,26 @@ export default function DiscountAddNew() {
         },
     });
 
-    const handleFileChange = (file) => {
-        formik.setFieldValue("image", file);
+    const handleFileChange = (e) => {
+        let file = e.target.files?.[0];
+        let reader = new FileReader();
+
+        reader.onload = (e) => {
+            const img = new window.Image();
+            img.onload = () => {
+                if (file.size > 314600) {
+                    toast.error("Please upload an image with a maximum size of 300 KB");
+                } else {
+                    const dataURL = reader.result;
+                    formik.setFieldValue("image",file);
+                }
+            };
+            img.src = e.target.result;
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     const updateFormValues = (fields) => {
@@ -311,7 +316,7 @@ export default function DiscountAddNew() {
 
     }
 
-    
+    console.log(formik.values);
     if (!isLoading) {
         return (
             <>
@@ -761,7 +766,7 @@ export default function DiscountAddNew() {
                                             accept=".jpg, .jpeg, .png"
                                             style={{ display: 'none' }}
                                             onBlur={formik.handleBlur}
-                                            onChange={(e) => handleFileChange(e.target.files[0])}
+                                            onChange={(e) => handleFileChange(e)}
                                         />
                                         <div style={{ marginBottom: "5px" }}>
                                             <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
