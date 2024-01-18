@@ -39,9 +39,9 @@ function CustomerCardDetails() {
       });
   }, [customerId]);
 
-  const handleBookingButtonClick = () => {
-    navigate(`/bookings/${customerId}`);
-  };
+  // const handleBookingButtonClick = () => {
+  //   navigate(`/bookings/${customerId}`);
+  // };
 
   return (
     <div
@@ -131,9 +131,9 @@ function CustomerCardDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button btn "
-                onClick={handleBookingButtonClick}
+                // onClick={handleBookingButtonClick}
               >
-                Bookings &nbsp;
+                Bookings  &nbsp;
                 <svg
                   width={20}
                   height={20}

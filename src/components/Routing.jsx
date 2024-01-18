@@ -78,7 +78,7 @@ function AllRouting() {
         element={<VenderIndivitualEdit />}
       ></Route>
       <Route path="/booking" element={<Bookings />} />
-      <Route path="/booking/:id" element={<BookinList />} />
+      {/* <Route path="/booking/:id" element={<BookinList />} /> */}
 
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
@@ -113,7 +113,7 @@ function AllRouting() {
       />
 
       {/* <Route path="/customers-edit/:id" element={<CustomerEdit />} /> */}
-      <Route path="/booking/:id" element={<CustomersBookingView />} />
+      {/* <Route path="/booking/:id" element={<CustomersBookingView />} /> */}
       <Route path="/user-vendor" element={<UserVendors />} />
       <Route path="/user-vendor/:id" element={<UserVendorView />} />
       <Route

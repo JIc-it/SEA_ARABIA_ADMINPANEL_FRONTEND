@@ -50,7 +50,7 @@ const BookinList = () => {
 
   // Log the values for demonstration purposes
   console.log('Pathname:', pathname);
-  console.log('Search:', search);
+
   console.log('State:', state);
 
   console.log("location is==", location);
@@ -88,45 +88,45 @@ const BookinList = () => {
   //     });
   // }, []);
   // old api
-  // useEffect(() => {
-  //   {
-  //     search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
-  //   }
-  //   const Pass = { status: "", search: search, refund_status: "" };
-  //   getBookingList(Pass)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       toast.error(error.response.data);
-  //     });
-  // }, [search]);
-
   useEffect(() => {
-    // Fetch customer-specific bookings using the customerId
-    const fetchCustomerBookings = async () => {
-      try {
-        if (customerId) {
-          const response = await customerBookingList(customerId);
-          setBookingList(response.data.response);
-        } else {
-          const response = await getBookingList({
-            status: "",
-            search: "",
-            refund_status: "",
-          });
-          setBookingList(response?.results);
-        }
-      } catch (error) {
-        console.error("Error fetching customer bookings:", error);
-      }
-    };
+    {
+      search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
+    }
+    const Pass = { status: "", search: search, refund_status: "" };
+    getBookingList(Pass)
+      .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.response.data);
+      });
+  }, [search]);
 
-    fetchCustomerBookings();
-  }, [customerId]);
+  // useEffect(() => {
+  //   // Fetch customer-specific bookings using the customerId
+  //   const fetchCustomerBookings = async () => {
+  //     try {
+  //       if (customerId) {
+  //         const response = await customerBookingList(customerId);
+  //         setBookingList(response.data.response);
+  //       } else {
+  //         const response = await getBookingList({
+  //           status: "",
+  //           search: "",
+  //           refund_status: "",
+  //         });
+  //         setBookingList(response?.results);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching customer bookings:", error);
+  //     }
+  //   };
+
+  //   fetchCustomerBookings();
+  // }, [customerId]);
 
   useEffect(() => {
     getBookingCount()
