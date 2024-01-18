@@ -80,7 +80,7 @@ function UpdateSalesRep({ show, close }) {
       first_name: salesDetails?.first_name || "",
       last_name: salesDetails?.last_name || "",
       email: salesDetails?.email || "",
-
+      dob: salesDetails?.profileextra?.dob || "",
       mobile: salesDetails?.mobile || "",
       location: salesDetails?.profileextra?.location || "",
       gender: salesDetails?.profileextra?.gender || "",
@@ -104,7 +104,7 @@ function UpdateSalesRep({ show, close }) {
             mobile: values.mobile,
             location: values.location.id,
             gender: values.gender,
-            
+            dob: values.dob,
           };
 
           const salesData = await UpdateSalesRepListById(salesRepId, data);

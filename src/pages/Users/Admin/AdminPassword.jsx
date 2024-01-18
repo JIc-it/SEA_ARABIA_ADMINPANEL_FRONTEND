@@ -20,7 +20,7 @@ import { passwordRegex } from "../../../helpers";
 function AdminPassword({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-  console.log("admin id ===", adminId);
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
@@ -31,7 +31,7 @@ function AdminPassword({ show, close }) {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin update list------==", data);
+        // console.log(" admin update list------==", data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -71,7 +71,7 @@ function AdminPassword({ show, close }) {
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
-          console.log("Admin pass updated detail is ---", adminData);
+          
           if (adminData) {
             setIsLoading(false);
             window.location.reload();
@@ -91,7 +91,7 @@ function AdminPassword({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
+  // console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({

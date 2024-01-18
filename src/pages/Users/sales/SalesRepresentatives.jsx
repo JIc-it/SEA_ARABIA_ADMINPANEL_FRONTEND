@@ -446,7 +446,8 @@ const SalesRepresentatives = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {item?.profileextra?.location?.country}
+                              
+                                {item?.location}
                               </span>
                             </td>
 

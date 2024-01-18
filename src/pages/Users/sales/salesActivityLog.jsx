@@ -23,6 +23,7 @@ const SalesActivityLog = () => {
     setIsLoading(true);
     getUserVendorActivityLog(salesRepId)
       .then((data) => {
+        console.log("sales activity", data);
         setActivityList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })

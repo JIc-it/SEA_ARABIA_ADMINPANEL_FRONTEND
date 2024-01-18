@@ -25,7 +25,7 @@ function AdminView() {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        console.log(" admin by id==", data);
+        // console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);

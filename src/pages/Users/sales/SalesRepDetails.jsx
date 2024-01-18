@@ -35,7 +35,7 @@ function SalesRepDetails() {
     getSalesRepListById(salesRepId)
       .then((data) => {
         setsalesRepDetails(data);
-        // console.log(" admin by id==", data);
+        console.log(" sales by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -136,7 +136,7 @@ function SalesRepDetails() {
 
             <div className="bottom_button">
               <a className="call_vendor_button btn ">
-                Bookings &nbsp;
+                Permissions &nbsp;
                 <svg
                   width={20}
                   height={20}
@@ -332,7 +332,7 @@ function SalesRepDetails() {
                         <p style={{ color: "#68727D" }}>Location</p>
                         <div className="d-flex justify-content-between">
                           <p style={{ fontWeight: "700" }}>
-                            {salesRepDetails?.profileextra?.location?.location}
+                            {salesRepDetails?.profileextra?.location?.country}
                           </p>
                           <p>
                             <svg
@@ -370,6 +370,12 @@ function SalesRepDetails() {
                         <p style={{ color: "#68727D" }}>Email</p>
                         <p style={{ fontWeight: "700" }}>
                           {salesRepDetails?.email}
+                        </p>
+                      </div>
+                      <div>
+                        <p style={{ color: "#68727D" }}>Gender</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {salesRepDetails?.profileextra?.gender}
                         </p>
                       </div>
                     </div>

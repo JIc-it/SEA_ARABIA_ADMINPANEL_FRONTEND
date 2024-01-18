@@ -39,7 +39,7 @@ function CustomerCreate({ show, close }) {
   useEffect(() => {
     getLocation()
       .then((data) => {
-        console.log("location is==", data.results);
+        // console.log("location is==", data.results);
         setLocation(data.results);
       })
       .catch((error) => {
@@ -113,7 +113,7 @@ function CustomerCreate({ show, close }) {
           };
 
           const customerData = await createCustomer(data);
-          console.log("create customer", createCustomer);
+          // console.log("create customer", createCustomer);
           if (customerData) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");

@@ -10,7 +10,8 @@ import { getListDataInPagination } from "../../../services/commonServices";
 
 const AdminActivityLog = () => {
   const params = useParams();
-  const adminId = params?.adminId;
+  const adminId = params?.id;
+  console.log("--adminid", adminId);
   const admin = params?.admin;
   const [isLoading, setIsLoading] = useState(false);
   const [activityList, setActivityList] = useState();
@@ -23,6 +24,7 @@ const AdminActivityLog = () => {
     setIsLoading(true);
     getUserVendorActivityLog(adminId)
       .then((data) => {
+        // console.log("admin activity log", data);
         setActivityList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })
