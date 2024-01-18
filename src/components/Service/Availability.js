@@ -331,6 +331,7 @@ const Availability = ({ selectedOptions, onChange, setIsRefetch, isRefetch, clos
                           }}
                           onClick={() => handleSlotClick(slot?.time)}
                         >
+                          <span>{slot?.time}</span>
                           {/* <Typography variant="body2">
                             {slot?.time}
                           </Typography> */}
