@@ -334,7 +334,7 @@ const ServiceEdit = () => {
             ).catch((error) => {
                 setIsLoading(false);
                 setIsUpdated(false)
-                toast.error(error.response.data)
+                toast.error(error.message)
             })
     }, [params.id, isupdated])
 
@@ -422,7 +422,7 @@ const ServiceEdit = () => {
         DeleteImage(id)
             .then((data) => { toast.success(data); setIsUpdated(true) }
             ).catch((error) =>
-                toast.error(error.response.data))
+                toast.error(error.message))
     }
 
     const settingthumbnailTrue = (id, data) => {
@@ -431,7 +431,7 @@ const ServiceEdit = () => {
                 toast.success(datas);
             }
             ).catch((error) =>
-                toast.error(error.response.data))
+                toast.error(error.message))
     }
 
 
