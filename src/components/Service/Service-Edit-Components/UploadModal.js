@@ -16,7 +16,6 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from 'react-router-dom';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import "../Crop.css";
 
 export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated }) {
     const params=useParams()

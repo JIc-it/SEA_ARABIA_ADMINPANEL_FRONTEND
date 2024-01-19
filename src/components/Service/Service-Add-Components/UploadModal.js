@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -10,7 +9,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
-import "../Crop.css";
+
 
 
 export default function UploadPopup({ handleClose, open, service_image, formikset }) {
