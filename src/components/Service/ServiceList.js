@@ -1,19 +1,18 @@
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png"
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import foodImg from "../../static/img/food.png"
 import totalVendor from "../../static/img/total-vendor.png"
 import totalMachine from "../../static/img/total-machine.png"
 import ActiveMachine from "../../static/img/active-machine.png"
 import inactiveMachine from "../../static/img/inactive-machine.png"
-import { getServiceListing,getCount,getExportList } from "../../services/service"
+import { getServiceListing,getCount } from "../../services/service"
 import CircularProgress from "@mui/material/CircularProgress";
-import {formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import FilterPopup from "./FilterPopup";
+import { API_BASE_URL } from "../../services/authHandle";
 
 function ServiceList() {
     const [search,setSearch]=useState(null)
@@ -268,7 +267,7 @@ function ServiceList() {
                     <div className="action_buttons col-4">
 
                         <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-                            <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/service/export-service-list">
+                            <a style={{textDecoration:"none"}} href={`${API_BASE_URL}service/export-service-list`}>
                                 Export
                             </a>
                             {/* Export &nbsp; */}

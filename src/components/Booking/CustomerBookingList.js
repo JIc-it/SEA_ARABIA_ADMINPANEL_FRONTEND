@@ -13,7 +13,7 @@ import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { API_BASE_URL } from "../../services/authHandle";
 const style = {
   position: "absolute",
   top: "50%",
@@ -306,7 +306,7 @@ const CustomerBookingList = () => {
                   >
                     <a
                       style={{ textDecoration: "none" }}
-                      href="https://seaarabia.jicitsolution.com/booking/booking-export/"
+                      href={`${API_BASE_URL}booking/booking-export/`}
                     >
                       Export &nbsp;
                     </a>

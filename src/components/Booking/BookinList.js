@@ -426,7 +426,7 @@ const BookinList = () => {
                                 </td>
                                 <td>
                                   <span className="text-secondary">
-                                    {data?.first_name}
+                                    {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
                                   </span>
                                 </td>
                                 <td>

@@ -10,7 +10,7 @@ import Modal from "@mui/material/Modal";
 import { getBookingList,getRefundHistoryCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-
+import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
   position: "absolute",
@@ -241,7 +241,7 @@ const RefundHistoryList  = () => {
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
                   >
-                    <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/booking/refund-history-export/">
+                    <a style={{textDecoration:"none"}} href={`${API_BASE_URL}booking/refund-history-export/`}>
                     Export &nbsp;
                     </a>
                     <svg
@@ -360,7 +360,7 @@ const RefundHistoryList  = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.first_name}
+                              {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
                               </span>
                             </td>
                             <td>

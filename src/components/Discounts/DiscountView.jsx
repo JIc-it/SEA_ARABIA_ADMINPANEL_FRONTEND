@@ -132,7 +132,7 @@ function companywithservicelength(companyid){
               </div>
               <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Expiration</p>
-                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.end_date?.trim() !== "" ? "Limited Time" : "No Expiry"}</p>
+                <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.end_date !== null ? "Limited Time" : "No Expiry"}</p>
               </div>
             </div>
             <div className='w-50'>
@@ -156,10 +156,10 @@ function companywithservicelength(companyid){
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Usage</p>
                 <p style={{ fontWeight: "700", fontSize: "14px" }}>{offerview?.specify_no} / {offerview?.redemption_type}</p>
               </div>
-              <div>
+              {offerview?.end_date !== null  && <div>
                 <p style={{ color: "#68727D", fontSize: "16px" }}>Validity Period</p>
                 <p style={{ fontWeight: "700", fontSize: "14px" }}>{new Date(offerview?.end_date).toLocaleDateString('en-US', { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit" })}</p>
-              </div>
+              </div>}
             </div>
           </div>
         </div>

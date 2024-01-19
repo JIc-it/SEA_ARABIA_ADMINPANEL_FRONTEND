@@ -6,6 +6,7 @@ import {getEventList,getCount} from "../../services/EventsPackages"
 import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { CircularProgress } from '@mui/material';
+import { API_BASE_URL } from "../../services/authHandle";
 
 export default function EventListing() {
   const [search, setSearch] = useState("");
@@ -315,7 +316,7 @@ export default function EventListing() {
               </svg>
             </button>
             <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-             <a  style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/service/export-package-list">
+             <a  style={{textDecoration:"none"}} href={`${API_BASE_URL}service/export-package-list`}>
              Export &nbsp;
              </a>
               <svg

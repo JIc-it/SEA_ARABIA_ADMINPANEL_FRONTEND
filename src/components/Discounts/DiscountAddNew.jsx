@@ -126,9 +126,9 @@ export default function DiscountAddNew() {
             discount_value: 0,
             up_to_amount: 0,
             redemption_type: "One-Time",
-            specify_no: 0,
+            specify_no: 1,
             allow_multiple_redeem: "One-Time",
-            multiple_redeem_specify_no: 0,
+            multiple_redeem_specify_no: 1,
             start_date: "",
             is_lifetime: false,
             end_date: "",
@@ -171,7 +171,7 @@ export default function DiscountAddNew() {
                     formdata.append("multiple_redeem_specify_no", values.multiple_redeem_specify_no);
                     formdata.append("start_date", new Date(values.start_date)?.toISOString().slice(0, -5) + 'Z');
                     formdata.append("is_lifetime", checktrue(values.is_lifetime));
-                    formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');
+                    {values.end_date.trim()!=="" && formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');}
                     formdata.append("on_home_screen", checktrue(values.on_home_screen));
                     formdata.append("on_checkout", checktrue(values.on_checkout));
                     formdata.append("apply_global", checktrue(values.apply_global));
@@ -523,7 +523,7 @@ export default function DiscountAddNew() {
                                                 padding: "3px 30px",
                                                 textAlign: "center",
                                             }}
-                                            onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem: "One-Time", multiple_redeem_specify_no: 0 })}
+                                            onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem: "One-Time", multiple_redeem_specify_no: 1 })}
                                         >
                                             One Time
                                         </Button>

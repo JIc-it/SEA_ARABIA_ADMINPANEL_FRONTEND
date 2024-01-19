@@ -4,14 +4,14 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {getDiscountOfferList,UpdateStatus,getExportdata} from "../../services/offers"
+import {getDiscountOfferList,UpdateStatus} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
-import { formatDate,removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import PopupFilter from "./PopupFilter";
-import { CSVLink } from 'react-csv';
+import { API_BASE_URL } from "../../services/authHandle";
 
 function DiscountListing() {
   const theme = useTheme();
@@ -95,18 +95,7 @@ const handleopenfilter=()=>{
         });
   };
 
-  const handleSearch=()=>{
-    getDiscountOfferList(search)
-    .then((data) => {
-      setListPageUrl({ next: data?.next, previous: data?.previous });
-      setOffersList(data?.results);
-      // setIsLoading(false)
-    })
-    .catch((error) => {
-      // setIsLoading(false)
-      toast.error(error?.response?.data);
-    });
-  }
+ 
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -161,7 +150,7 @@ const handleopenfilter=()=>{
         <div className="action_buttons col-4">
           
           <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-          <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/offer/export-offer-list/">
+          <a style={{textDecoration:"none"}} href={`${API_BASE_URL}offer/export-offer-list/`}>
                                 Export
                             </a>
             {/* Export &nbsp; */}
@@ -270,7 +259,7 @@ const handleopenfilter=()=>{
                         </td>
                         <td>
                           <span className="text-secondary">
-                            {item.multiple_redeem_specify_no}
+                            {item.allow_multiple_redeem ==="Unlimited"? "Unlimited":item.specify_no}
                           </span>
                         </td>
                         <td>
@@ -286,7 +275,7 @@ const handleopenfilter=()=>{
                           <Link
                             to={"/discounts-offers/"+item.id}
                             className="btn btn-sm btn-info"
-                            style={{ padding: "6px 10px", borderRadius: "4px" }}
+                            style={{ padding: "3px 6px", borderRadius: "4px" }}
                           >
                             View &nbsp;
                             <svg
@@ -307,12 +296,12 @@ const handleopenfilter=()=>{
                           </Link>
                         </td>
                   <td>
-                   <div style={{display:"flex"}}>
+                   <div style={{display:"flex",alignItems:"center"}}>
                    <label class="switch" style={{marginRight:"5px"}}>
                       <input type="checkbox" defaultChecked={item.is_enable} value={item.is_enable} onChange={()=>handleToggle(item.id)}/>
                       <span class="slider round"></span>
                     </label>
-                    <div>{item?.is_enable===true?"ACTIVE":"INACTIVE"}</div>
+                    <div style={{fontSize:"12px"}}>{item?.is_enable===true?"ACTIVE":"INACTIVE"}</div>
                    </div>
                     
                   </td>

@@ -305,10 +305,10 @@ const statusCheck=()=>{
                                     <p className="card_content">{booking?.service?.name}</p>
                                 </div>
                                 <div className="card_header_contents">
-                                    <p className="card_content">
+                                    <p className="card_content" style={{fontSize:"14px"}}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            width="21"
+                                            width="18"
                                             height="20"
                                             viewBox="0 0 21 20"
                                             fill="none"
@@ -327,10 +327,10 @@ const statusCheck=()=>{
                                         &nbsp; {booking?.service?.service_id}
                                     </p>
                                     &nbsp;
-                                    <p className="card_content">
+                                    <p className="card_content" style={{fontSize:"14px"}}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            width="21"
+                                            width="18"
                                             height="20"
                                             viewBox="0 0 21 20"
                                             fill="none"
@@ -345,10 +345,10 @@ const statusCheck=()=>{
                                         {booking?.service?.company}
                                     </p>
                                     &nbsp;
-                                    <p className="card_content">
+                                    <p className="card_content" style={{fontSize:"14px"}}>
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            width="21"
+                                            width="18"
                                             height="20"
                                             viewBox="0 0 21 20"
                                             fill="none"
@@ -366,9 +366,9 @@ const statusCheck=()=>{
                             </div>
                             <div className='d-flex justify-content-between align-items-center p-3'>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.start_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
+                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.slot_start_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
                                 })}</p>
-                                    <p style={{ color: "#68727D" }}>{new Date(booking?.start_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
+                                    <p style={{ color: "#68727D" }}>{new Date(booking?.slot_start_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
                                 </div>
                                 <div className='d-flex flex-column justify-content-center align-items-center'>
                                     <p><svg width={28} height={28} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -378,9 +378,9 @@ const statusCheck=()=>{
                                     <p style={{ color: "#006875" }}>{booking?.slot_details}</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.end_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
+                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.slot_end_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
                                 })}</p>
-                                    <p style={{ color: "#68727D" }}>{new Date(booking?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
+                                    <p style={{ color: "#68727D" }}>{new Date(booking?.slot_end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-center align-items-center'>
