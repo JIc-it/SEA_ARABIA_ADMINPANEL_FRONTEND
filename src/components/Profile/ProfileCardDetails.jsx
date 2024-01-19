@@ -8,16 +8,19 @@ import ChangePasword from "./ChangePassword";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useContext } from "react";
 import { UserContext } from "../../Context/AppContext";
+import PermissionView from "./PermissionView";
 
 function ProfileCardDetails({ data,isLoading }) {
     const theme = useTheme();
     const navigate = useNavigate();
     const [open,setOpen]=useState(false)
+    const [showOffcanvas, setShowOffcanvas] = useState(false);
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
     const [active, setActive] = useState("Details");
     const UserId = useContext(UserContext);
     const [customerDetails, setCustomerDetails] = useState([]);
-
+    const handleOpenOffcanvas = () => setShowOffcanvas(true);
+    const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
     return (
         <>
@@ -103,10 +106,7 @@ function ProfileCardDetails({ data,isLoading }) {
                         <div className="bottom_button mt-3">
                             <a
                                 className="call_vendor_button btn "
-                                onClick={() => {
-                                    // navigate(`/booking`);
-                                    // navigate(`/booking-view/1234`);
-                                }}
+                                onClick={handleOpenOffcanvas}
                             >
                                 Permissions &nbsp;
                                 <svg
@@ -241,7 +241,14 @@ function ProfileCardDetails({ data,isLoading }) {
                                 </div>
                                 <div style={{ width: "33%" }}>
                                     <p>Location</p>
-                                    <p style={{ fontWeight: 550 }}>{data?.location}</p>
+                                    <p style={{ fontWeight: 550 }}>{data?.location} &nbsp; 
+                                    
+                                                    {data?.location && <svg width={20} height={20} viewBox="0 0 22 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <path fillRule="evenodd" clipRule="evenodd" d="M10.9998 1.83398C6.94975 1.83398 3.6665 5.50302 3.6665 9.62565C3.6665 13.716 6.00705 18.162 9.65882 19.8689C10.5101 20.2668 11.4896 20.2668 12.3409 19.8689C15.9926 18.162 18.3332 13.716 18.3332 9.62565C18.3332 5.50302 15.0499 1.83398 10.9998 1.83398ZM10.9998 11.0007C12.0124 11.0007 12.8332 10.1798 12.8332 9.16732C12.8332 8.1548 12.0124 7.33398 10.9998 7.33398C9.98732 7.33398 9.1665 8.1548 9.1665 9.16732C9.1665 10.1798 9.98732 11.0007 10.9998 11.0007Z" fill="#323539" />
+                                                    </svg>}
+
+
+                                    </p>
                                 </div>
                             </div>
                             </div>
@@ -250,6 +257,7 @@ function ProfileCardDetails({ data,isLoading }) {
                 </div>
             </div>
             <ChangePasword open={open} setOpen={setOpen}/>
+            <PermissionView show={showOffcanvas} close={handleCloseOffcanvas}/>
         </div>}
     </>
                             
