@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
-import foodImg from "../../../static/img/food.png";
-import newBooking from "../../../static/img/new-booking.png";
-import totalBooking from "../../../static/img/total-booking.png";
-import confirmBooking from "../../../static/img/confirm-booking.png";
-import cancelBooking from "../../../static/img/cancel-booking.png";
-// import filterIcon from "../../../static/img/Filter.png";
-import filterIcon from "../../../static/img/Filter.png";
+
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
-import { getGuestUserList } from "../../../services/GuestHandle";
+
 import {
   getCustomerlist,
   getCustomerSearch,

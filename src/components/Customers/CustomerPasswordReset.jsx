@@ -7,17 +7,10 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import pen from "../../assets/images/Pen 2.png";
-
-// import {
-//   UpdateSalesRepListById,
-//   getSalesRepListById,
-// } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 
 import {
   UpdateSalesRepListById,
-  getSalesRepListById,
 } from "../../services/GuestHandle";
 import { passwordRegex } from "../../helpers";
 import { getCustomerListById } from "../../services/CustomerHandle";

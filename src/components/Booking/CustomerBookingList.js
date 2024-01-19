@@ -1,24 +1,18 @@
 import React, { useEffect, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
+
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
+
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+
 import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  customerBookingList,
-  getBookingData,
-} from "../../services/CustomerHandle";
 
 const style = {
   position: "absolute",
@@ -338,34 +332,6 @@ const CustomerBookingList = () => {
                       />
                     </svg>
                   </button>
-                  {/*<button
-                    onClick={handleOpenOffcanvas}
-                    className="btn btn-info vendor_button"
-                    style={{ borderRadius: "6px" }}
-                    type="button"
-                  >
-                    Add Booking &nbsp;
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 3L10 17"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M3 10H17"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                        </button>*/}
                 </div>
               </div>
               <div className="card">
@@ -538,10 +504,6 @@ const CustomerBookingList = () => {
                   )}
                 </div>
                 <div className="card-footer d-flex align-items-center">
-                  {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
                   <ul className="pagination m-0 ms-auto">
                     <li
                       className={`page-item  ${
@@ -615,12 +577,6 @@ const CustomerBookingList = () => {
                 aria-describedby="modal-modal-description"
               >
                 <Box sx={style}>
-                  {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Text in a modal
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                  </Typography> */}
                   <div class="frame-427319784">
                     <div class="components-selection-item">
                       <div class="frame-427319782">

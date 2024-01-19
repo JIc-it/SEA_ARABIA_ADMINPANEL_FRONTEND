@@ -1,8 +1,6 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
@@ -10,9 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import {
   UpdateAdminListById,
-  createAdmin,
   getAdminListById,
-  getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";

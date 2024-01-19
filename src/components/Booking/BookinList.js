@@ -1,32 +1,20 @@
-import React, { useEffect, useRef, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
+import React, { useEffect, useState } from "react";
+
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import {
   Link,
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouteMatch,
 } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+
 import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  customerBookingList,
-  customerIndividualBookingList,
-  getBookingData,
-} from "../../services/CustomerHandle";
+
 import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {

@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
-// import {
-//   getCustomerSearch,
-//   getCustomerlist,
-// } from "../../services/CustomerHandle";
-
 import CustomerCreate from "./CustomerCreate";
 
 import {
   customerExport,
   getCustomerSearch,
-  getCustomerlist,
 } from "../../services/CustomerHandle";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { toast } from "react-toastify";
 import { getListDataInPagination } from "../../services/commonServices";
 
@@ -30,7 +23,7 @@ export default function CustomerListing() {
   });
 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [exportedData, setExportedData] = useState();
+
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {

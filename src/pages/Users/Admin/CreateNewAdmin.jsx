@@ -1,17 +1,15 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { passwordRegex } from "../../../helpers";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useContext } from "react";
 import { createAdmin } from "../../../services/GuestHandle";
 import { AppContext } from "../../../Context/AppContext";
-import { useParams } from "react-router-dom";
-import { getLocation } from "../../../services/CustomerHandle";
+
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 function CreateNewAdmin({ show, close, locationList }) {
   const theme = useTheme();

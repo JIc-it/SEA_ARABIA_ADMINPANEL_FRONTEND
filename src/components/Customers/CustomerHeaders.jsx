@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import {
-  getCustomerListById,
   getCustomerTotalCount,
 } from "../../services/CustomerHandle";
-import { useParams } from "react-router-dom";
 
 function CustomerHeaders(props) {
-  const customerId = useParams()?.customerId;
+
   const [count, setCount] = useState();
 
-  const [customerDetails, setCustomerDetails] = useState([]);
+
   useEffect(() => {
     getCustomerTotalCount()
       .then((data) => {

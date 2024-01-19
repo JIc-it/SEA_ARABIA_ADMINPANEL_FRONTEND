@@ -3,17 +3,11 @@ import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  UpdateCustomerListById,
-  getCustomerListById,
-  getLocation,
-} from "../../../services/CustomerHandle";
-import { Link, useParams } from "react-router-dom";
-import { createAdmin, createSalesRep } from "../../../services/GuestHandle";
+import {  createSalesRep } from "../../../services/GuestHandle";
 import { passwordRegex } from "../../../helpers";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
@@ -22,10 +16,7 @@ function CreateSalesRep({ show, close }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
   console.log("context in sales", locationContext);
-  const [gender, setGender] = useState([
-    { id: "1", label: "Male" },
-    { id: "2", label: "Female" },
-  ]);
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);

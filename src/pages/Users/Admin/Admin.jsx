@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
-import foodImg from "../../../static/img/food.png";
-import newBooking from "../../../static/img/new-booking.png";
-import totalBooking from "../../../static/img/total-booking.png";
-import confirmBooking from "../../../static/img/confirm-booking.png";
-import cancelBooking from "../../../static/img/cancel-booking.png";
-import filterIcon from "../../../static/img/Filter.png";
 import { Link } from "react-router-dom";
-import CreateSalesRep from "../sales/CreateSalesRep";
 import {
   getAdminSearch,
   getAdminTotalCount,
-  getGuestUserList,
 } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 import {
   customerExport,
   getCustomerlist,
 } from "../../../services/CustomerHandle";
-import { formatDate, removeBaseUrlFromPath } from "../../../helpers";
+import { removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
 
 const Admin = () => {

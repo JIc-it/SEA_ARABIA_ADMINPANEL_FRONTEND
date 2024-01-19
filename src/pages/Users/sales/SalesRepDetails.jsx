@@ -1,14 +1,12 @@
 import { Button } from "@mui/material";
-import customerImg from "../../../assets/images/customerimg.png";
+
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { getCustomerListById } from "../../../services/CustomerHandle";
-import CustomerEditModal from "../../../components/Customers/CustomerEditModal";
 import { getSalesRepListById } from "../../../services/GuestHandle";
-import CreateSalesRep from "./CreateSalesRep";
+
 import UpdateSalesRep from "./UpdateSalesRep";
 import SalesPassword from "./SalesPassword";
 import PasswordIcon from "../../../assets/images/PasswordIcon.png";
