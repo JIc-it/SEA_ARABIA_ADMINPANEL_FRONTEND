@@ -60,7 +60,7 @@ export const customerExport = (queryParams) => {
     });
 };
 
-export const customerBookingList = (customerId) => {
+export const customerIndividualBooking = (customerId) => {
   return axiosInstance
     .get(`${customerBooking}${customerId}`)
     .then((response) => response.data)

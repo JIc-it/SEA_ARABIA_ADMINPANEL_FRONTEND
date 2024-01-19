@@ -16,6 +16,7 @@ export const getBookingList = (data) => {
         status: data.status,
         search: data.search,
         refund_status: data.refund_status,
+        id: data.customerId,
       },
     })
     .then((response) => response.data)

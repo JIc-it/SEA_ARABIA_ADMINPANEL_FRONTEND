@@ -67,6 +67,8 @@ import SalesPassword from "../pages/Users/sales/SalesPassword";
 import SalesActivityLog from "../pages/Users/sales/salesActivityLog";
 import ProfileActivityLogs from "./Profile/ProfileActivityLogs";
 
+import CustomerBookingList from "./Booking/CustomerBookingList";
+
 function AllRouting() {
   return (
     <Routes>
@@ -78,7 +80,10 @@ function AllRouting() {
         element={<VenderIndivitualEdit />}
       ></Route>
       <Route path="/booking" element={<Bookings />} />
-      {/* <Route path="/booking/:id" element={<BookinList />} /> */}
+      <Route
+        path="/customer/bookings/:id"
+        element={<CustomerBookingList />}
+      />
 
       {/* <Route path="/booking-view/:id" element={<InviVitualBookingView />} /> */}
       <Route path="/onboard/:id/:companyID" element={<OnBoard />} />
@@ -162,7 +167,10 @@ function AllRouting() {
       <Route path="/event-edit/:id" element={<EventEdit />} />
       <Route path="/event-add" element={<EventAdd />} />
       <Route path="/profile" element={<ProfileView />} />
-      <Route path="/profile-activity-log/:id" element={<ProfileActivityLogs />}/>
+      <Route
+        path="/profile-activity-log/:id"
+        element={<ProfileActivityLogs />}
+      />
       <Route path="/availability" element={<Availability />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>

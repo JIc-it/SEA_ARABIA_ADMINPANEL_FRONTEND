@@ -27,11 +27,11 @@ function CustomerCardDetails() {
   const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
   const customerId = useParams()?.customerId;
-
+  console.log("customer id", customerId);
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        // console.log("customer detail is ---", data);
+        console.log("customer detail is ---", data);
         setCustomerDetails(data);
       })
       .catch((error) => {
@@ -39,9 +39,9 @@ function CustomerCardDetails() {
       });
   }, [customerId]);
 
-  // const handleBookingButtonClick = () => {
-  //   navigate(`/bookings/${customerId}`);
-  // };
+  const handleBookingButtonClick = () => {
+    navigate(`/customer/bookings/${customerId}`);
+  };
 
   return (
     <div
@@ -131,9 +131,9 @@ function CustomerCardDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button btn "
-                // onClick={handleBookingButtonClick}
+                onClick={handleBookingButtonClick}
               >
-                Bookings  &nbsp;
+                Bookings &nbsp;
                 <svg
                   width={20}
                   height={20}
