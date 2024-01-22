@@ -1,9 +1,9 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
-import { useParams } from "react-router-dom";
+
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { createEvent } from "../../services/EventsPackages"

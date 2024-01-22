@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import { removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";

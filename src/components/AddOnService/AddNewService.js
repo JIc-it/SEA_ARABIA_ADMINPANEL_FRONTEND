@@ -1,22 +1,15 @@
 import { Offcanvas } from "react-bootstrap";
 import "../../static/css/AddNewLead.css";
-import { colors } from "@mui/material";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
-import { toast } from "react-toastify";
 
 function AddNewService({ show, close, setIsRefetch, isRefetch }) {
-  const [isLoading, setIsLoading] = useState(false);
-
   const validationSchema = Yup.object({
     name: Yup.string()
       .required("Name is required")
       .max(20, "Name must be at most 20 characters"),
-      description: Yup.string()
-      .required("Description is required"),
-      availability : Yup.string()
-      .required("Availability is required"),
+    description: Yup.string().required("Description is required"),
+    availability: Yup.string().required("Availability is required"),
   });
 
   const formik = useFormik({

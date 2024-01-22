@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
+import * as XLSX from "xlsx";
 
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 
 import {
+  customerExport,
   getCustomerlist,
   getCustomerSearch,
+  salesExport,
 } from "../../../services/CustomerHandle";
 import { formatDate, removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
@@ -109,42 +112,44 @@ const SalesRepresentatives = () => {
   };
 
   const handleExportCustomerData = () => {
-    if (salesRep) {
-      const header = [
-        "NAME",
-        "EMAIL",
-        "PHONE",
-        "LOCATION",
-        "CREATED ON",
-        "CREATED BY",
-        "STATUS",
-      ];
-      const csvData = salesRep.map((elem) => {
-        let formatedDate = formatDate(elem.created_at);
-        return [
-          elem.first_name,
-          elem.email,
-          elem.mobile,
-          elem.location,
-          elem.state?.state,
-          formatedDate,
-          elem.created_by,
-          `${elem.status ? elem.status : "-"} `,
-        ];
-      });
+    salesExport()
+      .then((response) => {
+        // Assuming the response.data is the CSV content
+        const csvData = response;
+        console.log("csv data--", csvData);
 
-      const csvContent = [header, ...csvData]
-        .map((row) => row.join(","))
-        .join("\n");
-      const blob = new Blob([csvContent], { type: "text/csv" });
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "sales Rep-List.csv";
-      a.click();
-      window.URL.revokeObjectURL(url);
-    }
+        // Convert the CSV data to a Blob
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+        console.log("blob--", blob);
+
+        // Parse the CSV data into an Excel workbook
+        const workbook = XLSX.read(csvData, { type: "string" });
+        // Display the workbook data or perform further processing
+        console.log("Workbook:", workbook);
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "exported_data.csv";
+
+        // Append the link to the document
+        document.body.appendChild(link);
+
+        // Trigger the download
+        link.click();
+
+        // Remove the link asynchronously after the download
+        setTimeout(() => {
+          document.body.removeChild(link);
+          // Optionally, log success message
+          // console.log("Exported Customer data successfully!");
+        }, 0);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error.message);
+      });
   };
+
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -440,7 +445,6 @@ const SalesRepresentatives = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                              
                                 {item?.location}
                               </span>
                             </td>

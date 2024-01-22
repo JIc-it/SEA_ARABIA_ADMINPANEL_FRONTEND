@@ -8,6 +8,10 @@ const customerBooking = "/booking/userbased-individual-booking";
 // const serviceDetails = "main/category-list";
 const guestUserURL = "account/guest-user/list";
 const customerCreateUrl = "/account/user-create";
+const guestexportData = "/account/guests-list-export/";
+const adminExportData = "/account/admin-list-export/";
+const salesExportData = "/account/sales-list-export/";
+
 
 export const getCustomerlist = (role) => {
   return axiosInstance
@@ -60,6 +64,35 @@ export const customerExport = (queryParams) => {
     });
 };
 
+export const guestExport = (queryParams) => {
+  return axiosInstance
+    .get(`${guestexportData}`, { params: queryParams })
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching guest export request:", error);
+      throw error;
+    });
+};
+
+export const adminExport = () => {
+  return axiosInstance
+    .get(`${adminExportData}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching admin export request:", error);
+      throw error;
+    });
+};
+
+export const salesExport = () => {
+  return axiosInstance
+    .get(`${salesExportData}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching sales export request:", error);
+      throw error;
+    });
+};
 export const customerIndividualBooking = (customerId) => {
   return axiosInstance
     .get(`${customerBooking}${customerId}`)

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
-
+import * as XLSX from "xlsx";
 import {
   customerExport,
   getCustomerSearch,
@@ -41,10 +41,17 @@ export default function CustomerListing() {
     customerExport()
       .then((response) => {
         // Assuming the response.data is the CSV content
-        const csvData = response.data;
+        const csvData = response;
+        console.log("csv data--", csvData);
 
         // Convert the CSV data to a Blob
-        const blob = new Blob([csvData], { type: "text/csv" });
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+        console.log("blob--", blob);
+
+        // Parse the CSV data into an Excel workbook
+        const workbook = XLSX.read(csvData, { type: "string" });
+        // Display the workbook data or perform further processing
+        console.log("Workbook:", workbook);
 
         // Create a download link
         const link = document.createElement("a");
@@ -57,10 +64,12 @@ export default function CustomerListing() {
         // Trigger the download
         link.click();
 
-        // Remove the link from the document
-        document.body.removeChild(link);
-
-        // console.log("Exported Customer data successfully!");
+        // Remove the link asynchronously after the download
+        setTimeout(() => {
+          document.body.removeChild(link);
+          // Optionally, log success message
+          // console.log("Exported Customer data successfully!");
+        }, 0);
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);
@@ -371,7 +380,6 @@ export default function CustomerListing() {
                     let formatedDate = item.created_at;
                     return (
                       <tr>
-                       
                         <td>
                           <span className="text-secondary">
                             {item.first_name}

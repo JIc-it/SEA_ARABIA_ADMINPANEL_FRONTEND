@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import {  removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -28,24 +28,16 @@ const RefundHistoryList  = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
- 
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
+
   const [search, setSearch] = useState("");
-  const [statusList, setStatusList] = useState([]);
+
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
+ 
   const [bookingList, setBookingList] = useState([]);
   const [count,setCount]=useState({})
 

@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import { useState, useEffect } from "react";
 import HeaderOffCanvas from "./HeaderOffCanvas";
 import { getNotificationList } from "../../services/Notification";
+import { getProfileData } from "../../services/Profile";
 
 function Header() {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Header() {
     previous: null,
   });
   const [data, setdata] = useState([]);
+  const [customerDetails, setCustomerDetails] = useState([]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -34,6 +36,21 @@ function Header() {
       });
   }, []);
 
+  useEffect(() => {
+    setIsLoading(true);
+    getProfileData()
+      .then((data) => {
+        console.log("prof--", data);
+        setIsLoading(false);
+        if (data) {
+          setCustomerDetails(data);
+        }
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        console.error("Error fetching customer data:", error);
+      });
+  }, []);
   return (
     <header className="navbar navbar-expand-md d-none d-lg-flex d-print-none">
       <div className="container-xl" style={{ marginRight: "15px" }}>
@@ -133,8 +150,14 @@ function Header() {
                 }}
               ></span>
               <div className="d-none d-xl-block ps-2">
-                <div>Lookscout</div>
-                <div className="mt-1 small text-secondary">UI Designer</div>
+                <div>
+                  {customerDetails?.first_name}
+                  {customerDetails?.last_name}
+                </div>
+                <div className="mt-1 small text-secondary">
+                  {" "}
+                  {customerDetails?.role}
+                </div>
               </div>
             </button>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">

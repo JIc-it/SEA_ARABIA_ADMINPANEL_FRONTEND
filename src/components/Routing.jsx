@@ -81,7 +81,7 @@ function AllRouting() {
       ></Route>
       <Route path="/booking" element={<Bookings />} />
       <Route
-        path="/customer/bookings/:id"
+        path="/bookings/:id"
         element={<CustomerBookingList />}
       />
 

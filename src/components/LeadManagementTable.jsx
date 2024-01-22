@@ -1,11 +1,10 @@
 import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import AddNewLead from "./Modal/AddNewLead";
 import { useEffect, useState } from "react";
 import {
   getVendorList,
   getVendorStatus,
-  handleVendorExport,
 } from "../services/leadMangement";
 import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";

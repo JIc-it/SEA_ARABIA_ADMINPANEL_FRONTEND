@@ -1,38 +1,15 @@
 import React, { useEffect, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { formatDate, removeBaseUrlFromPath } from "../../helpers";
 import { getVendorList, getVendorStatus } from "../../services/leadMangement";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import totalBooking from "../../static/img/total-booking.png"
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 600,
-  bgcolor: 'background.paper',
-  // border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const CancellationBooking = () => {
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
   const [statusList, setStatusList] = useState([]);
@@ -42,13 +19,9 @@ const CancellationBooking = () => {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
+ 
 
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
   const [listVendor, setListVendor] = useState([]);
 
   const getVendorListData = async () => {
@@ -126,8 +99,8 @@ const CancellationBooking = () => {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-          : null;
+        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+        : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -186,7 +159,13 @@ const CancellationBooking = () => {
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
-                        <circle opacity="0.5" cx="20.0002" cy="19.9987" r="16.6667" fill="white" />
+                        <circle
+                          opacity="0.5"
+                          cx="20.0002"
+                          cy="19.9987"
+                          r="16.6667"
+                          fill="white"
+                        />
                         <path
                           d="M12.2959 19.384H11.5459V19.384L12.2959 19.384ZM12.2959 20.9272L11.7345 21.4245C11.8697 21.5772 12.0614 21.6683 12.2653 21.6766C12.4692 21.6849 12.6677 21.6098 12.815 21.4686L12.2959 20.9272ZM15.5191 18.876C15.818 18.5893 15.828 18.1146 15.5414 17.8156C15.2547 17.5166 14.7799 17.5066 14.4809 17.7933L15.5191 18.876ZM10.5615 17.8374C10.2869 17.5273 9.81286 17.4985 9.50277 17.7732C9.19267 18.0478 9.16391 18.5218 9.43852 18.8319L10.5615 17.8374ZM25.2532 14.6773C25.5344 14.9813 26.009 14.9998 26.313 14.7185C26.6171 14.4372 26.6356 13.9627 26.3543 13.6587L25.2532 14.6773ZM20.0728 10.918C15.3691 10.918 11.5459 14.7028 11.5459 19.384H13.0459C13.0459 15.5423 16.1864 12.418 20.0728 12.418V10.918ZM11.5459 19.384L11.5459 20.9272H13.0459L13.0459 19.384L11.5459 19.384ZM12.815 21.4686L15.5191 18.876L14.4809 17.7933L11.7769 20.3859L12.815 21.4686ZM12.8574 20.43L10.5615 17.8374L9.43852 18.8319L11.7345 21.4245L12.8574 20.43ZM26.3543 13.6587C24.796 11.9742 22.5575 10.918 20.0728 10.918V12.418C22.1242 12.418 23.9683 13.2883 25.2532 14.6773L26.3543 13.6587Z"
                           fill="white"
@@ -405,12 +384,12 @@ const CancellationBooking = () => {
                               </span>
                             </td>
                             <td>
-                              <span className="text-secondary">Shaheel Arham</span>
+                              <span className="text-secondary">
+                                Shaheel Arham
+                              </span>
                             </td>
                             <td>
-                              <span className="text-secondary">
-                                Customer
-                              </span>
+                              <span className="text-secondary">Customer</span>
                             </td>
                             <td>
                               <span className="text-secondary">
@@ -443,7 +422,8 @@ const CancellationBooking = () => {
                                   boxSShadow:
                                     "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                                 }}
-                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                data-bs-toggle="modal"
+                                data-bs-target="#exampleModal"
                               >
                                 View Request &nbsp;
                                 <svg
@@ -482,12 +462,12 @@ const CancellationBooking = () => {
                               </span>
                             </td>
                             <td>
-                              <span className="text-secondary">Shaheel Arham</span>
+                              <span className="text-secondary">
+                                Shaheel Arham
+                              </span>
                             </td>
                             <td>
-                              <span className="text-secondary">
-                                Customer
-                              </span>
+                              <span className="text-secondary">Customer</span>
                             </td>
                             <td>
                               <span className="text-secondary">
@@ -555,12 +535,12 @@ const CancellationBooking = () => {
                               </span>
                             </td>
                             <td>
-                              <span className="text-secondary">Shaheel Arham</span>
+                              <span className="text-secondary">
+                                Shaheel Arham
+                              </span>
                             </td>
                             <td>
-                              <span className="text-secondary">
-                                Customer
-                              </span>
+                              <span className="text-secondary">Customer</span>
                             </td>
                             <td>
                               <span className="text-secondary">
@@ -631,184 +611,194 @@ const CancellationBooking = () => {
         </div>
       </div>
       {/* View Model */}
-      <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
         <div class="modal-dialog">
           {/* <div class="modal-content"> */}
-            {/* <div class="modal-header">
+          {/* <div class="modal-header">
               <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div> */}
-            <div class="modal-body">
-              <div class="frame-11232">
-                <div class="frame-11251">
-                  <div class="checkbox-group-base">
-                    <div class="frame-11191">
-                      <div class="subtitle">Name</div>
-                      <div class="headline">Shaheel Arham</div>
-                    </div>
-                    <div class="frame-11248">
-                      <div class="frame-11220">
-                        <div class="subtitle2">Refund Status</div>
-                        <div class="status-requests">
-                          <div class="text">Pending</div>
-                        </div>
-                      </div>
-                      <div class="frame-11230">
-                        <div class="subtitle2">Transaction ID</div>
-                        <div class="sa-65-sfg-56-f-2">SA65SFG56F2</div>
-                      </div>
-                      <div class="frame-112322">
-                        <div class="subtitle2">Date &amp; Time</div>
-                        <div class="_08-oct-2022-08-20-am">08 OCT, 2022 08:20 AM</div>
+          <div class="modal-body">
+            <div class="frame-11232">
+              <div class="frame-11251">
+                <div class="checkbox-group-base">
+                  <div class="frame-11191">
+                    <div class="subtitle">Name</div>
+                    <div class="headline">Shaheel Arham</div>
+                  </div>
+                  <div class="frame-11248">
+                    <div class="frame-11220">
+                      <div class="subtitle2">Refund Status</div>
+                      <div class="status-requests">
+                        <div class="text">Pending</div>
                       </div>
                     </div>
-                    <svg
-                      class="vector-6"
-                      width="600"
-                      height="2"
-                      viewBox="0 0 600 2"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 1H600" stroke="#EAEBF0" />
-                    </svg>
-
-                    <div class="frame-11249">
-                      <div class="frame-11224">
-                        <div class="subtitle2">User Type</div>
-                        <div class="registered">Registered</div>
-                      </div>
-                      <div class="frame-11226">
-                        <div class="phone">Phone</div>
-                        <div class="_97455682545">+97455682545</div>
-                      </div>
-                      <div class="frame-11227">
-                        <div class="subtitle2">Email</div>
-                        <div class="shaheel-098-gmail-com">shaheel098@gmail.com</div>
-                      </div>
+                    <div class="frame-11230">
+                      <div class="subtitle2">Transaction ID</div>
+                      <div class="sa-65-sfg-56-f-2">SA65SFG56F2</div>
                     </div>
-                    <svg
-                      class="vector-9"
-                      width="600"
-                      height="2"
-                      viewBox="0 0 600 2"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 1H600" stroke="#EAEBF0" />
-                    </svg>
-
-                    <div class="frame-11250">
-                      <div class="frame-11228">
-                        <div class="subtitle2">Booking Type</div>
-                        <div class="hot-air-balloon">Hot Air Balloon</div>
-                      </div>
-                      <div class="frame-11231">
-                        <div class="subtitle2">Location</div>
-                        <div class="kuwait">Kuwait</div>
-                      </div>
-                      <div class="frame-11233">
-                        <div class="subtitle2">Booking Date</div>
-                        <div class="_08-oct-2022">08 OCT, 2022</div>
-                      </div>
-                      <div class="frame-11234">
-                        <div class="subtitle2">Time Slot</div>
-                        <div class="_08-00-09-30">08:00 - 09:30</div>
-                      </div>
-                      <div class="frame-11235">
-                        <div class="subtitle2">Duration</div>
-                        <div class="_1-5-hrs">1.5 Hrs</div>
-                      </div>
-                    </div>
-                    <svg
-                      class="vector-8"
-                      width="600"
-                      height="2"
-                      viewBox="0 0 600 2"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 1H600" stroke="#EAEBF0" />
-                    </svg>
-
-                    <div class="text-container">
-                      <div class="frame-11189">
-                        <div class="frame-11187">
-                          <div class="total">Total</div>
-                          <div class="_2-50-kwd">2.50 KWD</div>
-                        </div>
-                        <div class="frame-11188">
-                          <div class="service-fee">Service Fee</div>
-                          <div class="_0-50-kwd">0.50 KWD</div>
-                        </div>
-                        <div class="frame-111892">
-                          <div class="collection-delivery">Collection &amp; Delivery</div>
-                          <div class="_1-50-kwd">1.50 KWD</div>
-                        </div>
-                      </div>
-                      <div class="frame-11186">
-                        <div class="paid">Paid</div>
-                        <div class="_4-50-kwd">4.50 KWD</div>
-                      </div>
-                    </div>
-                    <svg
-                      class="vector-10"
-                      width="600"
-                      height="2"
-                      viewBox="0 0 600 2"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path d="M0 1H600" stroke="#EAEBF0" />
-                    </svg>
-                    <div class="checkbox-text">
-                      <div class="checkbox-text2">
-                        <div class="text-container2">
-                          <div class="payment-method">Payment Method</div>
-                          <div class="frame-11184">
-                            <div class="master-card">Master Card</div>
-                            <div class="xxxx-9299">XXXXXX 9299</div>
-                          </div>
-                        </div>
+                    <div class="frame-112322">
+                      <div class="subtitle2">Date &amp; Time</div>
+                      <div class="_08-oct-2022-08-20-am">
+                        08 OCT, 2022 08:20 AM
                       </div>
                     </div>
                   </div>
-                  <div class="frame-11252">
-                    <div class="button">
-                      <div class="text2">Reject</div>
+                  <svg
+                    class="vector-6"
+                    width="600"
+                    height="2"
+                    viewBox="0 0 600 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 1H600" stroke="#EAEBF0" />
+                  </svg>
+
+                  <div class="frame-11249">
+                    <div class="frame-11224">
+                      <div class="subtitle2">User Type</div>
+                      <div class="registered">Registered</div>
                     </div>
-                    <div class="button2">
-                      <div class="text2">Accept</div>
+                    <div class="frame-11226">
+                      <div class="phone">Phone</div>
+                      <div class="_97455682545">+97455682545</div>
+                    </div>
+                    <div class="frame-11227">
+                      <div class="subtitle2">Email</div>
+                      <div class="shaheel-098-gmail-com">
+                        shaheel098@gmail.com
+                      </div>
+                    </div>
+                  </div>
+                  <svg
+                    class="vector-9"
+                    width="600"
+                    height="2"
+                    viewBox="0 0 600 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 1H600" stroke="#EAEBF0" />
+                  </svg>
+
+                  <div class="frame-11250">
+                    <div class="frame-11228">
+                      <div class="subtitle2">Booking Type</div>
+                      <div class="hot-air-balloon">Hot Air Balloon</div>
+                    </div>
+                    <div class="frame-11231">
+                      <div class="subtitle2">Location</div>
+                      <div class="kuwait">Kuwait</div>
+                    </div>
+                    <div class="frame-11233">
+                      <div class="subtitle2">Booking Date</div>
+                      <div class="_08-oct-2022">08 OCT, 2022</div>
+                    </div>
+                    <div class="frame-11234">
+                      <div class="subtitle2">Time Slot</div>
+                      <div class="_08-00-09-30">08:00 - 09:30</div>
+                    </div>
+                    <div class="frame-11235">
+                      <div class="subtitle2">Duration</div>
+                      <div class="_1-5-hrs">1.5 Hrs</div>
+                    </div>
+                  </div>
+                  <svg
+                    class="vector-8"
+                    width="600"
+                    height="2"
+                    viewBox="0 0 600 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 1H600" stroke="#EAEBF0" />
+                  </svg>
+
+                  <div class="text-container">
+                    <div class="frame-11189">
+                      <div class="frame-11187">
+                        <div class="total">Total</div>
+                        <div class="_2-50-kwd">2.50 KWD</div>
+                      </div>
+                      <div class="frame-11188">
+                        <div class="service-fee">Service Fee</div>
+                        <div class="_0-50-kwd">0.50 KWD</div>
+                      </div>
+                      <div class="frame-111892">
+                        <div class="collection-delivery">
+                          Collection &amp; Delivery
+                        </div>
+                        <div class="_1-50-kwd">1.50 KWD</div>
+                      </div>
+                    </div>
+                    <div class="frame-11186">
+                      <div class="paid">Paid</div>
+                      <div class="_4-50-kwd">4.50 KWD</div>
+                    </div>
+                  </div>
+                  <svg
+                    class="vector-10"
+                    width="600"
+                    height="2"
+                    viewBox="0 0 600 2"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path d="M0 1H600" stroke="#EAEBF0" />
+                  </svg>
+                  <div class="checkbox-text">
+                    <div class="checkbox-text2">
+                      <div class="text-container2">
+                        <div class="payment-method">Payment Method</div>
+                        <div class="frame-11184">
+                          <div class="master-card">Master Card</div>
+                          <div class="xxxx-9299">XXXXXX 9299</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-                <svg
-                  class="close-icon"
-                  width="26"
-                  height="26"
-                  viewBox="0 0 26 26"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <g clip-path="url(#clip0_226_3915)">
-                    <path
-                      fill-rule="evenodd"
-                      clip-rule="evenodd"
-                      d="M10.7024 12.9992L0.476289 2.77306C-0.157461 2.13931 -0.157461 1.10906 0.476289 0.475312C1.11004 -0.158437 2.14029 -0.158437 2.77404 0.475312L13.0002 10.7014L23.2263 0.475312C23.86 -0.158437 24.8903 -0.158437 25.524 0.475312C26.1578 1.10906 26.1578 2.13931 25.524 2.77306L15.2979 12.9992L25.524 23.2253C26.1578 23.8591 26.1578 24.8893 25.524 25.5231C24.8903 26.1568 23.86 26.1568 23.2263 25.5231L13.0002 15.2969L2.77404 25.5231C2.14029 26.1568 1.11004 26.1568 0.476289 25.5231C-0.157461 24.8893 -0.157461 23.8591 0.476289 23.2253L10.7024 12.9992Z"
-                      fill="black"
-                    />
-                  </g>
-                  <defs>
-                    <clipPath id="clip0_226_3915">
-                      <rect width="26" height="26" fill="white" />
-                    </clipPath>
-                  </defs>
-                </svg>
+                <div class="frame-11252">
+                  <div class="button">
+                    <div class="text2">Reject</div>
+                  </div>
+                  <div class="button2">
+                    <div class="text2">Accept</div>
+                  </div>
+                </div>
               </div>
-
-
+              <svg
+                class="close-icon"
+                width="26"
+                height="26"
+                viewBox="0 0 26 26"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g clip-path="url(#clip0_226_3915)">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M10.7024 12.9992L0.476289 2.77306C-0.157461 2.13931 -0.157461 1.10906 0.476289 0.475312C1.11004 -0.158437 2.14029 -0.158437 2.77404 0.475312L13.0002 10.7014L23.2263 0.475312C23.86 -0.158437 24.8903 -0.158437 25.524 0.475312C26.1578 1.10906 26.1578 2.13931 25.524 2.77306L15.2979 12.9992L25.524 23.2253C26.1578 23.8591 26.1578 24.8893 25.524 25.5231C24.8903 26.1568 23.86 26.1568 23.2263 25.5231L13.0002 15.2969L2.77404 25.5231C2.14029 26.1568 1.11004 26.1568 0.476289 25.5231C-0.157461 24.8893 -0.157461 23.8591 0.476289 23.2253L10.7024 12.9992Z"
+                    fill="black"
+                  />
+                </g>
+                <defs>
+                  <clipPath id="clip0_226_3915">
+                    <rect width="26" height="26" fill="white" />
+                  </clipPath>
+                </defs>
+              </svg>
             </div>
-            {/* <div class="modal-footer">
+          </div>
+          {/* <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
               <button type="button" class="btn btn-primary">Save changes</button>
             </div> */}

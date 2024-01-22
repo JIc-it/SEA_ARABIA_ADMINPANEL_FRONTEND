@@ -40,7 +40,7 @@ function CustomerCardDetails() {
   }, [customerId]);
 
   const handleBookingButtonClick = () => {
-    navigate(`/customer/bookings/${customerId}`);
+    navigate(`/bookings/${customerId}`);
   };
 
   return (

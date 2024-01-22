@@ -5,7 +5,7 @@ import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { removeBaseUrlFromPath } from "../../helpers";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -29,11 +29,6 @@ const style = {
 const CustomerBookingList = () => {
   const customerId = useParams()?.id;
 
-  console.log(customerId, "customerId");
-  const location = useLocation();
-  const currentPath = location.pathname;
-  //   console.log("currentPath", currentPath, location);
-  //   console.log("customerid", customerId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -48,13 +43,8 @@ const CustomerBookingList = () => {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
 

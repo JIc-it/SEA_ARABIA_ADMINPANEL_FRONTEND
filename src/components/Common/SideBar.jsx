@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
+import { useLocation } from "react-router-dom";
 import logo from "../../static/img/logo.png";
 
 import { useNavigate } from "react-router-dom";
@@ -823,8 +823,7 @@ function SideBar() {
                     <div className="dropdown-menu-column">
                       <a
                         className={`dropdown-item ${
-                          (activeLink === "/Service" ? "active" : ""
-                          )
+                          activeLink === "/Service" ? "active" : ""
                         }`}
                         style={{
                           color: activeLink === "/Service" ? "#006875" : "",
@@ -854,9 +853,7 @@ function SideBar() {
                         }`}
                         style={{
                           color:
-                            activeLink === "/availability"
-                              ? "#006875"
-                              : "",
+                            activeLink === "/availability" ? "#006875" : "",
                         }}
                         // onClick={handleBookingCancellationClick}
                         href="/availability"
@@ -881,10 +878,7 @@ function SideBar() {
                         }`}
                         // onClick={handleBookingHistoryClick}
                         style={{
-                          color:
-                            activeLink === "/calendar"
-                              ? "#006875"
-                              : "",
+                          color: activeLink === "/calendar" ? "#006875" : "",
                         }}
                         href="/calendar"
                       >
