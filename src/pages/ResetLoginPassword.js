@@ -9,11 +9,9 @@ import {
   Stack,
   TextField,
   Typography,
-  IconButton,
-  InputAdornment,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { passwordRegex } from "../helpers";
 import { useNavigate, useParams } from "react-router";

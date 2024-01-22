@@ -1,5 +1,4 @@
 import React from 'react'
-import SideBar from "../components/Common/SideBar";
 import Footer from "../components/Common/Footer";
 import DiscountListing from '../components/Discounts/DiscountListing';
 import DiscountHeaders from '../components/Discounts/Discount_Header';

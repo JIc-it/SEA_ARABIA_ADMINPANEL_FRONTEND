@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
-import guestUserImg from "../../static/img/guest-user.png";
-import filterIcon from "../../static/img/Filter.png";
+
 import { Link } from "react-router-dom";
 import {
-  customerExport,
+
   getGuestUserRequest,
   getTotalGuestUser,
   guestExport,

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router";
-// import { getUserVendorActivityLog } from "../../services/userVendorsServices";
-// import { convertedDateAndTime, removeBaseUrlFromPath } from "../../helpers";
-// import { getListDataInPagination } from "../../services/commonServices";
 import { getUserVendorActivityLog } from "../../../services/userVendorsServices";
 import { removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";

@@ -8,7 +8,6 @@ import {
 import CreateNewAdmin from "./CreateNewAdmin";
 import {
   adminExport,
-  customerExport,
   getCustomerlist,
 } from "../../../services/CustomerHandle";
 import { removeBaseUrlFromPath } from "../../../helpers";

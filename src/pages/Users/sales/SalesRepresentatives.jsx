@@ -5,12 +5,11 @@ import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 
 import {
-  customerExport,
   getCustomerlist,
   getCustomerSearch,
   salesExport,
 } from "../../../services/CustomerHandle";
-import { formatDate, removeBaseUrlFromPath } from "../../../helpers";
+import { removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
 import { getsalesTotalCount } from "../../../services/leadMangement";
 const SalesRepresentatives = () => {

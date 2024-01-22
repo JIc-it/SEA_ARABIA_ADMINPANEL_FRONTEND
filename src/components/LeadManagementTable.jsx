@@ -10,8 +10,7 @@ import { formatDate, removeBaseUrlFromPath } from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
-import { toast } from "react-toastify";
-import downArrow from "../../src/assets/images/down-arrow.png";
+
 import { API_BASE_URL } from "../services/authHandle";
 
 function Table() {

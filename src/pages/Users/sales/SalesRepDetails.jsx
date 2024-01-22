@@ -1,12 +1,9 @@
 import { Button } from "@mui/material";
-
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { getSalesRepListById } from "../../../services/GuestHandle";
-
 import UpdateSalesRep from "./UpdateSalesRep";
 import SalesPassword from "./SalesPassword";
 import PasswordIcon from "../../../assets/images/PasswordIcon.png";
