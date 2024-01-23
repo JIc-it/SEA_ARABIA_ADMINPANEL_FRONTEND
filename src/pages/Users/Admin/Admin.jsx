@@ -6,10 +6,7 @@ import {
   getAdminTotalCount,
 } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
-import {
-  adminExport,
-  getCustomerlist,
-} from "../../../services/CustomerHandle";
+import { adminExport, getCustomerlist } from "../../../services/CustomerHandle";
 import { removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
 
@@ -43,7 +40,7 @@ const Admin = () => {
     const role = "Admin";
     getCustomerlist(role)
       .then((data) => {
-        console.log("admin list ==", data);
+        console.log("admin list ==", data?.results);
         setListPageUrl({
           next: data.next,
           previous: data.previous,
@@ -59,6 +56,7 @@ const Admin = () => {
     window.location.reload();
   };
   const getAdminData = async () => {
+   
     getAdminSearch()
       .then((data) => {
         if (data) {
@@ -83,7 +81,7 @@ const Admin = () => {
   };
 
   useEffect(() => {
-    const data = { search: search, status: selectedValue, role: "User" };
+    const data = { search: search, status: selectedValue, role: "Admin" };
     getAdminSearch(data).then((res) => setAdmin(res?.results));
   }, [selectedValue, isRefetch, search]);
 
@@ -423,6 +421,7 @@ const Admin = () => {
                   {admin.map((item) => {
                     return (
                       <tbody>
+                    
                         <tr>
                           <td>
                             <span className="text-secondary">
@@ -508,7 +507,7 @@ const Admin = () => {
                   href="#"
                   tabIndex="-1"
                   onClick={() => {
-                    handlePagination("prev");
+                    handlePagination("prev")
                   }}
                 >
                   <svg
