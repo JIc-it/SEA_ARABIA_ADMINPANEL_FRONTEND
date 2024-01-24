@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import filterIcon from "../../static/img/Filter.png";
-import { getVendorStatus } from "../../services/leadMangement";
+
 import { getCustomerSearch } from "../../services/CustomerHandle";
-import VendorList from "../Initial_contact/VendorList";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+
+import {  removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import VendorFilterPopup from "./VendorFilterPopup";
-import { toast } from "react-toastify";
+
 import { API_BASE_URL } from "../../services/authHandle";
 
 export default function Listing() {

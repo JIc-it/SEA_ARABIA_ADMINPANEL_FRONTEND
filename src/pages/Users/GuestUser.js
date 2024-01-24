@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-
   getGuestUserRequest,
   getTotalGuestUser,
   guestExport,
@@ -11,6 +10,9 @@ import { removeBaseUrlFromPath } from "../../helpers.js";
 import { getListDataInPagination } from "../../services/commonServices.js";
 import * as XLSX from "xlsx";
 const GuestUser = () => {
+  const navigate = useNavigate();
+  const [guestId, setGuestId] = useState();
+  console.log("guest id", guestId);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const [reward_product_data, setGuestUsertData] = useState(null);
@@ -32,6 +34,8 @@ const GuestUser = () => {
           previous: data.previous,
         });
         setGuestUsertData(data.results);
+        setGuestId(data.results?.id);
+        console.log("id==", guestId);
       })
       .catch((error) => {
         console.error("Error fetching lead data:", error);
@@ -143,7 +147,9 @@ const GuestUser = () => {
         console.error("Error fetching data:", error.message);
       });
   };
-
+  const handleClickGuestBooking = () => {
+    navigate(`/bookings/${guestId}`);
+  };
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -274,10 +280,11 @@ const GuestUser = () => {
                           alignItems: "baseline",
                         }}
                       >
-                        <Link
+                        <a
                           to={""}
                           className="btn btn-sm btn-info"
                           style={{ padding: "6px 10px", borderRadius: "4px" }}
+                          href={`/bookings/${rw_data.id}`}
                         >
                           Booking &nbsp;
                           <svg
@@ -295,7 +302,7 @@ const GuestUser = () => {
                               strokeLinejoin="round"
                             />
                           </svg>
-                        </Link>
+                        </a>
                       </td>
                     </tr>
                   ))

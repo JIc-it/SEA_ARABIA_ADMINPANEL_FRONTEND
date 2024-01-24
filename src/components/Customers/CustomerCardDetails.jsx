@@ -42,7 +42,18 @@ function CustomerCardDetails() {
   const handleBookingButtonClick = () => {
     navigate(`/bookings/${customerId}`);
   };
+  const handleClickMail = () => {
+    const gmailSignInURL =
+      "https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ifkv=ASKXGp3MRJca_lAk9W3Ozhl5cHu04zHSvCRg6Z-G1zdVwJIA_ad9jWJwlCqAaIRrTIZNr42pfCMJAw&rip=1&sacu=1&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S-586758816%3A1706096141828995&theme=glif";
+    // Navigate using window.location.href
+    window.location.href = gmailSignInURL;
+  };
 
+  const phoneNumber = "123456789";
+  const handleCall = () => {
+    const telUri = `tel:${phoneNumber}`;
+    window.open(telUri, "_blank");
+  };
   return (
     <div
       className={
@@ -192,7 +203,10 @@ function CustomerCardDetails() {
               </a>
             </div>
             <div className="bottom_button">
-              <a className="call_vendor_button_customer btn ">
+              <a
+                className="call_vendor_button_customer btn "
+                onClick={handleCall}
+              >
                 Call Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +231,10 @@ function CustomerCardDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a
+                className="mail_vendor_button btn btn-outline"
+                onClick={handleClickMail}
+              >
                 Mail Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
