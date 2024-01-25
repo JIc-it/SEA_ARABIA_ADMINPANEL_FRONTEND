@@ -131,7 +131,10 @@ console.log(booking)
                                 }
                                 <p className='booking-confirmed' style={{color:booking.status==="Opened" || booking.status==="Upcoming"? "#2684FC": booking.status==="Unsuccessful"?"#DC7932":booking?.status==="Completed"?"#08A747":"#DE4E21"}}>{statusCheck()}</p>
                                 <div className={isMobileView ? "bottom_button_mobile" : "bottom_button"}>
-                                    <a className={isMobileView ? "call_vendor_button btn my-2" : "call_vendor_button btn me-2"}>
+                                    <a className={isMobileView ? "call_vendor_button btn my-2" : "call_vendor_button btn me-2"}
+                                     onClick={() => 
+                                            window.location.href = `tel:+91${booking?.service?.vendor_contact_number}`}
+                                    >
                                         Call Vendor &nbsp;
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"

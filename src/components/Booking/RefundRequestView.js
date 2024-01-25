@@ -39,8 +39,6 @@ export default function RefundRequestView() {
       });
   }, [params.id]);
 
-  console.log(booking, "one");
-
   const statusCheck = () => {
     if (booking?.status === "Opened") {
       return "Opened";
@@ -302,6 +300,8 @@ export default function RefundRequestView() {
                             ? "call_vendor_button btn my-2"
                             : "call_vendor_button btn me-2"
                         }
+                        onClick={() => 
+                          window.location.href = `tel:+91${booking?.service?.vendor_contact_number}`}
                       >
                         Call Vendor &nbsp;
                         <svg
