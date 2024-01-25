@@ -28,13 +28,10 @@ const style = {
 
 const CustomerBookingList = () => {
   const customerId = useParams()?.id;
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
   const [statusList, setStatusList] = useState([]);
   const [listPageUrl, setListPageUrl] = useState({
@@ -44,20 +41,20 @@ const CustomerBookingList = () => {
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
 
   // new api
   useEffect(() => {
     const Pass = { id: customerId };
+
     getBookingList(Pass)
       .then((data) => {
         // console.log("booking list data", data);
 
-        // Assuming you want to filter bookings based on customerId
         const filteredBooking = data?.results?.filter(
-          (booking) => booking.user?.id === customerId
+          (booking) =>
+            booking.user?.id === customerId || booking?.guest?.id === customerId
         );
         // console.log("filtered bookk------", filteredBooking);
         setBookingList(filteredBooking);
@@ -70,7 +67,6 @@ const CustomerBookingList = () => {
   useEffect(() => {
     getBookingCount()
       .then((data) => {
-        console.log("booking count", data);
         setIsLoading(false);
         setCount({
           total_booking: data?.total_booking,
@@ -106,7 +102,20 @@ const CustomerBookingList = () => {
         });
   };
 
-  const handleSearch = () => {
+  // const handleSearch = () => {
+  //   const Pass = { status: "", search: search, refund_status: "" };
+  //   getBookingList(Pass)
+  //     .then((data) => {
+  //       setIsLoading(false);
+  //       setListPageUrl({ next: data.next, previous: data.previous });
+  //       setBookingList(data?.results);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       toast.error(error.response.data);
+  //     });
+  // };
+  const getBookingSearchData = () => {
     const Pass = { status: "", search: search, refund_status: "" };
     getBookingList(Pass)
       .then((data) => {
@@ -119,7 +128,11 @@ const CustomerBookingList = () => {
         toast.error(error.response.data);
       });
   };
-
+  const [selectedValue, setSelectedValue] = useState("");
+  useEffect(() => {
+    const data = { search: search, status: selectedValue, role: "User" };
+    getBookingList(data).then((res) => setBookingList(res?.results));
+  }, [selectedValue, isRefetch, search]);
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -262,6 +275,7 @@ const CustomerBookingList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
+                          onClick={getBookingSearchData}
                         >
                           Search
                         </button>
@@ -368,7 +382,6 @@ const CustomerBookingList = () => {
                             bookingList.length > 0 &&
                             bookingList.map((data) => (
                               <tr>
-                                {console.log("booking item", data)}
                                 <td>
                                   <span className="text-secondary">
                                     {data.booking_id}

@@ -45,6 +45,7 @@ const GuestUser = () => {
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
 
+
   const getGuestSearchData = async () => {
     getGuestUserRequest(search, selectedValue)
       .then((data) => {
@@ -147,9 +148,7 @@ const GuestUser = () => {
         console.error("Error fetching data:", error.message);
       });
   };
-  const handleClickGuestBooking = () => {
-    navigate(`/bookings/${guestId}`);
-  };
+ 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
