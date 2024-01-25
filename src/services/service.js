@@ -26,9 +26,9 @@ export const getCount = () => {
       throw error;
     });
 };
-export const getServiceListing = (search,companyID) => {
+export const getServiceListing = (search,companyID,category,sub_category,vendor,status) => {
   return axiosInstance
-    .get(ServicelistURL,{params:{search:search,company_id:companyID}})
+    .get(ServicelistURL,{params:{search:search,company_id:companyID,category:category,sub_category:sub_category,vendor:vendor,is_active:status}})
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

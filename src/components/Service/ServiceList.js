@@ -80,6 +80,7 @@ function ServiceList() {
         : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
+
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data?.next, previous: data?.previous });

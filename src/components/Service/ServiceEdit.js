@@ -160,7 +160,7 @@ const ServiceEdit = () => {
             setIsLoading(true);
 
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
-            const formattedAmenities = amenitiesmappedid.join(', ');
+            const formattedAmenities = amenitiesmappedid.join(',');
 
             const findservice_price_service_destination_id = values.service_price_service.map((dat) => {
                 if (dat?.location?.id) {
@@ -216,14 +216,12 @@ const ServiceEdit = () => {
                 // removeServiceKey(values)
             }
 
-            console.log(data, "created_data");
             if (!isLoading) {
                 try {
                     const adminData = await UpdateService(params.id, data);
 
                     if (adminData) {
                         setIsLoading(false);
-                        //   window.location.reload();
                         toast.success("Updated Successfully")
                         setIsUpdated(true)
                     } else {
@@ -232,7 +230,7 @@ const ServiceEdit = () => {
                     }
                     setIsLoading(false);
                 } catch (err) {
-                    console.log(err);
+                    toast.error(err?.message)
                     setIsLoading(false);
                 }
             }
@@ -251,7 +249,8 @@ const ServiceEdit = () => {
     const [PerDayopen, setPerDayopen] = useState(false)
     const [PerTimeopen, setPerTimeopen] = useState(false)
     const [PerDateopen, setPerDateopen] = useState(false)
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
+    const [checkImage,setCheckImage]=useState("")
 
     const handleHoverEffectTrue = (id) => {
         setHoverEffect(id)
@@ -288,7 +287,6 @@ const ServiceEdit = () => {
         }
         getOneService(params.id)
             .then((data) => {
-                console.log(data, "first-fetch");
                 setIsLoading(false)
                 formik.setFieldValue("is_verified", data?.is_verified);
                 formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
@@ -437,6 +435,9 @@ const ServiceEdit = () => {
 
     function submit(e) {
         e.preventDefault();
+        if(formik.values.service_image.length===0){
+            return setCheckImage("Image Required")
+        }
         if (formik.values.description.replace("<p><br></p>", "").trim() === "") {
             return setValidateEditor("Description Required")
         }
@@ -506,7 +507,6 @@ const ServiceEdit = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-console.log(formik.values.service_price_service);
     return (
         <>
             {!isLoading && <div className="page" style={{ top: 20 }}>
@@ -1243,7 +1243,7 @@ console.log(formik.values.service_price_service);
                                     <p className="p-2" style={{ fontWeight: "700" }}>Images</p>
                                     <button type='button' onClick={handleOpen} className='btn px-2 py-1' style={{ backgroundColor: "#187AF7", color: "#ffff", fontSize: "12px" }} >Upload</button>
                                 </div>
-                                {open && <UploadPopup setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} />}
+                                {open && <UploadPopup setCheckImage={setCheckImage} setIsLoading={setIsLoading} setIsUpdated={setIsUpdated} open={open} handleClose={handleClose} handleOpen={handleOpen} service_image={formik.values.service_image} />}
                                 <p style={{ fontWeight: "550", fontSize: "12px" }}>Thumbnail</p>
                                 <div className="row">
                                     {formik.values.service_image.map((data) => (
@@ -1262,42 +1262,9 @@ console.log(formik.values.service_price_service);
                                             </div>
                                         </div>
                                     ))}
-                                    {/* <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div> */}
-                                    {formik.touched.service_image && formik.errors.service_image ? (
-                                        <div className="error">{formik.errors.service_image}</div>
-                                    ) : null}
+                                    {checkImage.trim()!=="" && 
+                                    <div className="error">{checkImage}</div>
+                                    }
                                 </div>
                             </div>
                         </div>
