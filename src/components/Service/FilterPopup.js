@@ -177,7 +177,7 @@ const handleApplyFilter=async()=>{
 const handleClearFilter=async()=>{
     setIsLoading(true)
     const getFiltereddata=await getServiceListing()
-    setFilters({category:[],sub_category:[],vendor:[],status:false});
+    setFilters({category:[],sub_category:[],vendor:[],status:true});
 
     if(getFiltereddata){
         setIsLoading(false)
@@ -202,7 +202,7 @@ const handleClearFilter=async()=>{
                     <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={handleClose}
+                        onClick={()=>{handleClose();setFilters({category:[],sub_category:[],vendor:[],status:true});handleClearFilter()}}
                         aria-label="close"
                         sx={{ position: 'absolute', top: 8, right: 14 }}
                     >
