@@ -35,6 +35,7 @@ function ServiceList() {
         setOpen(false)
     }
 
+    
     useEffect(() => {
         {search!==null ? setIsLoading(false):setIsLoading(true)}
         getServiceListing(search)
@@ -256,8 +257,10 @@ function ServiceList() {
                                             Search
                                         </button>
                                     </div>
-                                    <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px" }} onClick={()=>setOpen(true)}>
+                                    <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }} onClick={()=>setOpen(true)}>
                                         <img src={filterIcon} alt="filter" width={25} />
+                                        <span style={{position:"absolute",top:-10,left:20,color:"white",fontSize:"12px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px",padding:"3px"}}>
+                                        {filters.category.length+filters.sub_category.length+filters.vendor.length}                             </span>
                                     </button>
                                 </div>
                             </div>
@@ -478,7 +481,7 @@ function ServiceList() {
                         </div>
                 </div>
             </div>
-            {open && <FilterPopup open={open} handleClose={handleClose} setFilters={setFilters} filters={filters}/>}
+            {open && <FilterPopup open={open} setIsLoading={setIsLoading} setServiceList={setServiceList} setListPageUrl={setListPageUrl} handleClose={handleClose} setFilters={setFilters} filters={filters}/>}
         </div >
     );
 }

@@ -160,7 +160,7 @@ const ServiceEdit = () => {
             setIsLoading(true);
 
             const amenitiesmappedid = values.amenities.map((data) => { return data.id })
-            const formattedAmenities = amenitiesmappedid.join(', ');
+            const formattedAmenities = amenitiesmappedid.join(',');
 
             const findservice_price_service_destination_id = values.service_price_service.map((dat) => {
                 if (dat?.location?.id) {

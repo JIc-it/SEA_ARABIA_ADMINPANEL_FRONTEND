@@ -541,6 +541,7 @@ function UserVendorCardDetails({ venderDetails }) {
                             <th>Category</th>
                             <th>Capacity</th>
                             <th>Location</th>
+                            <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -564,6 +565,17 @@ function UserVendorCardDetails({ venderDetails }) {
                                 <td className="text-dark">
                                   {data?.pickup_point_or_location}
                                 </td>
+                                <td>
+                              <span
+                                className={`text-secondary ${
+                                  data.is_active
+                                    ? "active-button"
+                                    : "inActive-button "
+                                }`}
+                              >
+                                {data.is_active ? "Active" : "Inactive"}
+                              </span>
+                            </td>
                                 <td
                                   style={{
                                     display: "flex",

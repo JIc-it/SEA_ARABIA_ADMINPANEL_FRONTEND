@@ -130,7 +130,7 @@ const ServiceView = () => {
                                 <div className="col-6 px-2">
                                     <div>
                                         <p style={{ color: "#68727D" }}>Amenities</p>
-                                        <p style={{ fontWeight: "700" }}>{oneservice?.amenities?.map((data)=>data.name)}</p>
+                                        <p style={{ fontWeight: "700" }}>{oneservice?.amenities?.length> 1 ? oneservice?.amenities?.map((data)=>data.name+" "+","+" "):oneservice?.amenities?.map((data)=>data.name)}</p>
                                     </div>
                                 </div>
                             </div>

@@ -4,14 +4,19 @@ import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { getCategoryList, getsubcategorylist } from "../../services/service"
+import { getCategoryList, getsubcategorylist,getServiceListing } from "../../services/service"
 import { getCompanyListing } from "../../services/offers"
 
-export default function FilterPopup({ open, handleClose, setFilters,filters }) {
+export default function FilterPopup({ open, handleClose,setIsLoading, setFilters,filters,setListPageUrl,setServiceList }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([]);
     const [subcategorylist, setSubcategoryList] = useState([])
-    const [vendorlist, setVendorList] = useState([])
+    const [vendorlist, setVendorList] = useState([]);
+    const [search,setSearch]=useState({
+        category:"",
+        sub_category:"",
+        vendor:""
+    })
     const style = {
         position: "absolute",
         top: "50%",
@@ -22,7 +27,8 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
         bgcolor: "background.paper",
         // border: '2px solid #000',
         boxShadow: 24,
-        p: 4,
+        p: 3,
+        overflowY:"scroll"
     };
     useEffect(() => {
         getCategoryList()
@@ -144,6 +150,42 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
        }
       };
       
+
+const handleApplyFilter=async()=>{
+    setIsLoading(true)
+    const categorymapped=filters.category.map((data)=>data.id)
+    const categorySplitted=categorymapped.join(",");
+
+    const subcategorymapped=filters.sub_category.map((data)=>data.id)
+    const subcategorySplitted=subcategorymapped.join(",");
+
+    const vendormapped=filters.vendor.map((data)=>data.id)
+    const vendorSplitted=vendormapped.join(",");
+
+    const getFiltereddata=await getServiceListing(null,null,categorySplitted,subcategorySplitted,vendorSplitted,filters.status);
+
+    if(getFiltereddata){
+        setIsLoading(false)
+        setServiceList(getFiltereddata.results);
+        setListPageUrl({next:getFiltereddata.next,previous:getFiltereddata.previous});
+        handleClose()
+    }
+
+}
+
+const handleClearFilter=async()=>{
+    setIsLoading(true)
+    const getFiltereddata=await getServiceListing()
+    setFilters({category:[],sub_category:[],vendor:[],status:false});
+
+    if(getFiltereddata){
+        setIsLoading(false)
+        setServiceList(getFiltereddata.results);
+        setListPageUrl({next:getFiltereddata.next,previous:getFiltereddata.previous});
+        handleClose()
+    }
+}
+
     return (
         <div>
             <Modal
@@ -384,11 +426,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,category:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:categorylist.length>14? "50vh":"",overflowY:categorylist.length>14?"scroll":""}}>
-                                {categorylist.map((data) =>
+                                {categorylist.filter((dat)=>dat["name"].toLowerCase().includes(search.category.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -418,11 +461,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,vendor:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:vendorlist.length>14? "50vh":"",overflowY:vendorlist.length>14?"scroll":""}}>
-                                {vendorlist.map((data) =>
+                                {vendorlist.filter((dat)=>dat["name"].toLowerCase().includes(search?.vendor.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -452,11 +496,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,sub_category:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:subcategorylist.length>14? "50vh":"",overflowY:subcategorylist.length>14?"scroll":""}}>
-                                {subcategorylist.map((data) =>
+                                {subcategorylist.filter((dat)=>dat["name"].toLowerCase().includes(search.sub_category.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -517,9 +562,9 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                     </div>
                     <div className='d-flex justify-content-end mt-3'>
                         <button type='reset' className='m-1 btn btn-small btn-white'
-                        onClick={()=>setFilters({category:[],sub_category:[],vendor:[],status:false})}
+                        onClick={handleClearFilter}
                         >Clear Filter</button>
-                        <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
+                        <button type='button' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }} onClick={handleApplyFilter}>Apply Filter</button>
                     </div>
                 </Box>
             </Modal>
