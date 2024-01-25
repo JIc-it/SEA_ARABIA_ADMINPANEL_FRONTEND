@@ -1,12 +1,19 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useContext,  useState } from "react";
+import {  useLocation } from "react-router-dom";
 import logo from "../../static/img/logo.png";
-
 import { useNavigate } from "react-router-dom";
+import { getMenuPermissions } from "../../helpers";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
+import { MainPageContext } from "../../Context/MainPageContext";
+
 function SideBar() {
   const location = useLocation();
   const navigate = useNavigate();
   const activeLink = location.pathname;
+  const { userPermissionList } = useContext(MainPageContext);
 
   const handleReviewClick = (event) => {
     event.preventDefault();
@@ -488,165 +495,185 @@ function SideBar() {
                   </span>
                 </a>
               </li>
-              <li
-                className={`nav-item ${
-                  activeLink === "/vendor-management" ? "active" : ""
-                }`}
-              >
-                <a
-                  className="nav-link"
-                  href="/vendor-management"
-                  style={{
-                    color: activeLink === "/vendor-management" ? "#006875" : "",
-                    fontSize: activeLink === "/vendor-management" ? "17px" : "",
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.vendorManagent,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item ${
+                      activeLink === "/vendor-management" ? "active" : ""
+                    }`}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title">
-                    &nbsp; Vendor Management{" "}
-                  </span>
-                </a>
-              </li>
-              <li
-                className={`nav-item dropdown 
+                    <a
+                      className="nav-link"
+                      href="/vendor-management"
+                      style={{
+                        color:
+                          activeLink === "/vendor-management" ? "#006875" : "",
+                        fontSize:
+                          activeLink === "/vendor-management" ? "17px" : "",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title">
+                        &nbsp; Vendor Management{" "}
+                      </span>
+                    </a>
+                  </li>
+                )}
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.booking,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item dropdown 
                   ${openDropdown === "/booking" ? "active" : ""}
                 }`}
-                style={{
-                  color: activeLink === "/" ? "#006875" : "",
-                  fontSize: activeLink === "/" ? "17px" : "",
-                }}
-              >
-                <a
-                  className={`nav-link dropdown-toggle`}
-                  href="/booking"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="false"
-                  role="button"
-                  onClick={() => handleDropdownToggle("/booking")}
-                  // aria-expanded="false"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+                    style={{
+                      color: activeLink === "/" ? "#006875" : "",
+                      fontSize: activeLink === "/" ? "17px" : "",
+                    }}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title">Booking Management</span>
-                </a>
-                <div className="dropdown-menu">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/booking" ? "active" : ""
-                        }`}
-                        style={{
-                          color: activeLink === "/booking" ? "#006875" : "",
-                        }}
-                        href="/booking"
-                        onClick={handleBookingClick}
-                        // style={{ color: "#006875" }}
+                    <a
+                      className={`nav-link dropdown-toggle`}
+                      href="/booking"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="false"
+                      role="button"
+                      onClick={() => handleDropdownToggle("/booking")}
+                      // aria-expanded="false"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
-                            fill="#006875"
-                            cancellation-booking
-                          />
-                        </svg>
-                        &nbsp; Booking{" "}
-                      </a>
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/refunds-request" ? "active" : ""
-                        }`}
-                        style={{
-                          color:
-                            activeLink === "/refunds-request" ? "#006875" : "",
-                        }}
-                        onClick={handleBookingCancellationClick}
-                        href="/refunds-request"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Refund Request
-                      </a>
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/refunds-history" ? "active" : ""
-                        }`}
-                        onClick={handleBookingHistoryClick}
-                        style={{
-                          color:
-                            activeLink === "/refunds-history" ? "#006875" : "",
-                        }}
-                        href="/refunds-history"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Refund History
-                      </a>
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title">Booking Management</span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          <a
+                            className={`dropdown-item ${
+                              activeLink === "/booking" ? "active" : ""
+                            }`}
+                            style={{
+                              color: activeLink === "/booking" ? "#006875" : "",
+                            }}
+                            href="/booking"
+                            onClick={handleBookingClick}
+                            // style={{ color: "#006875" }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                                fill="#006875"
+                                cancellation-booking
+                              />
+                            </svg>
+                            &nbsp; Booking{" "}
+                          </a>
+                          <a
+                            className={`dropdown-item ${
+                              activeLink === "/refunds-request" ? "active" : ""
+                            }`}
+                            style={{
+                              color:
+                                activeLink === "/refunds-request"
+                                  ? "#006875"
+                                  : "",
+                            }}
+                            onClick={handleBookingCancellationClick}
+                            href="/refunds-request"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                fill="#68727D"
+                              />
+                            </svg>
+                            &nbsp; Refund Request
+                          </a>
+                          <a
+                            className={`dropdown-item ${
+                              activeLink === "/refunds-history" ? "active" : ""
+                            }`}
+                            onClick={handleBookingHistoryClick}
+                            style={{
+                              color:
+                                activeLink === "/refunds-history"
+                                  ? "#006875"
+                                  : "",
+                            }}
+                            href="/refunds-history"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                fill="#68727D"
+                              />
+                            </svg>
+                            &nbsp; Refund History
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </li>
+                  </li>
+                )}
 
               {/* <li
                 className={`nav-item dropdown 
@@ -779,127 +806,151 @@ function SideBar() {
                   <span className="nav-link-title">&nbsp; Service</span>
                 </a>
               </li> */}
-              <li
-                className={`nav-item dropdown 
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.serviceManagement,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item dropdown 
                   ${openDropdown === "/booking" ? "active" : ""}
                 }`}
-                style={{
-                  color: activeLink === "/" ? "#006875" : "",
-                  fontSize: activeLink === "/" ? "17px" : "",
-                }}
-              >
-                <a
-                  className={`nav-link dropdown-toggle`}
-                  href="/booking"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="false"
-                  role="button"
-                  onClick={() => handleDropdownToggle("/booking")}
-                  // aria-expanded="false"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+                    style={{
+                      color: activeLink === "/" ? "#006875" : "",
+                      fontSize: activeLink === "/" ? "17px" : "",
+                    }}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title">Service Management</span>
-                </a>
-                <div className="dropdown-menu">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/Service" ? "active" : ""
-                        }`}
-                        style={{
-                          color: activeLink === "/Service" ? "#006875" : "",
-                        }}
-                        href="/Service"
-                        // onClick={handleBookingClick}
-                        // style={{ color: "#006875" }}
+                    <a
+                      className={`nav-link dropdown-toggle`}
+                      href="/booking"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="false"
+                      role="button"
+                      onClick={() => handleDropdownToggle("/booking")}
+                      // aria-expanded="false"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
                       >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
-                            fill="#006875"
-                            cancellation-booking
-                          />
-                        </svg>
-                        &nbsp; Service{" "}
-                      </a>
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/availability" ? "active" : ""
-                        }`}
-                        style={{
-                          color:
-                            activeLink === "/availability" ? "#006875" : "",
-                        }}
-                        // onClick={handleBookingCancellationClick}
-                        href="/availability"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Availablity
-                      </a>
-                      <a
-                        className={`dropdown-item ${
-                          activeLink === "/calendar" ? "active" : ""
-                        }`}
-                        // onClick={handleBookingHistoryClick}
-                        style={{
-                          color: activeLink === "/calendar" ? "#006875" : "",
-                        }}
-                        href="/calendar"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Calendar
-                      </a>
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title">Service Management</span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          <a
+                            className={`dropdown-item ${
+                              activeLink === "/Service" ? "active" : ""
+                            }`}
+                            style={{
+                              color: activeLink === "/Service" ? "#006875" : "",
+                            }}
+                            href="/Service"
+                            // onClick={handleBookingClick}
+                            // style={{ color: "#006875" }}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                                fill="#006875"
+                                cancellation-booking
+                              />
+                            </svg>
+                            &nbsp; Service{" "}
+                          </a>
+                          {userPermissionList &&
+                            getMenuPermissions(
+                              userPermissionList,
+                              menuIdConstant.serviceManagement,
+                              permissionCategory.availability
+                            ) && (
+                              <a
+                                className={`dropdown-item ${
+                                  activeLink === "/availability" ? "active" : ""
+                                }`}
+                                style={{
+                                  color:
+                                    activeLink === "/availability"
+                                      ? "#006875"
+                                      : "",
+                                }}
+                                // onClick={handleBookingCancellationClick}
+                                href="/availability"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="22"
+                                  height="16"
+                                  viewBox="0 0 22 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                    fill="#68727D"
+                                  />
+                                </svg>
+                                &nbsp; Availablity
+                              </a>
+                            )}
+                          {userPermissionList &&
+                            getMenuPermissions(
+                              userPermissionList,
+                              menuIdConstant.serviceManagement,
+                              permissionCategory.calendar
+                            ) && (
+                              <a
+                                className={`dropdown-item ${
+                                  activeLink === "/calendar" ? "active" : ""
+                                }`}
+                                // onClick={handleBookingHistoryClick}
+                                style={{
+                                  color:
+                                    activeLink === "/calendar" ? "#006875" : "",
+                                }}
+                                href="/calendar"
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="22"
+                                  height="16"
+                                  viewBox="0 0 22 16"
+                                  fill="none"
+                                >
+                                  <path
+                                    d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                    fill="#68727D"
+                                  />
+                                </svg>
+                                &nbsp; Calendar
+                              </a>
+                            )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </li>
+                  </li>
+                )}
               <li
                 className={`nav-item ${
                   activeLink === "/payments" ? "active" : ""
@@ -936,44 +987,53 @@ function SideBar() {
                 </a>
               </li>
 
-              <li
-                className={`nav-item  ${
-                  activeLink === "/discounts-offers" ? "active" : ""
-                }`}
-              >
-                <a
-                  className="nav-link"
-                  href="/discounts-offers"
-                  style={{
-                    color: activeLink === "/discounts-offers" ? "#006875" : "",
-                    fontSize: activeLink === "/discounts-offers" ? "17px" : "",
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.offer,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item  ${
+                      activeLink === "/discounts-offers" ? "active" : ""
+                    }`}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title">
-                    {" "}
-                    &nbsp; Discounts / Offers{" "}
-                  </span>
-                </a>
-              </li>
+                    <a
+                      className="nav-link"
+                      href="/discounts-offers"
+                      style={{
+                        color:
+                          activeLink === "/discounts-offers" ? "#006875" : "",
+                        fontSize:
+                          activeLink === "/discounts-offers" ? "17px" : "",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title">
+                        {" "}
+                        &nbsp; Discounts / Offers{" "}
+                      </span>
+                    </a>
+                  </li>
+                )}
               <li
                 className={`nav-item  ${
                   activeLink === "/analytics" ? "active" : ""
@@ -1009,166 +1069,176 @@ function SideBar() {
                   <span className="nav-link-title"> &nbsp; Analytics </span>
                 </a>
               </li>
-              <li
-                className={`nav-item dropdown 
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.users,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item dropdown 
                 ${openDropdown === 1 ? "active" : ""}
               }`}
-              >
-                <a
-                  style={{
-                    color: activeLink === "/" ? "#006875" : "",
-                    fontSize: activeLink === "/" ? "17px" : "",
-                  }}
-                  className="nav-link dropdown-toggle"
-                  href="/"
-                  data-bs-toggle="dropdown"
-                  data-bs-auto-close="false"
-                  role="button"
-                  aria-expanded="false"
-                  onClick={() => handleDropdownToggle(3)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
+                    <a
+                      style={{
+                        color: activeLink === "/" ? "#006875" : "",
+                        fontSize: activeLink === "/" ? "17px" : "",
+                      }}
+                      className="nav-link dropdown-toggle"
+                      href="/"
+                      data-bs-toggle="dropdown"
+                      data-bs-auto-close="false"
+                      role="button"
+                      aria-expanded="false"
+                      onClick={() => handleDropdownToggle(3)}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
 
-                  <span className="nav-link-title"> &nbsp; Users </span>
-                </a>
-                <div className="dropdown-menu">
-                  <div className="dropdown-menu-columns">
-                    <div className="dropdown-menu-column">
-                      <a
-                        style={{
-                          color: activeLink === "/customers" ? "#006875" : "",
-                        }}
-                        className="dropdown-item"
-                        href="/customers"
-                        onClick={handleCustomerClick}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
-                            fill="#006875"
-                          />
-                        </svg>
-                        &nbsp; Customers
-                      </a>
-                      <a
-                        style={{
-                          color: activeLink === "/guest-user" ? "#006875" : "",
-                        }}
-                        className="dropdown-item"
-                        href="/guest-user"
-                        onClick={handleGuestUserClick}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
-                            fill="#006875"
-                          />
-                        </svg>
-                        &nbsp; Guest User
-                      </a>
-                      <a
-                        style={{
-                          color: activeLink === "/user-vendor" ? "#006875" : "",
-                        }}
-                        className="dropdown-item"
-                        href="/user-vendor"
-                        onClick={handleVendorClick}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Vendors
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        href="/sales-representatives"
-                        style={{
-                          color:
-                            activeLink === "/sales-representatives"
-                              ? "#006875"
-                              : "",
-                        }}
-                        onClick={handleSlesRepresentativeClick}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Sales Representatives
-                      </a>
-                      <a
-                        className="dropdown-item"
-                        href="/admin"
-                        style={{
-                          color: activeLink === "/admin" ? "#006875" : "",
-                        }}
-                        onClick={handleAdminClick}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="22"
-                          height="16"
-                          viewBox="0 0 22 16"
-                          fill="none"
-                        >
-                          <path
-                            d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
-                            fill="#68727D"
-                          />
-                        </svg>
-                        &nbsp; Admins
-                      </a>
+                      <span className="nav-link-title"> &nbsp; Users </span>
+                    </a>
+                    <div className="dropdown-menu">
+                      <div className="dropdown-menu-columns">
+                        <div className="dropdown-menu-column">
+                          <a
+                            style={{
+                              color:
+                                activeLink === "/customers" ? "#006875" : "",
+                            }}
+                            className="dropdown-item"
+                            href="/customers"
+                            onClick={handleCustomerClick}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                                fill="#006875"
+                              />
+                            </svg>
+                            &nbsp; Customers
+                          </a>
+                          <a
+                            style={{
+                              color:
+                                activeLink === "/guest-user" ? "#006875" : "",
+                            }}
+                            className="dropdown-item"
+                            href="/guest-user"
+                            onClick={handleGuestUserClick}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M18.8438 9.09375C19.4478 9.09375 19.9375 8.60406 19.9375 8C19.9375 7.39594 19.4478 6.90625 18.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H18.8438Z"
+                                fill="#006875"
+                              />
+                            </svg>
+                            &nbsp; Guest User
+                          </a>
+                          <a
+                            style={{
+                              color:
+                                activeLink === "/user-vendor" ? "#006875" : "",
+                            }}
+                            className="dropdown-item"
+                            href="/user-vendor"
+                            onClick={handleVendorClick}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                fill="#68727D"
+                              />
+                            </svg>
+                            &nbsp; Vendors
+                          </a>
+                          <a
+                            className="dropdown-item"
+                            href="/sales-representatives"
+                            style={{
+                              color:
+                                activeLink === "/sales-representatives"
+                                  ? "#006875"
+                                  : "",
+                            }}
+                            onClick={handleSlesRepresentativeClick}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                fill="#68727D"
+                              />
+                            </svg>
+                            &nbsp; Sales Representatives
+                          </a>
+                          <a
+                            className="dropdown-item"
+                            href="/admin"
+                            style={{
+                              color: activeLink === "/admin" ? "#006875" : "",
+                            }}
+                            onClick={handleAdminClick}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="22"
+                              height="16"
+                              viewBox="0 0 22 16"
+                              fill="none"
+                            >
+                              <path
+                                d="M11.8438 9.09375C12.4478 9.09375 12.9375 8.60406 12.9375 8C12.9375 7.39594 12.4478 6.90625 11.8438 6.90625H3.09375C2.48969 6.90625 2 7.39594 2 8C2 8.60406 2.48969 9.09375 3.09375 9.09375H11.8438Z"
+                                fill="#68727D"
+                              />
+                            </svg>
+                            &nbsp; Admins
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </li>
+                  </li>
+                )}
 
               {/* <li
                 className={`nav-item  ${
@@ -1208,42 +1278,49 @@ function SideBar() {
                   </span>
                 </a>
               </li> */}
-              <li
-                className={`nav-item  ${
-                  activeLink === "/review" ? "active" : ""
-                }`}
-              >
-                <a
-                  className="nav-link"
-                  href="/review"
-                  style={{
-                    color: activeLink === "/review" ? "#006875" : "",
-                    fontSize: activeLink === "/review" ? "17px" : "",
-                  }}
-                  onClick={handleReviewClick}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.review,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item  ${
+                      activeLink === "/review" ? "active" : ""
+                    }`}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title"> &nbsp; Reviews </span>
-                </a>
-              </li>
+                    <a
+                      className="nav-link"
+                      href="/review"
+                      style={{
+                        color: activeLink === "/review" ? "#006875" : "",
+                        fontSize: activeLink === "/review" ? "17px" : "",
+                      }}
+                      onClick={handleReviewClick}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title"> &nbsp; Reviews </span>
+                    </a>
+                  </li>
+                )}
               <li
                 className={`nav-item ${
                   activeLink === "/add-on-services" ? "active" : ""
@@ -1283,47 +1360,56 @@ function SideBar() {
                   </span>
                 </a>
               </li>
-              <li
-                className={`nav-item ${
-                  activeLink === "/events-and-packages" ? "active" : ""
-                }`}
-              >
-                <a
-                  className="nav-link"
-                  href="/Events"
-                  onClick={handleEventsAndPackage}
-                  style={{
-                    color:
-                      activeLink === "/events-and-packages" ? "#006875" : "",
-                    fontSize:
-                      activeLink === "/events-and-packages" ? "17px" : "",
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="22"
-                    height="22"
-                    viewBox="0 0 22 22"
-                    fill="none"
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.eventsPackages,
+                  permissionCategory.view
+                ) && (
+                  <li
+                    className={`nav-item ${
+                      activeLink === "/events-and-packages" ? "active" : ""
+                    }`}
                   >
-                    <path
-                      d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                    />
-                    <path
-                      d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
-                      stroke="#68727D"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  <span className="nav-link-title">
-                    {" "}
-                    &nbsp;Events and Packages{" "}
-                  </span>
-                </a>
-              </li>
+                    <a
+                      className="nav-link"
+                      href="/Events"
+                      onClick={handleEventsAndPackage}
+                      style={{
+                        color:
+                          activeLink === "/events-and-packages"
+                            ? "#006875"
+                            : "",
+                        fontSize:
+                          activeLink === "/events-and-packages" ? "17px" : "",
+                      }}
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="22"
+                        height="22"
+                        viewBox="0 0 22 22"
+                        fill="none"
+                      >
+                        <path
+                          d="M1.8335 11.0007C1.8335 6.67944 1.8335 4.51884 3.17592 3.17641C4.51835 1.83398 6.67895 1.83398 11.0002 1.83398C15.3214 1.83398 17.482 1.83398 18.8244 3.17641C20.1668 4.51884 20.1668 6.67944 20.1668 11.0007C20.1668 15.3219 20.1668 17.4825 18.8244 18.8249C17.482 20.1673 15.3214 20.1673 11.0002 20.1673C6.67895 20.1673 4.51835 20.1673 3.17592 18.8249C1.8335 17.4825 1.8335 15.3219 1.8335 11.0007Z"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                        />
+                        <path
+                          d="M6.4165 12.8327L8.06365 10.8561C8.71636 10.0729 9.04272 9.68123 9.47206 9.68123C9.9014 9.68123 10.2278 10.0729 10.8805 10.8561L11.1192 11.1426C11.7719 11.9258 12.0983 12.3175 12.5276 12.3175C12.957 12.3175 13.2833 11.9258 13.936 11.1426L15.5832 9.16602"
+                          stroke="#68727D"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                      </svg>
+                      <span className="nav-link-title">
+                        {" "}
+                        &nbsp;Events and Packages{" "}
+                      </span>
+                    </a>
+                  </li>
+                )}
               {/* </div> */}
             </ul>
           </div>

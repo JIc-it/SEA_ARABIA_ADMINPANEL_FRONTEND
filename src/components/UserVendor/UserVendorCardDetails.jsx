@@ -2,13 +2,17 @@ import { Button } from "@mui/material";
 import customerImg from "../../assets/images/customerimg.png";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Avatars from "../../assets/images/Avatar.png";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import AddSiteVisitModal from "../Vendor_tabs/SiteVisit/AddSiteVisitModal";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import {
+  formatDate,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../../helpers";
 import { getVendorListById } from "../../services/leadMangement";
 import { getServiceListing } from "../../services/service";
 import {} from "../../services/CustomerHandle";
@@ -21,8 +25,16 @@ import NegotationsList from "./UserVendorTabs/Negotiation/NegotationsList";
 import MiscellaneousList from "./UserVendorTabs/Miscellaneous/MiscellaneousList";
 import { toast } from "react-toastify";
 import CircularProgress from "@mui/material/CircularProgress";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
+import { MainPageContext } from "../../Context/MainPageContext";
+import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
 
 function UserVendorCardDetails({ venderDetails }) {
+  const { userPermissionList } = useContext(MainPageContext);
   const navigate = useNavigate();
   const theme = useTheme();
   const [listPageUrl, setListPageUrl] = useState({
@@ -32,7 +44,6 @@ function UserVendorCardDetails({ venderDetails }) {
 
   const vendorId = useParams()?.id;
 
-  console.log("v-id==", vendorId);
   const customerId = useParams()?.customerId;
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Services");
@@ -102,6 +113,32 @@ function UserVendorCardDetails({ venderDetails }) {
           toast.error(error.response.data);
         });
   };
+
+  const CreateServiceWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.create,
+    menuIdConstant.serviceManagement,
+    () => navigate("/service-add/" + venderDetails?.company_company_user?.id),
+    "btn  mt-2 px-4 py-2",
+    "  Add Service ",
+    { backgroundColor: "#187AF7", color: "white" },
+    <svg
+      width={15}
+      height={15}
+      viewBox="0 0 20 20"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M10 3L10 17"
+        stroke="white"
+        strokeWidth={2}
+        strokeLinecap="round"
+      />
+      <path d="M3 10H17" stroke="white" strokeWidth={2} strokeLinecap="round" />
+    </svg>
+  );
+
   return (
     <div
       className={
@@ -276,28 +313,39 @@ function UserVendorCardDetails({ venderDetails }) {
               </div>
             </div>
             <div style={{ display: "flex", padding: "10px 0" }}>
-              <a
-                className="mail_vendor_button btn btn-outline mx-1"
-                style={{ backgroundColor: "#187AF7", color: "white" }}
-                onClick={handleBookingButtonClick}
-              >
-                Bookings &nbsp;
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.booking,
+                  permissionCategory.view
+                ) && (
+                  <a
+                    className="mail_vendor_button btn btn-outline mx-1"
+                    style={{ backgroundColor: "#187AF7", color: "white" }}
+                    onClick={() => {
+                      navigate(`/booking`);
+                      // navigate(`/booking-view/1234`);
+                    }}
+                  >
+                    Bookings &nbsp;
+                    <svg
+                      width={20}
+                      height={20}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </a>
+                )}
+
               <a
                 className="mail_vendor_button btn btn-outline mx-1"
                 onClick={() => {
@@ -497,37 +545,8 @@ function UserVendorCardDetails({ venderDetails }) {
 
             {active === "Services" && (
               <>
-                <button
-                  onClick={() =>
-                    navigate(
-                      "/service-add/" + venderDetails?.company_company_user?.id
-                    )
-                  }
-                  className="btn  mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Add Service &nbsp;
-                  <svg
-                    width={15}
-                    height={15}
-                    viewBox="0 0 20 20"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M10 3L10 17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M3 10H17"
-                      stroke="white"
-                      strokeWidth={2}
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                </button>
+                <CreateServiceWithPermission />
+
                 {!isloadingservice && serviceList.length > 0 && (
                   <div
                     style={{ borderRadius: "5px" }}
@@ -541,6 +560,7 @@ function UserVendorCardDetails({ venderDetails }) {
                             <th>Category</th>
                             <th>Capacity</th>
                             <th>Location</th>
+                            <th>Status</th>
                             <th>Action</th>
                           </tr>
                         </thead>
@@ -564,6 +584,17 @@ function UserVendorCardDetails({ venderDetails }) {
                                 <td className="text-dark">
                                   {data?.pickup_point_or_location}
                                 </td>
+                                <td>
+                              <span
+                                className={`text-secondary ${
+                                  data.is_active
+                                    ? "active-button"
+                                    : "inActive-button "
+                                }`}
+                              >
+                                {data.is_active ? "Active" : "Inactive"}
+                              </span>
+                            </td>
                                 <td
                                   style={{
                                     display: "flex",

@@ -16,11 +16,8 @@ import { passwordRegex } from "../../../helpers";
 function AdminPassword({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-
   const [isRefetch, setIsRefetch] = useState();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
 
   useEffect(() => {
@@ -87,7 +84,6 @@ function AdminPassword({ show, close }) {
       }
     },
   });
-  // console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({

@@ -2,11 +2,13 @@ import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
+
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {  createSalesRep } from "../../../services/GuestHandle";
+import { createSalesRep } from "../../../services/GuestHandle";
+
 import { passwordRegex } from "../../../helpers";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
@@ -14,13 +16,8 @@ import { AppContext } from "../../../Context/AppContext";
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
-  console.log("context in sales", locationContext);
-
   const [isRefetch, setIsRefetch] = useState();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const [customerDetails, setCustomerDetails] = useState([]);
-  const [location, setLocation] = useState([]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -55,6 +52,7 @@ function CreateSalesRep({ show, close }) {
       code: Yup.string().required("Location code is required"),
     }),
   });
+
   const formik = useFormik({
     initialValues: {
       first_name: "",
@@ -105,9 +103,7 @@ function CreateSalesRep({ show, close }) {
       }
     },
   });
- 
 
-  console.log("sales formik data", formik);
   return (
     <Offcanvas
       show={show}
@@ -375,303 +371,7 @@ function CreateSalesRep({ show, close }) {
             ) : null}
           </div>
         </div>
-        {/* table */}
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Sections</th>
-              <th scope="col">Perm 1</th>
-              <th scope="col">Perm 2</th>
-              <th scope="col">Perm 3</th>
-              <th scope="col">Perm 4</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Section 1</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  {/* <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/> */}
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 2</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 3</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 4</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 5</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 6</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault"
-                  />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
+
         <div
           style={{
             display: "flex",

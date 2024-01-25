@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-
 import { getCustomerlist } from "../../../services/CustomerHandle";
 import AdminDetails from "./AdminDetails";
 import { getAdminListById } from "../../../services/GuestHandle";
@@ -10,10 +9,10 @@ function AdminView() {
   const adminId = useParams()?.adminId;
   const [adminData, setAdminData] = useState();
   const [adminDetails, setAdminDetails] = useState();
+
   useEffect(() => {
     getCustomerlist()
       .then((data) => {
-        // console.log("admin==-list", data.results);
         setAdminData(data.results);
       })
       .catch((error) => {
@@ -31,6 +30,7 @@ function AdminView() {
         console.error("Error fetching customer data:", error);
       });
   }, [adminId]);
+  
   return (
     <>
       <div className="page">

@@ -4,25 +4,32 @@ import { Box } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { getCategoryList, getsubcategorylist } from "../../services/service"
+import { getCategoryList, getsubcategorylist,getServiceListing } from "../../services/service"
 import { getCompanyListing } from "../../services/offers"
+import { Visibility } from '@mui/icons-material';
 
-export default function FilterPopup({ open, handleClose, setFilters,filters }) {
+export default function FilterPopup({ open, handleClose,setIsLoading, setFilters,filters,setListPageUrl,setServiceList }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([]);
     const [subcategorylist, setSubcategoryList] = useState([])
-    const [vendorlist, setVendorList] = useState([])
+    const [vendorlist, setVendorList] = useState([]);
+    const [search,setSearch]=useState({
+        category:"",
+        sub_category:"",
+        vendor:""
+    })
     const style = {
         position: "absolute",
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        maxWidth: "100%",
+        width: "65%",
         height: "95vh",
         bgcolor: "background.paper",
         // border: '2px solid #000',
         boxShadow: 24,
-        p: 4,
+        p: 3,
+        overflowY:"scroll"
     };
     useEffect(() => {
         getCategoryList()
@@ -144,6 +151,42 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
        }
       };
       
+
+const handleApplyFilter=async()=>{
+    setIsLoading(true)
+    const categorymapped=filters.category.map((data)=>data.id)
+    const categorySplitted=categorymapped.join(",");
+
+    const subcategorymapped=filters.sub_category.map((data)=>data.id)
+    const subcategorySplitted=subcategorymapped.join(",");
+
+    const vendormapped=filters.vendor.map((data)=>data.id)
+    const vendorSplitted=vendormapped.join(",");
+
+    const getFiltereddata=await getServiceListing(null,null,categorySplitted,subcategorySplitted,vendorSplitted,filters.status);
+
+    if(getFiltereddata){
+        setIsLoading(false)
+        setServiceList(getFiltereddata.results);
+        setListPageUrl({next:getFiltereddata.next,previous:getFiltereddata.previous});
+        handleClose()
+    }
+
+}
+
+const handleClearFilter=async()=>{
+    setIsLoading(true)
+    const getFiltereddata=await getServiceListing()
+    setFilters({category:[],sub_category:[],vendor:[],status:true});
+
+    if(getFiltereddata){
+        setIsLoading(false)
+        setServiceList(getFiltereddata.results);
+        setListPageUrl({next:getFiltereddata.next,previous:getFiltereddata.previous});
+        handleClose()
+    }
+}
+
     return (
         <div>
             <Modal
@@ -159,14 +202,14 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                     <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={handleClose}
+                        onClick={()=>{handleClose();setFilters({category:[],sub_category:[],vendor:[],status:true});handleClearFilter()}}
                         aria-label="close"
                         sx={{ position: 'absolute', top: 8, right: 14 }}
                     >
                         <CloseIcon />
                     </IconButton>
                     <div class="frame-427319784 mt-3">
-                        {<div class="components-selection-item">
+                        {filters.category.length > 0 && <div class="components-selection-item">
                             <div class="frame-427319782">
                                 <div class="frame-427319783">
                                     <div class="category">Category</div>
@@ -207,8 +250,8 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     <div class="vendor">Sub Category</div>
                                     <div class="div">:</div>
                                 </div>
-                                <div style={{width:"50vw", display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
-                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
+                                <div style={{width:"50vw", display: "flex",flexWrap:filters.sub_category.length>5?"wrap":""}}>
+                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.sub_category.length>5?"wrap":""}}>
                                     {filters.sub_category.map((data)=>
                                     <div key={data.id} className='mx-1'>
                                         <span>{data.name}</span>
@@ -241,8 +284,8 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     <div class="vendor">Vendor</div>
                                     <div class="div">:</div>
                                 </div>
-                                <div style={{width:"50vw", display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
-                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
+                                <div style={{width:"50vw", display: "flex",flexWrap:filters.vendor.length>5?"wrap":""}}>
+                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.vendor.length>5?"wrap":""}}>
                                     {filters.vendor.map((data)=>
                                     <div key={data.id} className='mx-1'>
                                         <span>{data.name}</span>
@@ -360,6 +403,9 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     aria-selected="false"
                                 >
                                     <span>Service Status</span>
+                                    <span className='py-1' style={{color:"white",fontSize:"12px",backgroundColor:active === "Service-Status" ?"#2176FF":"gray",width:"22px",height:"22px",borderRadius:"33px"}}>
+                                        {filters.status?"1":"1"}
+                                    </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Service-Status" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
@@ -384,11 +430,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,category:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:categorylist.length>14? "50vh":"",overflowY:categorylist.length>14?"scroll":""}}>
-                                {categorylist.map((data) =>
+                                {categorylist.filter((dat)=>dat["name"].toLowerCase().includes(search.category.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -418,11 +465,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,vendor:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:vendorlist.length>14? "50vh":"",overflowY:vendorlist.length>14?"scroll":""}}>
-                                {vendorlist.map((data) =>
+                                {vendorlist.filter((dat)=>dat["name"].toLowerCase().includes(search?.vendor.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -452,11 +500,12 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e)=>setSearch((prev)=>{return {...prev,sub_category:e.target.value}})}
                                     style={{ width: 320 }}
                                 />
                                 <br />
                                 <div style={{height:subcategorylist.length>14? "50vh":"",overflowY:subcategorylist.length>14?"scroll":""}}>
-                                {subcategorylist.map((data) =>
+                                {subcategorylist.filter((dat)=>dat["name"].toLowerCase().includes(search.sub_category.toLowerCase())).map((data) =>
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
@@ -482,13 +531,7 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                                 aria-labelledby="v-pills-messages-tab"
                             >
                                 <h4>Service Status</h4>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="search"
-                                    style={{ width: 320 }}
-                                />
-                                <br />
+                                
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"
@@ -517,9 +560,9 @@ export default function FilterPopup({ open, handleClose, setFilters,filters }) {
                     </div>
                     <div className='d-flex justify-content-end mt-3'>
                         <button type='reset' className='m-1 btn btn-small btn-white'
-                        onClick={()=>setFilters({category:[],sub_category:[],vendor:[],status:false})}
+                        onClick={handleClearFilter}
                         >Clear Filter</button>
-                        <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
+                        <button type='button' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }} onClick={handleApplyFilter}>Apply Filter</button>
                     </div>
                 </Box>
             </Modal>

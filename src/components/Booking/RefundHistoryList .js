@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import {  removeBaseUrlFromPath } from "../../helpers";
+import { formatDate, getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
@@ -10,6 +10,8 @@ import Modal from "@mui/material/Modal";
 import { getBookingList,getRefundHistoryCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
+import { menuIdConstant, permissionCategory } from "../Permissions/PermissionConstants";
+import { MainPageContext } from "../../Context/MainPageContext";
 import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
@@ -25,6 +27,7 @@ const style = {
 };
 
 const RefundHistoryList  = () => {
+  const { userPermissionList } = useContext(MainPageContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -229,7 +232,12 @@ const RefundHistoryList  = () => {
                   </div>
                 </div>
                 <div className="action_buttons col-4">
-                  <button
+              {  userPermissionList &&
+                    getMenuPermissions(
+                      userPermissionList,
+                      menuIdConstant.booking,
+                      permissionCategory.action
+                    ) &&  <button
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
                   >
@@ -257,7 +265,7 @@ const RefundHistoryList  = () => {
                         strokeLinejoin="round"
                       />
                     </svg>
-                  </button>
+                  </button>}
                   {/*<button
                     onClick={handleOpenOffcanvas}
                     className="btn btn-info vendor_button"

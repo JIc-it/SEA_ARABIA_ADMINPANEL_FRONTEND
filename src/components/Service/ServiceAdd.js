@@ -306,7 +306,7 @@ const ServiceAdd = () => {
                     }
                     setIsLoading(false);
                 } catch (err) {
-                    console.log(err);
+                    toast.error(err?.message);
                     setIsLoading(false);
                 }finally{
                     navigate(-1)
@@ -1009,7 +1009,7 @@ const ServiceAdd = () => {
                                 <div>
 
                                     {/* <div className="px-5"> */}
-                                    <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Critreion</p>
+                                    <p style={{ fontWeight: 550, fontSize: "14px", marginTop: "8px", }} className='ms-5'>Pricing Criterion</p>
                                     <div className={isMobileView ? "d-flex flex-column" : 'd-flex justify-content-center'}>
                                         <Paper
                                             onClick={() => updateFormValues(({ ...formik.values, is_destination: true, is_duration: false, is_day: false, is_time: false, is_date: false, purchase_limit_min: 0, purchase_limit_max: 0,service_price_service:[] }))}
@@ -1290,7 +1290,6 @@ const ServiceAdd = () => {
                                 <div className="row">
                                     {formik.values.service_image.map((data, i) => (
                                         <div className="col-6 mb-3" key={i}>
-                                            {/* {console.log(data)} */}
                                             <div style={{ position: "relative" }}
                                                 onMouseEnter={() => handleHoverEffectTrue(i)}
                                                 onMouseLeave={() => handleHoverEffectFalse()}

@@ -22,6 +22,7 @@ const [isLoading,setIsloading]=useState(false)
         console.error("Error fetching customer data:", error);
       });
   }, []);
+  
   return (
     <>
       <div className="page">

@@ -1,15 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
+
 import * as XLSX from "xlsx";
 import {
   customerExport,
   getCustomerSearch,
 } from "../../services/CustomerHandle";
-import { removeBaseUrlFromPath } from "../../helpers";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { toast } from "react-toastify";
 import { getListDataInPagination } from "../../services/commonServices";
+import { MainPageContext } from "../../Context/MainPageContext";
+import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
 
 export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
@@ -23,6 +31,7 @@ export default function CustomerListing() {
   });
 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
+  const { userPermissionList } = useContext(MainPageContext);
 
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
@@ -80,6 +89,7 @@ export default function CustomerListing() {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
   };
+
   const getCustomerListData = async () => {
     setIsLoading(true);
     getCustomerSearch()
@@ -102,6 +112,7 @@ export default function CustomerListing() {
         console.error("Error fetching  data:", error);
       });
   };
+
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -132,6 +143,31 @@ export default function CustomerListing() {
     const data = { search: search, status: selectedValue, role: "User" };
     getCustomerSearch(data).then((res) => setListDiscount(res?.results));
   }, [selectedValue, isRefetch, search]);
+
+  const AddCustomerWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.create,
+    menuIdConstant.users,
+    handleOpenOffcanvas,
+    "btn btn-info vendor_button",
+    "Add Customer",
+    { borderRadius: "6px" },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
+      <path
+        d="M10 3L10 17"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
 
   return (
     <div style={{ height: "100vh" }}>
@@ -188,63 +224,43 @@ export default function CustomerListing() {
           </div>
         </div>
         <div className="action_buttons col-4">
-          <button
-            className="btn btn-outline"
-            style={{ borderRadius: "6px" }}
-            onClick={handleExportCustomerData}
-          >
-            Export &nbsp;
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-              />
-              <path
-                d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                stroke="#252525"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
+          {userPermissionList &&
+            getMenuPermissions(
+              userPermissionList,
+              menuIdConstant.users,
+              permissionCategory.action
+            ) && (
+              <button
+                className="btn btn-outline"
+                style={{ borderRadius: "6px" }}
+                onClick={handleExportCustomerData}
+              >
+                Export &nbsp;
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  fill="none"
+                >
+                  <path
+                    d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                    stroke="#252525"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                    stroke="#252525"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            )}
           <CustomerCreate show={showOffcanvas} close={handleCloseOffcanvas} />
-          <button
-            onClick={handleOpenOffcanvas}
-            className="btn btn-info vendor_button"
-            style={{ borderRadius: "6px" }}
-            type="button"
-          >
-            Add Customer &nbsp;
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M10 3L10 17"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M3 10H17"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          <AddCustomerWithPermission />
         </div>
       </div>
       <div className="card mx-3">

@@ -1,12 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { permissions } from "./PermissionConstants";
-import { getUserPermissionData } from "../../services/userVendorsServices";
+import {
+  getUserPermissionData,
+  updateUserPermissionData,
+} from "../../services/userVendorsServices";
 import { useParams } from "react-router";
 import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
+import { toast } from "react-toastify";
+import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
 
 const AddPermissions = () => {
   const [allPermissions, setAllPermissions] = useState(false); // State to handle "Give All Permissions" checkbox
-  const [updatedPermissions, setUpdatedPermissions] = useState(permissions);
+  const [updatedPermissions, setUpdatedPermissions] = useState();
 
   const params = useParams();
   const userId = params?.id;
@@ -14,8 +18,20 @@ const AddPermissions = () => {
 
   useEffect(() => {
     getUserPermissionData(userId)
-      .then((data) => {})
-      .catch((error) => {});
+      .then((data) => {
+        data && setUpdatedPermissions(data.permission);
+        const areAllPermissionsTrue =
+          data.permission &&
+          data.permission.length > 0 &&
+          data.permission.every((elem) =>
+            elem.permissionCategory.every((item) => item.value)
+          );
+
+        setAllPermissions(areAllPermissionsTrue);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   }, [userId]);
 
   const handleAllPermissionsChange = () => {
@@ -48,31 +64,48 @@ const AddPermissions = () => {
   };
 
   const handleUpdatePermission = () => {
-    console.log(updatedPermissions, "UpdatePermission");
+    updateUserPermissionData(userId, updatedPermissions)
+      .then((data) => {
+        toast.success("Permission Updated Successfully.");
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
   };
 
-  const UpdateButton = ({ hasPermission }) => {
-    console.log(hasPermission);
-    return (
-      <>
-        {hasPermission && (
-          <button
-            className="btn btn-sm btn-info px-4 py-1"
-            onClick={handleUpdatePermission}
-          >
-            Update Permission
-          </button>
-        )}
-      </>
-    );
-  };
-
-  const UpdateButtonWithPermission = WithPermission(UpdateButton);
+  const UpdateUserButton = WithPermission(
+    CommonButtonForPermission,
+    "Edit",
+    "5",
+    handleUpdatePermission,
+    "btn btn-sm btn-info px-4 py-1",
+    "Update Permission"
+  );
 
   return (
     <div>
       <div className="page" style={{ minHeight: "100vh" }}>
         <div className="page-wrapper">
+          <div className="breadcrumbs mx-4 mt-4">
+            <p>Permissions</p>
+            <span>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M8.33301 5L12.7438 9.41074C13.0692 9.73618 13.0692 10.2638 12.7438 10.5893L8.33301 15"
+                  stroke="#68727D"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+              </svg>
+            </span>
+            <p>{userName}</p>
+          </div>
           <div className="page-body ">
             <div className="container-xl">
               <div className="row row-deck row-cards">
@@ -99,7 +132,7 @@ const AddPermissions = () => {
                         Give All Permissions
                       </div>
                       <div className="">
-                        <UpdateButtonWithPermission />
+                        <UpdateUserButton />
                       </div>
                     </div>
                     <div className="row">

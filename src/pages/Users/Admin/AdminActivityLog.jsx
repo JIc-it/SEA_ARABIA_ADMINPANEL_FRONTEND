@@ -20,7 +20,6 @@ const AdminActivityLog = () => {
     setIsLoading(true);
     getUserVendorActivityLog(adminId)
       .then((data) => {
-        // console.log("admin activity log", data);
         setActivityList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })

@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 import {
   UpdateSalesRepListById,
   getSalesRepListById,
@@ -15,7 +14,6 @@ import { passwordRegex } from "../../../helpers";
 
 function SalesPassword({ show, close }) {
   const theme = useTheme();
-
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +24,6 @@ function SalesPassword({ show, close }) {
     getSalesRepListById(salesRepId)
       .then((data) => {
         setSalesRepDetails(data);
-        // console.log(" sales  update list------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -92,7 +89,6 @@ function SalesPassword({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({

@@ -1,15 +1,24 @@
 import { Button } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAdminListById } from "../../../services/GuestHandle";
 import UpdateAdmin from "./UpdateAdmin";
 import AdminPassword from "./AdminPassword";
 import PasswordIcon from "../../../assets/images/PasswordIcon.png";
 import Pen from "../../../assets/images/Pen 2.png";
+import { getMenuPermissions } from "../../../helpers";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../../../components/Permissions/PermissionConstants";
+import { MainPageContext } from "../../../Context/MainPageContext";
+import WithPermission from "../../../components/HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../../../components/HigherOrderComponents/CommonButtonForPermission";
 
 function AdminDetails() {
+  const { userPermissionList } = useContext(MainPageContext);
   const theme = useTheme();
   const navigate = useNavigate();
 
@@ -19,13 +28,13 @@ function AdminDetails() {
   const [adminDetails, setAdminDetails] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
+
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
 
   const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
-  const [admin, setAdmin] = useState();
   const phoneNumber = "123456789";
   const handleCall = () => {
     const telUri = `tel:${phoneNumber}`;
@@ -49,8 +58,68 @@ function AdminDetails() {
       });
   }, [adminId]);
 
+  const EditSaleRepWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.edit,
+    menuIdConstant.users,
+    handleOpenOffcanvas,
+    "btn mt-2 px-4 py-2",
+    " Edit Details ",
+    { backgroundColor: "#187AF7", color: "white" },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="20"
+      viewBox="0 0 21 20"
+      fill="none"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M3.2085 18.3335C3.2085 17.9883 3.48832 17.7085 3.8335 17.7085H17.1668C17.512 17.7085 17.7918 17.9883 17.7918 18.3335C17.7918 18.6787 17.512 18.9585 17.1668 18.9585H3.8335C3.48832 18.9585 3.2085 18.6787 3.2085 18.3335Z"
+        fill="white"
+      />
+      <path
+        d="M9.31094 13.1832C9.52306 13.0178 9.71547 12.8254 10.1002 12.4406L15.0308 7.51005C14.3597 7.23075 13.5649 6.77197 12.8133 6.02029C12.0615 5.26849 11.6027 4.47356 11.3234 3.80244L6.39271 8.7331L6.39269 8.73313C6.00794 9.11788 5.81554 9.31027 5.65009 9.52239C5.45492 9.77263 5.28759 10.0434 5.15106 10.3299C5.03532 10.5727 4.94928 10.8308 4.7772 11.3471L3.8698 14.0693C3.78511 14.3233 3.85123 14.6034 4.04058 14.7927C4.22993 14.9821 4.51002 15.0482 4.76406 14.9635L7.48628 14.0561C8.00251 13.8841 8.26063 13.798 8.50348 13.6823C8.78996 13.5457 9.06071 13.3784 9.31094 13.1832Z"
+        fill="white"
+      />
+      <path
+        d="M16.399 6.14187C17.4228 5.11807 17.4228 3.45816 16.399 2.43436C15.3752 1.41055 13.7153 1.41055 12.6915 2.43436L12.1001 3.02571C12.1082 3.05017 12.1166 3.07496 12.1253 3.10007C12.3421 3.72483 12.751 4.54384 13.5204 5.31318C14.2897 6.08253 15.1087 6.49149 15.7335 6.70825C15.7585 6.71692 15.7832 6.72528 15.8075 6.73335L16.399 6.14187Z"
+        fill="white"
+      />
+    </svg>
+  );
+
+  const ResetPasswordWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.resetPassword,
+    menuIdConstant.users,
+    handleOpenOffcanvasPassword,
+    "btn mt-2 px-4 py-2",
+    "Reset Password",
+    { backgroundColor: "#187AF7", color: "white" },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
+      <path
+        d="M13.1253 1.6665C13.1253 1.32133 12.8455 1.0415 12.5003 1.0415C12.1551 1.0415 11.8753 1.32133 11.8753 1.6665V18.3332C11.8753 18.6784 12.1551 18.9582 12.5003 18.9582C12.8455 18.9582 13.1253 18.6784 13.1253 18.3332V16.6618C15.3219 16.6388 16.5454 16.5021 17.3573 15.6902C18.3337 14.7139 18.3337 13.1425 18.3337 9.99984C18.3337 6.85714 18.3337 5.28579 17.3573 4.30948C16.5454 3.49754 15.3219 3.36084 13.1253 3.33783V1.6665Z"
+        fill="white"
+      />
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M2.6433 15.6902C3.61961 16.6665 5.19096 16.6665 8.33366 16.6665H10.8337V9.99984V3.33317H8.33366C5.19096 3.33317 3.61961 3.33317 2.6433 4.30948C1.66699 5.28579 1.66699 6.85714 1.66699 9.99984C1.66699 13.1425 1.66699 14.7139 2.6433 15.6902ZM10.8337 9.99984C10.8337 9.5396 10.4606 9.1665 10.0003 9.1665C9.54009 9.1665 9.16699 9.5396 9.16699 9.99984C9.16699 10.4601 9.54009 10.8332 10.0003 10.8332C10.4606 10.8332 10.8337 10.4601 10.8337 9.99984ZM7.50033 9.99984C7.50033 10.4601 7.12723 10.8332 6.66699 10.8332C6.20676 10.8332 5.83366 10.4601 5.83366 9.99984C5.83366 9.5396 6.20676 9.1665 6.66699 9.1665C7.12723 9.1665 7.50033 9.5396 7.50033 9.99984Z"
+        fill="white"
+      />
+    </svg>
+  );
+
   return (
-    <div
+    <div                                 
       className={
         isMobileView ? "d-flex flex-column" : "d-flex justify-content-between"
       }
@@ -125,31 +194,38 @@ function AdminDetails() {
             </div>
 
             <div className="bottom_button">
-              <a
-                className="call_vendor_button btn "
-                onClick={() => {
-                  navigate(
-                    `/permissions/${adminDetails?.id}/${adminDetails?.first_name}`
-                  );
-                }}
-              >
-                Permissions &nbsp;
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
-                    stroke="white"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </a>
+              {userPermissionList &&
+                getMenuPermissions(
+                  userPermissionList,
+                  menuIdConstant.users,
+                  permissionCategory.action
+                ) && (
+                  <a
+                    className="call_vendor_button btn "
+                    onClick={() => {
+                      navigate(
+                        `/permissions/${adminDetails?.id}/${adminDetails?.first_name}`
+                      );
+                    }}
+                  >
+                    Permissions &nbsp;
+                    <svg
+                      width={20}
+                      height={20}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
+                        stroke="white"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </a>
+                )}
               <a
                 className="mail_vendor_button btn btn-outline"
                 onClick={() => {
@@ -275,39 +351,8 @@ function AdminDetails() {
                   show={showOffcanvas1}
                   close={handleCloseOffcanvasPassword}
                 />
-                <button
-                  onClick={handleOpenOffcanvas}
-                  className="btn mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Edit Details &nbsp;
-                  <img src={Pen} alt="" />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={15}
-                    height={15}
-                    viewBox="0 0 21 20"
-                    fill="none"
-                  >
-                    {/* ... (your SVG path) */}
-                  </svg>
-                </button>
-                <button
-                  onClick={handleOpenOffcanvasPassword}
-                  className="btn mt-2 px-4 py-2"
-                  style={{ backgroundColor: "#187AF7", color: "white" }}
-                >
-                  Reset Password &nbsp; <img src={PasswordIcon} alt="" />
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width={15}
-                    height={15}
-                    viewBox="0 0 21 20"
-                    fill="none"
-                  >
-                    {/* ... (your SVG path) */}
-                  </svg>
-                </button>
+                <EditSaleRepWithPermission />
+                <ResetPasswordWithPermission />
 
                 <div
                   style={{ backgroundColor: "#F8F8F8", borderRadius: "5px" }}

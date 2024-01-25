@@ -1,19 +1,31 @@
 import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import AddNewLead from "./Modal/AddNewLead";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   getVendorList,
   getVendorStatus,
 } from "../services/leadMangement";
-import { formatDate, removeBaseUrlFromPath } from "../helpers";
+import {
+  formatDate,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../helpers";
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
 
 import { API_BASE_URL } from "../services/authHandle";
+import CommonButtonForPermission from "./HigherOrderComponents/CommonButtonForPermission";
+import WithPermission from "./HigherOrderComponents/PermissionCheck/WithPermission";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "./Permissions/PermissionConstants";
+import { MainPageContext } from "../Context/MainPageContext";
 
 function Table() {
+  const { userPermissionList } = useContext(MainPageContext);
   const dispatch = useDispatch();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
@@ -89,6 +101,31 @@ function Table() {
         });
   };
 
+  const AddLeadWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.lead,
+    menuIdConstant.vendorManagent,
+    handleOpenOffcanvas,
+    "btn btn-info vendor_button",
+    "Vendor Leads",
+    { borderRadius: "6px" },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
+      <path
+        d="M10 3L10 17"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -146,63 +183,46 @@ function Table() {
           </div>
         </div>
         <div className="action_buttons col-6">
-          <button
-            onClick={handleOpenOffcanvas}
-            className="btn btn-info vendor_button"
-            style={{ borderRadius: "6px" }}
-            type="button"
-          >
-            Vendor Leads &nbsp;
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-            >
-              <path
-                d="M10 3L10 17"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M3 10H17"
-                stroke="white"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
-          <a
-            href={`${API_BASE_URL}account/vendor-list-export/`}
-            download="vendor_list.csv"
-          >
-            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-              Export &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
+          <AddLeadWithPermission />
+          {userPermissionList &&
+            getMenuPermissions(
+              userPermissionList,
+              menuIdConstant.vendorManagent,
+              permissionCategory.action
+            ) && (
+              <a
+                href={`${API_BASE_URL}account/vendor-list-export/`}
+                download="vendor_list.csv"
               >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </a>
+                <button
+                  className="btn btn-outline"
+                  style={{ borderRadius: "6px" }}
+                >
+                  Export &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </a>
+            )}
         </div>
       </div>
       <div className="card">
@@ -232,9 +252,16 @@ function Table() {
                 <th>
                   <span>Status</span>
                 </th>
-                <th>
-                  <span>Action</span>
-                </th>
+                {userPermissionList &&
+                  getMenuPermissions(
+                    userPermissionList,
+                    menuIdConstant.vendorManagent,
+                    permissionCategory.onboardOperation
+                  ) && (
+                    <th>
+                      <span>Action</span>
+                    </th>
+                  )}
               </tr>
             </thead>
             <tbody>
@@ -293,69 +320,76 @@ function Table() {
                                 "-"
                               )}
                             </td>
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                to={`/onboard/${item.id}/${item.company_id}`}
-                                onClick={() => {
-                                  if (item.status === "New Lead") {
-                                    dispatch(setCounter(0));
-                                  }
-                                  if (item.status === "Initial Contact") {
-                                    dispatch(setCounter(1));
-                                  }
-                                  if (item.status === "Site Visit") {
-                                    dispatch(setCounter(2));
-                                  }
-                                  if (item.status === "Proposal") {
-                                    dispatch(setCounter(3));
-                                  }
-                                  if (item.status === "Negotiation") {
-                                    dispatch(setCounter(4));
-                                  }
-                                  if (item.status === "MOU / Charter") {
-                                    dispatch(setCounter(5));
-                                  }
-                                  if (item.status === "Ready to Onboard") {
-                                    dispatch(setCounter(6));
-                                  }
-                                }}
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "5px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-
-                                  /* Shadow/XSM */
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                              >
-                                Onboard &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
+                            {userPermissionList &&
+                              getMenuPermissions(
+                                userPermissionList,
+                                menuIdConstant.vendorManagent,
+                                permissionCategory.onboardOperation
+                              ) && (
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "baseline",
+                                  }}
                                 >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
+                                  <Link
+                                    to={`/onboard/${item.id}/${item.company_id}`}
+                                    onClick={() => {
+                                      if (item.status === "New Lead") {
+                                        dispatch(setCounter(0));
+                                      }
+                                      if (item.status === "Initial Contact") {
+                                        dispatch(setCounter(1));
+                                      }
+                                      if (item.status === "Site Visit") {
+                                        dispatch(setCounter(2));
+                                      }
+                                      if (item.status === "Proposal") {
+                                        dispatch(setCounter(3));
+                                      }
+                                      if (item.status === "Negotiation") {
+                                        dispatch(setCounter(4));
+                                      }
+                                      if (item.status === "MOU / Charter") {
+                                        dispatch(setCounter(5));
+                                      }
+                                      if (item.status === "Ready to Onboard") {
+                                        dispatch(setCounter(6));
+                                      }
+                                    }}
+                                    className="btn btn-sm btn-info"
+                                    style={{
+                                      padding: "5px",
+                                      borderRadius: "4px",
+                                      borderRadius:
+                                        "var(--roundness-round-inside, 6px)",
+                                      background: "#187AF7",
+
+                                      /* Shadow/XSM */
+                                      boxSShadow:
+                                        "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                                    }}
+                                  >
+                                    Onboard &nbsp;
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4 12L12 4M12 4H6M12 4V10"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </Link>
+                                </td>
+                              )}
                           </tr>
                         );
                       })}

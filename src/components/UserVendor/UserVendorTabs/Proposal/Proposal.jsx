@@ -1,13 +1,26 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import AddProposalModal from "./AddProposalModal";
 import CircularProgress from "@mui/material/CircularProgress";
 import EditProposal from "./EditProposal";
 import ViewProposal from "./ViewProposal";
 import { getPropsal } from "../../../../services/leadMangement";
-import { convertedDateAndTime, removeBaseUrlFromPath } from "../../../../helpers";
+import {
+  convertedDateAndTime,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../../../../helpers";
 import { getListDataInPagination } from "../../../../services/commonServices";
+import { MainPageContext } from "../../../../Context/MainPageContext";
+import WithPermission from "../../../HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../../../HigherOrderComponents/CommonButtonForPermission";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../../../Permissions/PermissionConstants";
 
 function Proposal({ count, companyID }) {
+  const { userPermissionList } = useContext(MainPageContext);
+
   const [proposalList, setProposalList] = useState([]);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
@@ -73,6 +86,43 @@ function Proposal({ count, companyID }) {
         });
   };
 
+  const AddProposalWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.onboardOperation,
+    menuIdConstant.vendorManagent,
+    handleOpenOffcanvas,
+    "btn",
+    "Add Proposal",
+    {
+      backgroundColor: "#187AF7",
+      color: "white",
+      fontWeight: "700",
+      fontSize: "16px",
+      borderRadius: "6px",
+      width: "215px",
+    },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="21"
+      height="20"
+      viewBox="0 0 21 20"
+      fill="none"
+    >
+      <path
+        d="M10.5 3L10.5 17"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+      <path
+        d="M3.5 10H17.5"
+        stroke="white"
+        stroke-width="2"
+        stroke-linecap="round"
+      />
+    </svg>
+  );
+
   return (
     <div className="tab-content site">
       <div className="tab-pane active show" id="tabs-home-7">
@@ -87,40 +137,8 @@ function Proposal({ count, companyID }) {
                 companyID={companyID}
               />
             )}
-            <button
-              onClick={handleOpenOffcanvas}
-              className="btn"
-              style={{
-                backgroundColor: "#187AF7",
-                color: "white",
-                fontWeight: "700",
-                fontSize: "16px",
-                borderRadius: "6px",
-                width: "215px",
-              }}
-            >
-              Add Proposal &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="21"
-                height="20"
-                viewBox="0 0 21 20"
-                fill="none"
-              >
-                <path
-                  d="M10.5 3L10.5 17"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-                <path
-                  d="M3.5 10H17.5"
-                  stroke="white"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                />
-              </svg>
-            </button>
+            <AddProposalWithPermission />
+          
           </div>
         </div>
         <div className="table-responsive">
@@ -183,7 +201,12 @@ function Proposal({ count, companyID }) {
                                 />
                               </svg>
                             </div>
-                            <div
+                          { userPermissionList &&
+                              getMenuPermissions(
+                                userPermissionList,
+                                menuIdConstant.vendorManagent,
+                                permissionCategory.onboardOperation
+                              ) && <div
                               className="edit-icon cursor-pointer"
                               onClick={() => handleEditProposal(item)}
                             >
@@ -215,7 +238,7 @@ function Proposal({ count, companyID }) {
                                   stroke-width="1.5"
                                 />
                               </svg>
-                            </div>
+                            </div>}
                           </td>
                         </tr>
                       );

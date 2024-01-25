@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -9,8 +9,15 @@ import { getBooking, updateCancellation } from "../../services/booking";
 import { CircularProgress } from "@mui/material";
 import RefundModal from "./RefundModal";
 import CancellationModal from "./CancellationModal";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
+import { getMenuPermissions } from "../../helpers";
+import { MainPageContext } from "../../Context/MainPageContext";
 
 export default function RefundRequestView() {
+  const { userPermissionList } = useContext(MainPageContext);
   const params = useParams();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
@@ -38,8 +45,6 @@ export default function RefundRequestView() {
         console.error("Error fetching  data:", error);
       });
   }, [params.id]);
-
-  console.log(booking, "one");
 
   const statusCheck = () => {
     if (booking?.status === "Opened") {
@@ -302,6 +307,8 @@ export default function RefundRequestView() {
                             ? "call_vendor_button btn my-2"
                             : "call_vendor_button btn me-2"
                         }
+                        onClick={() => 
+                          window.location.href = `tel:+91${booking?.service?.vendor_contact_number}`}
                       >
                         Call Vendor &nbsp;
                         <svg
@@ -650,34 +657,42 @@ export default function RefundRequestView() {
                     <p style={{ fontWeight: "600" }} className="p-3">
                       Payment Details
                     </p>
-                    <button
-                      className="btn btn-sm btn-info"
-                      style={{
-                        padding: "7px 10px 5px 10px",
-                        borderRadius: "4px",
-                        borderRadius: "var(--roundness-round-inside, 6px)",
-                        background: "#187AF7",
-                        boxSShadow: "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                      }}
-                      onClick={() => setOpen(true)}
-                    >
-                      Initiate Refund &nbsp;
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                      >
-                        <path
-                          d="M4 12L12 4M12 4H6M12 4V10"
-                          stroke="white"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </button>
+                    {userPermissionList &&
+                      getMenuPermissions(
+                        userPermissionList,
+                        menuIdConstant.booking,
+                        permissionCategory.refund
+                      ) && (
+                        <button
+                          className="btn btn-sm btn-info"
+                          style={{
+                            padding: "7px 10px 5px 10px",
+                            borderRadius: "4px",
+                            borderRadius: "var(--roundness-round-inside, 6px)",
+                            background: "#187AF7",
+                            boxSShadow:
+                              "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                          }}
+                          onClick={() => setOpen(true)}
+                        >
+                          Initiate Refund &nbsp;
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 16 16"
+                            fill="none"
+                          >
+                            <path
+                              d="M4 12L12 4M12 4H6M12 4V10"
+                              stroke="white"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </button>
+                      )}
                   </div>
                   <div
                     className="p-3 m-2 rounded"
