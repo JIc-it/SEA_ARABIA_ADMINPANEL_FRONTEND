@@ -1,11 +1,15 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
 import Table from "../LeadManagementTable";
 import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import {
+  formatDate,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../../helpers";
 import {
   Link,
   Navigate,
@@ -28,6 +32,11 @@ import {
   getBookingData,
 } from "../../services/CustomerHandle";
 import { API_BASE_URL } from "../../services/authHandle";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
+import { MainPageContext } from "../../Context/MainPageContext";
 
 const style = {
   position: "absolute",
@@ -42,6 +51,7 @@ const style = {
 };
 
 const BookinList = () => {
+  const { userPermissionList } = useContext(MainPageContext);
   const customerId = useParams()?.id;
 
   const location = useLocation();
@@ -348,38 +358,45 @@ const BookinList = () => {
                   </div>
                 </div>
                 <div className="action_buttons col-4">
-                  <button
-                    className="btn btn-outline"
-                    style={{ borderRadius: "6px" }}
-                  >
-                    <a
-                      style={{ textDecoration: "none" }}
-                      href={`${API_BASE_URL}booking/booking-export/`}
-                    >
-                      Export &nbsp;
-                    </a>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                        stroke="#252525"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                        stroke="#252525"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>
+                  {userPermissionList &&
+                    getMenuPermissions(
+                      userPermissionList,
+                      menuIdConstant.booking,
+                      permissionCategory.action
+                    ) && (
+                      <button
+                        className="btn btn-outline"
+                        style={{ borderRadius: "6px" }}
+                      >
+                        <a
+                          style={{ textDecoration: "none" }}
+                          href={`${API_BASE_URL}booking/booking-export/`}
+                        >
+                          Export &nbsp;
+                        </a>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                            stroke="#252525"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                            stroke="#252525"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </button>
+                    )}
                   {/*<button
                     onClick={handleOpenOffcanvas}
                     className="btn btn-info vendor_button"

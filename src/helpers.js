@@ -9,7 +9,9 @@ export function formatDate(date) {
 export function PassingformatDate(date) {
   const created_at_str = date;
   const created_at_date = new Date(created_at_str);
-  const formatted_date = `${created_at_date.getFullYear()}-${created_at_date.getMonth()+1}-${created_at_date.getDate()}`
+  const formatted_date = `${created_at_date.getFullYear()}-${
+    created_at_date.getMonth() + 1
+  }-${created_at_date.getDate()}`;
 
   return formatted_date;
 }
@@ -105,5 +107,22 @@ export const formatTimeWith12Hour = (time) => {
     minute: "2-digit",
     hour12: true,
   });
-  return formattedTime
+  return formattedTime;
+};
+
+export const getMenuPermissions = (
+  userPermissionList,
+  menuId,
+  checkingPermission
+) => {
+  let result = userPermissionList.find((item) => {
+    if (item.id === menuId) {
+      return item.permissionCategory.find((elem) => {
+        if (elem.item === checkingPermission) {
+          return elem?.value;
+        }
+      });
+    }
+  });
+  return result || false;
 };

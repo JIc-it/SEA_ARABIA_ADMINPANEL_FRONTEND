@@ -1,18 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import { getVendorStatus } from "../../services/leadMangement";
 import { getCustomerSearch } from "../../services/CustomerHandle";
 import VendorList from "../Initial_contact/VendorList";
-import { formatDate, removeBaseUrlFromPath } from "../../helpers";
+import {
+  formatDate,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import VendorFilterPopup from "./VendorFilterPopup";
 import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../services/authHandle";
+import { MainPageContext } from "../../Context/MainPageContext";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
 
 export default function Listing() {
+  const { userPermissionList } = useContext(MainPageContext);
   const navigate = useNavigate();
   const [isToggled, setToggled] = useState(true);
   const [vendor, setVendor] = useState();
@@ -161,35 +171,45 @@ export default function Listing() {
           </div>
         </div>
         <div className="action_buttons col-4">
-          <a
-            href={`${API_BASE_URL}account/onboard-vendors-list-export/`}
-            download="vendor_list.csv"
-          >
-            <button className="btn btn-outline" style={{ borderRadius: "6px" }}>
-              Export &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
+          {userPermissionList &&
+            getMenuPermissions(
+              userPermissionList,
+              menuIdConstant.users,
+              permissionCategory.action
+            ) && (
+              <a
+                href={`${API_BASE_URL}account/onboard-vendors-list-export/`}
+                download="vendor_list.csv"
               >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-          </a>
+                <button
+                  className="btn btn-outline"
+                  style={{ borderRadius: "6px" }}
+                >
+                  Export &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              </a>
+            )}
         </div>
       </div>
       <div className="card my-3 ">
@@ -318,46 +338,55 @@ export default function Listing() {
                                 </svg>
                               </Link>
                             </td>
-                            <td>
-                              <button
-                                className={`btn ${
-                                  item.company_status
-                                    ? "btn-dark"
-                                    : "service-disable-button"
-                                } btn-dark `}
-                                style={{
-                                  fontSize: "12px",
-                                  padding: "3px 6px",
-                                  borderRadius: "4px",
-                                }}
-                                onClick={() =>
-                                  item.company_status &&
-                                  navigate(`/service-add/${item?.company_id}`)
-                                }
-                              >
-                                Add Service &nbsp;
-                                <svg
-                                  width={16}
-                                  height={16}
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                >
-                                  <path
-                                    d="M8 2.40039L8 13.6004"
-                                    stroke="white"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                  />
-                                  <path
-                                    d="M2.3999 8H13.5999"
-                                    stroke="white"
-                                    strokeWidth={2}
-                                    strokeLinecap="round"
-                                  />
-                                </svg>
-                              </button>
-                            </td>
+                            {userPermissionList &&
+                              getMenuPermissions(
+                                userPermissionList,
+                                menuIdConstant.serviceManagement,
+                                permissionCategory.create
+                              ) && (
+                                <td>
+                                  <button
+                                    className={`btn ${
+                                      item.company_status
+                                        ? "btn-dark"
+                                        : "service-disable-button"
+                                    } btn-dark `}
+                                    style={{
+                                      fontSize: "12px",
+                                      padding: "3px 6px",
+                                      borderRadius: "4px",
+                                    }}
+                                    onClick={() =>
+                                      item.company_status &&
+                                      navigate(
+                                        `/service-add/${item?.company_id}`
+                                      )
+                                    }
+                                  >
+                                    Add Service &nbsp;
+                                    <svg
+                                      width={16}
+                                      height={16}
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                      xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                      <path
+                                        d="M8 2.40039L8 13.6004"
+                                        stroke="white"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                      />
+                                      <path
+                                        d="M2.3999 8H13.5999"
+                                        stroke="white"
+                                        strokeWidth={2}
+                                        strokeLinecap="round"
+                                      />
+                                    </svg>
+                                  </button>
+                                </td>
+                              )}
                           </tr>
                         );
                       })}

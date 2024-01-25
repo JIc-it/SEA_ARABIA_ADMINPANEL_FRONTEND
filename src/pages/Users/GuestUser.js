@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import guestUserImg from "../../static/img/guest-user.png";
 import filterIcon from "../../static/img/Filter.png";
 import { Link } from "react-router-dom";
@@ -7,8 +7,14 @@ import {
   getGuestUserRequest,
   getTotalGuestUser,
 } from "../../services/CustomerHandle.jsx";
-import { removeBaseUrlFromPath } from "../../helpers.js";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers.js";
 import { getListDataInPagination } from "../../services/commonServices.js";
+import { MainPageContext } from "../../Context/MainPageContext.js";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../../components/Permissions/PermissionConstants.js";
+
 const GuestUser = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
@@ -21,6 +27,7 @@ const GuestUser = () => {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { userPermissionList } = useContext(MainPageContext);
 
   useEffect(() => {
     getGuestUserRequest()
@@ -184,34 +191,41 @@ const GuestUser = () => {
             </div>
           </div>
           <div className="action_buttons col-4">
-            <button
-              className="btn btn-outline"
-              style={{ borderRadius: "6px" }}
-              onClick={handleExportGuestData}
-            >
-              Export &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
+            {userPermissionList &&
+              getMenuPermissions(
+                userPermissionList,
+                menuIdConstant.users,
+                permissionCategory.action
+              ) && (
+                <button
+                  className="btn btn-outline"
+                  style={{ borderRadius: "6px" }}
+                  onClick={handleExportGuestData}
+                >
+                  Export &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
           </div>
         </div>
         <div className="card">
@@ -231,9 +245,16 @@ const GuestUser = () => {
                   <th>
                     <span>Location</span>
                   </th>
-                  <th>
-                    <span>Action</span>
-                  </th>
+                  {userPermissionList &&
+                    getMenuPermissions(
+                      userPermissionList,
+                      menuIdConstant.users,
+                      permissionCategory.action
+                    ) && (
+                      <th>
+                        <span>Action</span>
+                      </th>
+                    )}
                 </tr>
               </thead>
               <tbody>
@@ -257,36 +278,46 @@ const GuestUser = () => {
                           {rw_data.location}
                         </span>
                       </td>
-                      <td
-                        style={{
-                          display: "flex",
-                          gap: "10px",
-                          alignItems: "baseline",
-                        }}
-                      >
-                        <Link
-                          to={""}
-                          className="btn btn-sm btn-info"
-                          style={{ padding: "6px 10px", borderRadius: "4px" }}
-                        >
-                          Booking &nbsp;
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="16"
-                            height="16"
-                            viewBox="0 0 16 16"
-                            fill="none"
+                      {userPermissionList &&
+                        getMenuPermissions(
+                          userPermissionList,
+                          menuIdConstant.users,
+                          permissionCategory.action
+                        ) && (
+                          <td
+                            style={{
+                              display: "flex",
+                              gap: "10px",
+                              alignItems: "baseline",
+                            }}
                           >
-                            <path
-                              d="M4 12L12 4M12 4H6M12 4V10"
-                              stroke="white"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </Link>
-                      </td>
+                            <Link
+                              to={""}
+                              className="btn btn-sm btn-info"
+                              style={{
+                                padding: "6px 10px",
+                                borderRadius: "4px",
+                              }}
+                            >
+                              Booking &nbsp;
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                viewBox="0 0 16 16"
+                                fill="none"
+                              >
+                                <path
+                                  d="M4 12L12 4M12 4H6M12 4V10"
+                                  stroke="white"
+                                  strokeWidth="1.5"
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                />
+                              </svg>
+                            </Link>
+                          </td>
+                        )}
                     </tr>
                   ))
                 ) : (

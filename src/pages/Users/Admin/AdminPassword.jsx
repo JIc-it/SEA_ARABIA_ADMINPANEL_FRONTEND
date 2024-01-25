@@ -1,8 +1,6 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
@@ -10,9 +8,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 
 import {
   UpdateAdminListById,
-  createAdmin,
   getAdminListById,
-  getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
@@ -20,11 +16,8 @@ import { passwordRegex } from "../../../helpers";
 function AdminPassword({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-
   const [isRefetch, setIsRefetch] = useState();
-  const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const salesRepId = useParams()?.salesRepId;
   const [adminDetails, setAdminDetails] = useState();
 
   useEffect(() => {
@@ -91,7 +84,6 @@ function AdminPassword({ show, close }) {
       }
     },
   });
-  // console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({

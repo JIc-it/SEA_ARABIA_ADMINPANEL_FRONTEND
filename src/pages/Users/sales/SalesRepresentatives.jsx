@@ -1,22 +1,28 @@
-import React, { useEffect, useState } from "react";
-import foodImg from "../../../static/img/food.png";
-import newBooking from "../../../static/img/new-booking.png";
-import totalBooking from "../../../static/img/total-booking.png";
-import confirmBooking from "../../../static/img/confirm-booking.png";
-import cancelBooking from "../../../static/img/cancel-booking.png";
-// import filterIcon from "../../../static/img/Filter.png";
-import filterIcon from "../../../static/img/Filter.png";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
-import { getGuestUserList } from "../../../services/GuestHandle";
 import {
   getCustomerlist,
   getCustomerSearch,
 } from "../../../services/CustomerHandle";
-import { formatDate, removeBaseUrlFromPath } from "../../../helpers";
+import {
+  formatDate,
+  getMenuPermissions,
+  removeBaseUrlFromPath,
+} from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
 import { getsalesTotalCount } from "../../../services/leadMangement";
+import { MainPageContext } from "../../../Context/MainPageContext";
+import WithPermission from "../../../components/HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../../../components/HigherOrderComponents/CommonButtonForPermission";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../../../components/Permissions/PermissionConstants";
+
 const SalesRepresentatives = () => {
+  const { userPermissionList } = useContext(MainPageContext);
+  const [count, setCount] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [salesRep, setsalesRep] = useState();
   const [listPageUrl, setListPageUrl] = useState({
@@ -28,6 +34,8 @@ const SalesRepresentatives = () => {
   const [selectedValue, setSelectedValue] = useState("");
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
     const role = "Staff";
     getCustomerlist(role)
@@ -39,13 +47,12 @@ const SalesRepresentatives = () => {
           previous: data.previous,
         });
         setsalesRep(data?.results);
-        // setCustomerId(data.results[0]?.id);
       })
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
   }, []);
-  const [count, setCount] = useState();
+
   useEffect(() => {
     getsalesTotalCount()
       .then((data) => {
@@ -57,17 +64,36 @@ const SalesRepresentatives = () => {
       });
   }, []);
 
-  const [search, setSearch] = useState("");
-
   const refreshPage = () => {
-    // You can use window.location.reload() to refresh the page
     window.location.reload();
   };
-  const getCustomerListData = async () => {
+
+  // const getCustomerListData = async () => {
+  //   setIsLoading(true);
+  //   getCustomerSearch()
+  //     .then((data) => {
+  //       if (data) {
+  //         setIsLoading(false);
+  //         setListPageUrl({ next: data.next, previous: data.previous });
+  //         setsalesRep(data?.results);
+  //       } else {
+  //         refreshPage();
+  //         setIsLoading(true);
+  //         setSearch("");
+  //         setsalesRep(data?.results);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.error("Error fetching  data:", error);
+  //     });
+  // };
+
+  useEffect(() => {
+    const data = { search: search, status: selectedValue, role: "Staff" };
     setIsLoading(true);
-    getCustomerSearch()
+    getCustomerSearch(data)
       .then((data) => {
-        console.log("Search ---:", data);
         if (data) {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
@@ -83,11 +109,6 @@ const SalesRepresentatives = () => {
         setIsLoading(false);
         console.error("Error fetching  data:", error);
       });
-  };
-
-  useEffect(() => {
-    const data = { search: search, status: selectedValue, role: "Staff" };
-    getCustomerSearch(data).then((res) => setsalesRep(res?.results));
   }, [selectedValue, isRefetch, search]);
 
   const handlePagination = async (type) => {
@@ -151,6 +172,32 @@ const SalesRepresentatives = () => {
       window.URL.revokeObjectURL(url);
     }
   };
+
+  const AddSaleRepWithPermission = WithPermission(
+    CommonButtonForPermission,
+    permissionCategory.create,
+    menuIdConstant.users,
+    handleOpenOffcanvas,
+    "btn btn-info vendor_button",
+    "Create New Sales Rep",
+    { borderRadius: "6px" },
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      viewBox="0 0 20 20"
+      fill="none"
+    >
+      <path
+        d="M10 3L10 17"
+        stroke="white"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+      <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -206,7 +253,6 @@ const SalesRepresentatives = () => {
                           fill="white"
                         />
                       </svg>
-                      {/* <img src={guestUserImg} /> */}
                     </span>
                   </div>
                   <div className="col">
@@ -259,80 +305,60 @@ const SalesRepresentatives = () => {
                         setSearch(e.target.value);
                       }}
                     />
-                    <button
+                    {/* <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
                       onClick={getCustomerListData}
                     >
                       Search
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </form>
             </div>
           </div>
           <div className="action_buttons col-4">
-            <button
-              onClick={handleExportCustomerData}
-              className="btn btn-outline"
-              style={{ borderRadius: "6px" }}
-            >
-              Export &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </button>
-            <button
-              onClick={handleOpenOffcanvas}
-              className="btn btn-info vendor_button"
-              style={{ borderRadius: "6px" }}
-              type="button"
-            >
-              Create New Sales Rep &nbsp;
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M10 3L10 17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M3 10H17"
-                  stroke="white"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
-              </svg>
-            </button>
+            {userPermissionList &&
+              getMenuPermissions(
+                userPermissionList,
+                menuIdConstant.users,
+                permissionCategory.action
+              ) && (
+                <button
+                  onClick={handleExportCustomerData}
+                  className="btn btn-outline"
+                  style={{ borderRadius: "6px" }}
+                >
+                  Export &nbsp;
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </button>
+              )}
+            <AddSaleRepWithPermission />
           </div>
           <CreateSalesRep show={showOffcanvas} close={handleCloseOffcanvas} />
         </div>
-        <div className="card mx-3">
+        <div className="card ">
           <div className="table-responsive">
             <table className="table card-table table-vcenter text-nowrap datatable ">
               <thead>
@@ -446,7 +472,6 @@ const SalesRepresentatives = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                              
                                 {item?.location}
                               </span>
                             </td>

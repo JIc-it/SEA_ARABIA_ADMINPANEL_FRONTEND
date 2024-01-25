@@ -1,13 +1,10 @@
 import { Offcanvas } from "react-bootstrap";
-// import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
 import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
 import {
   UpdateAdminListById,
   createAdmin,
@@ -15,7 +12,6 @@ import {
   getSalesRepListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
-import { passwordRegex } from "../../../helpers";
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
@@ -23,12 +19,10 @@ import { AppContext } from "../../../Context/AppContext";
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
-
   const locationContext = useContext(AppContext);
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
- 
   const [adminDetails, setAdminDetails] = useState();
   const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([
@@ -40,7 +34,6 @@ function UpdateAdmin({ show, close }) {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        // console.log(" admin update list------==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -50,7 +43,6 @@ function UpdateAdmin({ show, close }) {
   useEffect(() => {
     getLocation()
       .then((data) => {
-        // console.log("location is==", data.results);
         setLocation(data.results);
       })
       .catch((error) => {
@@ -130,7 +122,6 @@ function UpdateAdmin({ show, close }) {
       }
     },
   });
-  console.log("admin formik update data", formik);
 
   useEffect(() => {
     formik.setValues({
@@ -140,7 +131,7 @@ function UpdateAdmin({ show, close }) {
 
       email: adminDetails?.email || "",
       mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location?.country|| "",
+      location: adminDetails?.profileextra?.location?.country || "",
 
       // defineservice: adminDetails?.useridentificationdata?.,
       // Add other fields as needed

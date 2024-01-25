@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useParams } from "react-router";
-// import { getUserVendorActivityLog } from "../../services/userVendorsServices";
-// import { convertedDateAndTime, removeBaseUrlFromPath } from "../../helpers";
-// import { getListDataInPagination } from "../../services/commonServices";
 import { getUserVendorActivityLog } from "../../../services/userVendorsServices";
 import { removeBaseUrlFromPath } from "../../../helpers";
 import { getListDataInPagination } from "../../../services/commonServices";
@@ -11,7 +8,6 @@ import { getListDataInPagination } from "../../../services/commonServices";
 const AdminActivityLog = () => {
   const params = useParams();
   const adminId = params?.id;
-  console.log("--adminid", adminId);
   const admin = params?.admin;
   const [isLoading, setIsLoading] = useState(false);
   const [activityList, setActivityList] = useState();
@@ -24,7 +20,6 @@ const AdminActivityLog = () => {
     setIsLoading(true);
     getUserVendorActivityLog(adminId)
       .then((data) => {
-        // console.log("admin activity log", data);
         setActivityList(data.results);
         setListPageUrl({ next: data.next, previous: data.previous });
       })
