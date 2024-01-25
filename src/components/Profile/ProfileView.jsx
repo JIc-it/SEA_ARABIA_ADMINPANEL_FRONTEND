@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getProfileData } from "../../services/Profile";
 import ProfileCardDetails from "./ProfileCardDetails";
 
 function ProfileView() {
   const navigate = useNavigate();
-  const customerId = useParams()?.customerId;
+
 const [isLoading,setIsloading]=useState(false)
   const [customerDetails, setCustomerDetails] = useState([]);
   useEffect(() => {

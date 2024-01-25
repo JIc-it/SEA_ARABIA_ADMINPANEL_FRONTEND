@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
-import Table from "../LeadManagementTable";
-import SideBar from "../Common/SideBar";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import {
@@ -11,26 +9,16 @@ import {
   removeBaseUrlFromPath,
 } from "../../helpers";
 import {
-  Link,
-  Navigate,
-  useLocation,
-  useNavigate,
-  useParams,
-  useRouteMatch,
+  Link, useLocation, useParams,
 } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Typography from "@mui/material/Typography";
+
 import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import {
-  customerBookingList,
-  customerIndividualBookingList,
-  getBookingData,
-} from "../../services/CustomerHandle";
+
 import { API_BASE_URL } from "../../services/authHandle";
 import {
   menuIdConstant,
@@ -65,7 +53,7 @@ const BookinList = () => {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const [search, setSearch] = useState("");
-  const [statusList, setStatusList] = useState([]);
+
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
@@ -81,17 +69,7 @@ const BookinList = () => {
   };
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
-  // new api
-  // useEffect(() => {
-  //   customerBookingList(customerId)
-  //     .then((data) => {
-  //       console.log("bookinhg list data", data.response);
-  //     })
-  //     .catch((error) => {
-  //       console.error("error to fetch customer booking list", error);
-  //     });
-  // }, []);
-  // old api
+
   useEffect(() => {
     {
       search.trim() !== "" ? setIsLoading(false) : setIsLoading(true);
@@ -108,29 +86,6 @@ const BookinList = () => {
         toast.error(error.response.data);
       });
   }, [search]);
-
-  // useEffect(() => {
-  //   // Fetch customer-specific bookings using the customerId
-  //   const fetchCustomerBookings = async () => {
-  //     try {
-  //       if (customerId) {
-  //         const response = await customerBookingList(customerId);
-  //         setBookingList(response.data.response);
-  //       } else {
-  //         const response = await getBookingList({
-  //           status: "",
-  //           search: "",
-  //           refund_status: "",
-  //         });
-  //         setBookingList(response?.results);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching customer bookings:", error);
-  //     }
-  //   };
-
-  //   fetchCustomerBookings();
-  // }, [customerId]);
 
   useEffect(() => {
     getBookingCount()
@@ -494,7 +449,7 @@ const BookinList = () => {
                                 </td>
                                 <td>
                                   <span className="text-secondary">
-                                    {data?.first_name}
+                                    {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
                                   </span>
                                 </td>
                                 <td>

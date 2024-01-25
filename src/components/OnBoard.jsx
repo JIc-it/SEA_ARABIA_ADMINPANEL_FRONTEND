@@ -5,9 +5,8 @@ import VendorTabs from "./Vendor_tabs/VendorTabs";
 import ProgressBar from "./Common/ProgressBar";
 import { useParams } from "react-router";
 import { OnboardContext } from "../Context/OnboardContext";
-import { useSelector } from "react-redux";
 import { getLocation } from "../services/CustomerHandle";
-import { toast } from "react-toastify";
+
 
 function OnBoard() {
   const params = useParams();

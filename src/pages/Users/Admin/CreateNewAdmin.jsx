@@ -3,12 +3,14 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { passwordRegex } from "../../../helpers";
 import { useState } from "react";
+
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useContext } from "react";
 import { createAdmin } from "../../../services/GuestHandle";
 import { AppContext } from "../../../Context/AppContext";
+
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 
 function CreateNewAdmin({ show, close, locationList }) {
@@ -315,7 +317,6 @@ function CreateNewAdmin({ show, close, locationList }) {
               name="password"
               className="form-control"
               placeholder="Password"
-
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { menuIdConstant, permissionCategory } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
-
+import { API_BASE_URL } from "../../services/authHandle";
 
 const style = {
   position: "absolute",
@@ -31,24 +31,16 @@ const RefundHistoryList  = () => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
- 
-  const [showOffcanvas, setShowOffcanvas] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
+
   const [search, setSearch] = useState("");
-  const [statusList, setStatusList] = useState([]);
+
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
-
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
+ 
   const [bookingList, setBookingList] = useState([]);
   const [count,setCount]=useState({})
 
@@ -249,7 +241,7 @@ const RefundHistoryList  = () => {
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
                   >
-                    <a style={{textDecoration:"none"}} href="https://seaarabia.jicitsolution.com/booking/refund-history-export/">
+                    <a style={{textDecoration:"none"}} href={`${API_BASE_URL}booking/refund-history-export/`}>
                     Export &nbsp;
                     </a>
                     <svg
@@ -368,7 +360,7 @@ const RefundHistoryList  = () => {
                             </td>
                             <td>
                               <span className="text-secondary">
-                                {data?.first_name}
+                              {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
                               </span>
                             </td>
                             <td>

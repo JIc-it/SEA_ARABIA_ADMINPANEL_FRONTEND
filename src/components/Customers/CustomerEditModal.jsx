@@ -1,5 +1,4 @@
 import { Offcanvas } from "react-bootstrap";
-import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 
@@ -10,7 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateCustomerListById,
   getCustomerListById,
-  getLocation,
+
 } from "../../services/CustomerHandle";
 import { useParams } from "react-router-dom";
 import CountryDropdown from "../SharedComponents/CountryDropDown";

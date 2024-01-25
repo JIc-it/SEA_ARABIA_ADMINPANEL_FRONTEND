@@ -3,7 +3,6 @@ import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import {
-  formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";

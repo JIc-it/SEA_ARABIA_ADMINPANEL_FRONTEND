@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import filterIcon from "../../static/img/Filter.png";
 import { getEventList, getCount } from "../../services/EventsPackages";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
@@ -510,7 +509,6 @@ export default function EventListing() {
                     </button>
                   )}
               </div>
-              {/* <CreateEvents show={showOffcanvas} close={handleOpenOffcanvas} /> */}
             </div>
             <div className="card">
               <div className="table-responsive">
@@ -699,6 +697,7 @@ export default function EventListing() {
             {/* //modal */}
           </div>
           {/* {showOffcanvas && (
+
       <AddNewService
           show={showOffcanvas}
           close={handleCloseOffcanvas}

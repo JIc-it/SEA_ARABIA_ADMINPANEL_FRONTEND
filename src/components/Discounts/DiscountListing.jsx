@@ -7,19 +7,17 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   getDiscountOfferList,
   UpdateStatus,
-  getExportdata,
 } from "../../services/offers";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
-  formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";
+
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import PopupFilter from "./PopupFilter";
-import { CSVLink } from "react-csv";
 import {
   menuIdConstant,
   permissionCategory,
@@ -89,7 +87,7 @@ function DiscountListing() {
         setIsLoading(false);
         toast.error(error?.response?.data);
       });
-  }, [search,isRefetch]);
+  }, [search, isRefetch]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -319,7 +317,9 @@ function DiscountListing() {
                         </td>
                         <td>
                           <span className="text-secondary">
-                            {item.multiple_redeem_specify_no}
+                            {item.allow_multiple_redeem === "Unlimited"
+                              ? "Unlimited"
+                              : item.specify_no}
                           </span>
                         </td>
                         <td>
@@ -344,7 +344,7 @@ function DiscountListing() {
                           <Link
                             to={"/discounts-offers/" + item.id}
                             className="btn btn-sm btn-info"
-                            style={{ padding: "6px 10px", borderRadius: "4px" }}
+                            style={{ padding: "3px 6px", borderRadius: "4px" }}
                           >
                             View &nbsp;
                             <svg

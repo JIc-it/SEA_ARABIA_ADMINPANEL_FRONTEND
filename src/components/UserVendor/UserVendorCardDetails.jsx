@@ -56,7 +56,9 @@ function UserVendorCardDetails({ venderDetails }) {
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const [serviceList, setServiceList] = useState([]);
-
+  const handleBookingButtonClick = () => {
+    navigate(`/bookings/${vendorId}`);
+  };
   useEffect(() => {
     venderDetails && setToggled(venderDetails.company_status);
   }, [venderDetails]);
@@ -343,6 +345,7 @@ function UserVendorCardDetails({ venderDetails }) {
                     </svg>
                   </a>
                 )}
+
               <a
                 className="mail_vendor_button btn btn-outline mx-1"
                 onClick={() => {
@@ -543,7 +546,7 @@ function UserVendorCardDetails({ venderDetails }) {
             {active === "Services" && (
               <>
                 <CreateServiceWithPermission />
-               
+
                 {!isloadingservice && serviceList.length > 0 && (
                   <div
                     style={{ borderRadius: "5px" }}

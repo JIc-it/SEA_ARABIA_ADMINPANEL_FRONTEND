@@ -131,9 +131,9 @@ export default function DiscountEdit() {
             discount_value: 0,
             up_to_amount: 0,
             redemption_type: "",
-            specify_no: 0,
+            specify_no: 1,
             allow_multiple_redeem: "",
-            multiple_redeem_specify_no: 0,
+            multiple_redeem_specify_no: 1,
             start_date: "",
             is_lifetime: false,
             end_date: "",
@@ -176,7 +176,7 @@ export default function DiscountEdit() {
                 formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no);
                 formdata.append("start_date",new Date(values.start_date)?.toISOString().slice(0, -5) + 'Z');
                 formdata.append("is_lifetime",checktrue(values.is_lifetime));
-                formdata.append("end_date",new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');
+                {values.end_date.trim()!=="" && formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');}
                 formdata.append("on_home_screen",checktrue(values.on_home_screen));
                 formdata.append("on_checkout",checktrue(values.on_checkout));
                 formdata.append("apply_global",checktrue(values.apply_global));
@@ -218,46 +218,15 @@ export default function DiscountEdit() {
 
       //first load
       useEffect(() => {
-        setIsLoading(true)
+        if(isupdated){
+            setIsLoading(false)
+        }
+        else{
+            setIsLoading(true)
+        }
         getDiscountOfferView(params.id)
           .then((data) => {
             setIsLoading(false)
-            formik.setFieldValue("is_enable", data.is_enable);
-            formik.setFieldValue("image", data.image);
-            formik.setFieldValue("name", data.name);
-            formik.setFieldValue("coupon_code", data.coupon_code);
-            formik.setFieldValue("discount_type", data.discount_type);
-            formik.setFieldValue("discount_value", data.discount_value);
-            formik.setFieldValue("up_to_amount",data.up_to_amount);
-            formik.setFieldValue("specify_no",data.specify_no);
-            formik.setFieldValue("redemption_type",data.redemption_type);
-            formik.setFieldValue("allow_multiple_redeem",data.allow_multiple_redeem);
-            formik.setFieldValue("multiple_redeem_specify_no",data.multiple_redeem_specify_no);
-            formik.setFieldValue("start_date",data.start_date);
-            formik.setFieldValue("is_lifetime",data.is_lifetime);
-            formik.setFieldValue("end_date",data.end_date);
-            formik.setFieldValue("on_home_screen",data.on_home_screen);
-            formik.setFieldValue("on_checkout",data.on_checkout);
-            formik.setFieldValue("apply_global",data.apply_global);
-            formik.setFieldValue("services",data.services);
-            formik.setFieldValue("companies",data.companies);
-            formik.setFieldValue("purchase_requirement",data.purchase_requirement);
-            formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
-            setIsUpdated(false)
-          })
-          .catch((error) => {
-            setIsLoading(false)
-            toast.error(error.response.data);
-          });
-    
-      }, [params.id]);
-
-      //update load
-      useEffect(() => {
-        // setIsLoading(true)
-        getDiscountOfferView(params.id)
-          .then((data) => {
-            // setIsLoading(false)
             formik.setFieldValue("is_enable", data.is_enable);
             formik.setFieldValue("image", data.image);
             formik.setFieldValue("name", data.name);
@@ -287,6 +256,7 @@ export default function DiscountEdit() {
           });
     
       }, [params.id,isupdated]);
+
 
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
@@ -597,7 +567,7 @@ if(!isLoading){
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"One-Time",multiple_redeem_specify_no:0 })}
+                                        onClick={() => updateFormValues({ ...formik.values, allow_multiple_redeem :"One-Time",multiple_redeem_specify_no:1 })}
                                     >
                                         One Time
                                     </Button>

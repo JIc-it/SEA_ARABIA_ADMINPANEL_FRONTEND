@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -9,22 +9,22 @@ import { getBooking, updateCancellation } from "../../services/booking";
 import { CircularProgress } from "@mui/material";
 import RefundModal from "./RefundModal";
 import CancellationModal from "./CancellationModal";
-import { MainPageContext } from "../../Context/MainPageContext";
+import { cleanDigitSectionValue } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
+import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
+import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
 import {
   menuIdConstant,
   permissionCategory,
 } from "../Permissions/PermissionConstants";
-import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
-import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
 
 export default function BookingView() {
-  const { userPermissionList } = useContext(MainPageContext);
   const params = useParams();
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [booking, setBooking] = useState({});
+  const [open, setOpen] = useState(false);
   const [open2, setOpen2] = useState(false);
 
   useEffect(() => {
@@ -39,8 +39,6 @@ export default function BookingView() {
         console.error("Error fetching  data:", error);
       });
   }, [params.id]);
-
-  console.log(booking, "one");
 
   const statusCheck = () => {
     if (booking?.status === "Opened") {
@@ -132,8 +130,6 @@ export default function BookingView() {
                 </div>
                 <CancelBookingWithPermission />
               </div>
-
-              {/* section-1 */}
 
               <div
                 className={
@@ -439,17 +435,8 @@ export default function BookingView() {
                         <div>
                           <p style={{ color: "#68727D" }}>End Date</p>
                           <p>
-                            {new Date(booking?.end_date).toLocaleDateString(
-                              "en-US",
-                              {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                                hour12: true,
-                              }
-                            )}
+                            {booking?.slot_end_date}&nbsp;
+                            {booking?.slot_end_time}
                           </p>
                         </div>
                       </div>
@@ -481,17 +468,8 @@ export default function BookingView() {
                         <div>
                           <p style={{ color: "#68727D" }}>Start Date</p>
                           <p>
-                            {new Date(booking?.start_date).toLocaleDateString(
-                              "en-US",
-                              {
-                                day: "numeric",
-                                month: "short",
-                                year: "numeric",
-                                hour: "numeric",
-                                minute: "numeric",
-                                hour12: true,
-                              }
-                            )}
+                            {booking?.slot_start_date}&nbsp;
+                            {booking?.slot_start_time}
                           </p>
                         </div>
                         <div>
@@ -579,10 +557,10 @@ export default function BookingView() {
                       <p className="card_content">{booking?.service?.name}</p>
                     </div>
                     <div className="card_header_contents">
-                      <p className="card_content">
+                      <p className="card_content" style={{ fontSize: "14px" }}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="21"
+                          width="18"
                           height="20"
                           viewBox="0 0 21 20"
                           fill="none"
@@ -601,10 +579,10 @@ export default function BookingView() {
                         &nbsp; {booking?.service?.service_id}
                       </p>
                       &nbsp;
-                      <p className="card_content">
+                      <p className="card_content" style={{ fontSize: "14px" }}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="21"
+                          width="18"
                           height="20"
                           viewBox="0 0 21 20"
                           fill="none"
@@ -619,10 +597,10 @@ export default function BookingView() {
                         {booking?.service?.company}
                       </p>
                       &nbsp;
-                      <p className="card_content">
+                      <p className="card_content" style={{ fontSize: "14px" }}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="21"
+                          width="18"
                           height="20"
                           viewBox="0 0 21 20"
                           fill="none"
@@ -641,21 +619,10 @@ export default function BookingView() {
                   <div className="d-flex justify-content-between align-items-center p-3">
                     <div>
                       <p style={{ fontWeight: "600" }}>
-                        {new Date(booking?.start_date).toLocaleTimeString(
-                          "en-US",
-                          { hour: "2-digit", minute: "2-digit" }
-                        )}
+                        {booking?.slot_start_date && booking?.slot_start_date}
                       </p>
                       <p style={{ color: "#68727D" }}>
-                        {new Date(booking?.start_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                            weekday: "short",
-                          }
-                        )}
+                        {booking?.slot_start_time && booking?.slot_start_time}
                       </p>
                     </div>
                     <div className="d-flex flex-column justify-content-center align-items-center">
@@ -679,21 +646,10 @@ export default function BookingView() {
                     </div>
                     <div>
                       <p style={{ fontWeight: "600" }}>
-                        {new Date(booking?.end_date).toLocaleTimeString(
-                          "en-US",
-                          { hour: "2-digit", minute: "2-digit" }
-                        )}
+                        {booking?.slot_end_date && booking?.slot_end_date}
                       </p>
                       <p style={{ color: "#68727D" }}>
-                        {new Date(booking?.end_date).toLocaleDateString(
-                          "en-US",
-                          {
-                            day: "2-digit",
-                            month: "short",
-                            year: "numeric",
-                            weekday: "short",
-                          }
-                        )}
+                        {booking?.slot_end_time && booking?.slot_end_time}
                       </p>
                     </div>
                   </div>
@@ -770,7 +726,12 @@ export default function BookingView() {
                       <span style={{ color: "#68727D" }}>
                         {booking?.service?.name}
                       </span>
-                      <span>{booking?.payment?.amount} KWD</span>
+                      <span>
+                        {booking?.payment === null
+                          ? 0
+                          : booking?.payment?.amount}{" "}
+                        KWD
+                      </span>
                     </div>
                     <div className="d-flex justify-content-between align-items-center py-1">
                       <span style={{ color: "#68727D" }}>Service Fee</span>
@@ -786,7 +747,10 @@ export default function BookingView() {
                     <div className="d-flex justify-content-between align-items-center py-1">
                       <span style={{ fontWeight: "500" }}>Total</span>
                       <span style={{ color: "#006875", fontWeight: "500" }}>
-                        {booking?.payment?.amount + "" + "KWD"}{" "}
+                        {booking?.payment === null
+                          ? 0
+                          : booking?.payment?.amount}{" "}
+                        KWD{" "}
                       </span>
                     </div>
                   </div>
@@ -876,16 +840,17 @@ export default function BookingView() {
                       <div>
                         <p style={{ color: "#68727D" }}>Payment Date</p>
                         <p style={{ fontWeight: "500" }}>
-                          {new Date(
-                            booking?.payment?.created_at
-                          ).toLocaleDateString("en-US", {
-                            day: "numeric",
-                            month: "short",
-                            year: "numeric",
-                            hour: "numeric",
-                            minute: "numeric",
-                            hour12: true,
-                          })}
+                          {booking?.payment !== null &&
+                            new Date(
+                              booking?.payment?.created_at
+                            ).toLocaleDateString("en-US", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
                         </p>
                       </div>
                     </div>
@@ -945,8 +910,7 @@ export default function BookingView() {
                       <div className="d-flex justify-content-between align-items-center">
                         <p>Cancelled On</p>
                         <p>
-                          {booking?.cancelled_date?.trim() !== "" ||
-                          booking?.cancelled_date !== null
+                          {booking?.cancelled_date !== null
                             ? new Date(
                                 booking?.cancelled_date
                               ).toLocaleDateString("en-US", {

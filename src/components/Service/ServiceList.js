@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+
 import filterIcon from "../../static/img/Filter.png";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -18,6 +19,7 @@ import {
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";
+
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -85,7 +87,7 @@ function ServiceList() {
         })
         .catch((error) => {
           setIsLoading(false);
-          toast.error(error.response.data);
+          toast.error(error.message);
         });
   };
 

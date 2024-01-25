@@ -1,11 +1,14 @@
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+
+
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { createSalesRep } from "../../../services/GuestHandle";
+
 import { passwordRegex } from "../../../helpers";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
@@ -13,14 +16,8 @@ import { AppContext } from "../../../Context/AppContext";
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
-
-  const [gender, setGender] = useState([
-    { id: "1", label: "Male" },
-    { id: "2", label: "Female" },
-  ]);
   const [isRefetch, setIsRefetch] = useState();
   const [isLoading, setIsLoading] = useState(false);
-  const [location, setLocation] = useState([]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()

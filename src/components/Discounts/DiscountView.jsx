@@ -19,7 +19,6 @@ export default function DiscountView() {
   const [redemptiontype, setRedemptionType] = useState("");
   const [copys, setCopies] = useState("Copy");
   const params = useParams();
-  const [newService, setNewService] = useState(false);
 
   useEffect(() => {
     setIsLoading(true);

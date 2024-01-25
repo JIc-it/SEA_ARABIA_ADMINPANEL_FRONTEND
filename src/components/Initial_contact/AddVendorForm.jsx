@@ -1,31 +1,26 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import "../../static/css/add_vendor_details.css";
 import { useState } from "react";
-import AddServiceModal from "../Modal/AddServiceModal";
-import { useFormik } from "formik";
-import * as Yup from "yup";
+
+
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import {
   getUserIdType,
   getVendorListById,
   getVendorServiceTag,
 } from "../../services/leadMangement";
-import { OnboardContext } from "../../Context/OnboardContext";
-import { getLocation } from "../../services/CustomerHandle";
+
 import CountryDropdown from "../SharedComponents/CountryDropDown";
-import { toast } from "react-toastify";
+
 
 const AddVendorInfo = ({ formik, locationList }) => {
   const vendorId = useParams()?.id;
-  console.log("location list", locationList);
-  //  const vendorId=OnboardContextData.vendorId
-  const [showCanvas, setOffcanvas] = useState(false);
-  const handleOpenOffcanvas = () => setOffcanvas(true);
+
+
   const [serviceTagList, setServiceTagList] = useState();
-  const handleCloseOffcanvas = () => setOffcanvas(false);
-  const [selectedUsers, setSelectedUsers] = useState([]);
+ 
   const [idTypeList, setIdTypeList] = useState();
 
   useEffect(() => {

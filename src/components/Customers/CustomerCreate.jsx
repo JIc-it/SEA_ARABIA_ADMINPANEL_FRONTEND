@@ -7,26 +7,24 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
-import { useParams } from "react-router-dom";
 import {
   createCustomer,
-  getCustomerListById,
+
   getLocation,
 } from "../../services/CustomerHandle";
 import { passwordRegex } from "../../helpers";
-import { createAdmin } from "../../services/GuestHandle";
+
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 import { AppContext } from "../../Context/AppContext";
 
 function CustomerCreate({ show, close }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
-  const customerId = useParams()?.customerId;
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const salesRepId = useParams()?.salesRepId;
+  
 
   const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([

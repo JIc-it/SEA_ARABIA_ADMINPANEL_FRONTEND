@@ -14,8 +14,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import CircularProgress from "@mui/material/CircularProgress";
-import ServiceList from '../Service/ServiceList';
+
 
 const style = {
     position: 'absolute',

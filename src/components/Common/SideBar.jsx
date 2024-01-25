@@ -1,7 +1,6 @@
-import { useContext, useEffect, useRef, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useContext,  useState } from "react";
+import {  useLocation } from "react-router-dom";
 import logo from "../../static/img/logo.png";
-
 import { useNavigate } from "react-router-dom";
 import { getMenuPermissions } from "../../helpers";
 import {
@@ -9,6 +8,7 @@ import {
   permissionCategory,
 } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
+
 function SideBar() {
   const location = useLocation();
   const navigate = useNavigate();

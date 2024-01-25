@@ -1,6 +1,5 @@
 import React from "react";
 import "../static/css/site_visit.css";
-import DropZone from "./Common/DropZone";
 import { FileUploader } from "./Modal/FileUploader";
 function CommonAddDetails({ title, formik, handleFileChange }) {
   console.log(formik);

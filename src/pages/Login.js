@@ -1,22 +1,20 @@
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import {
-  Alert,
+  
   Box,
   Button,
-  FormHelperText,
+
   Link,
   Stack,
-  Tab,
-  Tabs,
+ 
   TextField,
   Typography,
-  IconButton,
-  InputAdornment,
+
 } from "@mui/material";
 import CopyWrite from "../components/CopyWrite";
-import { passwordRegex } from "../helpers";
+
 import LoginImageContainer from "../components/LoginImageContainer";
 import { useNavigate } from "react-router";
 import { loginRequest } from "../services/authHandle";
@@ -24,9 +22,7 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
-
-  const [capsLockOn, setCapsLockOn] = useState(false);
+ 
 
   // useEffect(() => {
   //   const handleCapsLock = (event) => {

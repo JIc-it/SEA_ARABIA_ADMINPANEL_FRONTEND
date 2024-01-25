@@ -1,13 +1,14 @@
 import { Button } from "@mui/material";
-import customerImg from "../../assets/images/customerimg.png";
+
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ChangePasword from "./ChangePassword";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useContext } from "react";
 import { UserContext } from "../../Context/AppContext";
+import PermissionView from "./PermissionView";
 
 function ProfileCardDetails({ data, isLoading }) {
   const theme = useTheme();

@@ -2,7 +2,7 @@ import "../../static/css/initial_contact.css";
 import { Link } from "react-router-dom";
 import VendorList from "./VendorList";
 import { OnboardContext } from "../../Context/OnboardContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 
 function AddVendorDetails() {
   const { vendorId, isAllowProceed, setIsAllowProceed } =

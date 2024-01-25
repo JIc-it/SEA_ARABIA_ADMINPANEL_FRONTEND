@@ -1,19 +1,11 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import filterIcon from "../../static/img/Filter.png";
-import { getVendorStatus } from "../../services/leadMangement";
 import { getCustomerSearch } from "../../services/CustomerHandle";
-import VendorList from "../Initial_contact/VendorList";
-import {
-  formatDate,
-  getMenuPermissions,
-  removeBaseUrlFromPath,
-} from "../../helpers";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import VendorFilterPopup from "./VendorFilterPopup";
-import { toast } from "react-toastify";
 import { API_BASE_URL } from "../../services/authHandle";
 import { MainPageContext } from "../../Context/MainPageContext";
 import {

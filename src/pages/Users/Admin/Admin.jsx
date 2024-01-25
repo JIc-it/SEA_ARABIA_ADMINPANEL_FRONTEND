@@ -5,23 +5,22 @@ import totalBooking from "../../../static/img/total-booking.png";
 import confirmBooking from "../../../static/img/confirm-booking.png";
 import cancelBooking from "../../../static/img/cancel-booking.png";
 import filterIcon from "../../../static/img/Filter.png";
+
 import { Link } from "react-router-dom";
-import CreateSalesRep from "../sales/CreateSalesRep";
+import * as XLSX from "xlsx";
 import {
   getAdminSearch,
   getAdminTotalCount,
-  getGuestUserList,
 } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
-import {
-  customerExport,
-  getCustomerlist,
-} from "../../../services/CustomerHandle";
+
 import {
   formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../../helpers";
+import { adminExport, getCustomerlist } from "../../../services/CustomerHandle";
+
 import { getListDataInPagination } from "../../../services/commonServices";
 import { MainPageContext } from "../../../Context/MainPageContext";
 import WithPermission from "../../../components/HigherOrderComponents/PermissionCheck/WithPermission";
@@ -63,6 +62,7 @@ const Admin = () => {
     const role = "Admin";
     getCustomerlist(role)
       .then((data) => {
+        console.log("admin list ==", data?.results);
         setListPageUrl({
           next: data.next,
           previous: data.previous,
@@ -77,64 +77,27 @@ const Admin = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
   };
-  // const getAdminData = async () => {
-  //   getAdminSearch()
-  //     .then((data) => {
-  //       if (data) {
-  //         // console.log("search", data);
-  //         setIsLoading(false);
-  //         setListPageUrl({ next: data.next, previous: data.previous });
-  //         // const filteredResults = data.results.filter(
-  //         //   (item) => item.role === "Admin"
-  //         // );
-  //         setAdmin(data?.results);
-  //       } else {
-  //         refreshPage();
-  //         setIsLoading(true);
-  //         setSearch("");
-  //         setAdmin(data?.results);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("failed to search error", error);
-  //     });
-  // };
 
   useEffect(() => {
     const data = { search: search, status: selectedValue, role: "Admin" };
-    getAdminSearch(data)
-      .then((data) => {
-        if (data) {
-          // console.log("search", data);
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          // const filteredResults = data.results.filter(
-          //   (item) => item.role === "Admin"
-          // );
-          setAdmin(data?.results);
-        } else {
-          refreshPage();
-          setIsLoading(true);
-          setSearch("");
-          setAdmin(data?.results);
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("failed to search error", error);
-      });
-    // getAdminSearch(data).then((res) => setAdmin(res?.results));
+    getAdminSearch(data).then((res) => setAdmin(res?.results));
   }, [selectedValue, isRefetch, search]);
 
   const handleExportAdminData = () => {
-    customerExport()
+    adminExport()
       .then((response) => {
         // Assuming the response.data is the CSV content
-        const csvData = response.data;
+        const csvData = response;
+        console.log("csv data--", csvData);
 
         // Convert the CSV data to a Blob
-        const blob = new Blob([csvData], { type: "text/csv" });
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+        console.log("blob--", blob);
+
+        // Parse the CSV data into an Excel workbook
+        const workbook = XLSX.read(csvData, { type: "string" });
+        // Display the workbook data or perform further processing
+        console.log("Workbook:", workbook);
 
         // Create a download link
         const link = document.createElement("a");
@@ -147,10 +110,12 @@ const Admin = () => {
         // Trigger the download
         link.click();
 
-        // Remove the link from the document
-        document.body.removeChild(link);
-
-        // console.log("Exported Customer data successfully!");
+        // Remove the link asynchronously after the download
+        setTimeout(() => {
+          document.body.removeChild(link);
+          // Optionally, log success message
+          // console.log("Exported Customer data successfully!");
+        }, 0);
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import Offcanvas from "react-bootstrap/Offcanvas";
 import { updateRefund } from "../../services/booking"
 import { useFormik } from "formik";

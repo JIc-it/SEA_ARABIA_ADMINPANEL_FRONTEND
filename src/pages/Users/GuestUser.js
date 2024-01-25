@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useContext } from "react";
-import guestUserImg from "../../static/img/guest-user.png";
-import filterIcon from "../../static/img/Filter.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  customerExport,
   getGuestUserRequest,
   getTotalGuestUser,
+  guestExport,
 } from "../../services/CustomerHandle.jsx";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers.js";
 import { getListDataInPagination } from "../../services/commonServices.js";
@@ -14,8 +12,12 @@ import {
   menuIdConstant,
   permissionCategory,
 } from "../../components/Permissions/PermissionConstants.js";
+import * as XLSX from "xlsx";
 
 const GuestUser = () => {
+  const navigate = useNavigate();
+  const [guestId, setGuestId] = useState();
+  console.log("guest id", guestId);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const [reward_product_data, setGuestUsertData] = useState(null);
@@ -38,6 +40,8 @@ const GuestUser = () => {
           previous: data.previous,
         });
         setGuestUsertData(data.results);
+        setGuestId(data.results?.id);
+        console.log("id==", guestId);
       })
       .catch((error) => {
         console.error("Error fetching lead data:", error);
@@ -112,13 +116,20 @@ const GuestUser = () => {
 
   // export
   const handleExportGuestData = () => {
-    customerExport()
+    guestExport()
       .then((response) => {
         // Assuming the response.data is the CSV content
-        const csvData = response.data;
+        const csvData = response;
+        console.log("csv data--", csvData);
 
         // Convert the CSV data to a Blob
-        const blob = new Blob([csvData], { type: "text/csv" });
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+        console.log("blob--", blob);
+
+        // Parse the CSV data into an Excel workbook
+        const workbook = XLSX.read(csvData, { type: "string" });
+        // Display the workbook data or perform further processing
+        console.log("Workbook:", workbook);
 
         // Create a download link
         const link = document.createElement("a");
@@ -131,16 +142,20 @@ const GuestUser = () => {
         // Trigger the download
         link.click();
 
-        // Remove the link from the document
-        document.body.removeChild(link);
-
-        console.log("Exported Customer data successfully!");
+        // Remove the link asynchronously after the download
+        setTimeout(() => {
+          document.body.removeChild(link);
+          // Optionally, log success message
+          // console.log("Exported Customer data successfully!");
+        }, 0);
       })
       .catch((error) => {
         console.error("Error fetching data:", error.message);
       });
   };
-
+  const handleClickGuestBooking = () => {
+    navigate(`/bookings/${guestId}`);
+  };
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
