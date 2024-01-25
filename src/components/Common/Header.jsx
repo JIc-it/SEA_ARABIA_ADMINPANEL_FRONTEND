@@ -40,7 +40,6 @@ function Header() {
     setIsLoading(true);
     getProfileData()
       .then((data) => {
-        console.log("prof--", data);
         setIsLoading(false);
         if (data) {
           setCustomerDetails(data);

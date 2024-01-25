@@ -306,7 +306,7 @@ const ServiceAdd = () => {
                     }
                     setIsLoading(false);
                 } catch (err) {
-                    console.log(err);
+                    toast.error(err?.message);
                     setIsLoading(false);
                 }finally{
                     navigate(-1)
@@ -1290,7 +1290,6 @@ const ServiceAdd = () => {
                                 <div className="row">
                                     {formik.values.service_image.map((data, i) => (
                                         <div className="col-6 mb-3" key={i}>
-                                            {/* {console.log(data)} */}
                                             <div style={{ position: "relative" }}
                                                 onMouseEnter={() => handleHoverEffectTrue(i)}
                                                 onMouseLeave={() => handleHoverEffectFalse()}

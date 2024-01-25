@@ -16,7 +16,7 @@ import { useParams } from 'react-router-dom';
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
 
-export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated }) {
+export default function UploadPopup({ handleClose, handleOpen, open,service_image,setIsUpdated,setCheckImage }) {
     const params=useParams()
     const [image, setImage] = useState(null);
     const [cropData, setCropData] = useState(null);
@@ -76,7 +76,8 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
               setIsLoading(false);
               handleClose()
             toast.success("Updated Successfully")
-            setIsUpdated(true)
+            setIsUpdated(true);
+            setCheckImage("")
 
             } else {
                 setIsLoading(false);
@@ -86,7 +87,7 @@ export default function UploadPopup({ handleClose, handleOpen, open,service_imag
             setIsLoading(false);
               }catch (err) {
                   setIsLoading(false);
-                toast.error(err.response.data)
+                toast.error(err.message)
                 console.log(err);
               }
             }
