@@ -9,6 +9,7 @@ import { getBooking,updateCancellation } from "../../services/booking"
 import { CircularProgress } from '@mui/material';
 import RefundModal from './RefundModal';
 import CancellationModal from './CancellationModal';
+import { cleanDigitSectionValue } from '@mui/x-date-pickers/internals/hooks/useField/useField.utils';
 
 export default function BookingView() {
     const params=useParams();
@@ -35,8 +36,6 @@ export default function BookingView() {
           });
       }, [params.id]);
 
-      console.log(booking,"one");
-
 const statusCheck=()=>{
     if(booking?.status==="Opened"){
         return "Opened"
@@ -55,6 +54,7 @@ const statusCheck=()=>{
     }
 }
 
+console.log(booking)
     return (
         <>
         {isLoading &&
@@ -224,7 +224,9 @@ const statusCheck=()=>{
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>End Date</p>
-                                        <p>{new Date(booking?.end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit",hour12:true})}</p>
+                                        <p>
+                            {booking?.slot_end_date}&nbsp;{booking?.slot_end_time}
+                          </p>
                                     </div>
                                 </div>
                                 <div style={{ width: "33%" }}>
@@ -248,15 +250,9 @@ const statusCheck=()=>{
                                 <div style={{ width: "33%" }}>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Start Date</p>
-                                        <p>{new Date(booking?.start_date).toLocaleDateString("en-US",{
-                                            day: 'numeric',
-                                            month: 'short',
-                                            year: 'numeric',
-                                            hour: 'numeric',
-                                            minute: 'numeric',
-                                            hour12: true,
-                                            })
-                                        }</p>
+                                        <p>
+                            {booking?.slot_start_date}&nbsp;{booking?.slot_start_time}
+                          </p>
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Destination</p>
@@ -366,9 +362,8 @@ const statusCheck=()=>{
                             </div>
                             <div className='d-flex justify-content-between align-items-center p-3'>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.slot_start_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
-                                })}</p>
-                                    <p style={{ color: "#68727D" }}>{new Date(booking?.slot_start_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
+                                    <p style={{ fontWeight: "600" }}>{ booking?.slot_start_date && booking?.slot_start_date}</p>
+                                    <p style={{ color: "#68727D" }}>{ booking?.slot_start_time && booking?.slot_start_time}</p>
                                 </div>
                                 <div className='d-flex flex-column justify-content-center align-items-center'>
                                     <p><svg width={28} height={28} viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -378,9 +373,8 @@ const statusCheck=()=>{
                                     <p style={{ color: "#006875" }}>{booking?.slot_details}</p>
                                 </div>
                                 <div>
-                                    <p style={{ fontWeight: "600" }}>{new Date(booking?.slot_end_date).toLocaleTimeString("en-US",{hour:"2-digit",minute:"2-digit"
-                                })}</p>
-                                    <p style={{ color: "#68727D" }}>{new Date(booking?.slot_end_date).toLocaleDateString("en-US",{day:"2-digit",month:"short",year:"numeric",weekday:"short"})}</p>
+                                    <p style={{ fontWeight: "600" }}>{ booking?.slot_end_date && booking?.slot_end_date}</p>
+                                    <p style={{ color: "#68727D" }}>{booking?.slot_end_time && booking?.slot_end_time}</p>
                                 </div>
                             </div>
                             <div className='d-flex justify-content-center align-items-center'>
@@ -430,7 +424,7 @@ const statusCheck=()=>{
                             <div className='p-3 m-2 rounded' style={{ backgroundColor: "#EAEBF0" }}>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ color: "#68727D" }}>{booking?.service?.name}</span>
-                                    <span>{booking?.payment?.amount} KWD</span>
+                                    <span>{booking?.payment ===null ? 0:booking?.payment?.amount} KWD</span>
                                 </div>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ color: "#68727D" }}>Service Fee</span>
@@ -443,7 +437,7 @@ const statusCheck=()=>{
                                 <div style={{ borderBottom: "2px solid #e1e3ea" }}></div>
                                 <div className='d-flex justify-content-between align-items-center py-1'>
                                     <span style={{ fontWeight: "500" }}>Total</span>
-                                    <span style={{ color: "#006875", fontWeight: "500" }}>{booking?.payment?.amount +""+"KWD"} </span>
+                                    <span style={{ color: "#006875", fontWeight: "500" }}>{booking?.payment ===null ? 0:booking?.payment?.amount} KWD </span>
                                 </div>
                             </div>
                             <div className='d-flex p-4'>
@@ -479,7 +473,7 @@ const statusCheck=()=>{
                                     </div>
                                     <div>
                                         <p style={{ color: "#68727D" }}>Payment Date</p>
-                                        <p style={{ fontWeight: "500" }}>{new Date(booking?.payment?.created_at).toLocaleDateString("en-US",
+                                        <p style={{ fontWeight: "500" }}>{booking?.payment!==null && new Date(booking?.payment?.created_at).toLocaleDateString("en-US",
                                         {
                                             day: 'numeric',
                                             month: 'short',
@@ -517,7 +511,7 @@ const statusCheck=()=>{
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancelled On</p>
-                                        <p>{booking?.cancelled_date?.trim()!=="" ||booking?.cancelled_date!== null ?new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"None"}</p>
+                                        <p>{booking?.cancelled_date!== null ?new Date(booking?.cancelled_date).toLocaleDateString('en-US',{day:"2-digit",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"}):"None"}</p>
                                     </div>
                                     <div className='d-flex justify-content-between align-items-center'>
                                         <p>Cancellation Reason</p>
