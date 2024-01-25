@@ -6,6 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import { getCategoryList, getsubcategorylist,getServiceListing } from "../../services/service"
 import { getCompanyListing } from "../../services/offers"
+import { Visibility } from '@mui/icons-material';
 
 export default function FilterPopup({ open, handleClose,setIsLoading, setFilters,filters,setListPageUrl,setServiceList }) {
     const [active, setActive] = useState("Category")
@@ -22,7 +23,7 @@ export default function FilterPopup({ open, handleClose,setIsLoading, setFilters
         top: "50%",
         left: "50%",
         transform: "translate(-50%, -50%)",
-        maxWidth: "100%",
+        width: "65%",
         height: "95vh",
         bgcolor: "background.paper",
         // border: '2px solid #000',
@@ -208,7 +209,7 @@ const handleClearFilter=async()=>{
                         <CloseIcon />
                     </IconButton>
                     <div class="frame-427319784 mt-3">
-                        {<div class="components-selection-item">
+                        {filters.category.length > 0 && <div class="components-selection-item">
                             <div class="frame-427319782">
                                 <div class="frame-427319783">
                                     <div class="category">Category</div>
@@ -249,8 +250,8 @@ const handleClearFilter=async()=>{
                                     <div class="vendor">Sub Category</div>
                                     <div class="div">:</div>
                                 </div>
-                                <div style={{width:"50vw", display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
-                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
+                                <div style={{width:"50vw", display: "flex",flexWrap:filters.sub_category.length>5?"wrap":""}}>
+                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.sub_category.length>5?"wrap":""}}>
                                     {filters.sub_category.map((data)=>
                                     <div key={data.id} className='mx-1'>
                                         <span>{data.name}</span>
@@ -283,8 +284,8 @@ const handleClearFilter=async()=>{
                                     <div class="vendor">Vendor</div>
                                     <div class="div">:</div>
                                 </div>
-                                <div style={{width:"50vw", display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
-                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.category.length>5?"wrap":""}}>
+                                <div style={{width:"50vw", display: "flex",flexWrap:filters.vendor.length>5?"wrap":""}}>
+                                <div class="yacht-boat-heli-tour " style={{ display: "flex",flexWrap:filters.vendor.length>5?"wrap":""}}>
                                     {filters.vendor.map((data)=>
                                     <div key={data.id} className='mx-1'>
                                         <span>{data.name}</span>
@@ -402,6 +403,9 @@ const handleClearFilter=async()=>{
                                     aria-selected="false"
                                 >
                                     <span>Service Status</span>
+                                    <span className='py-1' style={{color:"white",fontSize:"12px",backgroundColor:active === "Service-Status" ?"#2176FF":"gray",width:"22px",height:"22px",borderRadius:"33px"}}>
+                                        {filters.status?"1":"1"}
+                                    </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Service-Status" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
                                     </svg>
@@ -527,13 +531,7 @@ const handleClearFilter=async()=>{
                                 aria-labelledby="v-pills-messages-tab"
                             >
                                 <h4>Service Status</h4>
-                                <input
-                                    type="text"
-                                    className="form-control"
-                                    placeholder="search"
-                                    style={{ width: 320 }}
-                                />
-                                <br />
+                                
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"

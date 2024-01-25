@@ -260,7 +260,7 @@ function ServiceList() {
                                     <button className="bg-black" style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }} onClick={()=>setOpen(true)}>
                                         <img src={filterIcon} alt="filter" width={25} />
                                         <span style={{position:"absolute",top:-10,left:20,color:"white",fontSize:"12px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px",padding:"3px"}}>
-                                        {filters.category.length+filters.sub_category.length+filters.vendor.length}                             </span>
+                                        {filters.category.length+filters.sub_category.length+filters.vendor.length}</span>
                                     </button>
                                 </div>
                             </div>
