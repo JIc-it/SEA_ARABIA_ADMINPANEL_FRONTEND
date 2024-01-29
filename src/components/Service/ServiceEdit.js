@@ -1200,7 +1200,7 @@ const ServiceEdit = () => {
                                     </div>
                                 </div>
 
-                                <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Return Policy</p>
+                                <p className="p-2 mt-2" style={{ fontWeight: "700" }}>Refund Policy</p>
                                 <textarea
                                     name="refund_policy"
                                     id=""
