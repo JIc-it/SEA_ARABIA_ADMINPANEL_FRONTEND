@@ -137,7 +137,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
 
         formik.setFieldValue(
           "idNumber",
-          data?.useridentificationdata?.id_number
+          data?.useridentificationdata?.id_number || ""
         );
         formik.setFieldValue("companyName", data?.company_company_user?.name);
         formik.setFieldValue(
@@ -289,9 +289,6 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
           return /\S/.test(value); // Checks if there is at least one non-whitespace character
         }
       ),
-    // companyWebsite: Yup.string()
-    //   .url("Invalid URL")
-    //   .required("Company Website is required"),
     defineServices: Yup.array()
       .min(1, "At least one service must be selected") // Adjust the minimum number of selected services as needed
       .required("Define Services is required"),

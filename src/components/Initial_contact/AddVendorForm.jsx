@@ -58,7 +58,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         console.error("Error fetching  data:", error);
       });
   }, []);
-
+  console.log(formik, "error");
   return (
     <>
       <div

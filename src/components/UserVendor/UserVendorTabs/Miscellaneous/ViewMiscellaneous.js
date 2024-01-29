@@ -44,17 +44,19 @@ function ViewMiscellaneous({ show, close, selectedData }) {
               }}
             >
               <div style={{ overflowX: "auto", maxWidth: "260px" }}>
-                <span>{fileName}</span>
+                <span>{fileName || ""}</span>
               </div>
-              <button
-                className="btn btn-sm btn-info px-4 py-1"
-                onClick={() => {
-                  console.log("check");
-                  setIsViewFile(true);
-                }}
-              >
-                View
-              </button>
+              {selectedData && selectedData.attachment && (
+                <button
+                  className="btn btn-sm btn-info px-4 py-1"
+                  onClick={() => {
+                    console.log("check");
+                    setIsViewFile(true);
+                  }}
+                >
+                  View
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -66,7 +68,9 @@ function ViewMiscellaneous({ show, close, selectedData }) {
             Notes
           </label>
           <br />
-          <span style={{ wordBreak: "break-all" }}>{selectedData && selectedData.note}</span>
+          <span style={{ wordBreak: "break-all" }}>
+            {selectedData && selectedData.note}
+          </span>
         </div>
         <div style={{ margin: "20px" }}>
           <label

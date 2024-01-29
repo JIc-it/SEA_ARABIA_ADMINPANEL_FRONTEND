@@ -75,7 +75,7 @@ function EditNegotiation({
             company: companyID,
             title: values.title,
             note: values.note,
-            attachment: values.files ? values.files : selectedData.attachment,
+            attachment: values.files ? values.files : null,
           };
 
           const adminData =
@@ -160,7 +160,7 @@ function EditNegotiation({
         <div className="upload-filename">
           <label htmlFor="">Uploaded File: </label>
           <span className="mx-2" style={{ wordBreak: "break-all" }}>
-            {formik.values.files ? formik.values.files.name : formatedFileName}
+            {formik.values.files ? formik.values.files.name : formatedFileName||''}
           </span>
         </div>
         <div style={{ margin: "20px" }}>

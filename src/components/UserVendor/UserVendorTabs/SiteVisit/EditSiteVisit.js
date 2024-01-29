@@ -75,7 +75,7 @@ function EditSiteVisit({
             company: companyID,
             title: values.title,
             note: values.note,
-            attachment: values.files ? values.files : selectedData.attachment,
+            attachment: values.files ? values.files : null,
             time: values.time,
             date: values.date,
           };
@@ -168,7 +168,7 @@ function EditSiteVisit({
           <span className="mx-2" style={{ wordBreak: "break-all" }}>
             {formik.values.files
               ? formik.values.files.name
-              : selectedData && formatedFileName}
+              : selectedData && formatedFileName||''}
           </span>
         </div>
         <div style={{ margin: "20px" }}>
