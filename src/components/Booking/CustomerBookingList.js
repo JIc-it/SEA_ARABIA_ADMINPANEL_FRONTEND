@@ -77,7 +77,7 @@ const CustomerBookingList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, []);
 
@@ -102,19 +102,6 @@ const CustomerBookingList = () => {
         });
   };
 
-  // const handleSearch = () => {
-  //   const Pass = { status: "", search: search, refund_status: "" };
-  //   getBookingList(Pass)
-  //     .then((data) => {
-  //       setIsLoading(false);
-  //       setListPageUrl({ next: data.next, previous: data.previous });
-  //       setBookingList(data?.results);
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       toast.error(error.response.data);
-  //     });
-  // };
   const getBookingSearchData = () => {
     const Pass = { status: "", search: search, refund_status: "" };
     getBookingList(Pass)
@@ -125,7 +112,7 @@ const CustomerBookingList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   };
   const [selectedValue, setSelectedValue] = useState("");

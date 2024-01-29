@@ -65,7 +65,7 @@ function ServiceList() {
       .catch((error) => {
         {
           setIsLoading(false);
-          toast.error(error.response.data);
+          toast.error(error.message);
         }
       });
   }, [search]);
@@ -105,7 +105,7 @@ function ServiceList() {
       .catch((error) => {
         {
           setIsLoading(false);
-          toast.error(error.response.data);
+          toast.error(error.message);
         }
       });
   }, []);

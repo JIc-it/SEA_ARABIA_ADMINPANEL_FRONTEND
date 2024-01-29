@@ -87,7 +87,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                     setIsLoading(false);
                 } catch (err) {
                     setIsLoading(false);
-                    toast.error(err.response.data)
+                    toast.error(err.message)
                     // console.log(err);
                 }
             }
@@ -117,7 +117,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                 setIsLoading(false);
             } catch (err) {
                 setIsLoading(false);
-                toast.error(err.response.data)
+                toast.error(err.message)
                 // console.log(err);
             }
         }

@@ -91,7 +91,7 @@ function UserVendorCardDetails({ venderDetails }) {
         })
         .catch((error) => {
           setIsLoadingService(false);
-          toast.error(error.response.data);
+          toast.error(error.message);
         });
     }
   }, [venderDetails?.company_company_user?.id]);
@@ -110,7 +110,7 @@ function UserVendorCardDetails({ venderDetails }) {
           setServiceList(data?.results);
         })
         .catch((error) => {
-          toast.error(error.response.data);
+          toast.error(error.message);
         });
   };
 

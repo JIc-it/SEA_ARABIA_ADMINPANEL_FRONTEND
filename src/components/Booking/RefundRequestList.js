@@ -75,7 +75,7 @@ const RefundRequestList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, [search]);
 
@@ -91,7 +91,7 @@ const RefundRequestList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, []);
 

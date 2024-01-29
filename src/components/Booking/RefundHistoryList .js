@@ -55,7 +55,7 @@ const RefundHistoryList  = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data)
+        toast.error(error.message)
       });
   }, [search]);
 
@@ -71,7 +71,7 @@ const RefundHistoryList  = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data)
+        toast.error(error.message)
       });
   },[])
 

@@ -83,7 +83,7 @@ const BookinList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, [search]);
 
@@ -100,7 +100,7 @@ const BookinList = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, []);
 
@@ -123,20 +123,6 @@ const BookinList = () => {
           setIsLoading(false);
           console.error("Error fetching  data:", error);
         });
-  };
-
-  const handleSearch = () => {
-    const Pass = { status: "", search: search, refund_status: "" };
-    getBookingList(Pass)
-      .then((data) => {
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setBookingList(data?.results);
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.response.data);
-      });
   };
 
   return (

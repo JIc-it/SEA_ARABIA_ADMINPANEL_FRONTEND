@@ -135,7 +135,7 @@ const Review = () => {
         })
         .catch((error) => {
           setReviewisLoading(false);
-          toast.error(error.response.data);
+          toast.error(error.message);
         });
   };
 
