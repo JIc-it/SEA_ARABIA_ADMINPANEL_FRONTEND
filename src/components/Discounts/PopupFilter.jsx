@@ -77,7 +77,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                     if (adminData) {
                         setIsLoading(false);
                         handleClose()
-                        setOffersList(adminData?.results);
+                        setOffersList(adminData.results);
                         setListPageUrl({ next: adminData.next, previous: adminData.previous });
                     } else {
                         setIsLoading(false);

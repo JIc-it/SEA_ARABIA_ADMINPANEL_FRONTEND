@@ -63,6 +63,7 @@ function DiscountListing() {
         const response = await UpdateStatus(itemId, data);
         if (response) {
           setIsLoading(false);
+          window.location.reload();
           setIsRefetch(!isRefetch);
         }
       } catch (error) {
@@ -110,18 +111,6 @@ function DiscountListing() {
         });
   };
 
-  const handleSearch = () => {
-    getDiscountOfferList(search)
-      .then((data) => {
-        setListPageUrl({ next: data?.next, previous: data?.previous });
-        setOffersList(data?.results);
-        // setIsLoading(false)
-      })
-      .catch((error) => {
-        // setIsLoading(false)
-        toast.error(error?.response?.data);
-      });
-  };
 
   const AddOfferWithPermission = WithPermission(
     CommonButtonForPermission,
@@ -373,19 +362,18 @@ function DiscountListing() {
                             <td>
                               <div style={{ display: "flex" }}>
                                 <label
-                                  class="switch"
+                                  className="switch"
                                   style={{ marginRight: "5px" }}
                                 >
                                   <input
                                     type="checkbox"
-                                    defaultChecked={item.is_enable}
-                                    value={item.is_enable}
+                                    checked={item.is_enable}
                                     onChange={(e) => handleToggle(item.id, e)}
                                   />
-                                  <span class="slider round"></span>
+                                  <span className="slider round"></span>
                                 </label>
                                 <div>
-                                  {item?.is_enable === true
+                                  {item.is_enable
                                     ? "ACTIVE"
                                     : "INACTIVE"}
                                 </div>
