@@ -110,6 +110,35 @@ function ServiceList() {
       });
   }, []);
 
+  const clearFilter = async () => {
+
+    setIsLoading(true);
+
+    if (!isLoading) {
+        try {
+            const adminData = await getServiceListing();
+
+            if (adminData) {
+              setFilters({category:[],sub_category:[],vendor:[],status:true});
+                setIsLoading(false);
+                setServiceList(adminData?.results);
+                setListPageUrl({ next: adminData.next, previous: adminData.previous });
+
+            } else {
+                setIsLoading(false);
+                toast.error(adminData.error.response.data)
+                //   console.error("Error while creating Admin:", adminData.error);
+            }
+            setIsLoading(false);
+        } catch (err) {
+            setIsLoading(false);
+            toast.error(err.message)
+            // console.log(err);
+        }
+    }
+}
+
+
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -290,6 +319,7 @@ function ServiceList() {
                                         {filters.category.length+filters.sub_category.length+filters.vendor.length}
                                     </span>
                   </button>
+                  <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
                 </div>
               </div>
             </div>
