@@ -208,7 +208,7 @@ const ServiceView = () => {
                       <div>
                         <p style={{ color: "#68727D" }}>Amenities</p>
                         <p style={{ fontWeight: "700" }}>
-                          {oneservice?.amenities?.map((data) => data.name)}
+                          {oneservice?.amenities?.length > 1 ? oneservice?.amenities?.map((data) => data.name+""+","):oneservice?.amenities?.map((data) => data.name)}
                         </p>
                       </div>
                     </div>
