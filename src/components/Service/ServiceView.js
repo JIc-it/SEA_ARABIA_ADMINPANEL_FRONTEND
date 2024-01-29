@@ -540,6 +540,14 @@ const ServiceView = () => {
                   <div className="d-flex">
                     <div className="col-12 px-2">
                       <div>
+                        <p style={{ color: "#68727D" }}>Refund Available</p>
+                        <p>{oneservice?.is_refundable?"Yes":"No"}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex">
+                    <div className="col-12 px-2">
+                      <div>
                         <p style={{ color: "#68727D" }}>Return Policy</p>
                         <p>{oneservice?.refund_policy}</p>
                       </div>
