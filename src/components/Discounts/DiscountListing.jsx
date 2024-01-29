@@ -137,6 +137,32 @@ function DiscountListing() {
     </svg>
   );
 
+  const clearFilter = async () => {
+
+    setIsLoading(true);
+
+    if (!isLoading) {
+        try {
+            const adminData = await getDiscountOfferList();
+
+            if (adminData) {
+                setIsLoading(false);
+                setOffersList(adminData?.results);
+                setListPageUrl({ next: adminData.next, previous: adminData.previous });
+
+            } else {
+                setIsLoading(false);
+                toast.error(adminData.error.response.data)
+                //   console.error("Error while creating Admin:", adminData.error);
+            }
+            setIsLoading(false);
+        } catch (err) {
+            setIsLoading(false);
+            toast.error(err.message)
+            // console.log(err);
+        }
+    }
+}
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -193,6 +219,7 @@ function DiscountListing() {
                     width={isMobileView ? 15 : 20}
                   />
                 </button>
+                <button className="mx-2 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
                 {openfilter && (
                   <PopupFilter
                     setListPageUrl={setListPageUrl}

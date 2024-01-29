@@ -132,7 +132,7 @@ export default function DiscountAddNew() {
 
   const formik = useFormik({
     initialValues: {
-      is_enable: false,
+      is_enable: true,
       image: null,
       name: "",
       coupon_code: "",
@@ -313,22 +313,34 @@ export default function DiscountAddNew() {
       const updatedList =
         existingServiceIndex !== -1
           ? [
-              ...prev.services.slice(0, existingServiceIndex),
-              ...companyData.map((dat) => ({
+            ...prev.services.slice(0, existingServiceIndex),
+            ...companyData
+              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
+              .map((dat) => ({
                 id: dat.id,
                 name: dat.name,
                 company_id: id,
               })),
-              ...prev.services.slice(existingServiceIndex + 1),
-            ]
+            ...prev.services.slice(existingServiceIndex + 1),
+          ]
           : [
-              ...prev.services,
-              ...companyData?.map((dat) => ({
+            ...prev.services,
+            ...companyData
+              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
+              .map((dat) => ({
                 id: dat.id,
                 name: dat.name,
                 company_id: id,
               })),
-            ];
+          ];
+
+          if (existingCompanyIndex !== -1) {
+            return {
+              ...prev,
+              services: prev.services.filter((service) => service.company_id !== id),
+              companies: prev.companies.filter((service) => service.id !== id),
+            };
+          }
 
       return {
         ...prev,
@@ -357,7 +369,7 @@ export default function DiscountAddNew() {
       const updatedList =
         existingServiceIndex === -1
           ? [...prev.services, { id: id, name: name, company_id: companyid }]
-          : prev.services;
+          : prev.services.filter((service) => service.id !== id);
 
       return {
         ...prev,
@@ -380,6 +392,7 @@ export default function DiscountAddNew() {
     return serviceCount.length;
   }
 
+  console.log(formik.values);
   if (!isLoading) {
     return (
       <>
@@ -426,7 +439,7 @@ export default function DiscountAddNew() {
             </div>
           </div>
 
-          <form onSubmit={formik.handleSubmit} style={{ padding: "1rem" }}>
+          <form onSubmit={formik.handleSubmit}>
             <div
               className="container"
               style={{
