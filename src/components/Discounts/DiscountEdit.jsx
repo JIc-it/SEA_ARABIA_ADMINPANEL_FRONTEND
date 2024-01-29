@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountEdit() {
+    const navigate = useNavigate();
     const [servicelisting,setServiceListing]=useState([])
     const [isLoading, setIsLoading] = useState(false)
     const params=useParams()
@@ -196,6 +197,7 @@ export default function DiscountEdit() {
 
             if (adminData) {
               setIsLoading(false);
+              navigate(-1)
               toast.success("Updated Successfully")
               setIsUpdated(true)
             } else {
@@ -252,7 +254,7 @@ export default function DiscountEdit() {
           })
           .catch((error) => {
             setIsLoading(false)
-            toast.error(error.response.data);
+            toast.error(error.message);
           });
     
       }, [params.id,isupdated]);
@@ -261,7 +263,6 @@ export default function DiscountEdit() {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    const navigate = useNavigate();
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 
@@ -495,7 +496,7 @@ if(!isLoading){
                         <div>
                         <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px" }}>Redemption Type</p>
                             <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-between'}>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "One-Time",specify_no:1 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "One-Time",specify_no:1,allow_multiple_redeem:"One-Time" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -509,7 +510,7 @@ if(!isLoading){
                                     <Typography variant="body1">One-Time</Typography>
                                     <Radio name={formik.values.redemption_type} checked={formik.values.redemption_type === "One-Time"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Unlimited",specify_no:9999 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Unlimited",specify_no:9999,allow_multiple_redeem:"" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -524,7 +525,7 @@ if(!isLoading){
                                     <Typography variant="body1">Unlimited</Typography>
                                     <Radio  name={formik.values.redemption_type} checked={formik.values.redemption_type === "Unlimited"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0,allow_multiple_redeem:"" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',

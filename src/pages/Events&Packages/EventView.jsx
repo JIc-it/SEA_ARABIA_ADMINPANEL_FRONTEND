@@ -35,7 +35,7 @@ const EventView = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, [params.id]);
 

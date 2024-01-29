@@ -36,7 +36,7 @@ const ServiceView = () => {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
       });
   }, [params.id]);
 
@@ -208,7 +208,7 @@ const ServiceView = () => {
                       <div>
                         <p style={{ color: "#68727D" }}>Amenities</p>
                         <p style={{ fontWeight: "700" }}>
-                          {oneservice?.amenities?.map((data) => data.name)}
+                          {oneservice?.amenities?.length > 1 ? oneservice?.amenities?.map((data) => data.name+""+","):oneservice?.amenities?.map((data) => data.name)}
                         </p>
                       </div>
                     </div>
@@ -534,6 +534,14 @@ const ServiceView = () => {
                       <div>
                         <p style={{ color: "#68727D" }}>Privacy Policy</p>
                         <p>{oneservice?.cancellation_policy}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex">
+                    <div className="col-12 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Refund Available</p>
+                        <p>{oneservice?.is_refundable?"Yes":"No"}</p>
                       </div>
                     </div>
                   </div>

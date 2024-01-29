@@ -48,7 +48,7 @@ export default function DiscountView() {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error.response.data);
+        toast.error(error.message);
         console.error("Error fetching data:", error);
       })
       .finally(() => {

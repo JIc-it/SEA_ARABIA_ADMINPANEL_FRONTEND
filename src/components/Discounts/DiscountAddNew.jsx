@@ -639,6 +639,7 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "One-Time",
                         specify_no: 1,
+                        allow_multiple_redeem:"One-Time"
                       })
                     }
                     style={{
@@ -666,6 +667,7 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "Unlimited",
                         specify_no: 9999,
+                        allow_multiple_redeem:""
                       })
                     }
                     style={{
@@ -694,6 +696,7 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "Limited-Number",
                         specify_no: 0,
+                        allow_multiple_redeem:""
                       })
                     }
                     style={{

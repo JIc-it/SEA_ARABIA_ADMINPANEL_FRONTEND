@@ -77,7 +77,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                     if (adminData) {
                         setIsLoading(false);
                         handleClose()
-                        setOffersList(adminData?.results);
+                        setOffersList(adminData.results);
                         setListPageUrl({ next: adminData.next, previous: adminData.previous });
                     } else {
                         setIsLoading(false);
@@ -87,7 +87,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                     setIsLoading(false);
                 } catch (err) {
                     setIsLoading(false);
-                    toast.error(err.response.data)
+                    toast.error(err.message)
                     // console.log(err);
                 }
             }
@@ -117,7 +117,7 @@ export default function PopupFilter({ open, handleClose, handleOpen,setListPageU
                 setIsLoading(false);
             } catch (err) {
                 setIsLoading(false);
-                toast.error(err.response.data)
+                toast.error(err.message)
                 // console.log(err);
             }
         }

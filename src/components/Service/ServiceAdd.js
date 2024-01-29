@@ -3,6 +3,8 @@ import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useFormik } from "formik";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -403,20 +405,6 @@ const ServiceAdd = () => {
             return prev;
         });
     };
-    const amenitiesstore = (id, name, image) => {
-        formik.setValues((prev) => {
-            const isCategoryExists = prev?.amenities?.some((category) => category.id === id);
-
-            if (!isCategoryExists) {
-                return {
-                    ...prev,
-                    amenities: [...prev.amenities, { id: id, name: name, image: image }]
-                };
-            }
-
-            return prev;
-        });
-    };
 
     const handleIncrement = (fieldName) => {
         formik.setFieldValue(fieldName, formik.values[fieldName] + 1);
@@ -541,6 +529,17 @@ const ServiceAdd = () => {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
+
+    const serviceListFilterData =
+    formik.values.amenities && formik.values.amenities.length > 0
+      ? amenitieslist &&
+      amenitieslist.length > 0 &&
+      amenitieslist.filter((item) => {
+          return !formik.values.amenities.some(
+            (refItem) => refItem.id === item.id
+          );
+        })
+      : amenitieslist || [];
 
     return (
         <>
@@ -861,37 +860,30 @@ const ServiceAdd = () => {
                                                 >
                                                     Amenities <span style={{ color: "red" }}>*</span>
                                                 </label>
-                                                <select
-                                                    className="form-control"
+                                                <Autocomplete
+                                                    multiple
+                                                    size="small"
+                                                    id="multiple-limit-tags"
+                                                    options={serviceListFilterData || []}
                                                     name="amenities"
-                                                    // value={formik.values.subcategory}
-                                                    // onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    onChange={(e) => {
-                                                        formik.handleChange(e)
-                                                        const selectedCategory = e.target.value;
-                                                        const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
-                                                        if(selectedCategory==="Choose"){
-                                                            formik.setFieldValue("amenities",[])
-                                                        }
-                                                        if (selectedCategoryData) {
-                                                            amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
-                                                        }
+                                                    getOptionLabel={(option) =>
+                                                        `${option.name} `
+                                                    }
+                                                    value={formik.values.amenities} // set the value prop
+                                                    onChange={(event, newValue) => {
+                                                        formik.setFieldValue(
+                                                            "amenities",
+                                                            newValue
+                                                        ); // use setFieldValue to update the field
                                                     }}
-                                                >
-                                                   
-
-                                                   <option value={null}>
-                                                                Choose
-                                                            </option>
-                                                        {amenitieslist?.map((data) => (
-                                                            <option key={data.id} value={data.id}>
-                                                                {data.name}
-                                                            </option>
-                                                        ))}
-                                                   
-
-                                                </select>
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            placeholder="Services"
+                                                            size="small"
+                                                        />
+                                                    )}
+                                                />
                                                 {formik.touched.amenities && formik.errors.amenities ? (
                                                     <div className="error">{formik.errors.amenities}</div>
                                                 ) : null}

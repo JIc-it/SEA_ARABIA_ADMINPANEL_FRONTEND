@@ -41,7 +41,7 @@ export default function PerDateTable({data,formik,setIsUpdated}) {
             DeleteOnePrice(id)
             .then((data) => { toast.success(data?.message); setIsUpdated(true) }
             ).catch((error) =>
-                toast.error(error.response.data))
+                toast.error(error.message))
         }
       };
       const check=data?.some((data)=>data.date)  
