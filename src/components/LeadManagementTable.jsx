@@ -24,7 +24,7 @@ import {
 } from "./Permissions/PermissionConstants";
 import { MainPageContext } from "../Context/MainPageContext";
 
-function Table() {
+function Table({isRefetch, setIsRefetch}) {
   const { userPermissionList } = useContext(MainPageContext);
   const dispatch = useDispatch();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -35,7 +35,6 @@ function Table() {
     next: null,
     previous: null,
   });
-  const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 

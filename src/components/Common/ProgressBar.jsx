@@ -257,7 +257,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       .required("ID Number is required")
       .test(
         "is-not-blank",
-        "ID Type must not contain only blank spaces",
+        "ID Number must not contain only blank spaces",
         (value) => {
           return /\S/.test(value); // Checks if there is at least one non-whitespace character
         }
@@ -493,7 +493,7 @@ function ProgressBar({ locationList, isOnBoard, setIsOnBoard }) {
       );
       const passdata = {
         email: formik.values.email,
-        mobile: formik.values.phone,
+        mobile: `+965 ${formik.values.phone}`,
         first_name: formik.values.fullName,
         last_name: formik.values.last_name,
         location: formik.values.location?.id,

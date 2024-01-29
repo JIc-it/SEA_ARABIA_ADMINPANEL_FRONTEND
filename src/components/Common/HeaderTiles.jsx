@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { getVendorLeadCount } from "../../services/leadMangement";
 
-function HeaderTiles(props) {
+function HeaderTiles({ isRefetch, setIsRefetch }) {
   const [leadCount, setLeadCount] = useState({
     totalCount: 0,
     leadThisWeek: 0,
@@ -22,7 +22,7 @@ function HeaderTiles(props) {
       .catch((error) => {
         console.error("Error fetching  data:", error);
       });
-  }, []);
+  }, [isRefetch]);
 
   return (
     <div className="row row-cards">
