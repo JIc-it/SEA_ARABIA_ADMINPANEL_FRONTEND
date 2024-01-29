@@ -3,6 +3,8 @@ import { Breadcrumb } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { useFormik } from "formik";
+import TextField from "@mui/material/TextField";
+import Autocomplete from "@mui/material/Autocomplete";
 import * as Yup from "yup";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -394,20 +396,17 @@ const ServiceEdit = () => {
             return prev;
         });
     };
-    const amenitiesstore = (id, name, image) => {
-        formik.setValues((prev) => {
-            const isCategoryExists = prev.amenities.some((category) => category.id === id);
-
-            if (!isCategoryExists) {
-                return {
-                    ...prev,
-                    amenities: [...prev.amenities, { id: id, name: name, image: image }]
-                };
-            }
-
-            return prev;
-        });
-    };
+ 
+    const serviceListFilterData =
+    formik.values.amenities && formik.values.amenities.length > 0
+      ? amenitieslist &&
+      amenitieslist.length > 0 &&
+      amenitieslist.filter((item) => {
+          return !formik.values.amenities.some(
+            (refItem) => refItem.id === item.id
+          );
+        })
+      : amenitieslist || [];
 
     const handleIncrement = (fieldName) => {
         formik.setFieldValue(fieldName, formik.values[fieldName] + 1);
@@ -823,37 +822,30 @@ const ServiceEdit = () => {
                                                 >
                                                     Amenities
                                                 </label>
-                                                <select
-                                                    className="form-control"
+                                                <Autocomplete
+                                                    multiple
+                                                    size="small"
+                                                    id="multiple-limit-tags"
+                                                    options={serviceListFilterData || []}
                                                     name="amenities"
-
-                                                    onChange={(e) => {
-                                                        formik.handleChange(e)
-                                                        const selectedCategory = e.target.value;
-                                                        const selectedCategoryData = amenitieslist.find(category => category.id === selectedCategory);
-                                                        if (selectedCategoryData) {
-                                                            amenitiesstore(selectedCategoryData.id, selectedCategoryData.name, selectedCategoryData.image);
-                                                        }
+                                                    getOptionLabel={(option) =>
+                                                        `${option.name} `
+                                                    }
+                                                    value={formik.values.amenities} // set the value prop
+                                                    onChange={(event, newValue) => {
+                                                        formik.setFieldValue(
+                                                            "amenities",
+                                                            newValue
+                                                        ); // use setFieldValue to update the field
                                                     }}
-                                                >
-                                                    <optgroup label="Selected Amenities">
-                                                        {formik.values.amenities?.map((data) => (
-                                                            <option selected key={data.id} value={data.id}>
-                                                                {data.name}
-                                                            </option>
-                                                        ))}
-                                                    </optgroup>
-
-
-                                                    <optgroup label="Amenities List">
-                                                        {amenitieslist?.map((data) => (
-                                                            <option key={data.id} value={data.id}>
-                                                                {data.name}
-                                                            </option>
-                                                        ))}
-                                                    </optgroup>
-
-                                                </select>
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            {...params}
+                                                            placeholder="Services"
+                                                            size="small"
+                                                        />
+                                                    )}
+                                                />
                                             </div>
 
 
