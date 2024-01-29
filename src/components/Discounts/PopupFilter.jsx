@@ -378,9 +378,15 @@ console.log(formik);
                                     </div> */}
                                         <br />
                                         <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="" id="Boat" name="status" checked={formik.values.status} style={{ width: 20, height: 20 }} onBlur={formik.handleBlur} onChange={formik.handleChange} />
+                                            <input class="form-check-input" type="radio" value="" id="Boat" name="status" checked={formik.values.status===true} style={{ width: 20, height: 20 }} onBlur={formik.handleBlur} onChange={()=>formik.setFieldValue("status",true)} />
                                             <label class="form-check-label" for="Boat">
-                                                {formik.values.status === true ? "Active" : "Inactive"}
+                                                {"Active"}
+                                            </label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" value="" id="Boat" name="status" checked={formik.values.status===false} style={{ width: 20, height: 20 }} onBlur={formik.handleBlur} onChange={()=>formik.setFieldValue("status",false)} />
+                                            <label class="form-check-label" for="Boat">
+                                                {"Inactive"}
                                             </label>
                                         </div>
                                         {/* <div class="form-check">

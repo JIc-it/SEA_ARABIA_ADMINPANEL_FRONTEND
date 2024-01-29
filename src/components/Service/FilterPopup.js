@@ -57,19 +57,20 @@ export default function FilterPopup({ open, handleClose,setIsLoading, setFilters
 
     const handleFilterCategory = (e) => {
         const { name, value } = e.target;
-
+      
         setFilters((prevFilters) => {
           // Check if category already has data
           const categoryArray = prevFilters.category.length > 0 ? prevFilters.category : [];
       
           // Check if the value already exists in the category array
-          const existingCategory = categoryArray.find((item) => item.id === value);
+          const existingCategoryIndex = categoryArray.findIndex((item) => item.id === value);
       
-          // If the value doesn't exist, add it; otherwise, update the existing one
-          const updatedCategory = existingCategory
-            ? categoryArray.map((item) =>
-                item.id === value ? { ...item, name } : item
-              )
+          // If the value exists, remove it; otherwise, add or update it
+          const updatedCategory = existingCategoryIndex !== -1
+            ? [
+                ...categoryArray.slice(0, existingCategoryIndex),
+                ...categoryArray.slice(existingCategoryIndex + 1)
+              ]
             : [...categoryArray, { id: value, name }];
       
           return {
@@ -79,56 +80,60 @@ export default function FilterPopup({ open, handleClose,setIsLoading, setFilters
         });
       };
       
+      
 
-    const handleFilterSubCategory = (e) => {
+      const handleFilterSubCategory = (e) => {
         const { name, value } = e.target;
-
+      
         setFilters((prevFilters) => {
-          // Check if category already has data
-          const categoryArray = prevFilters.sub_category.length > 0 ? prevFilters.sub_category : [];
+          // Check if sub_category already has data
+          const subCategoryArray = prevFilters.sub_category.length > 0 ? prevFilters.sub_category : [];
       
-          // Check if the value already exists in the category array
-          const existingCategory = categoryArray.find((item) => item.id === value);
+          // Check if the value already exists in the sub_category array
+          const existingSubCategoryIndex = subCategoryArray.findIndex((item) => item.id === value);
       
-          // If the value doesn't exist, add it; otherwise, update the existing one
-          const updatedCategory = existingCategory
-            ? categoryArray.map((item) =>
-                item.id === value ? { ...item, name } : item
-              )
-            : [...categoryArray, { id: value, name }];
+          // If the value exists, remove it; otherwise, add or update it
+          const updatedSubCategory = existingSubCategoryIndex !== -1
+            ? [
+                ...subCategoryArray.slice(0, existingSubCategoryIndex),
+                ...subCategoryArray.slice(existingSubCategoryIndex + 1)
+              ]
+            : [...subCategoryArray, { id: value, name }];
       
           return {
             ...prevFilters,
-            sub_category: updatedCategory,
+            sub_category: updatedSubCategory,
           };
         });
-    };
+      };
+      
 
 
-    const handleFilterVendor = (e) => {
+      const handleFilterVendor = (e) => {
         const { name, value } = e.target;
-
+      
         setFilters((prevFilters) => {
-          // Check if category already has data
-          const categoryArray = prevFilters.vendor.length > 0 ? prevFilters.vendor : [];
+          // Check if vendor already has data
+          const vendorArray = prevFilters.vendor.length > 0 ? prevFilters.vendor : [];
       
-          // Check if the value already exists in the category array
-          const existingCategory = categoryArray.find((item) => item.id === value);
+          // Check if the value already exists in the vendor array
+          const existingVendorIndex = vendorArray.findIndex((item) => item.id === value);
       
-          // If the value doesn't exist, add it; otherwise, update the existing one
-          const updatedCategory = existingCategory
-            ? categoryArray.map((item) =>
-                item.id === value ? { ...item, name } : item
-              )
-            : [...categoryArray, { id: value, name }];
+          // If the value exists, remove it; otherwise, add or update it
+          const updatedVendor = existingVendorIndex !== -1
+            ? [
+                ...vendorArray.slice(0, existingVendorIndex),
+                ...vendorArray.slice(existingVendorIndex + 1)
+              ]
+            : [...vendorArray, { id: value, name }];
       
           return {
             ...prevFilters,
-            vendor: updatedCategory,
+            vendor: updatedVendor,
           };
         });
-    };
-
+      };
+      
 
     const findAndRemoveCategory = (field,data) => {
        if(field==="Category"){
@@ -535,19 +540,39 @@ const handleClearFilter=async()=>{
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"
-                                        type="checkbox"
+                                        type="radio"
+                                        name="status"
                                         value=""
                                         id=""
-                                        checked={filters.status}
+                                        checked={filters.status===true}
                                         onChange={(e)=>{
                                             setFilters((prev)=>{
-                                                return {...prev,status:!filters.status}
+                                                return {...prev,status:true}
                                             })
                                         }}
                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {filters.status?"Active":"Inactive"}
+                                        {"Active"}
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input
+                                        class="form-check-input"
+                                        type="radio"
+                                        satatus="status"
+                                        value=""
+                                        id=""
+                                        checked={filters.status===false}
+                                        onChange={(e)=>{
+                                            setFilters((prev)=>{
+                                                return {...prev,status:false}
+                                            })
+                                        }}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Inactive"}
                                     </label>
                                 </div>
                               

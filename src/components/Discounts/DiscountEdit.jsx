@@ -288,70 +288,94 @@ const convertAndFormatDateTime = (dateTimeString) => {
     }));
 };
 
-const updateServiceIndex = (id, name,servid, companyData) => {
+const updateServiceIndex = (id, name, servid, companyData) => {
     formik.setValues((prev) => {
-        const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === id);
-        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === servid && service.company_id === id);
+      const existingCompanyIndex = (prev?.companies || []).findIndex(
+        (company) => company.id === id
+      );
+      const existingServiceIndex = (prev?.services || []).findIndex(
+        (service) => service.id === servid && service.company_id === id
+      );
 
-        // Update companies list
-        const updatedCompanyList =
-            existingCompanyIndex !== -1
-                ? [
-                      ...prev.companies.slice(0, existingCompanyIndex),
-                      { id: id, name: name },
-                      ...prev.companies.slice(existingCompanyIndex + 1),
-                  ]
-                : [
-                      ...prev.companies,
-                      { id: id, name: name },
-                  ];
+      // Update companies list
+      const updatedCompanyList =
+        existingCompanyIndex !== -1
+          ? [
+              ...prev.companies.slice(0, existingCompanyIndex),
+              { id: id, name: name },
+              ...prev.companies.slice(existingCompanyIndex + 1),
+            ]
+          : [...prev.companies, { id: id, name: name }];
 
-        // Update services list
-        const updatedList =
-            existingServiceIndex !== -1
-                ? [
-                      ...prev.services.slice(0, existingServiceIndex),
-                      ...companyData.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
-                      ...prev.services.slice(existingServiceIndex + 1),
-                  ]
-                : [
-                      ...prev.services,
-                      ...companyData?.map((dat) => ({ id: dat.id, name: dat.name, company_id: id })),
-                  ];
+      // Update services list
+      const updatedList =
+        existingServiceIndex !== -1
+          ? [
+            ...prev.services.slice(0, existingServiceIndex),
+            ...companyData
+              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
+              .map((dat) => ({
+                id: dat.id,
+                name: dat.name,
+                company_id: id,
+              })),
+            ...prev.services.slice(existingServiceIndex + 1),
+          ]
+          : [
+            ...prev.services,
+            ...companyData
+              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
+              .map((dat) => ({
+                id: dat.id,
+                name: dat.name,
+                company_id: id,
+              })),
+          ];
 
-        return {
-            ...prev,
-            services: updatedList,
-            companies: updatedCompanyList,
-        };
+          if (existingCompanyIndex !== -1) {
+            return {
+              ...prev,
+              services: prev.services.filter((service) => service.company_id !== id),
+              companies: prev.companies.filter((service) => service.id !== id),
+            };
+          }
+
+      return {
+        ...prev,
+        services: updatedList,
+        companies: updatedCompanyList,
+      };
     });
-};
+  };
 
-
-const updateOneServiceIndex = (id, name, companyid, companyName) => {
+  const updateOneServiceIndex = (id, name, companyid, companyName) => {
     formik.setValues((prev) => {
-        const existingServiceIndex = (prev?.services || []).findIndex((service) => service.id === id && service.company_id === companyid);
-        const existingCompanyIndex = (prev?.companies || []).findIndex((company) => company.id === companyid);
+      const existingServiceIndex = (prev?.services || []).findIndex(
+        (service) => service.id === id && service.company_id === companyid
+      );
+      const existingCompanyIndex = (prev?.companies || []).findIndex(
+        (company) => company.id === companyid
+      );
 
-        // Update companies list
-        const updatedCompanyList =
-            existingCompanyIndex === -1
-                ? [...(prev.companies || []), { id: companyid, name: companyName }]
-                : prev.companies;
+      // Update companies list
+      const updatedCompanyList =
+        existingCompanyIndex === -1
+          ? [...(prev.companies || []), { id: companyid, name: companyName }]
+          : prev.companies;
 
-        // Update services list
-        const updatedList =
-            existingServiceIndex === -1
-                ? [...prev.services, { id: id, name: name, company_id: companyid }]
-                : prev.services;
+      // Update services list
+      const updatedList =
+        existingServiceIndex === -1
+          ? [...prev.services, { id: id, name: name, company_id: companyid }]
+          : prev.services.filter((service) => service.id !== id);
 
-        return {
-            ...prev,
-            services: updatedList,
-            companies: updatedCompanyList,
-        };
+      return {
+        ...prev,
+        services: updatedList,
+        companies: updatedCompanyList,
+      };
     });
-};
+  };
 
 
 
@@ -397,7 +421,7 @@ if(!isLoading){
                     </div>
                 </div>
 
-                <form onSubmit={formik.handleSubmit} style={{ padding: "1rem" }}>
+                <form onSubmit={formik.handleSubmit}>
                     <div className='container' style={{ backgroundColor: "white", width: "90%", padding: "2%", marginTop: "2%", borderRadius: "5px" }}>
                         <p style={{ fontWeight: "600", fontSize: "16px" }}>Discount Details</p>
                         <div className={isMobileView?"d-flex flex-column":'d-flex'}>
