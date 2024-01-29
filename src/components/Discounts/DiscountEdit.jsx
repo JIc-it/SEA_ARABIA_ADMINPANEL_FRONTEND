@@ -496,7 +496,7 @@ if(!isLoading){
                         <div>
                         <p style={{ fontWeight: 550, fontSize: "14px",marginTop:"8px" }}>Redemption Type</p>
                             <div className={isMobileView?"d-flex flex-column":'d-flex justify-content-between'}>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "One-Time",specify_no:1 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "One-Time",specify_no:1,allow_multiple_redeem:"One-Time" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -510,7 +510,7 @@ if(!isLoading){
                                     <Typography variant="body1">One-Time</Typography>
                                     <Radio name={formik.values.redemption_type} checked={formik.values.redemption_type === "One-Time"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Unlimited",specify_no:9999 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Unlimited",specify_no:9999,allow_multiple_redeem:"" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
@@ -525,7 +525,7 @@ if(!isLoading){
                                     <Typography variant="body1">Unlimited</Typography>
                                     <Radio  name={formik.values.redemption_type} checked={formik.values.redemption_type === "Unlimited"} />
                                 </Paper>
-                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0 })}
+                                <Paper onClick={() => updateFormValues({ ...formik.values, redemption_type: "Limited-Number",specify_no:0,allow_multiple_redeem:"" })}
                                     style={{
                                         display: 'flex',
                                         justifyContent: 'space-between',
