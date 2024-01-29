@@ -15,6 +15,7 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
 export default function DiscountEdit() {
+    const navigate = useNavigate();
     const [servicelisting,setServiceListing]=useState([])
     const [isLoading, setIsLoading] = useState(false)
     const params=useParams()
@@ -196,6 +197,7 @@ export default function DiscountEdit() {
 
             if (adminData) {
               setIsLoading(false);
+              navigate(-1)
               toast.success("Updated Successfully")
               setIsUpdated(true)
             } else {
@@ -261,7 +263,6 @@ export default function DiscountEdit() {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    const navigate = useNavigate();
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
 
 

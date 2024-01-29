@@ -28,7 +28,8 @@ const ServiceEdit = () => {
     const theme = useTheme();
     const [isLoading, setIsLoading] = useState(false)
     const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
-    const params = useParams()
+    const params = useParams();
+    const navigate=useNavigate();
     const [isupdated, setIsUpdated] = useState(false);
 
     const ServiceImagebjectSchema = Yup.object({
@@ -222,6 +223,7 @@ const ServiceEdit = () => {
 
                     if (adminData) {
                         setIsLoading(false);
+                        navigate(-1)
                         toast.success("Updated Successfully")
                         setIsUpdated(true)
                     } else {
@@ -236,7 +238,6 @@ const ServiceEdit = () => {
             }
         },
     });
-    const navigate = useNavigate()
     const [hovereffect, setHoverEffect] = useState("");
     const [categorylist, setCategoryList] = useState([]);
     const [ProfitMethods, setProfitMethods] = useState([])
