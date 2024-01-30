@@ -28,6 +28,7 @@ const style = {
 
 const CustomerBookingList = () => {
   const customerId = useParams()?.id;
+  console.log("cus id", customerId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -50,19 +51,20 @@ const CustomerBookingList = () => {
 
     getBookingList(Pass)
       .then((data) => {
-        // console.log("booking list data", data);
+        console.log("booking list data", data);
 
         const filteredBooking = data?.results?.filter(
           (booking) =>
-            booking.user?.id === customerId || booking?.guest?.id === customerId
+            booking?.user?.id === customerId ||
+            booking?.guest?.id === customerId
         );
-        // console.log("filtered bookk------", filteredBooking);
+        console.log("filtered bookk------", filteredBooking);
         setBookingList(filteredBooking);
       })
       .catch((error) => {
         console.error("error fetching customer booking list", error);
       });
-  }, [customerId, setBookingList]);
+  }, [customerId,bookingList]);
 
   useEffect(() => {
     getBookingCount()
@@ -370,6 +372,7 @@ const CustomerBookingList = () => {
                             bookingList.map((data) => (
                               <tr>
                                 <td>
+                                  {console.log("item book", bookingList)}
                                   <span className="text-secondary">
                                     {data.booking_id}
                                   </span>
