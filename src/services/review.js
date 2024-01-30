@@ -11,7 +11,7 @@ export const getCategoryist = () => {
 };
 export const getSubCategoryist = (id) => {
   return axiosInstance
-    .get("main/subcategory-list",{params:{category:id}})
+    .get("main/subcategory-list", { params: { category: id } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -20,7 +20,7 @@ export const getSubCategoryist = (id) => {
 };
 export const getServiceFilterList = (data) => {
   return axiosInstance
-    .get("service/service-filter-list-cms",{params:{search:data.search,company:data?.company,category:data?.categoryid,sub_category:data?.subcategoryid}})
+    .get("service/service-filter-list-cms", { params: { search: data.search, company: data?.company, category: data?.categoryid, sub_category: data?.subcategoryid } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -29,16 +29,16 @@ export const getServiceFilterList = (data) => {
 };
 export const getServiceReviewFilter = (rating) => {
   return axiosInstance
-    .get(`service/service-review-list`,{params:{rating:rating}})
+    .get(`service/service-review-list`, { params: { rating: rating } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
       throw error;
     });
 };
-export const getServiceReviewFilter2 = (id,rating) => {
+export const getServiceReviewFilter2 = (id, rating) => {
   return axiosInstance
-    .get(`service/service-review-list`,{params:{service_id:id,rating:rating}})
+    .get(`service/service-review-list`, { params: { service_id: id, rating: rating } })
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -48,39 +48,34 @@ export const getServiceReviewFilter2 = (id,rating) => {
 
 
 export const createAvailablity = async (data) => {
-  console.log('data:', data);
-
   try {
     if (data) {
-      // Use JSON.stringify to convert the payload to JSON format
+      const timeAsString = data.time.toString();
       const jsonData = JSON.stringify({
-        service: data.service,
-        // date: data.date,
-        // time: 5,
-        // update_type: 'time',
-      });
-
+        time: timeAsString,
+        // service: data.service,
+        // update_type:'time'
+        //   // date: data.date,
+        // time: data.time
+      })
       const response = await axiosInstance.patch(
-        `service/update-availability/${data.service}/${data.date}/`,
+        `service/update-availability/${data.service}/${data.date}/${data.update_type}/`,
         jsonData,
-
         {
-          headers: {
-            'Content-Type': 'application/json', // Use 'application/json' for JSON payloads
-          }, params: {
-            date: data.date,
-            time: data.time,
-            update_type: 'time',
+          headers: { "Content-Type": "application/json", Accept: "*/*" }
+          , params: {
+
+            // update_type:'time',
+            // time: data.time,
           }
         }
       );
 
-      // Return the response data
       return response.data;
     }
   } catch (error) {
     console.error("Error while updating availability:", error);
-    throw error; // Re-throw the error for handling in the calling code
+    throw error;
   }
 };
 
@@ -105,11 +100,11 @@ export const subcategoryIdFilter = (id) => {
 };
 
 
-export const getBookServiceFilter = (id,date) => {
-  const [year,month,day] = date.split('-');
+export const getBookServiceFilter = (id, date) => {
+  const [year, month, day] = date.split('-');
 
-// Create the reversed date string
-const reversedDate = `${day}-${month}-${year}`;
+  // Create the reversed date string
+  const reversedDate = `${day}-${month}-${year}`;
 
   return axiosInstance
     .get(`service/availability-retrieve/${reversedDate}/${id}`)
