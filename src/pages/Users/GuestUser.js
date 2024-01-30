@@ -47,10 +47,11 @@ const GuestUser = () => {
         console.error("Error fetching lead data:", error);
       });
   }, []);
-
+  const handleBookingButtonClick = () => {
+    navigate(`/bookings/${guestId}`);
+  };
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
-
 
   const getGuestSearchData = async () => {
     getGuestUserRequest(search, selectedValue)
@@ -154,7 +155,7 @@ const GuestUser = () => {
         console.error("Error fetching data:", error.message);
       });
   };
- 
+
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className="container">
@@ -305,13 +306,14 @@ const GuestUser = () => {
                               alignItems: "baseline",
                             }}
                           >
-                            <Link
+                            <a
                               to={""}
                               className="btn btn-sm btn-info"
                               style={{
                                 padding: "6px 10px",
                                 borderRadius: "4px",
                               }}
+                              href={`/bookings/${rw_data.id}`}
                             >
                               Booking &nbsp;
                               <svg
@@ -329,7 +331,7 @@ const GuestUser = () => {
                                   strokeLinejoin="round"
                                 />
                               </svg>
-                            </Link>
+                            </a>
                           </td>
                         )}
                     </tr>

@@ -8,8 +8,6 @@ import UploadFiles from "../Common/UploadFile";
 import { getCustomerListById } from "../../services/CustomerHandle";
 import CustomerEditModal from "./CustomerEditModal";
 import CustomerPasswordReset from "./CustomerPasswordReset";
-import PasswordIcon from "../../assets/images/PasswordIcon.png";
-import Pen from "../../assets/images/Pen 2.png";
 import {
   menuIdConstant,
   permissionCategory,
@@ -35,8 +33,13 @@ function CustomerCardDetails() {
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
+
   const customerId = useParams()?.customerId;
   console.log("customer id", customerId);
+
+  const handleBookingButtonClick = () => {
+    navigate(`/bookings/${customerId}`);
+  };
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
@@ -89,6 +92,7 @@ function CustomerCardDetails() {
     permissionCategory.resetPassword,
     menuIdConstant.users,
     handleOpenOffcanvasPassword,
+
     "btn mt-2 px-4 py-2",
     "Reset Password",
     { backgroundColor: "#187AF7", color: "white" },
@@ -116,12 +120,14 @@ function CustomerCardDetails() {
     CommonButtonForPermission,
     permissionCategory.bookingCancel,
     menuIdConstant.booking,
-    () => {},
+    handleBookingButtonClick,
+    // () => {},
     "call_vendor_button btn ",
     "Bookings",
-    { borderRadius: "6px" },
+
+    { borderRadius: "6px" }, // Styles as a separate element
     <svg
-      width={20}
+      key="bookingSvg" // Make sure to provide a unique key for each child element
       height={20}
       viewBox="0 0 20 20"
       fill="none"

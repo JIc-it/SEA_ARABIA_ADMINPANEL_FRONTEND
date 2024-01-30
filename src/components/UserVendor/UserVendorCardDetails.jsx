@@ -49,6 +49,8 @@ function UserVendorCardDetails({ venderDetails }) {
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const [serviceList, setServiceList] = useState([]);
+
+  
   const handleBookingButtonClick = () => {
     navigate(`/bookings/${vendorId}`);
   };
@@ -318,10 +320,7 @@ function UserVendorCardDetails({ venderDetails }) {
                   <a
                     className="mail_vendor_button btn btn-outline mx-1"
                     style={{ backgroundColor: "#187AF7", color: "white" }}
-                    onClick={() => {
-                      navigate(`/booking`);
-                      // navigate(`/booking-view/1234`);
-                    }}
+                    onClick={handleBookingButtonClick}
                   >
                     Bookings &nbsp;
                     <svg
