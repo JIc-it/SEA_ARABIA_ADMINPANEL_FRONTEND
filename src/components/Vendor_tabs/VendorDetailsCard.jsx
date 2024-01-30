@@ -34,14 +34,10 @@ function VendorDetailsCard() {
       <div className="card personal_details">
         <div className="card-body">
           <div className="left_header">
-         
-              <p
-                className="card_content"
-                style={{ textTransform: "capitalize" }}
-              >
-                {userdata?.first_name}
-              </p>
-          
+            <p className="card_content" style={{ textTransform: "capitalize" }}>
+              {userdata?.first_name}
+            </p>
+
             <div className="card_header_contents">
               <p className="card_content pb-3">
                 <svg
@@ -62,7 +58,7 @@ function VendorDetailsCard() {
                     fill="white"
                   />
                 </svg>{" "}
-                &nbsp;  {userdata?.account_id} <span>| &nbsp;</span>
+                &nbsp; {userdata?.account_id} <span>| &nbsp;</span>
               </p>
               <p className="card_content">
                 <svg
@@ -129,11 +125,13 @@ function VendorDetailsCard() {
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Company Registration Number</p>
-                <p>{userdata?.company_company_user?.registration_number}</p>
+                <p style={{ textAlign: "end" }}>
+                  {userdata?.company_company_user?.registration_number}
+                </p>
               </div>
               <div className="vendor_info">
                 <p className="heading_name">Address</p>
-                <p style={{ marginLeft: "5px",width:'90%' }}>
+                <p style={{ marginLeft: "5px", width: "90%" ,textAlign: "end" }}>
                   {userdata?.company_company_user?.address}
                 </p>
               </div>

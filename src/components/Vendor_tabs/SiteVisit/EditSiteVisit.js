@@ -12,10 +12,12 @@ import { API_BASE_URL } from "../../../services/authHandle";
 function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
   const { vendorId, companyID } = useContext(OnboardContext);
   const [isLoading, setIsLoading] = useState(false);
-  var substringToRemove =
-    `${API_BASE_URL}assets/media/company/site_visit/attachment/`;
+  var substringToRemove = `${API_BASE_URL}assets/media/company/site_visit/attachment/`;
+  console.log(selectedData, "selectedDataselectedData");
   const formatedFileName =
-    selectedData && selectedData.attachment.replace(substringToRemove, "");
+    selectedData &&
+    selectedData.attachment &&
+    selectedData.attachment.replace(substringToRemove, "");
 
   const formik = useFormik({
     initialValues: {
@@ -36,16 +38,19 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             return /\S/.test(value); // Checks if there is at least one non-whitespace character
           }
         ),
-      files: Yup.mixed()
-      .test("fileSize", "File size must not exceed 5MB", (value) => {
-        if (!value) {
-          // Handle the case where no file is provided
-          return true;
-        }
+      files: Yup.mixed().test(
+        "fileSize",
+        "File size must not exceed 5MB",
+        (value) => {
+          if (!value) {
+            // Handle the case where no file is provided
+            return true;
+          }
 
-        // Check if the file size is less than or equal to 5MB
-        return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
-      }),
+          // Check if the file size is less than or equal to 5MB
+          return value && value.size <= 5 * 1024 * 1024; // 5MB in bytes
+        }
+      ),
       note: Yup.string()
         .required("Note is required")
         .test(
@@ -67,7 +72,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             company: companyID,
             title: values.title,
             note: values.note,
-            attachment: values.files ? values.files : selectedData.attachment,
+            attachment: values.files ? values.files : null,
             time: values.time,
             date: values.date,
           };
@@ -160,7 +165,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
           <span className="mx-2" style={{ wordBreak: "break-all" }}>
             {formik.values.files
               ? formik.values.files.name
-              : selectedData && formatedFileName}
+              : (selectedData && formatedFileName) || ""}
           </span>
         </div>
         <div style={{ margin: "20px" }}>

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import "../../static/css/add_vendor_details.css";
 import { useState } from "react";
 
-
 import TextField from "@mui/material/TextField";
 import Autocomplete from "@mui/material/Autocomplete";
 import { useParams } from "react-router-dom";
@@ -14,13 +13,11 @@ import {
 
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 
-
 const AddVendorInfo = ({ formik, locationList }) => {
   const vendorId = useParams()?.id;
 
-
   const [serviceTagList, setServiceTagList] = useState();
- 
+
   const [idTypeList, setIdTypeList] = useState();
 
   useEffect(() => {
@@ -61,7 +58,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         console.error("Error fetching  data:", error);
       });
   }, []);
-
+  console.log(formik, "error");
   return (
     <>
       <div
@@ -154,7 +151,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
               <label className="form-label">ID Type</label>
               <select
                 type="text"
-                className="form-select mb-3 status_selector"
+                className="form-select  status_selector"
                 name="idType"
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
@@ -182,26 +179,21 @@ const AddVendorInfo = ({ formik, locationList }) => {
               <div className="mb-3">
                 <label className="form-label">ID Number</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   placeholder="ID Number"
                   name="idNumber"
                   onChange={(e) => {
-                    // Ensure the input value is a number
-                    const inputValue = parseInt(e.target.value, 10);
-
-                    // Check if the input is a number and not NaN
-                    if (!isNaN(inputValue)) {
-                      // Truncate to a maximum of 5 digits
-                      const truncatedValue = inputValue.toString().slice(0, 20);
-
-                      // Update the formik values
-                      formik.setFieldValue("idNumber", truncatedValue);
-                    }
+                    const inputValue = e.target.value.replace(
+                      /[^a-zA-Z0-9]/g,
+                      ""
+                    );
+                    const truncatedValue = inputValue.slice(0, 20);
+                    formik.setFieldValue("idNumber", truncatedValue);
                   }}
                   onBlur={formik.handleBlur}
                   value={formik.values.idNumber}
-                  max={99}
+                  maxLength={20}
                 />
                 {formik.touched.idNumber && formik.errors.idNumber ? (
                   <div className="error">{formik.errors.idNumber}</div>

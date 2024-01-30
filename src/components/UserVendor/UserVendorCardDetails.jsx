@@ -1,19 +1,12 @@
 import { Button } from "@mui/material";
-import customerImg from "../../assets/images/customerimg.png";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useContext, useEffect, useState } from "react";
 import Avatars from "../../assets/images/Avatar.png";
 import { Link, useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import AddSiteVisitModal from "../Vendor_tabs/SiteVisit/AddSiteVisitModal";
 import { getListDataInPagination } from "../../services/commonServices";
-import {
-  formatDate,
-  getMenuPermissions,
-  removeBaseUrlFromPath,
-} from "../../helpers";
-import { getVendorListById } from "../../services/leadMangement";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { getServiceListing } from "../../services/service";
 import {} from "../../services/CustomerHandle";
 import VenderDetailsList from "./UserVendorTabs/VenderDetails/VenderDetailsList";
@@ -264,7 +257,10 @@ function UserVendorCardDetails({ venderDetails }) {
                 </div>
                 <div className="vendor_info_new">
                   <span className="heading_name pb-2">Address</span>
-                  <span style={{ width: "90%" }} className="mx-2">
+                  <span
+                    style={{ width: "90%", textAlign: "end" }}
+                    className="mx-2"
+                  >
                     {venderDetails?.company_company_user?.address} &nbsp;
                     <svg
                       width={22}
@@ -585,16 +581,16 @@ function UserVendorCardDetails({ venderDetails }) {
                                   {data?.pickup_point_or_location}
                                 </td>
                                 <td>
-                              <span
-                                className={`text-secondary ${
-                                  data.is_active
-                                    ? "active-button"
-                                    : "inActive-button "
-                                }`}
-                              >
-                                {data.is_active ? "Active" : "Inactive"}
-                              </span>
-                            </td>
+                                  <span
+                                    className={`text-secondary ${
+                                      data.is_active
+                                        ? "active-button"
+                                        : "inActive-button "
+                                    }`}
+                                  >
+                                    {data.is_active ? "Active" : "Inactive"}
+                                  </span>
+                                </td>
                                 <td
                                   style={{
                                     display: "flex",

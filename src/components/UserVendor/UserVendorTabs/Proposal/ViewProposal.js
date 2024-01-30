@@ -51,15 +51,17 @@ function ViewProposal({ show, close, selectedData }) {
               <div>
                 <span style={{ wordBreak: "break-all" }}>{fileName}</span>
               </div>
-              <button
-                className="btn btn-sm btn-info px-4 py-1"
-                onClick={() => {
-                  console.log("check");
-                  setIsViewFile(true);
-                }}
-              >
-                View
-              </button>
+              {selectedData && selectedData.attachment && (
+                <button
+                  className="btn btn-sm btn-info px-4 py-1"
+                  onClick={() => {
+                    console.log("check");
+                    setIsViewFile(true);
+                  }}
+                >
+                  View
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -70,7 +70,7 @@ function EditCharter({ show, close, setIsRefetch, isRefetch, selectedData }) {
             company: companyID,
             title: values.title,
             note: values.note,
-            attachment: values.files ? values.files : selectedData.attachment,
+            attachment: values.files ? values.files : null,
           };
 
           const adminData =
@@ -157,7 +157,7 @@ function EditCharter({ show, close, setIsRefetch, isRefetch, selectedData }) {
           <span className="mx-2" style={{ wordBreak: "break-all" }}>
             {formik.values.files
               ? formik.values.files.name
-              : selectedData && formatedFileName}
+              : (selectedData && formatedFileName) || ""}
           </span>
         </div>
         <div style={{ margin: "20px" }}>
