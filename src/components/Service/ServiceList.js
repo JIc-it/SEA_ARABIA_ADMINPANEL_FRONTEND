@@ -45,7 +45,10 @@ function ServiceList() {
     category: [],
     sub_category: [],
     vendor: [],
-    status: true,
+    status: {
+      active:false,
+      inactive:false
+    },
   });
 
   const handleClose = () => {
