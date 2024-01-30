@@ -25,7 +25,6 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
         width: "65%",
         height: "95vh",
         bgcolor: "background.paper",
-        // border: '2px solid #000',
         boxShadow: 24,
         p: 3,
         overflowY: "scroll"
@@ -78,39 +77,20 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
 
 
     const findAndRemoveCategory = (field, data) => {
-        if (field === "Category") {
             setFilters((prevFilters) => {
-                const updatedCategory = prevFilters.category.filter((item) => item.id !== data);
-                return { ...prevFilters, category: updatedCategory };
-            });
-        }
-        if (field === "Sub-Category") {
-            setFilters((prevFilters) => {
-                const updatedCategory = prevFilters.sub_category.filter((item) => item.id !== data);
-                return { ...prevFilters, sub_category: updatedCategory };
-            });
-        }
-        if (field === "Vendor") {
-            setFilters((prevFilters) => {
-                const updatedCategory = prevFilters.vendor.filter((item) => item.id !== data);
-                return { ...prevFilters, vendor: updatedCategory };
-            });
-        }
+                const updatedCategory = prevFilters[field]?.filter((item) => item.id !== data);
+                return { ...prevFilters, [field]: updatedCategory };
+            })
     };
 
 
     const handleApplyFilter = async () => {
         setIsLoading(true)
-        const categorymapped = filters.category.map((data) => data.id)
-        const categorySplitted = categorymapped.join(",");
-
-        const subcategorymapped = filters.sub_category.map((data) => data.id)
-        const subcategorySplitted = subcategorymapped.join(",");
-
-        const vendormapped = filters.vendor.map((data) => data.id)
-        const vendorSplitted = vendormapped.join(",");
-
-        const getFiltereddata = await getServiceListing(null, null, categorySplitted, subcategorySplitted, vendorSplitted, filters.status);
+        const categorySplitted = filters.category.map((data) => data.id).join(",");
+        const subcategorySplitted = filters.sub_category.map((data) => data.id).join(",");
+        const vendorSplitted = filters.vendor.map((data) => data.id).join(",");
+        const statuscheck=(filters.status.active === true && filters.status.inactive===true) ? "" : filters.status.active===true ? true :false
+        const getFiltereddata = await getServiceListing(null, null, categorySplitted, subcategorySplitted, vendorSplitted, statuscheck);
 
         if (getFiltereddata) {
             setIsLoading(false)
@@ -124,7 +104,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
     const handleClearFilter = async () => {
         setIsLoading(true)
         const getFiltereddata = await getServiceListing()
-        setFilters({ category: [], sub_category: [], vendor: [], status: true });
+        setFilters({ category: [], sub_category: [], vendor: [], status:{active:false,inactive:false} });
 
         if (getFiltereddata) {
             setIsLoading(false)
@@ -149,7 +129,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                     <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={() => { handleClose(); setFilters({ category: [], sub_category: [], vendor: [], status: true }); handleClearFilter() }}
+                        onClick={() => { handleClose(); setFilters({ category: [], sub_category: [], vendor: [], status: {active:false,inactive:false} }); handleClearFilter() }}
                         aria-label="close"
                         sx={{ position: 'absolute', top: 8, right: 14 }}
                     >
@@ -167,7 +147,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                         {filters.category.map((data) =>
                                             <div key={data.id} className='mx-1'>
                                                 <span>{data.name}</span>
-                                                <span className='mx-1' onClick={() => findAndRemoveCategory("Category", data.id)}>
+                                                <span className='mx-1' onClick={() => findAndRemoveCategory("category", data.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width={10} height={10} viewBox="0 0 10 10" fill="none">
                                                         <g clipPath="url(#clip0_5512_51442)">
                                                             <path fillRule="evenodd" clipRule="evenodd" d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z" fill="#212529" />
@@ -202,7 +182,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                         {filters.sub_category.map((data) =>
                                             <div key={data.id} className='mx-1'>
                                                 <span>{data.name}</span>
-                                                <span className='mx-1' onClick={() => findAndRemoveCategory("Sub-Category", data.id)}>
+                                                <span className='mx-1' onClick={() => findAndRemoveCategory("sub_category", data.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width={10} height={10} viewBox="0 0 10 10" fill="none">
                                                         <g clipPath="url(#clip0_5512_51442)">
                                                             <path fillRule="evenodd" clipRule="evenodd" d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z" fill="#212529" />
@@ -236,7 +216,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                         {filters.vendor.map((data) =>
                                             <div key={data.id} className='mx-1'>
                                                 <span>{data.name}</span>
-                                                <span className='mx-1' onClick={() => findAndRemoveCategory("Vendor", data.id)}>
+                                                <span className='mx-1' onClick={() => findAndRemoveCategory("vendor", data.id)}>
                                                     <svg xmlns="http://www.w3.org/2000/svg" width={10} height={10} viewBox="0 0 10 10" fill="none">
                                                         <g clipPath="url(#clip0_5512_51442)">
                                                             <path fillRule="evenodd" clipRule="evenodd" d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z" fill="#212529" />
@@ -482,14 +462,13 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"
-                                        type="radio"
-                                        name="status"
+                                        type="checkbox"
                                         value=""
                                         id=""
-                                        checked={filters.status === true}
+                                        defaultChecked={filters.status.active===true}
                                         onChange={(e) => {
                                             setFilters((prev) => {
-                                                return { ...prev, status: true }
+                                                return { ...prev, status:{active:!prev.status.active,inactive:prev.status.inactive} }
                                             })
                                         }}
                                         style={{ width: 20, height: 20 }}
@@ -501,14 +480,13 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"
-                                        type="radio"
-                                        satatus="status"
+                                        type="checkbox"
                                         value=""
                                         id=""
-                                        checked={filters.status === false}
+                                        defaultChecked={filters.status.inactive===true}
                                         onChange={(e) => {
                                             setFilters((prev) => {
-                                                return { ...prev, status: false }
+                                                return { ...prev, status:{inactive:!prev.status.inactive,active:prev.status.active} }
                                             })
                                         }}
                                         style={{ width: 20, height: 20 }}
