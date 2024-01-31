@@ -331,7 +331,7 @@ export default function FilterPopup({ open, handleClose, setIsLoading, setFilter
                                 >
                                     <span>Service Status</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Service-Status" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.status ? "1" : "1"}
+                                        {(filters.status.active===true && filters.status.inactive===true) ?  "2":filters.status.active ? "1" :filters.status.inactive ? "1" :"0"}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Service-Status" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />

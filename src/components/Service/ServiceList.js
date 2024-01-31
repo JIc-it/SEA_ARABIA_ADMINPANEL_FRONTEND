@@ -319,7 +319,7 @@ function ServiceList() {
                   >
                     <img src={filterIcon} alt="filter" width={25} />
                     <span className='py-1' style={{position:"absolute",top:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
-                                        {filters.category.length+filters.sub_category.length+filters.vendor.length}
+                                        {filters.category.length+filters.sub_category.length+filters.vendor.length+(filters.status.active===true && filters.status.inactive===true) ?  "2":filters.status.active ? "1" :filters.status.inactive ? "1" :"0"}
                                     </span>
                   </button>
                   <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
