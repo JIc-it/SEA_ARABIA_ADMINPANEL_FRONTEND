@@ -14,7 +14,6 @@ import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
 
 function AdminPassword({ show, close }) {
-  const theme = useTheme();
   const adminId = useParams()?.adminId;
   const [isRefetch, setIsRefetch] = useState();
   const [isLoading, setIsLoading] = useState(false);
