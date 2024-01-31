@@ -80,7 +80,6 @@ function ServiceList() {
         : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
-
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data?.next, previous: data?.previous });
@@ -111,33 +110,38 @@ function ServiceList() {
   }, []);
 
   const clearFilter = async () => {
-
     setIsLoading(true);
 
     if (!isLoading) {
-        try {
-            const adminData = await getServiceListing();
+      try {
+        const adminData = await getServiceListing();
 
-            if (adminData) {
-              setFilters({category:[],sub_category:[],vendor:[],status:true});
-                setIsLoading(false);
-                setServiceList(adminData?.results);
-                setListPageUrl({ next: adminData.next, previous: adminData.previous });
-
-            } else {
-                setIsLoading(false);
-                toast.error(adminData.error.response.data)
-                //   console.error("Error while creating Admin:", adminData.error);
-            }
-            setIsLoading(false);
-        } catch (err) {
-            setIsLoading(false);
-            toast.error(err.message)
-            // console.log(err);
+        if (adminData) {
+          setFilters({
+            category: [],
+            sub_category: [],
+            vendor: [],
+            status: true,
+          });
+          setIsLoading(false);
+          setServiceList(adminData?.results);
+          setListPageUrl({
+            next: adminData.next,
+            previous: adminData.previous,
+          });
+        } else {
+          setIsLoading(false);
+          toast.error(adminData.error.response.data);
+          //   console.error("Error while creating Admin:", adminData.error);
         }
+        setIsLoading(false);
+      } catch (err) {
+        setIsLoading(false);
+        toast.error(err.message);
+        // console.log(err);
+      }
     }
-}
-
+  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -311,15 +315,39 @@ function ServiceList() {
                   </div>
                   <button
                     className="bg-black"
-                    style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
+                    style={{
+                      borderRadius: "5px",
+                      marginLeft: "5px",
+                      position: "relative",
+                    }}
                     onClick={() => setOpen(true)}
                   >
                     <img src={filterIcon} alt="filter" width={25} />
-                    <span className='py-1' style={{position:"absolute",top:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
-                                        {filters.category.length+filters.sub_category.length+filters.vendor.length}
-                                    </span>
+                    <span
+                      className="py-1"
+                      style={{
+                        position: "absolute",
+                        top: -10,
+                        color: "white",
+                        fontSize: "10px",
+                        backgroundColor: "#2176FF",
+                        width: "22px",
+                        height: "22px",
+                        borderRadius: "33px",
+                      }}
+                    >
+                      {filters.category.length +
+                        filters.sub_category.length +
+                        filters.vendor.length}
+                    </span>
                   </button>
-                  <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
+                  <button
+                    className="mx-3 px-3 py-2 btn"
+                    style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                    onClick={clearFilter}
+                  >
+                    Clear Filter
+                  </button>
                 </div>
               </div>
             </div>
@@ -562,7 +590,17 @@ function ServiceList() {
           </div>
         </div>
       </div>
-      {open && <FilterPopup open={open} setIsLoading={setIsLoading} setServiceList={setServiceList} setListPageUrl={setListPageUrl} handleClose={handleClose} setFilters={setFilters} filters={filters}/>}
+      {open && (
+        <FilterPopup
+          open={open}
+          setIsLoading={setIsLoading}
+          setServiceList={setServiceList}
+          setListPageUrl={setListPageUrl}
+          handleClose={handleClose}
+          setFilters={setFilters}
+          filters={filters}
+        />
+      )}
     </div>
   );
 }
