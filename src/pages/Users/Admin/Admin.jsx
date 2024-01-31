@@ -1,11 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import foodImg from "../../../static/img/food.png";
-import newBooking from "../../../static/img/new-booking.png";
-import totalBooking from "../../../static/img/total-booking.png";
-import confirmBooking from "../../../static/img/confirm-booking.png";
-import cancelBooking from "../../../static/img/cancel-booking.png";
-import filterIcon from "../../../static/img/Filter.png";
-
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import {
@@ -15,7 +8,6 @@ import {
 import CreateNewAdmin from "./CreateNewAdmin";
 
 import {
-  formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../../helpers";
@@ -113,8 +105,7 @@ const Admin = () => {
         // Remove the link asynchronously after the download
         setTimeout(() => {
           document.body.removeChild(link);
-          // Optionally, log success message
-          // console.log("Exported Customer data successfully!");
+        
         }, 0);
       })
       .catch((error) => {

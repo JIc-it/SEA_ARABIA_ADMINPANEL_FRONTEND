@@ -14,7 +14,6 @@ import { AppContext } from "../../../Context/AppContext";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 
 function CreateNewAdmin({ show, close, locationList }) {
-  const theme = useTheme();
   const [isRefetch, setIsRefetch] = useState();
   const locationContext = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
