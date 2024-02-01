@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 
 import ListCards from "../ListCards";
-import { getListDataInPagination } from "../../services/commonServices";
+
 import { removeBaseUrlFromPath } from "../../helpers";
 import { Link, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
@@ -14,6 +14,7 @@ import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { API_BASE_URL } from "../../services/authHandle";
+import { getListDataInPagination } from "../../services/commonServices";
 const style = {
   position: "absolute",
   top: "50%",
@@ -28,6 +29,7 @@ const style = {
 
 const CustomerBookingList = () => {
   const customerId = useParams()?.id;
+  console.log("cus id", customerId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -46,23 +48,33 @@ const CustomerBookingList = () => {
 
   // new api
   useEffect(() => {
-    const Pass = { id: customerId };
+    const Pass = {
+      id: customerId,
+      search: search,
+      status: selectedValue,
+      role: "User",
+    };
 
-    getBookingList(Pass)
-      .then((data) => {
-        // console.log("booking list data", data);
+    if (Pass) {
+      getBookingList(Pass)
+        .then((data) => {
+          console.log("booking list data", data);
 
-        const filteredBooking = data?.results?.filter(
-          (booking) =>
-            booking.user?.id === customerId || booking?.guest?.id === customerId
-        );
-        // console.log("filtered bookk------", filteredBooking);
-        setBookingList(filteredBooking);
-      })
-      .catch((error) => {
-        console.error("error fetching customer booking list", error);
-      });
-  }, [customerId, setBookingList]);
+          const filteredBooking = data?.results?.filter(
+            (booking) =>
+              booking?.user?.id === customerId ||
+              booking?.guest?.id === customerId
+          );
+          // console.log("filtered bookk------", filteredBooking);
+          setBookingList(filteredBooking);
+          console.log("filtered bookk------", bookingList);
+          console.log("filtered bookk------", filteredBooking);
+        })
+        .catch((error) => {
+          console.error("error fetching customer booking list", error);
+        });
+    }
+  }, [customerId]);
 
   useEffect(() => {
     getBookingCount()
@@ -94,7 +106,11 @@ const CustomerBookingList = () => {
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
-          setBookingList(data?.results);
+
+          const filteredResults = data.results.filter(
+            (item) => item.user.id === customerId
+          );
+          setBookingList(filteredResults);
         })
         .catch((error) => {
           setIsLoading(false);
@@ -116,10 +132,7 @@ const CustomerBookingList = () => {
       });
   };
   const [selectedValue, setSelectedValue] = useState("");
-  useEffect(() => {
-    const data = { search: search, status: selectedValue, role: "User" };
-    getBookingList(data).then((res) => setBookingList(res?.results));
-  }, [selectedValue, isRefetch, search]);
+ 
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -370,6 +383,7 @@ const CustomerBookingList = () => {
                             bookingList.map((data) => (
                               <tr>
                                 <td>
+                                  {console.log("item book", bookingList)}
                                   <span className="text-secondary">
                                     {data.booking_id}
                                   </span>
