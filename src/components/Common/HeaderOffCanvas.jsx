@@ -6,6 +6,7 @@ import { Typography } from "@mui/material";
 import TimeCalculation from "./TimeCalculation";
 import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
+import {clearNotifications} from "../../services/Notification"
 
 export default function HeaderOffCanvas({
     open,
@@ -42,6 +43,23 @@ export default function HeaderOffCanvas({
                 });
     };
 
+    const handleClearNotifications=()=>{
+       
+        if(data?.notifications.length >0 ){
+            clearNotifications()
+        .then((data) => {
+            toast.success("Notification Clear")
+        })
+        .catch((error) => {
+            toast.error("Error will Clearing")
+        });
+        handleCloseOffcanvas();
+        }
+        else{
+            handleCloseOffcanvas();  
+        }
+    }
+
     return (
         <Offcanvas
             show={open}
@@ -52,7 +70,7 @@ export default function HeaderOffCanvas({
             <Offcanvas.Header
 
                 closeButton
-                onClick={handleCloseOffcanvas}
+                onClick={handleClearNotifications}
             >
                 <Offcanvas.Title style={{ fontWeight: 550 }}>Notification</Offcanvas.Title>
             </Offcanvas.Header>
