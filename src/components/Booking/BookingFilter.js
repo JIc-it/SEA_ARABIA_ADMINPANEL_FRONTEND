@@ -1,9 +1,10 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { getBookingList } from "../../services/booking";
 import { getListDataInPagination } from "../../services/commonServices";
 import {removeBaseUrlFromPath} from "../../helpers";
-import { getBookingList } from "../../services/booking";
+import { getUserList,getGuestList } from "../../services/booking";
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -11,23 +12,48 @@ import { getCategoryList } from "../../services/service";
 import { getCompanyListing } from "../../services/offers"
 import { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { PassingformatDate } from '../../helpers';
 
-export default function BookingFilter({ open, handleClose }) {
+export default function BookingFilter({ open, handleClose,setFilters,filters,firstsetListPageUrl,setBookingList }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
     const [listPageUrl, setListPageUrl] = useState({
         next: null,
-        previous: null,
       });
-      const [bookingList, setBookingList] = useState([]);
+    const [guestlistPageUrl, setGuestListPageUrl] = useState({
+        next: null,
+      });
+      const [customerList, setcustomerList] = useState([]);
+      const [guestList, setguestList] = useState([]);
+      const [search, setSearch] = useState({
+        category: "",
+        vendor: "",
+        customer:"",
+        guest:""
+    })
 
     useEffect(() => {
-        const Pass = { status: "", search: "", refund_status: "" };
-        getBookingList(Pass)
+        getUserList()
           .then((data) => {
-            setListPageUrl({ next: data.next, previous: data.previous });
-            setBookingList(data?.results);
+            setListPageUrl({ next: data.next});
+            setcustomerList(() => ({
+                results: [...data.results]
+              }));
+          })
+          .catch((error) => {
+            toast.error(error.message);
+          });
+
+        getGuestList()
+          .then((data) => {
+            setGuestListPageUrl({ next: data.next});
+            setguestList(() => ({
+                results: [...data.results]
+              }));
           })
           .catch((error) => {
             toast.error(error.message);
@@ -61,9 +87,89 @@ export default function BookingFilter({ open, handleClose }) {
                 console.error(error))
     }, [])
 
-    useEffect(() => {
+    const handlePagination = async (type) => {
+        let convertedUrl =
+          type === "next"
+            &&  listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+        convertedUrl &&
+        getListDataInPagination(convertedUrl)
+        .then((data) => {
+          setListPageUrl({ next: data.next });
+          setcustomerList((prev) => ({
+            results: [...prev.results, ...data.results],
+          }));
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+        });
+      
+      };
+    const handlePaginationguest = async (type) => {
+        let convertedUrl =
+        type === "next"
+          &&  guestlistPageUrl.next && removeBaseUrlFromPath(guestlistPageUrl.next)
+      convertedUrl &&
+      getListDataInPagination(convertedUrl)
+      .then((data) => {
+        setGuestListPageUrl({ next: data.next });
+        setguestList((prev) => ({
+          results: [...prev.results, ...data.results],
+        }));
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+      
+      };
 
-    }, [])
+
+      const handleFilter = (e, field) => {
+        const { name, value } = e.target;
+
+        setFilters((prevFilters) => {
+            // Check if category already has data
+            const categoryArray = prevFilters[field].length > 0 ? prevFilters[field] : [];
+
+            // Check if the value already exists in the category array
+            const existingCategoryIndex = categoryArray.findIndex((item) => item.id === value);
+
+            // If the value exists, remove it; otherwise, add or update it
+            const updatedCategory = existingCategoryIndex !== -1
+                ? [
+                    ...categoryArray.slice(0, existingCategoryIndex),
+                    ...categoryArray.slice(existingCategoryIndex + 1)
+                ]
+                : [...categoryArray, { id: value, name }];
+
+            return {
+                ...prevFilters,
+                [field]: updatedCategory,
+            };
+        });
+    };
+
+    //check this //
+    var mappedcustomer=filters.customer.map((data)=>data.id).join(",");
+const handleApplyFilter=async(e)=>{
+    e.preventDefault();
+    try {
+        const Pass = { status: "", search: "", refund_status: "",user:mappedcustomer,guest:filters.guest.map((data)=>data.id) };
+
+        const adminData = await getBookingList(Pass);
+
+        if (adminData) {
+            handleClose()
+            setBookingList(adminData.results);
+            firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
+        } else {
+            toast.error(adminData.error.response.data)
+        }
+        
+    } catch (err) {
+        toast.error(err.message)
+    }
+
+}
 
     return (
         <div>
@@ -86,207 +192,10 @@ export default function BookingFilter({ open, handleClose }) {
                     >
                         <CloseIcon />
                     </IconButton>
-                    <div class="frame-427319784 mt-2">
-                        <div class="components-selection-item">
-                            <div class="frame-427319782">
-                                <div class="frame-427319783">
-                                    <div class="category">Category</div>
-                                    <div class="div">:</div>
-                                </div>
-                                <div class="yacht-boat-heli-tour">
-                                    Yacht, Boat, Heli Tour
-                                </div>
-                            </div>
-                            <div class="icon-wrapper">
-                                <div class="width-change-size-here">
-                                    <div class="ignore"></div>
-                                    <div class="ignore"></div>
-                                </div>
-                                <div class="icon-wrapper-h">
-                                    <div class="height-change-size-here">
-                                        <div class="ignore"></div>
-                                        <div class="ignore"></div>
-                                    </div>
-                                    <svg
-                                        class="icon-wrapper2"
-                                        width="10"
-                                        height="10"
-                                        viewBox="0 0 10 10"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <g clip-path="url(#clip0_4335_44256)">
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_4335_44256">
-                                                <rect width="10" height="10" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="components-selection-item">
-                            <div class="frame-427319782">
-                                <div class="frame-427319783">
-                                    <div class="vendor">Vendor</div>
-                                    <div class="div">:</div>
-                                </div>
-                                <div class="salma-international-uber-marine-company-ghanayem-el-khair">
-                                    Salma international, Uber Marine Company, Ghanayem
-                                    El-Khair
-                                </div>
-                            </div>
-                            <div class="icon-wrapper">
-                                <div class="width-change-size-here">
-                                    <div class="ignore"></div>
-                                    <div class="ignore"></div>
-                                </div>
-                                <div class="icon-wrapper-h">
-                                    <div class="height-change-size-here">
-                                        <div class="ignore"></div>
-                                        <div class="ignore"></div>
-                                    </div>
-                                    <svg
-                                        class="icon-wrapper3"
-                                        width="10"
-                                        height="10"
-                                        viewBox="0 0 10 10"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <g clip-path="url(#clip0_4335_44272)">
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_4335_44272">
-                                                <rect width="10" height="10" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="components-selection-item">
-                            <div class="frame-427319782">
-                                <div class="frame-427319783">
-                                    <div class="status">Status</div>
-                                    <div class="div">:</div>
-                                </div>
-                                <div class="completed-unsuccessful">
-                                    Completed, Unsuccessful
-                                </div>
-                            </div>
-                            <div class="icon-wrapper">
-                                <div class="width-change-size-here">
-                                    <div class="ignore"></div>
-                                    <div class="ignore"></div>
-                                </div>
-                                <div class="icon-wrapper-h">
-                                    <div class="height-change-size-here">
-                                        <div class="ignore"></div>
-                                        <div class="ignore"></div>
-                                    </div>
-                                    <svg
-                                        class="icon-wrapper4"
-                                        width="10"
-                                        height="10"
-                                        viewBox="0 0 10 10"
-                                        fill="none"
-                                        xmlns="http://www.w3.org/2000/svg"
-                                    >
-                                        <g clip-path="url(#clip0_4335_44288)">
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                fill="#212529"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                            <path
-                                                fill-rule="evenodd"
-                                                clip-rule="evenodd"
-                                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                                stroke="#212529"
-                                                stroke-width="0.8"
-                                            />
-                                        </g>
-                                        <defs>
-                                            <clipPath id="clip0_4335_44288">
-                                                <rect width="10" height="10" fill="white" />
-                                            </clipPath>
-                                        </defs>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                   
                     <br />
                     <br />
-                    <div class="d-flex align-items-start">
+                    <form onSubmit={handleApplyFilter} class="d-flex align-items-start" style={{position:"relative"}}>
                         <div class="frame-427319790">
                             <div
                                 class="nav flex-column nav-pills me-3"
@@ -305,11 +214,11 @@ export default function BookingFilter({ open, handleClose }) {
                                     role="tab"
                                     aria-controls="v-pills-home"
                                     aria-selected="true"
-                                    style={{ width: "12vw", backgroundColor: "white", border: active === "Category" ? "1px solid #2176FF" : "" }}
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "Category" ? "1px solid #2176FF" : "" }}
                                 >
                                     <span> Category</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Category" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {0}
+                                        {filters.category.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Category" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -320,7 +229,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 <button
                                     class="nav-link mt-2 d-flex justify-content-between"
                                     onClick={() => setActive("Vendor")}
-                                    style={{ width: "12vw", backgroundColor: "white", border: active === "Vendor" ? "1px solid #2176FF" : "" }}
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "Vendor" ? "1px solid #2176FF" : "" }}
                                     id="v-pills-profile-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-profile"
@@ -331,7 +240,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 >
                                     <span> Vendor</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Vendor" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {0}
+                                        {filters.vendor.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Vendor" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -343,7 +252,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 <button
                                     onClick={() => setActive("Customer")}
                                     class="nav-link mt-2 d-flex justify-content-between"
-                                    style={{ width: "12vw", backgroundColor: "white", border: active === "Customer" ? "1px solid #2176FF" : "" }}
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "Customer" ? "1px solid #2176FF" : "" }}
                                     id="v-pills-messages-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-messages"
@@ -354,7 +263,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 >
                                     <span> Customer</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Customer" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {0}
+                                        {filters.customer.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Customer" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -365,18 +274,18 @@ export default function BookingFilter({ open, handleClose }) {
                                 <button
                                     class="nav-link mt-2 d-flex justify-content-between"
                                     onClick={() => setActive("guest_user")}
-                                    style={{ width: "12vw", backgroundColor: "white", border: active === "guest_user" ? "1px solid #2176FF" : "" }}
-                                    id="v-pills-profile-tab"
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "guest_user" ? "1px solid #2176FF" : "" }}
+                                    id="v-pills-guest-tab"
                                     data-bs-toggle="pill"
-                                    data-bs-target="#v-pills-profile"
+                                    data-bs-target="#v-pills-guest"
                                     type="button"
                                     role="tab"
-                                    aria-controls="v-pills-profile"
+                                    aria-controls="v-pills-guest"
                                     aria-selected="false"
                                 >
                                     <span> Guest User</span>
-                                    <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Vendor" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {0}
+                                    <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "guest_user" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
+                                        {filters.guest.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "guest_user" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -386,7 +295,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 </button>
                                 <button
                                     onClick={() => setActive("customer_type")}
-                                    style={{ width: "12vw", backgroundColor: "white", border: active === "customer_type" ? "1px solid #2176FF" : "" }}
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "customer_type" ? "1px solid #2176FF" : "" }}
                                     class="nav-link mt-2 d-flex justify-content-between"
                                     id="v-pills-settings-tab"
                                     data-bs-toggle="pill"
@@ -398,7 +307,7 @@ export default function BookingFilter({ open, handleClose }) {
                                 >
                                     <span> Customer Type</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "customer_type" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {0}
+                                        {filters.customer_type.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "customer_type" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -408,7 +317,9 @@ export default function BookingFilter({ open, handleClose }) {
                                 </button>
                                 <small className='mt-2'>Booking</small>
                                 <button
-                                    class="nav-link"
+                                onClick={() => setActive("status")}
+                                style={{ width: "15vw", backgroundColor: "white", border: active === "status" ? "1px solid #2176FF" : "" }}
+                                    class="nav-link mt-2 d-flex justify-content-between"
                                     id="v-pills-status-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-status"
@@ -417,11 +328,21 @@ export default function BookingFilter({ open, handleClose }) {
                                     aria-controls="v-pills-status"
                                     aria-selected="false"
                                 >
-                                    Status
+                                   <span> Booking Status</span>
+                                    <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "status" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
+                                        {filters.status.length}
+                                    </span>
+                                    <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "status" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+
+                                    </span>
                                 </button>
-                                <small>Date</small>
+                                <small  className='mt-2'>Date</small>
                                 <button
-                                    class="nav-link"
+                                 onClick={() => setActive("creation")}
+                                 class="nav-link mt-2 d-flex justify-content-between"
+                                 style={{ width: "15vw", backgroundColor: "white", border: active === "creation" ? "1px solid #2176FF" : "" }}
                                     id="v-pills-creationDate-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-creationDate"
@@ -430,10 +351,20 @@ export default function BookingFilter({ open, handleClose }) {
                                     aria-controls="v-pills-creationDate"
                                     aria-selected="false"
                                 >
-                                    Creation Date
+                                    <span> Creation Date</span>
+                                    <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "creation" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
+                                        {filters.creation_date.from.trim()!=="" && filters.creation_date.to.trim()!==""? 2:filters.creation_date.from.trim()!=="" ? 1:filters.creation_date.to.trim()!=="" ? 1:0}
+                                    </span>
+                                    <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "creation" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+
+                                    </span>
                                 </button>
                                 <button
-                                    class="nav-link"
+                                    onClick={() => setActive("commencement")}
+                                    class="nav-link mt-2 d-flex justify-content-between"
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "commencement" ? "1px solid #2176FF" : "" }}
                                     id="v-pills-commencementDate-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-commencementDate"
@@ -442,7 +373,15 @@ export default function BookingFilter({ open, handleClose }) {
                                     aria-controls="v-pills-commencementDate"
                                     aria-selected="false"
                                 >
-                                    Commencement Date
+                                    <span> Commencement Date</span>
+                                    <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "commencement" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
+                                        {filters.commencement_date.from.trim()!=="" && filters.commencement_date.to.trim()!==""? 2:filters.commencement_date.from.trim()!=="" ? 1:filters.commencement_date.to.trim()!=="" ? 1:0}
+                                    </span>
+                                    <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "commencement" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                    </svg>
+
+                                    </span>
                                 </button>
                             </div>
                         </div>
@@ -463,19 +402,22 @@ export default function BookingFilter({ open, handleClose }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
-                                    style={{ width: 320 }}
+                                    onChange={(e) => setSearch((prev) => { return { ...prev, category: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll" }}>
+                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
                                     {categorylist.length > 0 &&
-                                        categorylist.map((data) =>
+                                        categorylist.filter((dat) => dat["name"].toLowerCase().includes(search.category.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    value=""
-                                                    id={data.id}
-                                                    style={{ width: 20, height: 20 }}
+                                                     class="form-check-input"
+                                                     type="checkbox"
+                                                     value={data.id}
+                                                     name={data.name}
+                                                     id={data.name}
+                                                     checked={filters.category.find((items) => items.id === data.id)}
+                                                     onChange={(e) => handleFilter(e, "category")}
+                                                     style={{ width: 20, height: 20 }}
                                                 />
                                                 <label class="form-check-label" for="Boat">
                                                     {data.name}
@@ -496,19 +438,22 @@ export default function BookingFilter({ open, handleClose }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
-                                    style={{ width: 320 }}
+                                    onChange={(e) => setSearch((prev) => { return { ...prev, vendor: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll" }}>
+                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
                                     {vendorlist.length > 0 &&
-                                        vendorlist.map((data) =>
+                                        vendorlist.filter((dat) => dat["name"].toLowerCase().includes(search.vendor.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
-                                                    class="form-check-input"
-                                                    type="checkbox"
-                                                    value=""
-                                                    id={data.id}
-                                                    style={{ width: 20, height: 20 }}
+                                                     class="form-check-input"
+                                                     type="checkbox"
+                                                     value={data.id}
+                                                     name={data.name}
+                                                     id={data.name}
+                                                     checked={filters.vendor.find((items) => items.id === data.id)}
+                                                     onChange={(e) => handleFilter(e, "vendor")}
+                                                     style={{ width: 20, height: 20 }}
                                                 />
                                                 <label class="form-check-label" for="Boat">
                                                     {data.name}
@@ -529,25 +474,108 @@ export default function BookingFilter({ open, handleClose }) {
                                     type="text"
                                     className="form-control"
                                     placeholder="search"
+                                    onChange={(e) => setSearch((prev) => { return { ...prev, customer: e.target.value } })}
                                 />
                                 <br />
-                                {bookingList.length > 0 && 
-                                bookingList.map((data)=>
+                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
+                                {customerList?.results?.length > 0 && 
+                                customerList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.customer?.toLowerCase())).map((data)=>
                                 <div class="form-check">
-                                    {console.log(data?.user?.id)}
                                     <input
-                                        class="form-check-input"
-                                        type="checkbox"
-                                        value={data?.user?.id}
-                                        id="Boat"
-                                        style={{ width: 20, height: 20 }}
+                                         class="form-check-input"
+                                         type="checkbox"
+                                         value={data.id}
+                                         name={data.first_name}
+                                         id={data.first_name}
+                                         checked={filters.customer.find((items) => items.id === data.id)}
+                                         onChange={(e) => handleFilter(e, "customer")}
+                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {data?.user?.first_name}
+                                        {data?.first_name}
                                     </label>
                                 </div>
                                 )
                                 }
+                                </div>
+                                <div className="card-footer">
+                                    <ul className="pagination m-0 ms-auto">
+                                      
+
+                                        <li
+                                            className={`page-item  ${!listPageUrl.next && "disabled"
+                                                }`}
+                                        >
+                                            <a
+                                                className="page-link"
+                                                href="#"
+                                                onClick={() => {
+                                                    handlePagination("next");
+                                                }}
+                                            >
+                                                View More
+                                                
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div
+                                class="tab-pane fade"
+                                id="v-pills-guest"
+                                role="tabpanel"
+                                aria-labelledby="v-pills-guest-tab"
+                            >
+                                <h4>Guest User</h4>
+                                <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="search"
+                                    onChange={(e) => setSearch((prev) => { return { ...prev, guest: e.target.value } })}
+                                />
+                                <br />
+                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
+                                {guestList?.results?.length > 0 && 
+                               guestList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.guest?.toLowerCase())).map((data)=>
+                                <div class="form-check">
+                                    <input
+                                         class="form-check-input"
+                                         type="checkbox"
+                                         value={data.id}
+                                         name={data.first_name}
+                                         id={data.first_name}
+                                         checked={filters.guest.find((items) => items.id === data.id)}
+                                         onChange={(e) => handleFilter(e, "guest")}
+                                         style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {data?.first_name}
+                                    </label>
+                                </div>
+                                )
+                                }
+                                </div>
+                                <div className="card-footer">
+                                    <ul className="pagination m-0 ms-auto">
+                                      
+
+                                        <li
+                                            className={`page-item  ${!guestlistPageUrl.next && "disabled"
+                                                }`}
+                                        >
+                                            <a
+                                                className="page-link"
+                                                href="#"
+                                                onClick={() => {
+                                                    handlePaginationguest("next");
+                                                }}
+                                            >
+                                                View More
+                                                
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -555,7 +583,48 @@ export default function BookingFilter({ open, handleClose }) {
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                Customer Type
+                                <h4>Customer Type</h4>
+                                {/* <input
+                                    type="text"
+                                    className="form-control"
+                                    placeholder="search"
+                                    onChange={(e) => setSearch((prev) => { return { ...prev, customer_type: e.target.value } })}
+                                /> */}
+                                <br />
+                               
+                               
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={1}
+                                     name="Registered"
+                                     id="Registered"
+                                     checked={filters.customer_type.find((items) => items.id === 1)}
+                                     onChange={(e) => handleFilter(e, "customer_type")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Registered"}
+                                </label>
+                            </div>
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={2}
+                                     name="Guest"
+                                     id="Guest"
+                                     checked={filters.customer_type.find((items) => items.id === 2)}
+                                     onChange={(e) => handleFilter(e, "customer_type")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Guest"}
+                                </label>
+                            </div>
+                              
+                                
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -563,7 +632,67 @@ export default function BookingFilter({ open, handleClose }) {
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                Status
+                                <h4>Booking Status</h4>
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={1}
+                                     name="Completed"
+                                     id="Completed"
+                                     checked={filters.status.find((items) => items.id === 1)}
+                                     onChange={(e) => handleFilter(e, "status")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Completed"}
+                                </label>
+                            </div>
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={2}
+                                     name="Unsuccessful"
+                                     id="Unsuccessful"
+                                     checked={filters.customer_type.find((items) => items.id === 2)}
+                                     onChange={(e) => handleFilter(e, "status")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Unsuccessful"}
+                                </label>
+                            </div>
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={3}
+                                     name="Upcoming"
+                                     id="Upcoming"
+                                     checked={filters.customer_type.find((items) => items.id === 3)}
+                                     onChange={(e) => handleFilter(e, "status")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Upcoming"}
+                                </label>
+                            </div>
+                                <div class="form-check">
+                                <input
+                                     class="form-check-input"
+                                     type="checkbox"
+                                     value={4}
+                                     name="Cancelled"
+                                     id="Cancelled"
+                                     checked={filters.customer_type.find((items) => items.id === 4)}
+                                     onChange={(e) => handleFilter(e, "status")}
+                                     style={{ width: 20, height: 20 }}
+                                />
+                                <label class="form-check-label" for="Boat">
+                                    {"Cancelled"}
+                                </label>
+                            </div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -571,7 +700,32 @@ export default function BookingFilter({ open, handleClose }) {
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                Creation Date
+                                <h4>Creation Date</h4>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                            <div className='mx-5'>
+                                                <label class="form-check-label mb-2" for="Boat">
+                                                    From
+                                                </label>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        value={filters.creation_date.from}
+                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: {from:PassingformatDate(newValue),to:filters.creation_date.to} } })}
+                                                    />
+
+                                                </LocalizationProvider>
+                                            </div>
+                                            <div>
+                                                <label class="form-check-label mb-2" for="Boat">
+                                                    To
+                                                </label>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        value={filters.creation_date.to}
+                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: {from:filters.creation_date.from,to:PassingformatDate(newValue)} } })}
+                                                    />
+                                                </LocalizationProvider>
+                                            </div>
+                                        </div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -579,10 +733,40 @@ export default function BookingFilter({ open, handleClose }) {
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                Commencement Date
+                                <h4>Commencement Date</h4>
+                                <div className='d-flex justify-content-between align-items-center'>
+                                            <div className='mx-5'>
+                                                <label class="form-check-label mb-2" for="Boat">
+                                                    From
+                                                </label>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        value={filters.commencement_date.from}
+                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: {from:PassingformatDate(newValue),to:filters.commencement_date.to} } })}
+                                                    />
+
+                                                </LocalizationProvider>
+                                            </div>
+                                            <div>
+                                                <label class="form-check-label mb-2" for="Boat">
+                                                    To
+                                                </label>
+                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                                    <DatePicker
+                                                        value={filters.commencement_date.to}
+                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: {from:filters.commencement_date.from,to:PassingformatDate(newValue)} } })}
+                                                    />
+                                                </LocalizationProvider>
+                                            </div>
+                                        </div>
                             </div>
+                            
                         </div>
-                    </div>
+                        <div className='d-flex justify-content-end mt-3' style={{position:"absolute",bottom:"-20%",right:10}}>
+                                <button type='reset' className='m-1 btn btn-small btn-white' >Clear Filter</button>
+                                <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
+                            </div>
+                    </form>
                 </Box>
             </Modal>
         </div>
