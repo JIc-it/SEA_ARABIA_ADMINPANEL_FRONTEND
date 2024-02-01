@@ -1,10 +1,9 @@
 import React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { getBookingList } from "../../services/booking";
 import { getListDataInPagination } from "../../services/commonServices";
-import {removeBaseUrlFromPath} from "../../helpers";
-import { getUserList,getGuestList } from "../../services/booking";
+import { removeBaseUrlFromPath } from "../../helpers";
+import { getUserList, getGuestList, getBookingList } from "../../services/booking";
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -17,49 +16,49 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 
-export default function BookingFilter({ open, handleClose,setFilters,filters,firstsetListPageUrl,setBookingList }) {
+export default function BookingFilter({ open, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
     const [listPageUrl, setListPageUrl] = useState({
         next: null,
-      });
+    });
     const [guestlistPageUrl, setGuestListPageUrl] = useState({
         next: null,
-      });
-      const [customerList, setcustomerList] = useState([]);
-      const [guestList, setguestList] = useState([]);
-      const [search, setSearch] = useState({
+    });
+    const [customerList, setcustomerList] = useState([]);
+    const [guestList, setguestList] = useState([]);
+    const [search, setSearch] = useState({
         category: "",
         vendor: "",
-        customer:"",
-        guest:""
+        customer: "",
+        guest: ""
     })
 
     useEffect(() => {
         getUserList()
-          .then((data) => {
-            setListPageUrl({ next: data.next});
-            setcustomerList(() => ({
-                results: [...data.results]
-              }));
-          })
-          .catch((error) => {
-            toast.error(error.message);
-          });
+            .then((data) => {
+                setListPageUrl({ next: data.next });
+                setcustomerList(() => ({
+                    results: [...data.results]
+                }));
+            })
+            .catch((error) => {
+                toast.error(error.message);
+            });
 
         getGuestList()
-          .then((data) => {
-            setGuestListPageUrl({ next: data.next});
-            setguestList(() => ({
-                results: [...data.results]
-              }));
-          })
-          .catch((error) => {
-            toast.error(error.message);
-          });
-      }, []);
-      
+            .then((data) => {
+                setGuestListPageUrl({ next: data.next });
+                setguestList(() => ({
+                    results: [...data.results]
+                }));
+            })
+            .catch((error) => {
+                toast.error(error.message);
+            });
+    }, []);
+
     const style = {
         position: 'absolute',
         top: '50%',
@@ -89,41 +88,42 @@ export default function BookingFilter({ open, handleClose,setFilters,filters,fir
 
     const handlePagination = async (type) => {
         let convertedUrl =
-          type === "next"
-            &&  listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
+            type === "next"
+            && listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         convertedUrl &&
-        getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setListPageUrl({ next: data.next });
-          setcustomerList((prev) => ({
-            results: [...prev.results, ...data.results],
-          }));
-        })
-        .catch((error) => {
-          console.error("Error fetching data:", error);
-        });
-      
-      };
+            getListDataInPagination(convertedUrl)
+                .then((data) => {
+                    setListPageUrl({ next: data.next });
+                    setcustomerList((prev) => ({
+                        results: [...prev.results, ...data.results],
+                    }));
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+
+    };
+
     const handlePaginationguest = async (type) => {
         let convertedUrl =
-        type === "next"
-          &&  guestlistPageUrl.next && removeBaseUrlFromPath(guestlistPageUrl.next)
-      convertedUrl &&
-      getListDataInPagination(convertedUrl)
-      .then((data) => {
-        setGuestListPageUrl({ next: data.next });
-        setguestList((prev) => ({
-          results: [...prev.results, ...data.results],
-        }));
-      })
-      .catch((error) => {
-        console.error("Error fetching data:", error);
-      });
-      
-      };
+            type === "next"
+            && guestlistPageUrl.next && removeBaseUrlFromPath(guestlistPageUrl.next)
+        convertedUrl &&
+            getListDataInPagination(convertedUrl)
+                .then((data) => {
+                    setGuestListPageUrl({ next: data.next });
+                    setguestList((prev) => ({
+                        results: [...prev.results, ...data.results],
+                    }));
+                })
+                .catch((error) => {
+                    console.error("Error fetching data:", error);
+                });
+
+    };
 
 
-      const handleFilter = (e, field) => {
+    const handleFilter = (e, field) => {
         const { name, value } = e.target;
 
         setFilters((prevFilters) => {
@@ -148,29 +148,93 @@ export default function BookingFilter({ open, handleClose,setFilters,filters,fir
         });
     };
 
-    //check this //
-    var mappedcustomer=filters.customer.map((data)=>data.id).join(",");
-const handleApplyFilter=async(e)=>{
-    e.preventDefault();
-    try {
-        const Pass = { status: "", search: "", refund_status: "",user:mappedcustomer,guest:filters.guest.map((data)=>data.id) };
 
-        const adminData = await getBookingList(Pass);
+    var mappedcategory = filters.category.map((data) => data.id).join(",");
+    var mappedvendor = filters.vendor.map((data) => data.id).join(",");
+    var mappedcustomer = filters.customer.map((data) => data.id).join(",");
+    var mappedguest = filters.guest.map((data) => data.id).join(",");
+    var mappedcustomer_type = filters.customer_type.map((data)=>data.name).join(",")
+    var mappedstatus = filters.status.map((data) => data.name).join(",");
 
-        if (adminData) {
-            handleClose()
-            setBookingList(adminData.results);
-            firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
-        } else {
-            toast.error(adminData.error.response.data)
+    const handleApplyFilter = async (e) => {
+        e.preventDefault();
+        setIsLoading(true);
+        try {
+            const Pass = {
+                status: mappedstatus,
+                search: "",
+                refund_status: "",
+                user: mappedcustomer,
+                guest: mappedguest,
+                category: mappedcategory,
+                company: mappedvendor,
+                user_type: mappedcustomer_type,
+                commencement_date: { from: filters?.commencement_date?.from !=="" ?PassingformatDate(filters?.commencement_date?.from):"", to:filters?.commencement_date?.to !==""? PassingformatDate(filters?.commencement_date?.to):"" },
+
+                creation_date: { from:filters?.creation_date?.from !==""? PassingformatDate(filters?.creation_date?.from):"", to:filters?.creation_date?.to !==""? PassingformatDate(filters?.creation_date?.to):"" }
+            };
+
+            const adminData = await getBookingList(Pass);
+
+            if (adminData) {
+                setIsLoading(false);
+                handleClose()
+                setBookingList(adminData.results);
+                firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
+            } else {
+                setIsLoading(false);
+                toast.error(adminData.error.response.data)
+            }
+
+        } catch (err) {
+            setIsLoading(false);
+            toast.error(err.message)
         }
-        
-    } catch (err) {
-        toast.error(err.message)
+
     }
 
-}
+    const clearFilter = async () => {
 
+        setIsLoading(true);
+
+        if (!isLoading) {
+            try {
+                const Pass = { status: "", search: "", refund_status: "", user: "", guest: "" };
+                const adminData = await getBookingList(Pass);
+
+                if (adminData) {
+                    setIsLoading(false);
+                    handleClose();
+                    setBookingList(adminData?.results);
+                    firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
+                    setFilters({
+                        category: [],
+                        vendor: [],
+                        customer: [],
+                        guest: [],
+                        customer_type: [],
+                        status: [],
+                        creation_date: {
+                            from: "",
+                            to: ""
+                        },
+                        commencement_date: {
+                            from: "",
+                            to: ""
+                        }
+                    })
+
+                } else {
+                    setIsLoading(false);
+                    toast.error(adminData.error.response.data)
+                }
+                setIsLoading(false);
+            } catch (err) {
+                setIsLoading(false);
+                toast.error(err.message)
+            }
+        }
+    }
     return (
         <div>
             <Modal
@@ -186,16 +250,33 @@ const handleApplyFilter=async(e)=>{
                     <IconButton
                         edge="end"
                         color="inherit"
-                        onClick={() => { handleClose() }}
+                        onClick={() => {
+                            handleClose(); setFilters({
+                                category: [],
+                                vendor: [],
+                                customer: [],
+                                guest: [],
+                                customer_type: [],
+                                status: [],
+                                creation_date: {
+                                    from: "",
+                                    to: ""
+                                },
+                                commencement_date: {
+                                    from: "",
+                                    to: ""
+                                }
+                            })
+                        }}
                         aria-label="close"
                         sx={{ position: 'absolute', top: 8, right: 14 }}
                     >
                         <CloseIcon />
                     </IconButton>
-                   
+
                     <br />
                     <br />
-                    <form onSubmit={handleApplyFilter} class="d-flex align-items-start" style={{position:"relative"}}>
+                    <form onSubmit={handleApplyFilter} class="d-flex align-items-start" style={{ position: "relative" }}>
                         <div class="frame-427319790">
                             <div
                                 class="nav flex-column nav-pills me-3"
@@ -317,8 +398,8 @@ const handleApplyFilter=async(e)=>{
                                 </button>
                                 <small className='mt-2'>Booking</small>
                                 <button
-                                onClick={() => setActive("status")}
-                                style={{ width: "15vw", backgroundColor: "white", border: active === "status" ? "1px solid #2176FF" : "" }}
+                                    onClick={() => setActive("status")}
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "status" ? "1px solid #2176FF" : "" }}
                                     class="nav-link mt-2 d-flex justify-content-between"
                                     id="v-pills-status-tab"
                                     data-bs-toggle="pill"
@@ -328,7 +409,7 @@ const handleApplyFilter=async(e)=>{
                                     aria-controls="v-pills-status"
                                     aria-selected="false"
                                 >
-                                   <span> Booking Status</span>
+                                    <span> Booking Status</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "status" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
                                         {filters.status.length}
                                     </span>
@@ -338,11 +419,11 @@ const handleApplyFilter=async(e)=>{
 
                                     </span>
                                 </button>
-                                <small  className='mt-2'>Date</small>
+                                <small className='mt-2'>Date</small>
                                 <button
-                                 onClick={() => setActive("creation")}
-                                 class="nav-link mt-2 d-flex justify-content-between"
-                                 style={{ width: "15vw", backgroundColor: "white", border: active === "creation" ? "1px solid #2176FF" : "" }}
+                                    onClick={() => setActive("creation")}
+                                    class="nav-link mt-2 d-flex justify-content-between"
+                                    style={{ width: "15vw", backgroundColor: "white", border: active === "creation" ? "1px solid #2176FF" : "" }}
                                     id="v-pills-creationDate-tab"
                                     data-bs-toggle="pill"
                                     data-bs-target="#v-pills-creationDate"
@@ -353,7 +434,7 @@ const handleApplyFilter=async(e)=>{
                                 >
                                     <span> Creation Date</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "creation" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.creation_date.from.trim()!=="" && filters.creation_date.to.trim()!==""? 2:filters.creation_date.from.trim()!=="" ? 1:filters.creation_date.to.trim()!=="" ? 1:0}
+                                        {filters.creation_date.from !== "" && filters.creation_date.to !== "" ? 2 : filters.creation_date.from !== "" ? 1 : filters.creation_date.to !== "" ? 1 : 0}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "creation" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -375,7 +456,7 @@ const handleApplyFilter=async(e)=>{
                                 >
                                     <span> Commencement Date</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "commencement" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.commencement_date.from.trim()!=="" && filters.commencement_date.to.trim()!==""? 2:filters.commencement_date.from.trim()!=="" ? 1:filters.commencement_date.to.trim()!=="" ? 1:0}
+                                        {filters.commencement_date.from !== "" && filters.commencement_date.to !== "" ? 2 : filters.commencement_date.from !== "" ? 1 : filters.commencement_date.to !== "" ? 1 : 0}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "commencement" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -405,19 +486,19 @@ const handleApplyFilter=async(e)=>{
                                     onChange={(e) => setSearch((prev) => { return { ...prev, category: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
+                                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
                                     {categorylist.length > 0 &&
                                         categorylist.filter((dat) => dat["name"].toLowerCase().includes(search.category.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
-                                                     class="form-check-input"
-                                                     type="checkbox"
-                                                     value={data.id}
-                                                     name={data.name}
-                                                     id={data.name}
-                                                     checked={filters.category.find((items) => items.id === data.id)}
-                                                     onChange={(e) => handleFilter(e, "category")}
-                                                     style={{ width: 20, height: 20 }}
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    value={data.id}
+                                                    name={data.name}
+                                                    id={data.name}
+                                                    checked={filters.category.find((items) => items.id === data.id)}
+                                                    onChange={(e) => handleFilter(e, "category")}
+                                                    style={{ width: 20, height: 20 }}
                                                 />
                                                 <label class="form-check-label" for="Boat">
                                                     {data.name}
@@ -441,19 +522,19 @@ const handleApplyFilter=async(e)=>{
                                     onChange={(e) => setSearch((prev) => { return { ...prev, vendor: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
+                                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
                                     {vendorlist.length > 0 &&
                                         vendorlist.filter((dat) => dat["name"].toLowerCase().includes(search.vendor.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
-                                                     class="form-check-input"
-                                                     type="checkbox"
-                                                     value={data.id}
-                                                     name={data.name}
-                                                     id={data.name}
-                                                     checked={filters.vendor.find((items) => items.id === data.id)}
-                                                     onChange={(e) => handleFilter(e, "vendor")}
-                                                     style={{ width: 20, height: 20 }}
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    value={data.id}
+                                                    name={data.name}
+                                                    id={data.name}
+                                                    checked={filters.vendor.find((items) => items.id === data.id)}
+                                                    onChange={(e) => handleFilter(e, "vendor")}
+                                                    style={{ width: 20, height: 20 }}
                                                 />
                                                 <label class="form-check-label" for="Boat">
                                                     {data.name}
@@ -477,30 +558,30 @@ const handleApplyFilter=async(e)=>{
                                     onChange={(e) => setSearch((prev) => { return { ...prev, customer: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
-                                {customerList?.results?.length > 0 && 
-                                customerList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.customer?.toLowerCase())).map((data)=>
-                                <div class="form-check">
-                                    <input
-                                         class="form-check-input"
-                                         type="checkbox"
-                                         value={data.id}
-                                         name={data.first_name}
-                                         id={data.first_name}
-                                         checked={filters.customer.find((items) => items.id === data.id)}
-                                         onChange={(e) => handleFilter(e, "customer")}
-                                         style={{ width: 20, height: 20 }}
-                                    />
-                                    <label class="form-check-label" for="Boat">
-                                        {data?.first_name}
-                                    </label>
-                                </div>
-                                )
-                                }
+                                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
+                                    {customerList?.results?.length > 0 &&
+                                        customerList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.customer?.toLowerCase())).map((data) =>
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    value={data.id}
+                                                    name={data.first_name}
+                                                    id={data.first_name}
+                                                    checked={filters.customer.find((items) => items.id === data.id)}
+                                                    onChange={(e) => handleFilter(e, "customer")}
+                                                    style={{ width: 20, height: 20 }}
+                                                />
+                                                <label class="form-check-label" for="Boat">
+                                                    {data?.first_name}
+                                                </label>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 <div className="card-footer">
                                     <ul className="pagination m-0 ms-auto">
-                                      
+
 
                                         <li
                                             className={`page-item  ${!listPageUrl.next && "disabled"
@@ -514,7 +595,7 @@ const handleApplyFilter=async(e)=>{
                                                 }}
                                             >
                                                 View More
-                                                
+
                                             </a>
                                         </li>
                                     </ul>
@@ -534,30 +615,30 @@ const handleApplyFilter=async(e)=>{
                                     onChange={(e) => setSearch((prev) => { return { ...prev, guest: e.target.value } })}
                                 />
                                 <br />
-                                <div style={{ height: "400px", overflow: "scroll",width:"500px" }}>
-                                {guestList?.results?.length > 0 && 
-                               guestList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.guest?.toLowerCase())).map((data)=>
-                                <div class="form-check">
-                                    <input
-                                         class="form-check-input"
-                                         type="checkbox"
-                                         value={data.id}
-                                         name={data.first_name}
-                                         id={data.first_name}
-                                         checked={filters.guest.find((items) => items.id === data.id)}
-                                         onChange={(e) => handleFilter(e, "guest")}
-                                         style={{ width: 20, height: 20 }}
-                                    />
-                                    <label class="form-check-label" for="Boat">
-                                        {data?.first_name}
-                                    </label>
-                                </div>
-                                )
-                                }
+                                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
+                                    {guestList?.results?.length > 0 &&
+                                        guestList?.results?.filter((dat) => dat["first_name"]?.toLowerCase()?.includes(search?.guest?.toLowerCase())).map((data) =>
+                                            <div class="form-check">
+                                                <input
+                                                    class="form-check-input"
+                                                    type="checkbox"
+                                                    value={data.id}
+                                                    name={data.first_name}
+                                                    id={data.first_name}
+                                                    checked={filters.guest.find((items) => items.id === data.id)}
+                                                    onChange={(e) => handleFilter(e, "guest")}
+                                                    style={{ width: 20, height: 20 }}
+                                                />
+                                                <label class="form-check-label" for="Boat">
+                                                    {data?.first_name}
+                                                </label>
+                                            </div>
+                                        )
+                                    }
                                 </div>
                                 <div className="card-footer">
                                     <ul className="pagination m-0 ms-auto">
-                                      
+
 
                                         <li
                                             className={`page-item  ${!guestlistPageUrl.next && "disabled"
@@ -571,7 +652,7 @@ const handleApplyFilter=async(e)=>{
                                                 }}
                                             >
                                                 View More
-                                                
+
                                             </a>
                                         </li>
                                     </ul>
@@ -590,41 +671,41 @@ const handleApplyFilter=async(e)=>{
                                     placeholder="search"
                                     onChange={(e) => setSearch((prev) => { return { ...prev, customer_type: e.target.value } })}
                                 /> */}
-                                <br />
-                               
-                               
+
+
+
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={1}
-                                     name="Registered"
-                                     id="Registered"
-                                     checked={filters.customer_type.find((items) => items.id === 1)}
-                                     onChange={(e) => handleFilter(e, "customer_type")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Registered"}
-                                </label>
-                            </div>
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"1"}
+                                        name="Registered"
+                                        id="Registered"
+                                        checked={filters.customer_type.find((items) => items.id === "1")}
+                                        onChange={(e) => handleFilter(e, "customer_type")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Registered"}
+                                    </label>
+                                </div>
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={2}
-                                     name="Guest"
-                                     id="Guest"
-                                     checked={filters.customer_type.find((items) => items.id === 2)}
-                                     onChange={(e) => handleFilter(e, "customer_type")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Guest"}
-                                </label>
-                            </div>
-                              
-                                
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"2"}
+                                        name="Guest"
+                                        id="Guest"
+                                        checked={filters.customer_type.find((items) => items.id === "2")}
+                                        onChange={(e) => handleFilter(e, "customer_type")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Guest"}
+                                    </label>
+                                </div>
+
+
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -634,65 +715,65 @@ const handleApplyFilter=async(e)=>{
                             >
                                 <h4>Booking Status</h4>
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={1}
-                                     name="Completed"
-                                     id="Completed"
-                                     checked={filters.status.find((items) => items.id === 1)}
-                                     onChange={(e) => handleFilter(e, "status")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Completed"}
-                                </label>
-                            </div>
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"1"}
+                                        name="Completed"
+                                        id="Completed"
+                                        checked={filters.status.find((items) => items.id === "1")}
+                                        onChange={(e) => handleFilter(e, "status")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Completed"}
+                                    </label>
+                                </div>
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={2}
-                                     name="Unsuccessful"
-                                     id="Unsuccessful"
-                                     checked={filters.customer_type.find((items) => items.id === 2)}
-                                     onChange={(e) => handleFilter(e, "status")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Unsuccessful"}
-                                </label>
-                            </div>
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"2"}
+                                        name="Unsuccessful"
+                                        id="Unsuccessful"
+                                        checked={filters.status.find((items) => items.id === "2")}
+                                        onChange={(e) => handleFilter(e, "status")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Unsuccessful"}
+                                    </label>
+                                </div>
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={3}
-                                     name="Upcoming"
-                                     id="Upcoming"
-                                     checked={filters.customer_type.find((items) => items.id === 3)}
-                                     onChange={(e) => handleFilter(e, "status")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Upcoming"}
-                                </label>
-                            </div>
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"3"}
+                                        name="Upcoming"
+                                        id="Upcoming"
+                                        checked={filters.status.find((items) => items.id === "3")}
+                                        onChange={(e) => handleFilter(e, "status")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Upcoming"}
+                                    </label>
+                                </div>
                                 <div class="form-check">
-                                <input
-                                     class="form-check-input"
-                                     type="checkbox"
-                                     value={4}
-                                     name="Cancelled"
-                                     id="Cancelled"
-                                     checked={filters.customer_type.find((items) => items.id === 4)}
-                                     onChange={(e) => handleFilter(e, "status")}
-                                     style={{ width: 20, height: 20 }}
-                                />
-                                <label class="form-check-label" for="Boat">
-                                    {"Cancelled"}
-                                </label>
-                            </div>
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value={"4"}
+                                        name="Cancelled"
+                                        id="Cancelled"
+                                        checked={filters.status.find((items) => items.id === "4")}
+                                        onChange={(e) => handleFilter(e, "status")}
+                                        style={{ width: 20, height: 20 }}
+                                    />
+                                    <label class="form-check-label" for="Boat">
+                                        {"Cancelled"}
+                                    </label>
+                                </div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -702,30 +783,30 @@ const handleApplyFilter=async(e)=>{
                             >
                                 <h4>Creation Date</h4>
                                 <div className='d-flex justify-content-between align-items-center'>
-                                            <div className='mx-5'>
-                                                <label class="form-check-label mb-2" for="Boat">
-                                                    From
-                                                </label>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        value={filters.creation_date.from}
-                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: {from:PassingformatDate(newValue),to:filters.creation_date.to} } })}
-                                                    />
+                                    <div className='mx-2'>
+                                        <label class="form-check-label mb-2" for="Boat">
+                                            From
+                                        </label>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                value={filters?.creation_date?.from}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: { from: newValue, to: filters.creation_date.to } } })}
+                                            />
 
-                                                </LocalizationProvider>
-                                            </div>
-                                            <div>
-                                                <label class="form-check-label mb-2" for="Boat">
-                                                    To
-                                                </label>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        value={filters.creation_date.to}
-                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: {from:filters.creation_date.from,to:PassingformatDate(newValue)} } })}
-                                                    />
-                                                </LocalizationProvider>
-                                            </div>
-                                        </div>
+                                        </LocalizationProvider>
+                                    </div>
+                                    <div>
+                                        <label class="form-check-label mb-2" for="Boat">
+                                            To
+                                        </label>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                value={filters?.creation_date?.to}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, creation_date: { from: filters.creation_date.from, to: newValue } } })}
+                                            />
+                                        </LocalizationProvider>
+                                    </div>
+                                </div>
                             </div>
                             <div
                                 class="tab-pane fade"
@@ -735,37 +816,37 @@ const handleApplyFilter=async(e)=>{
                             >
                                 <h4>Commencement Date</h4>
                                 <div className='d-flex justify-content-between align-items-center'>
-                                            <div className='mx-5'>
-                                                <label class="form-check-label mb-2" for="Boat">
-                                                    From
-                                                </label>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        value={filters.commencement_date.from}
-                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: {from:PassingformatDate(newValue),to:filters.commencement_date.to} } })}
-                                                    />
+                                    <div className='mx-2'>
+                                        <label class="form-check-label mb-2" for="Boat">
+                                            From
+                                        </label>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                value={filters?.commencement_date?.from}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: { from: newValue, to: filters.commencement_date.to } } })}
+                                            />
 
-                                                </LocalizationProvider>
-                                            </div>
-                                            <div>
-                                                <label class="form-check-label mb-2" for="Boat">
-                                                    To
-                                                </label>
-                                                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                                                    <DatePicker
-                                                        value={filters.commencement_date.to}
-                                                        onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: {from:filters.commencement_date.from,to:PassingformatDate(newValue)} } })}
-                                                    />
-                                                </LocalizationProvider>
-                                            </div>
-                                        </div>
+                                        </LocalizationProvider>
+                                    </div>
+                                    <div>
+                                        <label class="form-check-label mb-2" for="Boat">
+                                            To
+                                        </label>
+                                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                            <DatePicker
+                                                value={filters?.commencement_date?.to}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: { from: filters.commencement_date.from, to: newValue } } })}
+                                            />
+                                        </LocalizationProvider>
+                                    </div>
+                                </div>
                             </div>
-                            
+
                         </div>
-                        <div className='d-flex justify-content-end mt-3' style={{position:"absolute",bottom:"-20%",right:10}}>
-                                <button type='reset' className='m-1 btn btn-small btn-white' >Clear Filter</button>
-                                <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
-                            </div>
+                        <div className='d-flex justify-content-end mt-3' style={{ position: "absolute", bottom: "-20%", right: 10 }}>
+                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={clearFilter}>Clear Filter</button>
+                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
+                        </div>
                     </form>
                 </Box>
             </Modal>

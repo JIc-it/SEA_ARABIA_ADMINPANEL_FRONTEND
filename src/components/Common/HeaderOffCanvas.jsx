@@ -13,6 +13,7 @@ export default function HeaderOffCanvas({
     countset, isLoading, setIsLoading, listPageUrl, setListPageUrl, data, setdata
 }) {
 
+    console.log(data,"noti");
     const handleCloseOffcanvas = () => {
         setOpen(false);
         setIsLoading(false);
@@ -31,7 +32,7 @@ export default function HeaderOffCanvas({
             getListDataInPagination(convertedUrl)
                 .then((data) => {
                     setIsLoading(false);
-                    countset(data.results.length)
+                    countset(data.count)
                     setListPageUrl({ next: data?.next, previous: data?.previous });
                     setdata(data?.results);
                 })
@@ -56,8 +57,8 @@ export default function HeaderOffCanvas({
                 <Offcanvas.Title style={{ fontWeight: 550 }}>Notification</Offcanvas.Title>
             </Offcanvas.Header>
             <div className="mt-5" style={{ position: "relative" }}>
-                {!isLoading && data.length > 0 ?
-                    data?.map((dat) =>
+                {!isLoading && data?.notifications?.length > 0 ?
+                    data?.notifications?.map((dat) =>
                         <div className="px-2" style={{ position: "relative" }}>
                             <div style={{ display: "flex" }}>
                                 <div className="mx-2">
@@ -86,7 +87,7 @@ export default function HeaderOffCanvas({
                         <div style={{ textAlign: "center" }}>No Notification</div>
                     )
                 }
-                {!isLoading && data.length > 0 && <div className="d-flex align-items-center mt-2" style={{ position: "absolute", bottom: "5px", right: "5px" }}>
+                {!isLoading && data?.notifications?.length > 0 && <div className="d-flex align-items-center mt-2" style={{ position: "absolute", bottom: "5px", right: "5px" }}>
                     <ul className="pagination m-0 ms-auto">
                         <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
                             <a
