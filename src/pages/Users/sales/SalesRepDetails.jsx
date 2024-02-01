@@ -44,7 +44,17 @@ function SalesRepDetails() {
         console.error("Error fetching customer data:", error);
       });
   }, [salesRepId]);
+  const handleCall = (mobile) => {
+    const teluri = `tel:${mobile}`;
 
+    window.open(teluri, "_blank");
+  };
+
+  const handleGmail = () => {
+    const gmailSignInURL =
+      "https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ifkv=ASKXGp3MRJca_lAk9W3Ozhl5cHu04zHSvCRg6Z-G1zdVwJIA_ad9jWJwlCqAaIRrTIZNr42pfCMJAw&rip=1&sacu=1&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S-586758816%3A1706096141828995&theme=glif";
+    window.location.href = gmailSignInURL;
+  };
   const EditSaleRepWithPermission = WithPermission(
     CommonButtonForPermission,
     permissionCategory.edit,
@@ -272,7 +282,10 @@ function SalesRepDetails() {
               </a>
             </div>
             <div className="bottom_button">
-              <a className="call_vendor_button_customer btn ">
+              <a
+                className="call_vendor_button_customer btn "
+                onClick={() => handleCall(salesRepDetails?.mobile)}
+              >
                 Call Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -297,7 +310,10 @@ function SalesRepDetails() {
                   />
                 </svg>
               </a>
-              <a className="mail_vendor_button btn btn-outline">
+              <a
+                className="mail_vendor_button btn btn-outline"
+                onClick={handleGmail}
+              >
                 Mail Customer &nbsp;
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

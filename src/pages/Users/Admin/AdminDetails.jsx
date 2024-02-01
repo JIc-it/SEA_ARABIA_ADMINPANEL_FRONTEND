@@ -35,9 +35,10 @@ function AdminDetails() {
   const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
 
   const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
-  const phoneNumber = "123456789";
-  const handleCall = () => {
-    const telUri = `tel:${phoneNumber}`;
+
+  const handleCall = (mobile) => {
+    const telUri = `tel:${mobile}`;
+    console.log("mobile", telUri);
     window.open(telUri, "_blank");
   };
   const handleClickMail = () => {
@@ -51,7 +52,7 @@ function AdminDetails() {
     getAdminListById(adminId)
       .then((data) => {
         setAdminDetails(data);
-        // console.log(" admin by id==", data);
+        console.log(" admin by id==", data);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -119,7 +120,7 @@ function AdminDetails() {
   );
 
   return (
-    <div                                 
+    <div
       className={
         isMobileView ? "d-flex flex-column" : "d-flex justify-content-between"
       }
@@ -270,7 +271,7 @@ function AdminDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button_customer btn "
-                onClick={handleCall}
+                onClick={() => handleCall(adminDetails?.mobile)}
               >
                 Call Admin &nbsp;
                 <svg

@@ -50,7 +50,6 @@ function UserVendorCardDetails({ venderDetails }) {
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const [serviceList, setServiceList] = useState([]);
 
-  
   const handleBookingButtonClick = () => {
     navigate(`/bookings/${vendorId}`);
   };
@@ -421,7 +420,7 @@ function UserVendorCardDetails({ venderDetails }) {
                   const newTab = window.open("", "_blank");
 
                   // Redirect the new tab to Gmail with the mailto link
-                  newTab.location.href = `https://mail.google.com/mail/?view=cm&fs=1&to=${venderDetails?.email}`;
+                  newTab.location.href = `https://accounts.google.com/v3/signin/identifier?continue=https%3A%2F%2Fmail.google.com%2Fmail%2F&ifkv=ASKXGp3XtoVu2nllhoFxxWTew6eAJGGQt81WbNC3dFGxBrLcYyJHYlPrpB4b5C2ZjTIdRTyQ-xf2Sg&rip=1&sacu=1&service=mail&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S-2013259973%3A1706789718629001&theme=glif=${venderDetails?.email}`;
 
                   // const gmailComposeUrl = `https://mail.google.com/mail/u/0/#inbox?compose=new&to=${venderDetails?.email}`;
 

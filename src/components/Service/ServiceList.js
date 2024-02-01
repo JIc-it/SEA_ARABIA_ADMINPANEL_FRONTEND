@@ -83,7 +83,6 @@ function ServiceList() {
         : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
-
         .then((data) => {
           setIsLoading(false);
           setListPageUrl({ next: data?.next, previous: data?.previous });
@@ -114,33 +113,38 @@ function ServiceList() {
   }, []);
 
   const clearFilter = async () => {
-
     setIsLoading(true);
 
     if (!isLoading) {
-        try {
-            const adminData = await getServiceListing();
+      try {
+        const adminData = await getServiceListing();
 
-            if (adminData) {
-              setFilters({category:[],sub_category:[],vendor:[],status:true});
-                setIsLoading(false);
-                setServiceList(adminData?.results);
-                setListPageUrl({ next: adminData.next, previous: adminData.previous });
-
-            } else {
-                setIsLoading(false);
-                toast.error(adminData.error.response.data)
-                //   console.error("Error while creating Admin:", adminData.error);
-            }
-            setIsLoading(false);
-        } catch (err) {
-            setIsLoading(false);
-            toast.error(err.message)
-            // console.log(err);
+        if (adminData) {
+          setFilters({
+            category: [],
+            sub_category: [],
+            vendor: [],
+            status: true,
+          });
+          setIsLoading(false);
+          setServiceList(adminData?.results);
+          setListPageUrl({
+            next: adminData.next,
+            previous: adminData.previous,
+          });
+        } else {
+          setIsLoading(false);
+          toast.error(adminData.error.response.data);
+          //   console.error("Error while creating Admin:", adminData.error);
         }
+        setIsLoading(false);
+      } catch (err) {
+        setIsLoading(false);
+        toast.error(err.message);
+        // console.log(err);
+      }
     }
-}
-
+  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -314,7 +318,11 @@ function ServiceList() {
                   </div>
                   <button
                     className="bg-black"
-                    style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
+                    style={{
+                      borderRadius: "5px",
+                      marginLeft: "5px",
+                      position: "relative",
+                    }}
                     onClick={() => setOpen(true)}
                   >
                     <img src={filterIcon} alt="filter" width={25} />
@@ -322,7 +330,6 @@ function ServiceList() {
                                         {filters.category.length+filters.sub_category.length+filters.vendor.length+(filters.status.active===true && filters.status.inactive===true) ?  "2":filters.status.active ? "1" :filters.status.inactive ? "1" :"0"}
                                     </span>
                   </button>
-                  <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
                 </div>
               </div>
             </div>
@@ -565,7 +572,17 @@ function ServiceList() {
           </div>
         </div>
       </div>
-      {open && <FilterPopup open={open} setIsLoading={setIsLoading} setServiceList={setServiceList} setListPageUrl={setListPageUrl} handleClose={handleClose} setFilters={setFilters} filters={filters}/>}
+      {open && (
+        <FilterPopup
+          open={open}
+          setIsLoading={setIsLoading}
+          setServiceList={setServiceList}
+          setListPageUrl={setListPageUrl}
+          handleClose={handleClose}
+          setFilters={setFilters}
+          filters={filters}
+        />
+      )}
     </div>
   );
 }

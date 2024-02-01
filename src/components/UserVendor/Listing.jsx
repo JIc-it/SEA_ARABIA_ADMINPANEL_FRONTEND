@@ -16,44 +16,87 @@ import {
 export default function Listing() {
   const { userPermissionList } = useContext(MainPageContext);
   const navigate = useNavigate();
-  const [isToggled, setToggled] = useState(true);
   const [vendor, setVendor] = useState();
   const [search, setSearch] = useState("");
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [selectedValue, setSelectedValue] = useState("");
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
+  const [filters, setFilters] = useState({
+    vendorStatus: [],
+    location: [],
+    OnBoardOn: { from: "", to: "" },
+  });
+  const [filterCriteriaCount, setFilterCriteriaCount] = useState(0);
+
+  const [categorylist, setCategoryList] = useState([
+    { id: 1, name: "Active", status: false },
+    { id: 2, name: "Inactive", status: false },
+  ]);
+
+  const handleClearFilter = async () => {
+    setIsRefetch(!isRefetch);
+    setCategoryList([
+      { id: 1, name: "Active", status: false },
+      { id: 2, name: "Inactive", status: false },
+    ]);
+    setFilters({
+      vendorStatus: [],
+      location: [],
+      OnBoardOn: { from: "", to: "" },
+    });
+  };
+  const [servicelist, setServiceList] = useState([]);
 
   const handleOpenFilter = () => {
     setIsOpenFilterPopUp(!isOpenFilterPopUp);
+    handleClearFilter();
   };
 
   const handleCloseFilter = () => {
     setIsOpenFilterPopUp(false);
   };
 
-  const handleToggle = () => {
-    setToggled(!isToggled);
-  };
-
-  const handleSelectChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
-
   const getVendorListData = async () => {
     setIsLoading(true);
+    let locationName =
+      filters.location &&
+      filters.location.map((item, i) => {
+        return item.name;
+      });
+
+    let commaSeparatedLocationsNames =
+      (locationName && locationName.length > 0 && locationName.join(",")) || "";
+
     getCustomerSearch({
       search: search,
-      status: selectedValue,
       role: "Vendor",
       company_company_user: true,
+      is_active:
+        filters.vendorStatus &&
+        filters.vendorStatus.length > 0 &&
+        filters.vendorStatus[0].status &&
+        filters.vendorStatus[1].status
+          ? ""
+          : filters.vendorStatus &&
+            filters.vendorStatus.length > 0 &&
+            filters.vendorStatus[0].status
+          ? true
+          : filters.vendorStatus &&
+            filters.vendorStatus.length > 0 &&
+            filters.vendorStatus[1].status
+          ? false
+          : "",
+      location: commaSeparatedLocationsNames,
+      onboard_date_before:
+        (filters.OnBoardOn.to != "" && filters.OnBoardOn.to) || "",
+      onboard_date_after:
+        (filters.OnBoardOn.from != "" && filters.OnBoardOn.from) || "",
     })
       .then((data) => {
-        console.log("Search ---:", data);
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
         const vendorList = data.results.filter(
@@ -69,8 +112,18 @@ export default function Listing() {
   };
 
   useEffect(() => {
-    getVendorListData(search, selectedValue);
-  }, [selectedValue, isRefetch, search]);
+    getVendorListData();
+    const isVendorStatusFiltered = filters.vendorStatus.length > 0 ? 1 : 0;
+    const isLocationFiltered = filters.location.length > 0 ? 1 : 0;
+    const countNonEmpty =
+      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
+      0
+        ? 1
+        : 0;
+    setFilterCriteriaCount(
+      isVendorStatusFiltered + isLocationFiltered + countNonEmpty
+    );
+  }, [isRefetch, search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -130,14 +183,6 @@ export default function Listing() {
                     setSearch(e.target.value);
                   }}
                 />
-                {/* <button
-                    type="button"
-                    className="btn search_button"
-                    style={{ background: "#006875" }}
-                    onClick={getVendorListData}
-                  >
-                    Search
-                  </button> */}
               </div>
               <button
                 className="btn  filter-button mx-2 "
@@ -159,6 +204,39 @@ export default function Listing() {
                   />
                 </svg>
               </button>
+              {filterCriteriaCount > 0 && (
+                <span
+                  className="py-1"
+                  style={{
+                    position: "relative",
+                    right: "22px",
+                    bottom: "11px",
+                    color: "white",
+                    fontSize: "10px",
+                    textAlign: "center",
+                    backgroundColor: "#2176FF",
+                    width: "22px",
+                    height: "22px",
+                    borderRadius: "33px",
+                  }}
+                >
+                  {filterCriteriaCount}
+                </span>
+              )}
+              {filterCriteriaCount > 0 && (
+                <button
+                  className=" px-3 py-2 btn"
+                  style={{
+                    color: "#ffff",
+                    backgroundColor: "#2176FF",
+                    position: "relative",
+                    right: "18px",
+                  }}
+                  onClick={handleClearFilter}
+                >
+                  Clear Filter
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -226,7 +304,7 @@ export default function Listing() {
                   <span>Location</span>
                 </th>
                 <th>
-                  <span>Joined On</span>
+                  <span>Onboarded On</span>
                 </th>
                 <th>
                   <span>Total Booking</span>
@@ -246,9 +324,8 @@ export default function Listing() {
                   {vendor && vendor.length > 0 ? (
                     <>
                       {vendor.map((item, index) => {
-                        const [day, month, year] = item.created_at.split("-");
                         const formattedDate = new Date(
-                          `${year}-${month}-${day}`
+                          item.company_onboarded_on
                         ).toLocaleDateString("en-GB", {
                           day: "numeric",
                           month: "short",
@@ -466,6 +543,16 @@ export default function Listing() {
         <VendorFilterPopup
           open={isOpenFilterPopUp}
           handleClose={handleCloseFilter}
+          setIsLoading={setIsLoading}
+          setServiceList={setServiceList}
+          setListPageUrl={setListPageUrl}
+          setFilters={setFilters}
+          filters={filters}
+          isRefetch={isRefetch}
+          setIsRefetch={setIsRefetch}
+          setCategoryList={setCategoryList}
+          categorylist={categorylist}
+          handleClearFilter={handleClearFilter}
         />
       )}
     </div>
