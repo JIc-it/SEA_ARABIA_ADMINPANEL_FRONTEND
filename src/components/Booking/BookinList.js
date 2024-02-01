@@ -41,18 +41,26 @@ const style = {
 
 const BookinList = () => {
   const { userPermissionList } = useContext(MainPageContext);
-  const customerId = useParams()?.id;
-
-  const location = useLocation();
-
-  const { pathname, state } = location;
-
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-
   const [search, setSearch] = useState("");
+  const [filters, setFilters] = useState({
+    category: [],
+    vendor: [],
+   customer:[],
+   guest:[],
+   customer_type:[],
+   status:[],
+   creation_date:{
+    from:"",
+    to:""
+   },
+   commencement_date:{
+    from:"",
+    to:""
+   }
+  });
 
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
@@ -596,7 +604,7 @@ const BookinList = () => {
                 </div>
               </div>
             </div>
-            {open && <BookingFilter open={open} handleClose={handleClose}/>}
+            {open && <BookingFilter open={open} handleClose={handleClose} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}/>}
           </div>
           <Footer />
         </div>

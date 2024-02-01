@@ -8,17 +8,21 @@ const cancellationrequestURL = "booking/booking-cancellation";
 const bookingCountURL = "booking/admin-booking-count";
 const refundrequestCountURL = "booking/admin-refund-count";
 const refundhistoryCountURL = "booking/admin-refund-history-count";
+const userListURl="booking/UserList"
+const guestListURl="booking/GuestList"
 
 export const getBookingList = (data) => {
   return axiosInstance
-    .get(bookingList, {
+    .get(bookingList, { headers: { "Content-Type": "application/json", Accept: "*/*" },
       params: {
         status: data.status,
         search: data.search,
         refund_status: data.refund_status,
         id: data.id,
+        user:data?.user,
+        guest:data.guest
       },
-    })
+    },)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
@@ -79,6 +83,25 @@ export const getRefundRequestCount = () => {
 export const getRefundHistoryCount = () => {
   return axiosInstance
     .get(refundhistoryCountURL)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getUserList = () => {
+  return axiosInstance
+    .get(userListURl)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+export const getGuestList = () => {
+  return axiosInstance
+    .get(guestListURl)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);
