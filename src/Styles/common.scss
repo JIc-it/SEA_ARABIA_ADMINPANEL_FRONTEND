@@ -1698,3 +1698,14 @@ optgroup {
 .status_dropdown .form-select {
   --tblr-form-select-bg-img: url("/assets/images/down-arrow.png");
 }
+
+.location-list-container {
+  border: 1px solid #ccc;
+}
+.location-list-item {
+  background-color: #fff;
+  border-radius: 5px;
+}
+.embed-data {
+  word-break: break-all;
+}

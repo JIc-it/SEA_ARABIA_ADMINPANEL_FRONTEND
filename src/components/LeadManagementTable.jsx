@@ -2,10 +2,7 @@ import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import AddNewLead from "./Modal/AddNewLead";
 import { useContext, useEffect, useState } from "react";
-import {
-  getVendorList,
-  getVendorStatus,
-} from "../services/leadMangement";
+import { getVendorList, getVendorStatus } from "../services/leadMangement";
 import {
   formatDate,
   getMenuPermissions,
@@ -14,7 +11,6 @@ import {
 import { getListDataInPagination } from "../services/commonServices";
 import CircularProgress from "@mui/material/CircularProgress";
 import { setCounter } from "../state/counter/counterSlice";
-
 import { API_BASE_URL } from "../services/authHandle";
 import CommonButtonForPermission from "./HigherOrderComponents/CommonButtonForPermission";
 import WithPermission from "./HigherOrderComponents/PermissionCheck/WithPermission";
@@ -24,7 +20,7 @@ import {
 } from "./Permissions/PermissionConstants";
 import { MainPageContext } from "../Context/MainPageContext";
 
-function Table({isRefetch, setIsRefetch}) {
+function Table({ isRefetch, setIsRefetch }) {
   const { userPermissionList } = useContext(MainPageContext);
   const dispatch = useDispatch();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
