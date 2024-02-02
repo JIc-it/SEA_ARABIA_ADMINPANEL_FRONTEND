@@ -10,12 +10,10 @@ import ActiveMachine from "../../static/img/active-machine.png";
 import inactiveMachine from "../../static/img/inactive-machine.png";
 import {
   getServiceListing,
-  getCount,
-  getExportList,
+  getCount
 } from "../../services/service";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
-  formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";
@@ -46,12 +44,12 @@ function ServiceList() {
     sub_category: [],
     vendor: [],
     status: {
-      active:false,
-      inactive:false
+      active: false,
+      inactive: false
     },
   });
 
-  let checkfilterslength=filters.category.length >0 || filters.sub_category.length > 0 || filters.vendor.length>0 || filters.status.active || filters.status.inactive
+  let checkfilterslength = filters.category.length > 0 || filters.sub_category.length > 0 || filters.vendor.length > 0 || filters.status.active || filters.status.inactive
 
   const handleClose = () => {
     setOpen(false);
@@ -81,8 +79,8 @@ function ServiceList() {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
+          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+          : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -328,15 +326,15 @@ function ServiceList() {
                     onClick={() => setOpen(true)}
                   >
                     <img src={filterIcon} alt="filter" width={25} />
-                    <span className='py-1' style={{position:"absolute",top:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
-                                        {filters.category.length+filters.sub_category.length+filters.vendor.length+(filters.status.active===true && filters.status.inactive===true) ?  "2":filters.status.active ? "1" :filters.status.inactive ? "1" :"0"}
-                                    </span>
+                    <span className='py-1' style={{ position: "absolute", top: -10, color: "white", fontSize: "10px", backgroundColor: "#2176FF", width: "22px", height: "22px", borderRadius: "33px" }}>
+                      {filters.category.length + filters.sub_category.length + filters.vendor.length + (filters.status.active===true && filters.status.inactive === true ? 2 : filters.status.active ===true ? 1 : filters.status.inactive ===true ? 1 : 0)}
+                    </span>
                   </button>
-                 {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
-                        if(checkfilterslength){
-                          window.location.reload();
-                        }
-                      }}>Clear Filter</button>}
+                  {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{ color: "#ffff", backgroundColor: "#2176FF" }} onClick={() => {
+                    if (checkfilterslength) {
+                      window.location.reload();
+                    }
+                  }}>Clear Filter</button>}
                 </div>
               </div>
             </div>
@@ -581,7 +579,7 @@ function ServiceList() {
       </div>
       {open && (
         <FilterPopup
-        checkfilterslength={checkfilterslength}
+          checkfilterslength={checkfilterslength}
           open={open}
           setIsLoading={setIsLoading}
           setServiceList={setServiceList}

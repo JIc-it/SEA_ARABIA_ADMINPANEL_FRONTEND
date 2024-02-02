@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 
-export default function BookingFilter({ open,checkfilterslength, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
+export default function RefundHistoryFilter({ open,checkfilterslength, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
@@ -149,27 +149,27 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
     };
 
 
-    var mappedcategory = filters.category.map((data) => data.id).join(",");
-    var mappedvendor = filters.vendor.map((data) => data.id).join(",");
-    var mappedcustomer = filters.customer.map((data) => data.id).join(",");
-    var mappedguest = filters.guest.map((data) => data.id).join(",");
-    var mappedcustomer_type = filters.customer_type.map((data)=>data.name).join(",")
-    var mappedstatus = filters.status.map((data) => data.name).join(",");
+    var mappedcategory = filters.category?.map((data) => data.id).join(",");
+    var mappedvendor = filters.vendor?.map((data) => data.id).join(",");
+    var mappedcustomer = filters.customer?.map((data) => data.id).join(",");
+    var mappedguest = filters.guest?.map((data) => data.id).join(",");
+    var mappedcustomer_type = filters.customer_type?.map((data)=>data.name).join(",")
+    var mappedstatus = filters.role?.map((data) => data.name).join(",");
 
     const handleApplyFilter = async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
             const Pass = {
-                status: mappedstatus,
-                search: "",
-                refund_status: "",
+                cancelled_by: mappedstatus,
+                status: "Cancelled",
+                refund_status: "Completed",
                 user: mappedcustomer,
                 guest: mappedguest,
                 category: mappedcategory,
                 company: mappedvendor,
                 user_type: mappedcustomer_type,
-                commencement_date: { from: filters?.commencement_date?.from !=="" ?PassingformatDate(filters?.commencement_date?.from):"", to:filters?.commencement_date?.to !==""? PassingformatDate(filters?.commencement_date?.to):"" },
+                cancelled_on: { from: filters?.cancelled_on?.from !=="" ?PassingformatDate(filters?.cancelled_on?.from):"", to:filters?.cancelled_on?.to !==""? PassingformatDate(filters?.cancelled_on?.to):"" },
 
                 creation_date: { from:filters?.creation_date?.from !==""? PassingformatDate(filters?.creation_date?.from):"", to:filters?.creation_date?.to !==""? PassingformatDate(filters?.creation_date?.to):"" }
             };
@@ -243,7 +243,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 >
                                     <span> Category</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Category" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.category.length}
+                                        {filters.category?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Category" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -265,7 +265,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 >
                                     <span> Vendor</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Vendor" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.vendor.length}
+                                        {filters.vendor?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Vendor" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -288,7 +288,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 >
                                     <span> Customer</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "Customer" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.customer.length}
+                                        {filters.customer?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "Customer" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -310,7 +310,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 >
                                     <span> Guest User</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "guest_user" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.guest.length}
+                                        {filters.guest?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "guest_user" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -332,7 +332,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 >
                                     <span> Customer Type</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "customer_type" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.customer_type.length}
+                                        {filters.customer_type?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "customer_type" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -340,7 +340,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
 
                                     </span>
                                 </button>
-                                <small className='mt-2'>Booking</small>
+                                <small className='mt-2'>Cancellation</small>
                                 <button
                                     onClick={() => setActive("status")}
                                     style={{ width: "15vw", backgroundColor: "white", border: active === "status" ? "1px solid #2176FF" : "" }}
@@ -353,9 +353,9 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                     aria-controls="v-pills-status"
                                     aria-selected="false"
                                 >
-                                    <span> Booking Status</span>
+                                    <span>Initiated By</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "status" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.status.length}
+                                        {filters.role?.length}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "status" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -398,9 +398,9 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                     aria-controls="v-pills-commencementDate"
                                     aria-selected="false"
                                 >
-                                    <span> Commencement Date</span>
+                                    <span>Cancelled On</span>
                                     <span className='py-1' style={{ color: "white", fontSize: "12px", backgroundColor: active === "commencement" ? "#2176FF" : "gray", width: "22px", height: "22px", borderRadius: "33px" }}>
-                                        {filters.commencement_date.from !== "" && filters.commencement_date.to !== "" ? 2 : filters.commencement_date.from !== "" ? 1 : filters.commencement_date.to !== "" ? 1 : 0}
+                                        {filters.cancelled_on.from !== "" && filters.cancelled_on.to !== "" ? 2 : filters.cancelled_on.from !== "" ? 1 : filters.cancelled_on.to !== "" ? 1 : 0}
                                     </span>
                                     <span><svg width={18} height={18} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M7.5 4.16797L12.5 10.0013L7.5 15.8346" stroke={active === "commencement" ? "#2176FF" : "gray"} strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
@@ -431,7 +431,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 />
                                 <br />
                                 <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
-                                    {categorylist.length > 0 &&
+                                    {categorylist?.length > 0 &&
                                         categorylist.filter((dat) => dat["name"].toLowerCase().includes(search.category.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
@@ -440,7 +440,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                                     value={data.id}
                                                     name={data.name}
                                                     id={data.name}
-                                                    checked={filters.category.find((items) => items.id === data.id)}
+                                                    checked={filters.category?.find((items) => items.id === data.id)}
                                                     onChange={(e) => handleFilter(e, "category")}
                                                     style={{ width: 20, height: 20 }}
                                                 />
@@ -467,7 +467,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 />
                                 <br />
                                 <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
-                                    {vendorlist.length > 0 &&
+                                    {vendorlist?.length > 0 &&
                                         vendorlist.filter((dat) => dat["name"].toLowerCase().includes(search.vendor.toLowerCase())).map((data) =>
                                             <div class="form-check">
                                                 <input
@@ -476,7 +476,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                                     value={data.id}
                                                     name={data.name}
                                                     id={data.name}
-                                                    checked={filters.vendor.find((items) => items.id === data.id)}
+                                                    checked={filters.vendor?.find((items) => items.id === data.id)}
                                                     onChange={(e) => handleFilter(e, "vendor")}
                                                     style={{ width: 20, height: 20 }}
                                                 />
@@ -512,7 +512,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                                     value={data.id}
                                                     name={data.first_name}
                                                     id={data.first_name}
-                                                    checked={filters.customer.find((items) => items.id === data.id)}
+                                                    checked={filters.customer?.find((items) => items.id === data.id)}
                                                     onChange={(e) => handleFilter(e, "customer")}
                                                     style={{ width: 20, height: 20 }}
                                                 />
@@ -569,7 +569,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                                     value={data.id}
                                                     name={data.first_name}
                                                     id={data.first_name}
-                                                    checked={filters.guest.find((items) => items.id === data.id)}
+                                                    checked={filters.guest?.find((items) => items.id === data.id)}
                                                     onChange={(e) => handleFilter(e, "guest")}
                                                     style={{ width: 20, height: 20 }}
                                                 />
@@ -625,7 +625,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         value={"1"}
                                         name="Registered"
                                         id="Registered"
-                                        checked={filters.customer_type.find((items) => items.id === "1")}
+                                        checked={filters.customer_type?.find((items) => items.id === "1")}
                                         onChange={(e) => handleFilter(e, "customer_type")}
                                         style={{ width: 20, height: 20 }}
                                     />
@@ -640,7 +640,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         value={"2"}
                                         name="Guest"
                                         id="Guest"
-                                        checked={filters.customer_type.find((items) => items.id === "2")}
+                                        checked={filters.customer_type?.find((items) => items.id === "2")}
                                         onChange={(e) => handleFilter(e, "customer_type")}
                                         style={{ width: 20, height: 20 }}
                                     />
@@ -657,20 +657,20 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                <h4>Booking Status</h4>
+                                <h4>Initiated By</h4>
                                 <div class="form-check">
                                     <input
                                         class="form-check-input"
                                         type="checkbox"
                                         value={"1"}
-                                        name="Completed"
-                                        id="Completed"
-                                        checked={filters.status.find((items) => items.id === "1")}
-                                        onChange={(e) => handleFilter(e, "status")}
+                                        name="Admin"
+                                        id="Admin"
+                                        checked={filters.role?.find((items) => items.id === "1")}
+                                        onChange={(e) => handleFilter(e, "role")}
                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {"Completed"}
+                                        {"Admin"}
                                     </label>
                                 </div>
                                 <div class="form-check">
@@ -678,14 +678,14 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         class="form-check-input"
                                         type="checkbox"
                                         value={"2"}
-                                        name="Unsuccessful"
-                                        id="Unsuccessful"
-                                        checked={filters.status.find((items) => items.id === "2")}
-                                        onChange={(e) => handleFilter(e, "status")}
+                                        name="Staff"
+                                        id="Staff"
+                                        checked={filters.role?.find((items) => items.id === "2")}
+                                        onChange={(e) => handleFilter(e, "role")}
                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {"Unsuccessful"}
+                                        {"Staff"}
                                     </label>
                                 </div>
                                 <div class="form-check">
@@ -693,14 +693,14 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         class="form-check-input"
                                         type="checkbox"
                                         value={"3"}
-                                        name="Upcoming"
-                                        id="Upcoming"
-                                        checked={filters.status.find((items) => items.id === "3")}
-                                        onChange={(e) => handleFilter(e, "status")}
+                                        name="Vendor"
+                                        id="Vendor"
+                                        checked={filters.role?.find((items) => items.id === "3")}
+                                        onChange={(e) => handleFilter(e, "role")}
                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {"Upcoming"}
+                                        {"Vendor"}
                                     </label>
                                 </div>
                                 <div class="form-check">
@@ -708,14 +708,14 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         class="form-check-input"
                                         type="checkbox"
                                         value={"4"}
-                                        name="Cancelled"
-                                        id="Cancelled"
-                                        checked={filters.status.find((items) => items.id === "4")}
-                                        onChange={(e) => handleFilter(e, "status")}
+                                        name="User"
+                                        id="User"
+                                        checked={filters.role?.find((items) => items.id === "4")}
+                                        onChange={(e) => handleFilter(e, "role")}
                                         style={{ width: 20, height: 20 }}
                                     />
                                     <label class="form-check-label" for="Boat">
-                                        {"Cancelled"}
+                                        {"User"}
                                     </label>
                                 </div>
                             </div>
@@ -758,7 +758,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                 role="tabpanel"
                                 aria-labelledby="v-pills-settings-tab"
                             >
-                                <h4>Commencement Date</h4>
+                                <h4>Cancelled On</h4>
                                 <div className='d-flex justify-content-between align-items-center'>
                                     <div className='mx-2'>
                                         <label class="form-check-label mb-2" for="Boat">
@@ -766,8 +766,8 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         </label>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
-                                                value={filters?.commencement_date?.from}
-                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: { from: newValue, to: filters.commencement_date.to } } })}
+                                                value={filters?.cancelled_on?.from}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, cancelled_on: { from: newValue, to: filters.cancelled_on.to } } })}
                                             />
 
                                         </LocalizationProvider>
@@ -778,8 +778,8 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                                         </label>
                                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                                             <DatePicker
-                                                value={filters?.commencement_date?.to}
-                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, commencement_date: { from: filters.commencement_date.from, to: newValue } } })}
+                                                value={filters?.cancelled_on?.to}
+                                                onChange={(newValue) => setFilters((prev) => { return { ...prev, cancelled_on: { from: filters.cancelled_on.from, to: newValue } } })}
                                             />
                                         </LocalizationProvider>
                                     </div>

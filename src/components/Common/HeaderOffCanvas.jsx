@@ -11,10 +11,10 @@ import {clearNotifications} from "../../services/Notification"
 export default function HeaderOffCanvas({
     open,
     setOpen,
-    countset, isLoading, setIsLoading, listPageUrl, setListPageUrl, data, setdata
+    countset, isLoading, setIsLoading, listPageUrl, setListPageUrl, data, setdata,setIsUpdated
 }) {
 
-    console.log(data,"noti");
+
     const handleCloseOffcanvas = () => {
         setOpen(false);
         setIsLoading(false);
@@ -45,13 +45,16 @@ export default function HeaderOffCanvas({
 
     const handleClearNotifications=()=>{
        
-        if(data?.notifications.length >0 ){
+        if(data?.notifications?.length >0 ){
+            setIsUpdated(true)
             clearNotifications()
         .then((data) => {
-            toast.success("Notification Clear")
+            setIsUpdated(false)
+            toast.success("Notification Cleared")
         })
         .catch((error) => {
-            toast.error("Error will Clearing")
+            setIsUpdated(false)
+            toast.error("Error will Clearing Notification")
         });
         handleCloseOffcanvas();
         }

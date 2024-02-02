@@ -28,6 +28,9 @@ export const getBookingList = (data) => {
         created_at__lte:data?.creation_date?.to,
         company:data?.company,
         category:data?.category,
+        cancelled_by:data?.cancelled_by,
+        cancelled_date__gte:data?.cancelled_on?.from,
+        cancelled_date__lte:data?.cancelled_on?.to
       },
     },)
     .then((response) => response.data)
