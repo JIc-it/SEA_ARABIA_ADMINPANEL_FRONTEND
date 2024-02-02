@@ -24,7 +24,7 @@ function Header() {
       .then((data) => {
         setIsLoading(false);
         setdata(data.results);
-        setNotifycount(data.results.length);
+        setNotifycount(data.count);
         setListPageUrl({
           next: data.next,
           previous: data.previous,
@@ -93,13 +93,14 @@ function Header() {
             <div
               className="nav-item dropdown d-none d-md-flex me-3"
               onClick={() => setOpen(true)}
+              style={{ position: "relative" }}
             >
               <a
                 href="#"
                 className="nav-link px-0"
-                // data-bs-toggle="dropdown"
-                // tabIndex="-1"
-                // aria-label="Show notifications"
+              // data-bs-toggle="dropdown"
+              // tabIndex="-1"
+              // aria-label="Show notifications"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +118,10 @@ function Header() {
                   <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
                   <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
                 </svg>
-                {notifycount !== 0 && <span className="badge bg-red"></span>}
+                <span className='py-1' style={{ position: "absolute", top: -8, right: -8, color: "white", fontSize: "9px", backgroundColor: "#2176FF", width: "20px", height: "20px", borderRadius: "33px", textAlign: "center" }}>
+
+                  {notifycount !== 0 ? notifycount : 0}
+                </span>
               </a>
             </div>
             {open && (
@@ -160,19 +164,9 @@ function Header() {
               </div>
             </button>
             <div className="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-              {/* <a href="#" className="dropdown-item">
-                Status
-              </a> */}
               <a href="/profile" className="dropdown-item">
                 Profile
               </a>
-              {/* <button href="#" className="dropdown-item">
-                Feedback
-              </button> */}
-              {/* <div className="dropdown-divider"></div> */}
-              {/* <a href="./settings.html" className="dropdown-item">
-                Settings
-              </a> */}
               <a
                 href="#"
                 className="dropdown-item"

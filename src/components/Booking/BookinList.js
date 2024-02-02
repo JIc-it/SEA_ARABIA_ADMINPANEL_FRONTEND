@@ -1,24 +1,17 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import HeaderTiles from "../Common/HeaderTiles";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import {
-  formatDate,
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";
-import {
-  Link, useLocation, useParams,
-} from "react-router-dom";
+import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import Box from "@mui/material/Box";
-
 import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { API_BASE_URL } from "../../services/authHandle";
 import {
   menuIdConstant,
@@ -26,18 +19,6 @@ import {
 } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
 import BookingFilter from "./BookingFilter";
-
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  // border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const BookinList = () => {
   const { userPermissionList } = useContext(MainPageContext);
@@ -127,6 +108,8 @@ const BookinList = () => {
           console.error("Error fetching  data:", error);
         });
   };
+
+  let checkfilterslength=filters.category.length >0 || filters.vendor.length > 0 || filters.customer.length>0 || filters.guest.length >0 || filters.customer_type.length > 0 || filters.status.length >0 || filters.creation_date.from !=="" || filters.creation_date.to !=="" || filters.commencement_date.from !=="" || filters.commencement_date.to !==""
 
   return (
     <div>
@@ -238,7 +221,7 @@ const BookinList = () => {
 
                 {/* <Table /> */}
               </div>
-              <div className="col-12 actions_menu my-2">
+              <div className="col-12 actions_menu my-2 mt-4">
                 <div className="action_menu_left col-8">
                   <div>
                     <div style={{ display: "flex" }}>
@@ -279,8 +262,8 @@ const BookinList = () => {
                         </button>
                       </div>
                       <button
-                        className="btn  filter-button  "
-                        style={{ borderRadius: "6px", marginLeft: "10px" }}
+                        className="btn  filter-button"
+                        style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
                         onClick={handleOpen}
                         type="button"
                       >
@@ -297,7 +280,15 @@ const BookinList = () => {
                             stroke-width="1.5"
                           />
                         </svg>
+                        <span className='py-1' style={{position:"absolute",top:-12,right:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
+                                        {filters.category.length+filters.vendor.length+filters.customer.length+filters.guest.length+filters.customer_type.length+filters.status.length+(filters.creation_date.from!=="" && filters.creation_date.to!=="" ? 2: filters.creation_date.from!==""?1:filters.creation_date.to!=="" ? 1:0) +(filters.commencement_date.from!=="" && filters.commencement_date.to!=="" ? 2: filters.commencement_date.from!==""?1:filters.commencement_date.to!=="" ? 1:0)}
+                                    </span>
                       </button>
+                     {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
+                        if(checkfilterslength){
+                          window.location.reload();
+                        }
+                      }}>Clear Filter</button>}
                     </div>
                   </div>
                 </div>
@@ -341,34 +332,6 @@ const BookinList = () => {
                         </svg>
                       </button>
                     )}
-                  {/*<button
-                    onClick={handleOpenOffcanvas}
-                    className="btn btn-info vendor_button"
-                    style={{ borderRadius: "6px" }}
-                    type="button"
-                  >
-                    Add Booking &nbsp;
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M10 3L10 17"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M3 10H17"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                        </button>*/}
                 </div>
               </div>
               <div className="card">
@@ -604,7 +567,7 @@ const BookinList = () => {
                 </div>
               </div>
             </div>
-            {open && <BookingFilter open={open} handleClose={handleClose} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}/>}
+            {open && <BookingFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}  checkfilterslength={checkfilterslength}/>}
           </div>
           <Footer />
         </div>

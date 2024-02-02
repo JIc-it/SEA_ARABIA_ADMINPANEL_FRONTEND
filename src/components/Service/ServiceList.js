@@ -51,6 +51,8 @@ function ServiceList() {
     },
   });
 
+  let checkfilterslength=filters.category.length >0 || filters.sub_category.length > 0 || filters.vendor.length>0 || filters.status.active || filters.status.inactive
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -330,6 +332,11 @@ function ServiceList() {
                                         {filters.category.length+filters.sub_category.length+filters.vendor.length+(filters.status.active===true && filters.status.inactive===true) ?  "2":filters.status.active ? "1" :filters.status.inactive ? "1" :"0"}
                                     </span>
                   </button>
+                 {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
+                        if(checkfilterslength){
+                          window.location.reload();
+                        }
+                      }}>Clear Filter</button>}
                 </div>
               </div>
             </div>
@@ -574,6 +581,7 @@ function ServiceList() {
       </div>
       {open && (
         <FilterPopup
+        checkfilterslength={checkfilterslength}
           open={open}
           setIsLoading={setIsLoading}
           setServiceList={setServiceList}
@@ -581,6 +589,7 @@ function ServiceList() {
           handleClose={handleClose}
           setFilters={setFilters}
           filters={filters}
+
         />
       )}
     </div>
