@@ -142,7 +142,6 @@ const ServiceView = () => {
                   {oneservice.is_active === true ? "Active" : "Inactive"}
                 </div>
                 <EditServiceWithPermission />
-               
               </div>
             </div>
             <div className="row" style={{ position: "relative" }}>
@@ -208,7 +207,11 @@ const ServiceView = () => {
                       <div>
                         <p style={{ color: "#68727D" }}>Amenities</p>
                         <p style={{ fontWeight: "700" }}>
-                          {oneservice?.amenities?.length > 1 ? oneservice?.amenities?.map((data) => data.name+""+","):oneservice?.amenities?.map((data) => data.name)}
+                          {oneservice?.amenities?.length > 1
+                            ? oneservice?.amenities?.map(
+                                (data) => data.name + "" + ","
+                              )
+                            : oneservice?.amenities?.map((data) => data.name)}
                         </p>
                       </div>
                     </div>
@@ -220,6 +223,14 @@ const ServiceView = () => {
                         <p style={{ textTransform: "capitalize" }}>
                           {oneservice?.pickup_point_or_location}
                         </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex">
+                    <div className="col-12 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Embed</p>
+                        <p className="embed-data">{oneservice?.map_embed}</p>
                       </div>
                     </div>
                   </div>
@@ -541,7 +552,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Refund Available</p>
-                        <p>{oneservice?.is_refundable?"Yes":"No"}</p>
+                        <p>{oneservice?.is_refundable ? "Yes" : "No"}</p>
                       </div>
                     </div>
                   </div>
