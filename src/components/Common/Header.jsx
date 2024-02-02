@@ -17,10 +17,12 @@ function Header() {
   });
   const [data, setdata] = useState([]);
   const [customerDetails, setCustomerDetails] = useState([]);
+  const [isupdated,setIsUpdated]=useState(false)
 
   useEffect(() => {
     setIsLoading(true);
-    getNotificationList()
+   
+      getNotificationList()
       .then((data) => {
         setIsLoading(false);
         setdata(data.results);
@@ -34,7 +36,8 @@ function Header() {
         setIsLoading(false);
         toast.error(error.message);
       });
-  }, []);
+    
+  }, [isupdated]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -126,6 +129,7 @@ function Header() {
             </div>
             {open && (
               <HeaderOffCanvas
+              setIsUpdated={setIsUpdated}
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 listPageUrl={listPageUrl}

@@ -225,15 +225,6 @@ export default function FilterPopup({
             color="inherit"
             onClick={() => {
               handleClose();
-              setFilters({
-                category: [],
-                sub_category: [],
-                vendor: [],
-                status: true,
-              });
-             if(checkfilterslength){
-              window.location.reload()
-             }
             }}
             aria-label="close"
             sx={{ position: "absolute", top: 8, right: 14 }}

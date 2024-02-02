@@ -80,17 +80,7 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                         <IconButton
                             edge="end"
                             color="inherit"
-                            onClick={()=>{handleClose();
-                            setFilters({
-                                status: {
-                                  active:false,
-                                  inactive:false
-                                },
-                              startdate: "",
-                              enddate: ""
-                              });
-                              ClearFilter()
-                            }
+                            onClick={()=>{handleClose()}
                             }
                             aria-label="close"
                             sx={{ position: 'absolute', top: 8, right: 14 }}

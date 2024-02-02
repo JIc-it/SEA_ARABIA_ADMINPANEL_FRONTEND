@@ -56,31 +56,36 @@ function DiscountListing() {
   const handleopenfilter = () => {
     setOpenfilter(true);
   };
-  const handleToggle = async (itemId, e) => {
-    e.preventDefault();
-    setOffersList((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
-      )
-    );
 
-    const toggledItem = offerslist.find((item) => item.id === itemId);
-    if (toggledItem) {
-      const data = { is_enable: !toggledItem.is_enable };
-      try {
-        const response = await UpdateStatus(itemId, data);
-        if (response) {
-          setIsLoading(false);
-          window.location.reload();
-          setIsRefetch(!isRefetch);
-        }
-      } catch (error) {
-        console.error("Error updating status:", error);
+  const handleToggle = async (itemId, e) => {
+  e.preventDefault();
+
+  const toggledItem = offerslist.find((item) => item.id === itemId);
+  if (toggledItem) {
+    const data = { is_enable: !toggledItem.is_enable };
+    try {
+      setIsLoading(true);
+      const response = await UpdateStatus(itemId, data);
+
+      if (response) {
+        setOffersList((prevItems) =>
+          prevItems.map((item) =>
+            item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
+          )
+        );
+        setIsLoading(false);
+        setIsRefetch(!isRefetch);
+        toast.success("Updated Successfully");
       }
-    } else {
-      console.error("Item not found");
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(error.message);
     }
-  };
+  } else {
+    console.error("Item not found");
+  }
+};
+
 
   useEffect(() => {
     {
@@ -96,7 +101,7 @@ function DiscountListing() {
         setIsLoading(false);
         toast.error(error?.response?.data);
       });
-  }, [search, isRefetch]);
+  }, [search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
