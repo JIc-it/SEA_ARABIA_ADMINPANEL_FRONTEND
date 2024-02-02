@@ -109,6 +109,8 @@ const BookinList = () => {
         });
   };
 
+  let checkfilterslength=filters.category.length >0 || filters.vendor.length > 0 || filters.customer.length>0 || filters.guest.length >0 || filters.customer_type.length > 0 || filters.status.length >0 || filters.creation_date.from !=="" || filters.creation_date.to !=="" || filters.commencement_date.from !=="" || filters.commencement_date.to !==""
+
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -282,6 +284,11 @@ const BookinList = () => {
                                         {filters.category.length+filters.vendor.length+filters.customer.length+filters.guest.length+filters.customer_type.length+filters.status.length+(filters.creation_date.from!=="" && filters.creation_date.to!=="" ? 2: filters.creation_date.from!==""?1:filters.creation_date.to!=="" ? 1:0) +(filters.commencement_date.from!=="" && filters.commencement_date.to!=="" ? 2: filters.commencement_date.from!==""?1:filters.commencement_date.to!=="" ? 1:0)}
                                     </span>
                       </button>
+                     {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
+                        if(checkfilterslength){
+                          window.location.reload();
+                        }
+                      }}>Clear Filter</button>}
                     </div>
                   </div>
                 </div>
@@ -560,7 +567,7 @@ const BookinList = () => {
                 </div>
               </div>
             </div>
-            {open && <BookingFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}/>}
+            {open && <BookingFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}  checkfilterslength={checkfilterslength}/>}
           </div>
           <Footer />
         </div>

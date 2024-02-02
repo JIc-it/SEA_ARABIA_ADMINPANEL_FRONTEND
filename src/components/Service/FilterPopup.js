@@ -20,6 +20,7 @@ export default function FilterPopup({
   filters,
   setListPageUrl,
   setServiceList,
+  checkfilterslength
 }) {
   const [active, setActive] = useState("Category");
   const [categorylist, setCategoryList] = useState([]);
@@ -186,30 +187,15 @@ export default function FilterPopup({
     const vendormapped = filters.vendor.map((data) => data.id);
     const vendorSplitted = vendormapped.join(",");
 
+    const checkstatus=(filters.status.active && filters.status.inactive) ? "": filters.status.active ? true : filters.status.inactive && false
     const getFiltereddata = await getServiceListing(
       null,
       null,
       categorySplitted,
       subcategorySplitted,
       vendorSplitted,
-      filters.status
+      checkstatus
     );
-
-    if (getFiltereddata) {
-      setIsLoading(false);
-      setServiceList(getFiltereddata.results);
-      setListPageUrl({
-        next: getFiltereddata.next,
-        previous: getFiltereddata.previous,
-      });
-      handleClose();
-    }
-  };
-
-  const handleClearFilter = async () => {
-    setIsLoading(true);
-    const getFiltereddata = await getServiceListing();
-    setFilters({ category: [], sub_category: [], vendor: [], status: true });
 
     if (getFiltereddata) {
       setIsLoading(false);
@@ -245,7 +231,9 @@ export default function FilterPopup({
                 vendor: [],
                 status: true,
               });
-              handleClearFilter();
+             if(checkfilterslength){
+              window.location.reload()
+             }
             }}
             aria-label="close"
             sx={{ position: "absolute", top: 8, right: 14 }}
@@ -672,6 +660,7 @@ export default function FilterPopup({
                   aria-selected="false"
                 >
                   <span>Service Status</span>
+                  {console.log(filters)}
                   <span
                     className="py-1"
                     style={{
@@ -684,7 +673,7 @@ export default function FilterPopup({
                       borderRadius: "33px",
                     }}
                   >
-                    {filters.status ? "1" : "1"}
+                    {(filters.status.active===true && filters.status.inactive===true) ? "2": filters.status.active ? "1" : filters.status.inactive? "1" :"0"}
                   </span>
                   <span>
                     <svg
@@ -881,14 +870,13 @@ export default function FilterPopup({
                 <div class="form-check">
                   <input
                     class="form-check-input"
-                    type="radio"
-                    name="status"
+                    type="checkbox"
                     value=""
                     id=""
-                    checked={filters.status === true}
+                    defaultChecked={filters.status.active}
                     onChange={(e) => {
                       setFilters((prev) => {
-                        return { ...prev, status: true };
+                        return { ...prev, status: {active:!filters.status.active,inactive:filters.status.inactive} };
                       });
                     }}
                     style={{ width: 20, height: 20 }}
@@ -900,14 +888,13 @@ export default function FilterPopup({
                 <div class="form-check">
                   <input
                     class="form-check-input"
-                    type="radio"
-                    satatus="status"
+                    type="checkbox"
                     value=""
                     id=""
-                    checked={filters.status === false}
+                    defaultChecked={filters.status.inactive}
                     onChange={(e) => {
                       setFilters((prev) => {
-                        return { ...prev, status: false };
+                        return { ...prev, status: {inactive:!filters.status.inactive,active:filters.status.active} };
                       });
                     }}
                     style={{ width: 20, height: 20 }}
@@ -923,7 +910,11 @@ export default function FilterPopup({
             <button
               type="reset"
               className="m-1 btn btn-small btn-white"
-              onClick={handleClearFilter}
+              onClick={()=>{
+                if(checkfilterslength){
+                  window.location.reload()
+                }
+              }}
             >
               Clear Filter
             </button>

@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 
-export default function BookingFilter({ open, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
+export default function BookingFilter({ open,checkfilterslength, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
@@ -193,48 +193,7 @@ export default function BookingFilter({ open, handleClose, setFilters, filters, 
 
     }
 
-    const clearFilter = async () => {
-
-        setIsLoading(true);
-
-        if (!isLoading) {
-            try {
-                const Pass = { status: "", search: "", refund_status: "", user: "", guest: "" };
-                const adminData = await getBookingList(Pass);
-
-                if (adminData) {
-                    setIsLoading(false);
-                    handleClose();
-                    setBookingList(adminData?.results);
-                    firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
-                    setFilters({
-                        category: [],
-                        vendor: [],
-                        customer: [],
-                        guest: [],
-                        customer_type: [],
-                        status: [],
-                        creation_date: {
-                            from: "",
-                            to: ""
-                        },
-                        commencement_date: {
-                            from: "",
-                            to: ""
-                        }
-                    })
-
-                } else {
-                    setIsLoading(false);
-                    toast.error(adminData.error.response.data)
-                }
-                setIsLoading(false);
-            } catch (err) {
-                setIsLoading(false);
-                toast.error(err.message)
-            }
-        }
-    }
+    
     return (
         <div>
             <Modal
@@ -266,7 +225,8 @@ export default function BookingFilter({ open, handleClose, setFilters, filters, 
                                     from: "",
                                     to: ""
                                 }
-                            })
+                            });
+                            if(checkfilterslength){window.location.reload()}
                         }}
                         aria-label="close"
                         sx={{ position: 'absolute', top: 8, right: 14 }}
@@ -844,7 +804,7 @@ export default function BookingFilter({ open, handleClose, setFilters, filters, 
 
                         </div>
                         <div className='d-flex justify-content-end mt-3' style={{ position: "absolute", bottom: "-20%", right: 10 }}>
-                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={clearFilter}>Clear Filter</button>
+                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={()=>{if(checkfilterslength){window.location.reload()}}}>Clear Filter</button>
                             <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
                         </div>
                     </form>
