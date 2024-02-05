@@ -21,6 +21,7 @@ function SalesRepView() {
         console.error("Error fetching customer data:", error);
       });
   }, [salesRepId]);
+  
   return (
     <>
       <div className="page">

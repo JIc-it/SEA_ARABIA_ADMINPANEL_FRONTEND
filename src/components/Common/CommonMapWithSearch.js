@@ -7,6 +7,7 @@ import PlacesAutocomplete, {
 } from "react-places-autocomplete";
 
 export default function CommonMapWithSearch() {
+  // replace the key 
   const apiKey = "AIzaSyCe8GC-bp-CZUENPxVWdm8LoAPx-SkMjZg";
   const [center, setCenter] = useState(null);
   const [addressIp, setAddressip] = useState(null);
