@@ -1,14 +1,14 @@
 import { Offcanvas } from "react-bootstrap";
-
 import { useState } from "react";
-
 import { convertedDateAndTime, removeFolderPath } from "../../../helpers";
 import FileViewer from "../FileViewer";
 import { API_BASE_URL } from "../../../services/authHandle";
 
 function ViewProposal({ show, close, selectedData }) {
   const [isViewFile, setIsViewFile] = useState(false);
+
   var substringToRemove = `${API_BASE_URL}assets/media/company/proposal/attachment/`;
+
   const fileName =
     selectedData && selectedData.attachment.replace(substringToRemove, "");
 
@@ -77,7 +77,7 @@ function ViewProposal({ show, close, selectedData }) {
             {selectedData && selectedData.note}
           </span>
         </div>
-        <div style={{ margin: "20px" }}>
+        {/* <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "600" }}
@@ -96,7 +96,7 @@ function ViewProposal({ show, close, selectedData }) {
           </label>
           <br />
           <span>{formatedDate?.formattedTime}</span>
-        </div>
+        </div> */}
 
         {isViewFile && (
           <FileViewer

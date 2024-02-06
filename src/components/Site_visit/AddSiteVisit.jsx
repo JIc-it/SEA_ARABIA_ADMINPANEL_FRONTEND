@@ -16,7 +16,7 @@ function AddSiteVisit({ formik, qualificationlist, handleFileChange }) {
                 <div className="container-xl">
                   {/* <form action=""> */}
                   <div className="row row-cards">
-                    <h4>Site Visit</h4>
+                    <h4>Add Site Visit</h4>
 
                     <div className="col-lg-12">
                       <label htmlFor="" className="form-label">

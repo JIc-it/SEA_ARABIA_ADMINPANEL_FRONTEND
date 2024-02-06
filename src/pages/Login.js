@@ -1,18 +1,7 @@
 import { useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import {
-  
-  Box,
-  Button,
-
-  Link,
-  Stack,
- 
-  TextField,
-  Typography,
-
-} from "@mui/material";
+import { Box, Button, Link, Stack, TextField, Typography } from "@mui/material";
 import CopyWrite from "../components/CopyWrite";
 
 import LoginImageContainer from "../components/LoginImageContainer";
@@ -22,7 +11,6 @@ import { toast } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
- 
 
   // useEffect(() => {
   //   const handleCapsLock = (event) => {
@@ -56,13 +44,11 @@ const Login = () => {
         .email("Must be a valid email")
         .max(255)
         .required("Email is required"),
-      password: Yup.string()
-        .max(50)
-        .required("Password is required")
-        // .matches(
-        //   passwordRegex,
-        //   "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-        // ),
+      password: Yup.string().max(50).required("Password is required"),
+      // .matches(
+      //   passwordRegex,
+      //   "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+      // ),
     }),
     onSubmit: async (values, helpers) => {
       try {
@@ -83,7 +69,9 @@ const Login = () => {
       } catch (err) {
         console.log(err);
         helpers.setStatus({ success: false });
-        helpers.setErrors({ submit: err.message });
+        helpers.setErrors({
+          submit: err.response?.data?.detail || "Login Failed.",
+        });
         helpers.setSubmitting(false);
       }
     },
@@ -95,10 +83,7 @@ const Login = () => {
   // }, [auth, router]);
 
   return (
-    <div
-      className="contaier-fluid"
-      style={{ overflowX: "hidden" }}
-    >
+    <div className="contaier-fluid" style={{ overflowX: "hidden" }}>
       <div className="row">
         <LoginImageContainer />
 
@@ -254,8 +239,8 @@ const Login = () => {
 
                   {formik.errors.submit && (
                     <Typography color="error" sx={{ mt: 3 }} variant="body2">
-                      {/* {formik.errors.submit} */}
-                      Login Failed.
+                      {formik.errors.submit}
+                      {/* Login Failed. */}
                     </Typography>
                   )}
                   <Button

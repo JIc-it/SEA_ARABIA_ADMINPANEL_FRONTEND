@@ -77,7 +77,7 @@ function ViewProposal({ show, close, selectedData }) {
             {selectedData && selectedData.note}
           </span>
         </div>
-        <div style={{ margin: "20px" }}>
+        {/* <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "600" }}
@@ -96,7 +96,7 @@ function ViewProposal({ show, close, selectedData }) {
           </label>
           <br />
           <span>{formatedDate?.formattedTime}</span>
-        </div>
+        </div> */}
 
         {isViewFile && (
           <FileViewer

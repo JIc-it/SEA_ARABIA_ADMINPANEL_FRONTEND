@@ -75,7 +75,7 @@ function ViewCharter({ show, close, selectedData }) {
             {selectedData && selectedData.note}
           </span>
         </div>
-        <div style={{ margin: "20px" }}>
+        {/* <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
             style={{ paddingBottom: "10px", fontWeight: "600" }}
@@ -94,7 +94,7 @@ function ViewCharter({ show, close, selectedData }) {
           </label>
           <br />
           <span>{formatedDate?.formattedTime}</span>
-        </div>
+        </div> */}
 
         {isViewFile && (
           <FileViewer
