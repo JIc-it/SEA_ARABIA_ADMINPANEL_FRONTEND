@@ -13,8 +13,10 @@ import Modal from "@mui/material/Modal";
 import { getBookingList, getBookingCount } from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import * as XLSX from "xlsx";
 import { API_BASE_URL } from "../../services/authHandle";
 import { getListDataInPagination } from "../../services/commonServices";
+import { customerExport } from "../../services/CustomerHandle";
 const style = {
   position: "absolute",
   top: "50%",
@@ -93,6 +95,45 @@ const CustomerBookingList = () => {
       });
   }, []);
 
+  const handleExportCustomerData = () => {
+    customerExport()
+      .then((response) => {
+        console.log("reee", response);
+        // Assuming the response.data is the CSV content
+        const csvData = response;
+        console.log("csv data--", csvData);
+
+        // Convert the CSV data to a Blob
+        const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
+        // console.log("blob--", blob);
+
+        // Parse the CSV data into an Excel workbook
+        const workbook = XLSX.read(csvData, { type: "string" });
+        // Display the workbook data or perform further processing
+        console.log("Workbook:", workbook);
+
+        // Create a download link
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "exported_data.csv";
+
+        // Append the link to the document
+        document.body.appendChild(link);
+
+        // Trigger the download
+        link.click();
+
+        // Remove the link asynchronously after the download
+        setTimeout(() => {
+          document.body.removeChild(link);
+          // Optionally, log success message
+          // console.log("Exported Customer data successfully!");
+        }, 0);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error.message);
+      });
+  };
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -117,14 +158,23 @@ const CustomerBookingList = () => {
           console.error("Error fetching  data:", error);
         });
   };
-
+  const refreshPage = () => {
+    // You can use window.location.reload() to refresh the page
+    window.location.reload();
+  };
   const getBookingSearchData = () => {
     const Pass = { status: "", search: search, refund_status: "" };
     getBookingList(Pass)
       .then((data) => {
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-        setBookingList(data?.results);
+        if (data) {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setBookingList(data?.results);
+        } else {
+          refreshPage();
+          setIsLoading(true);
+          setBookingList("");
+        }
       })
       .catch((error) => {
         setIsLoading(false);
@@ -132,7 +182,7 @@ const CustomerBookingList = () => {
       });
   };
   const [selectedValue, setSelectedValue] = useState("");
- 
+
   return (
     <div>
       <div className="page" style={{ height: "100vh" }}>
@@ -307,13 +357,9 @@ const CustomerBookingList = () => {
                   <button
                     className="btn btn-outline"
                     style={{ borderRadius: "6px" }}
+                    onClick={handleExportCustomerData}
                   >
-                    <a
-                      style={{ textDecoration: "none" }}
-                      href={`${API_BASE_URL}booking/booking-export/`}
-                    >
-                      Export &nbsp;
-                    </a>
+                    Export &nbsp;
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="20"
@@ -383,7 +429,7 @@ const CustomerBookingList = () => {
                             bookingList.map((data) => (
                               <tr>
                                 <td>
-                                  {console.log("item book", bookingList)}
+                                  {console.log("item --book", bookingList)}
                                   <span className="text-secondary">
                                     {data.booking_id}
                                   </span>

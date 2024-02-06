@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
-
 import * as XLSX from "xlsx";
 import {
   customerExport,

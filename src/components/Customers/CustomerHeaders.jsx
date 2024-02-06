@@ -1,12 +1,8 @@
 import { useEffect, useState } from "react";
-import {
-  getCustomerTotalCount,
-} from "../../services/CustomerHandle";
+import { getCustomerTotalCount } from "../../services/CustomerHandle";
 
 function CustomerHeaders(props) {
-
   const [count, setCount] = useState();
-
 
   useEffect(() => {
     getCustomerTotalCount()
@@ -149,14 +145,13 @@ function CustomerHeaders(props) {
                 </div>
                 <div className="col">
                   <div className="font-weight-medium count_card_heading">
-                    Total Customers
+                    Total Registered Customers
                   </div>
                   <div
                     className="text-secondary"
                     style={{ fontSize: "18px", fontWeight: "700" }}
                   >
                     {count?.user_count}
-                
                   </div>
                 </div>
               </div>

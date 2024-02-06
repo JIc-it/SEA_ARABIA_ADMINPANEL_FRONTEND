@@ -26,14 +26,32 @@ function CreateNewAdmin({ show, close, locationList }) {
   const validationSchema = Yup.object({
     first_name: Yup.string()
       .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
+      .max(20, "First name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "First Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
 
     last_name: Yup.string()
       .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
+      .max(20, "Last name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "First Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
-      .required("Email is required"),
+      .max(50, "Last name must be at most 20 characters")
+      .required("Email is required")
+      .test("custom-email-format", "Invalid email format", (value) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      ),
     password: Yup.string()
       .min(6, "Password should be at least 6 characters")
       .required("Password is required"),
@@ -46,13 +64,16 @@ function CreateNewAdmin({ show, close, locationList }) {
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
     gender: Yup.string().required("Gender is required"),
-    mobile: Yup.string().required("Mobile is required"),
-    location: Yup.object({
-      id: Yup.string().required("Location ID is required"),
-      name: Yup.string().required("Location name is required"),
-      label: Yup.string().required("Location label is required"),
-      code: Yup.string().required("Location code is required"),
-    }).required("Location is required"),
+    mobile: Yup.string()
+      .required("Mobile is required")
+      .test(
+        "is-at-least-8-digits",
+        "Mobile must have at least 8 digits",
+        (value) => {
+          return /^\d{8,}$/.test(value); // Checks if there are at least 8 digits
+        }
+      ),
+    location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -137,12 +158,13 @@ function CreateNewAdmin({ show, close, locationList }) {
             type="text"
             placeholder="First Name"
             className="form-control"
-            name="first_name"
+            name="first_name" // Make sure the name attribute matches the Yup field name
+            maxLength={20}
             value={formik.values.first_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? (
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>
