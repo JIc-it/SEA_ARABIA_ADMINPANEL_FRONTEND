@@ -6,12 +6,14 @@ import { Typography } from "@mui/material";
 import TimeCalculation from "./TimeCalculation";
 import { removeBaseUrlFromPath } from "../../helpers";
 import { getListDataInPagination } from "../../services/commonServices";
+import {clearNotifications} from "../../services/Notification"
 
 export default function HeaderOffCanvas({
     open,
     setOpen,
-    countset, isLoading, setIsLoading, listPageUrl, setListPageUrl, data, setdata
+    countset, isLoading, setIsLoading, listPageUrl, setListPageUrl, data, setdata,setIsUpdated
 }) {
+
 
     const handleCloseOffcanvas = () => {
         setOpen(false);
@@ -31,7 +33,7 @@ export default function HeaderOffCanvas({
             getListDataInPagination(convertedUrl)
                 .then((data) => {
                     setIsLoading(false);
-                    countset(data.results.length)
+                    countset(data.count)
                     setListPageUrl({ next: data?.next, previous: data?.previous });
                     setdata(data?.results);
                 })
@@ -40,6 +42,26 @@ export default function HeaderOffCanvas({
                     toast.error(error.message)
                 });
     };
+
+    const handleClearNotifications=()=>{
+       
+        if(data?.notifications?.length >0 ){
+            setIsUpdated(true)
+            clearNotifications()
+        .then((data) => {
+            setIsUpdated(false)
+            toast.success("Notification Cleared")
+        })
+        .catch((error) => {
+            setIsUpdated(false)
+            toast.error("Error will Clearing Notification")
+        });
+        handleCloseOffcanvas();
+        }
+        else{
+            handleCloseOffcanvas();  
+        }
+    }
 
     return (
         <Offcanvas
@@ -51,13 +73,13 @@ export default function HeaderOffCanvas({
             <Offcanvas.Header
 
                 closeButton
-                onClick={handleCloseOffcanvas}
+                onClick={handleClearNotifications}
             >
                 <Offcanvas.Title style={{ fontWeight: 550 }}>Notification</Offcanvas.Title>
             </Offcanvas.Header>
             <div className="mt-5" style={{ position: "relative" }}>
-                {!isLoading && data.length > 0 ?
-                    data?.map((dat) =>
+                {!isLoading && data?.notifications?.length > 0 ?
+                    data?.notifications?.map((dat) =>
                         <div className="px-2" style={{ position: "relative" }}>
                             <div style={{ display: "flex" }}>
                                 <div className="mx-2">
@@ -86,7 +108,7 @@ export default function HeaderOffCanvas({
                         <div style={{ textAlign: "center" }}>No Notification</div>
                     )
                 }
-                {!isLoading && data.length > 0 && <div className="d-flex align-items-center mt-2" style={{ position: "absolute", bottom: "5px", right: "5px" }}>
+                {!isLoading && data?.notifications?.length > 0 && <div className="d-flex align-items-center mt-2" style={{ position: "absolute", bottom: "5px", right: "5px" }}>
                     <ul className="pagination m-0 ms-auto">
                         <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
                             <a

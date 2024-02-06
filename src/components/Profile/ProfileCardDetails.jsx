@@ -9,8 +9,15 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { useContext } from "react";
 import { UserContext } from "../../Context/AppContext";
 import PermissionView from "./PermissionView";
+import { MainPageContext } from "../../Context/MainPageContext";
+import { getMenuPermissions } from "../../helpers";
+import {
+  menuIdConstant,
+  permissionCategory,
+} from "../Permissions/PermissionConstants";
 
 function ProfileCardDetails({ data, isLoading }) {
+  const { userPermissionList } = useContext(MainPageContext);
   const theme = useTheme();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
@@ -109,30 +116,39 @@ function ProfileCardDetails({ data, isLoading }) {
                 </div>
 
                 <div className="bottom_button mt-3">
-                  <a
-                    className="call_vendor_button btn "
-                    onClick={() => {
-                      navigate(`/permissions/${data?.id}/${data?.first_name}`);
-                    }}
-                  >
-                    Permissions &nbsp;
-                    <svg
-                      className="arrows"
-                      width={20}
-                      height={20}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
-                        stroke="white"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </a>
+                  {userPermissionList &&
+                    getMenuPermissions(
+                      userPermissionList,
+                      menuIdConstant.users,
+                      permissionCategory.permission
+                    ) && (
+                      <a
+                        className="call_vendor_button btn "
+                        onClick={() => {
+                          navigate(
+                            `/permissions/${data?.id}/${data?.first_name}`
+                          );
+                        }}
+                      >
+                        Permissions &nbsp;
+                        <svg
+                          className="arrows"
+                          width={20}
+                          height={20}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M3.3335 10H16.6668M16.6668 10L11.6668 5M16.6668 10L11.6668 15"
+                            stroke="white"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </a>
+                    )}
                   <a
                     className="mail_vendor_button btn btn-outline"
                     onClick={() => {

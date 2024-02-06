@@ -1,15 +1,12 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { useFormik } from "formik";
 import CircularProgress from "@mui/material/CircularProgress";
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -17,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 import { getDiscountOfferList } from '../../services/offers';
 
-export default function PopupFilter({ open, handleClose,setListPageUrl,setOffersList}) {
+export default function PopupFilter({ open, handleClose,setListPageUrl,setOffersList,setFilters,filters,ClearFilter}) {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -32,23 +29,18 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
         maxHeight: '90vh', // Adjust the maximum height if needed
     };
     
-    const [isLoading, setIsLoading] = useState(false);    
+    const [isLoading, setIsLoading] = useState(false);
+    const [active, setActive] = useState("status");    
 
-    const formik = useFormik({
-        initialValues: {
-            status: {
-                active:true,
-                inactive:false
-              },
-            startdate: null,
-            enddate: null
-
-        },
-        onSubmit: async (values) => {
+   
+        const applyFilter= async () => {
             setIsLoading(true);
             if (!isLoading) {
                 try {
-                    const statuscheck=(values.status.active === true && values.status.inactive===true) ? { status:"",startdate: values.startdate,enddate: values.enddate} : values.status.active===true ? { status:true,startdate: values.startdate,enddate: values.enddate} :values.status.inactive===true  && { status:false,startdate: values.startdate,enddate: values.enddate}
+                    const statuscheck=
+                    (filters.status.active === true && filters.status.inactive===true) ? 
+                    { status:"",startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""} 
+                    : filters.status.active===true ? { status:true,startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""} :filters.status.inactive===true  && { status:false,startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""}
 
                     const adminData = await getDiscountOfferList(null,statuscheck);
 
@@ -67,35 +59,9 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                     toast.error(err.message)
                 }
             }
-        },
-    });
-
-
-    const clearFilter = async () => {
-
-        setIsLoading(true);
-
-        if (!isLoading) {
-            try {
-                const adminData = await getDiscountOfferList();
-
-                if (adminData) {
-                    setIsLoading(false);
-                    handleClose();
-                    setOffersList(adminData?.results);
-                    setListPageUrl({ next: adminData.next, previous: adminData.previous });
-
-                } else {
-                    setIsLoading(false);
-                    toast.error(adminData.error.response.data)
-                }
-                setIsLoading(false);
-            } catch (err) {
-                setIsLoading(false);
-                toast.error(err.message)
-            }
         }
-    }
+    
+
 
     return (
         <>
@@ -114,14 +80,15 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                         <IconButton
                             edge="end"
                             color="inherit"
-                            onClick={handleClose}
+                            onClick={()=>{handleClose()}
+                            }
                             aria-label="close"
                             sx={{ position: 'absolute', top: 8, right: 14 }}
                         >
                             <CloseIcon />
                         </IconButton>
-                        <form onSubmit={formik.handleSubmit}>
-                            {<div class={formik.values.status.active === true ? "frame-427319784 mt-2" : formik.values.status.inactive === true ? "frame-427319784 mt-2" : formik.values.startdate !== null ? "frame-427319784 mt-2" : formik.values.enddate !== null ? "frame-427319784 mt-2" : "frame-427319784 mt-2"}>
+                        <form onSubmit={applyFilter}>
+                            {<div class={filters.status.active === true ? "frame-427319784 mt-2" : filters.status.inactive === true ? "frame-427319784 mt-2" : filters.startdate !== null ? "frame-427319784 mt-2" : filters.enddate !== null ? "frame-427319784 mt-2" : "frame-427319784 mt-2"}>
 
                                 {<div class="components-selection-item mx-1">
                                     <div class="frame-427319782">
@@ -129,7 +96,7 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                             <div>Status</div>
                                             <div class="div">:</div>
                                         </div>
-                                        <div class="completed-unsuccessful">{formik.values.status.active===true && formik.values.status.inactive===true ? "Active - Inactive":formik.values.status.active===true ? "Active":formik.values.status.inactive===true ? "Inactive":"None"}</div>
+                                        <div class="completed-unsuccessful">{filters.status.active===true && filters.status.inactive===true ? "Active - Inactive":filters.status.active===true ? "Active":filters.status.inactive===true ? "Inactive":"None"}</div>
                                     </div>
                                     <div class="icon-wrapper">
                                         <div class="width-change-size-here">
@@ -144,13 +111,13 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                         </div>
                                     </div>
                                 </div>}
-                                {formik.values.startdate !== null && <div class="components-selection-item">
+                                {filters.startdate !== "" && <div class="components-selection-item">
                                     <div class="frame-427319782">
                                         <div class="frame-427319783">
                                             <div>Start Date</div>
                                             <div class="div">:</div>
                                         </div>
-                                        <div class="completed-unsuccessful">{formik.values.startdate}</div>
+                                        <div class="completed-unsuccessful">{PassingformatDate(filters.startdate)}</div>
                                     </div>
                                     <div class="icon-wrapper">
                                         <div class="width-change-size-here">
@@ -163,7 +130,9 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                                 <div class="ignore"></div>
                                             </div>
                                             <svg
-                                                onClick={() => formik.setFieldValue("startdate", null)}
+                                                onClick={() =>{
+                                                    setFilters((prev)=>{return {...prev,startdate:""}})
+                                                }}
                                                 class="icon-wrapper4"
                                                 width="10"
                                                 height="10"
@@ -208,13 +177,13 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                         </div>
                                     </div>
                                 </div>}
-                                {formik.values.enddate !== null && <div class="components-selection-item">
+                                {filters.enddate !== "" && <div class="components-selection-item mx-1">
                                     <div class="frame-427319782">
                                         <div class="frame-427319783">
                                             <div>End Date</div>
                                             <div class="div">:</div>
                                         </div>
-                                        <div class="completed-unsuccessful">{formik.values.enddate}</div>
+                                        <div class="completed-unsuccessful">{PassingformatDate(filters.enddate)}</div>
                                     </div>
                                     <div class="icon-wrapper">
                                         <div class="width-change-size-here">
@@ -227,7 +196,8 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                                 <div class="ignore"></div>
                                             </div>
                                             <svg
-                                                onClick={() => formik.setFieldValue("enddate", null)}
+                                                onClick={() => {
+                                                setFilters((prev)=>{return {...prev,enddate:""}})}}
                                                 class="icon-wrapper4"
                                                 width="10"
                                                 height="10"
@@ -278,9 +248,85 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                 <div class="frame-427319790" style={{ height: "50vh", width: "20%" }}>
                                     <div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
                                         <small>Discounts</small>
-                                        <button class="nav-link active mt-2" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true">Status</button>
+                                        <button style={{
+                                            width: "12vw",
+                                            backgroundColor: "white",
+                                            border: active === "status" ? "1px solid #2176FF" : "",
+                                        }}
+                                            class="nav-link active mt-2 d-flex justify-content-between" id="v-pills-home-tab" data-bs-toggle="pill" data-bs-target="#v-pills-home" type="button" role="tab" aria-controls="v-pills-home" aria-selected="true" onClick={() => setActive("status")}>
+                                                <span> Status</span>
+                                            <span
+                                                className="py-1"
+                                                style={{
+                                                    color: "white",
+                                                    fontSize: "12px",
+                                                    backgroundColor:
+                                                        active === "status" ? "#2176FF" : "gray",
+                                                    width: "22px",
+                                                    height: "22px",
+                                                    borderRadius: "33px",
+                                                }}
+                                            >
+                                                {(filters.status.active && filters.status.inactive) ? 2: filters.status.active? 1:filters.status.inactive? 1:0}
+                                            </span>
+                                            <span>
+                                                <svg
+                                                    width={18}
+                                                    height={18}
+                                                    viewBox="0 0 20 20"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                                                        stroke={active === "status" ? "#2176FF" : "gray"}
+                                                        strokeWidth={2}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                            </span>
+                                        </button>
                                         <small className='mt-2'>Date</small>
-                                        <button class="nav-link" id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false">Expiry Date</button>
+                                        <button  onClick={() => setActive("expiry")} id="v-pills-messages-tab" data-bs-toggle="pill" data-bs-target="#v-pills-messages" type="button" role="tab" aria-controls="v-pills-messages" aria-selected="false"  style={{
+                                            width: "12vw",
+                                            backgroundColor: "white",
+                                            border: active === "expiry" ? "1px solid #2176FF" : "",
+                                        }}
+                                            class="nav-link  mt-2 d-flex justify-content-between">
+                                            <span>Expiry Date</span>
+                                            <span
+                                                className="py-1"
+                                                style={{
+                                                    color: "white",
+                                                    fontSize: "12px",
+                                                    backgroundColor:
+                                                        active === "expiry" ? "#2176FF" : "gray",
+                                                    width: "22px",
+                                                    height: "22px",
+                                                    borderRadius: "33px",
+                                                }}
+                                            >
+                                                {(filters.startdate !=="" && filters.enddate !=="") ? 2: filters.startdate !==""? 1:filters.enddate !==""? 1:0}
+                                            </span>
+                                            <span>
+                                                <svg
+                                                    width={18}
+                                                    height={18}
+                                                    viewBox="0 0 20 20"
+                                                    fill="none"
+                                                    xmlns="http://www.w3.org/2000/svg"
+                                                >
+                                                    <path
+                                                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                                                        stroke={active === "expiry" ? "#2176FF" : "gray"}
+                                                        strokeWidth={2}
+                                                        strokeLinecap="round"
+                                                        strokeLinejoin="round"
+                                                    />
+                                                </svg>
+                                            </span>
+                                            </button>
                                     </div>
                                 </div>
 
@@ -295,11 +341,12 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                         type="checkbox"
                                         value=""
                                         id=""
-                                        defaultChecked={formik.values.status.active===true}
+                                        defaultChecked={filters.status.active===true}
                                         onChange={(e) => {
-                                            formik.setValues((prev) => {
+                                            setFilters((prev) => {
                                                 return { ...prev, status:{active:!prev.status.active,inactive:prev.status.inactive} }
                                             })
+                                           
                                         }}
                                         style={{ width: 20, height: 20 }}
                                     />
@@ -313,11 +360,12 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                         type="checkbox"
                                         value=""
                                         id=""
-                                        defaultChecked={formik.values.status.inactive===true}
+                                        defaultChecked={filters.status.inactive===true}
                                         onChange={(e) => {
-                                            formik.setValues((prev) => {
+                                            setFilters((prev) => {
                                                 return { ...prev, status:{inactive:!prev.status.inactive,active:prev.status.active} }
-                                            })
+                                            });
+                                          
                                         }}
                                         style={{ width: 20, height: 20 }}
                                     />
@@ -336,8 +384,11 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                                 </label>
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
-                                                        value={formik.values.startdate}
-                                                        onChange={(newValue) => formik.setValues((prev) => { return { ...prev, startdate: PassingformatDate(newValue) } })}
+                                                        value={filters?.startdate}
+                                                        onChange={(newValue) => {
+                                                           
+                                                            setFilters((prev) => { return { ...prev, startdate: newValue } })
+                                                    }}
                                                     />
 
                                                 </LocalizationProvider>
@@ -348,8 +399,10 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                                 </label>
                                                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                                                     <DatePicker
-                                                        value={formik.values.enddate}
-                                                        onChange={(newValue) => formik.setValues((prev) => { return { ...prev, enddate: PassingformatDate(newValue) } })}
+                                                        value={filters?.enddate}
+                                                        onChange={(newValue) => {
+                                                            setFilters((prev) => { return { ...prev, enddate: newValue } });
+                                                        }}
                                                     />
                                                 </LocalizationProvider>
                                             </div>
@@ -359,7 +412,7 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
                                 </div>
                             </div>
                             <div className='d-flex justify-content-end mt-3'>
-                                <button type='reset' className='m-1 btn btn-small btn-white' onClick={clearFilter}>Clear Filter</button>
+                                <button type='reset' className='m-1 btn btn-small btn-white' onClick={ClearFilter}>Clear Filter</button>
                                 <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Apply Filter</button>
                             </div>
                         </form>

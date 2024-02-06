@@ -2,35 +2,39 @@ import React, { useContext, useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import { formatDate, getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import Box from "@mui/material/Box";
-import Modal from "@mui/material/Modal";
 import { getBookingList,getRefundHistoryCount } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { menuIdConstant, permissionCategory } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
 import { API_BASE_URL } from "../../services/authHandle";
+import RefundHistoryFilter from "./RefundHistoryFilter";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 600,
-  bgcolor: "background.paper",
-  // border: '2px solid #000',
-  boxShadow: 24,
-  p: 4,
-};
 
 const RefundHistoryList  = () => {
   const { userPermissionList } = useContext(MainPageContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [filters, setFilters] = useState({
+    category: [],
+    vendor: [],
+   customer:[],
+   guest:[],
+   customer_type:[],
+   role:[],
+   creation_date:{
+    from:"",
+    to:""
+   },
+   cancelled_on:{
+    from:"",
+    to:""
+   }
+  });
 
   const [search, setSearch] = useState("");
 
@@ -38,7 +42,6 @@ const RefundHistoryList  = () => {
     next: null,
     previous: null,
   });
-  const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
  
   const [bookingList, setBookingList] = useState([]);
@@ -97,6 +100,8 @@ const RefundHistoryList  = () => {
           console.error("Error fetching  data:", error);
         });
   };
+
+  let checkfilterslength=filters.category?.length >0 || filters.vendor?.length > 0 || filters.customer?.length>0 || filters.guest?.length >0 || filters.customer_type?.length > 0 || filters.role?.length >0 || filters.creation_date.from !=="" || filters.creation_date.to !=="" || filters.cancelled_on.from !=="" || filters.cancelled_on.to !==""
 
   return (
     <div>
@@ -210,7 +215,7 @@ const RefundHistoryList  = () => {
                       </div>
                       <button
                         className="btn  filter-button  "
-                        style={{ borderRadius: "6px", marginLeft: "10px" }}
+                        style={{ borderRadius: "6px", marginLeft: "10px",position:"relative" }}
                         onClick={handleOpen}
                         type="button"
                       >
@@ -227,7 +232,15 @@ const RefundHistoryList  = () => {
                             stroke-width="1.5"
                           />
                         </svg>
+                        <span className='py-1' style={{position:"absolute",top:-12,right:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
+                          {filters.category.length + filters.vendor.length + filters.customer.length + filters.guest.length + filters.customer_type.length + filters.role.length + (filters.creation_date.from !== "" && filters.creation_date.to !== "" ? 2 : filters.creation_date.from !== "" ? 1 : filters.creation_date.to !== "" ? 1 : 0) + (filters.cancelled_on?.from !== "" && filters.cancelled_on?.to !== "" ? 2 : filters.cancelled_on?.from !== "" ? 1 : filters.cancelled_on?.to !== "" ? 1 : 0)}
+                                    </span>
                       </button>
+                      {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
+                        if(checkfilterslength){
+                          window.location.reload();
+                        }
+                      }}>Clear Filter</button>}
                     </div>
                   </div>
                 </div>
@@ -317,10 +330,10 @@ const RefundHistoryList  = () => {
                           <span>Customer Name</span>
                         </th>
                         <th>
-                          <span>Customer Type</span>
+                          <span>Initiated By</span>
                         </th>
                         <th>
-                          <span>Commencement Date</span>
+                          <span>Cancelled On</span>
                         </th>
                         <th>
                           <span>Creation Date</span>
@@ -336,106 +349,117 @@ const RefundHistoryList  = () => {
                     <tbody>
                       {!isLoading ? (
                         <>
-                          {bookingList?.length>0 && 
-                          bookingList?.map((data)=>
-                          <tr>
-                            {console.log(data)}
-                            <td>
-                              <span className="text-secondary">
-                              {data.booking_id}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">{data.booking_item}</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {data?.service?.category?.map((items)=>
-                                items.name
-                                )}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">{data?.service?.company}</span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                              {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {data?.user?.role}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {new Date(data?.cancelled_date).toLocaleDateString("es-CL")}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {new Date(data?.created_at).toLocaleDateString("es-CL")}
-                              </span>
-                            </td>
-                            <td>
-                              <span
-                                className="badge  text-blue-fg "
-                                style={{
-                                  width: "100px",
-                                  padding: "7px 9px 5px 9px ",
-                                  borderRadius: "4px",
-                                  background:data?.status==="Completed"? "#13B370":data?.status==="Unsuccessful"?"#DC7932":data?.status==="Cancelled"?"#DE4E21":"#2684FC",
-                                  
-                                }}
-                              >
-                                {data?.status ? data?.status: "-"}
-                              </span>
-                            </td>
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                to={`/refunds-history/${data?.id}/`}
-                               
-
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "7px 10px 5px 10px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                              >
-                                View &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
+                          {bookingList?.length > 0 &&
+                            bookingList.map((data) => (
+                              <tr>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data.booking_id}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data.booking_item}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.service?.category?.map(
+                                      (items) => items.name
+                                    )}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.service?.company}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.user_type === "Registered"
+                                      ? data?.user?.first_name
+                                      : data?.guest?.first_name}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {data?.user?.role}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {new Date(
+                                      data?.cancelled_date
+                                    ).toLocaleDateString("es-CL")}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {new Date(
+                                      data?.created_at
+                                    ).toLocaleDateString("es-CL")}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span
+                                    className="badge  text-blue-fg "
+                                    style={{
+                                      width: "100px",
+                                      padding: "7px 9px 5px 9px ",
+                                      borderRadius: "4px",
+                                      background:
+                                        data?.status === "Completed"
+                                          ? "#13B370"
+                                          : data?.status === "Unsuccessful"
+                                          ? "#DC7932"
+                                          : data?.status === "Cancelled"
+                                          ? "#DE4E21"
+                                          : "#2684FC",
+                                    }}
+                                  >
+                                    {data?.status ? data?.status : "-"}
+                                  </span>
+                                </td>
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "baseline",
+                                  }}
                                 >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
-                          </tr>
-                          
-                          )
-                          }
+                                  <Link
+                                    to={`/refunds-request/${data?.id}/`}
+                                    className="btn btn-sm btn-info"
+                                    style={{
+                                      padding: "7px 10px 5px 10px",
+                                      borderRadius: "4px",
+                                      borderRadius:
+                                        "var(--roundness-round-inside, 6px)",
+                                      background: "#187AF7",
+                                      boxSShadow:
+                                        "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
+                                    }}
+                                  >
+                                    View &nbsp;
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4 12L12 4M12 4H6M12 4V10"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </Link>
+                                </td>
+                              </tr>
+                            ))}
                         </>
                       ) : (
                         <tr>
@@ -446,12 +470,6 @@ const RefundHistoryList  = () => {
                       )}
                     </tbody>
                   </table>
-                  {
-                    bookingList.length === 0 &&
-                    (<div style={{ height: "5vh", marginTop: "50px" }} >
-                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
-                    </div>)
-                  }
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">
@@ -524,583 +542,7 @@ const RefundHistoryList  = () => {
                   </ul>
                 </div>
               </div>
-              <Modal
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-              >
-                <Box sx={style}>
-                  {/* <Typography id="modal-modal-title" variant="h6" component="h2">
-                    Text in a modal
-                  </Typography>
-                  <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
-                  </Typography> */}
-                  <div class="frame-427319784">
-                    <div class="components-selection-item">
-                      <div class="frame-427319782">
-                        <div class="frame-427319783">
-                          <div class="category">Category</div>
-                          <div class="div">:</div>
-                        </div>
-                        <div class="yacht-boat-heli-tour">
-                          Yacht, Boat, Heli Tour
-                        </div>
-                      </div>
-                      <div class="icon-wrapper">
-                        <div class="width-change-size-here">
-                          <div class="ignore"></div>
-                          <div class="ignore"></div>
-                        </div>
-                        <div class="icon-wrapper-h">
-                          <div class="height-change-size-here">
-                            <div class="ignore"></div>
-                            <div class="ignore"></div>
-                          </div>
-                          <svg
-                            class="icon-wrapper2"
-                            width="10"
-                            height="10"
-                            viewBox="0 0 10 10"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_4335_44256)">
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_4335_44256">
-                                <rect width="10" height="10" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="components-selection-item">
-                      <div class="frame-427319782">
-                        <div class="frame-427319783">
-                          <div class="vendor">Vendor</div>
-                          <div class="div">:</div>
-                        </div>
-                        <div class="salma-international-uber-marine-company-ghanayem-el-khair">
-                          Salma international, Uber Marine Company, Ghanayem
-                          El-Khair
-                        </div>
-                      </div>
-                      <div class="icon-wrapper">
-                        <div class="width-change-size-here">
-                          <div class="ignore"></div>
-                          <div class="ignore"></div>
-                        </div>
-                        <div class="icon-wrapper-h">
-                          <div class="height-change-size-here">
-                            <div class="ignore"></div>
-                            <div class="ignore"></div>
-                          </div>
-                          <svg
-                            class="icon-wrapper3"
-                            width="10"
-                            height="10"
-                            viewBox="0 0 10 10"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_4335_44272)">
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_4335_44272">
-                                <rect width="10" height="10" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                    <div class="components-selection-item">
-                      <div class="frame-427319782">
-                        <div class="frame-427319783">
-                          <div class="status">Status</div>
-                          <div class="div">:</div>
-                        </div>
-                        <div class="completed-unsuccessful">
-                          Completed, Unsuccessful
-                        </div>
-                      </div>
-                      <div class="icon-wrapper">
-                        <div class="width-change-size-here">
-                          <div class="ignore"></div>
-                          <div class="ignore"></div>
-                        </div>
-                        <div class="icon-wrapper-h">
-                          <div class="height-change-size-here">
-                            <div class="ignore"></div>
-                            <div class="ignore"></div>
-                          </div>
-                          <svg
-                            class="icon-wrapper4"
-                            width="10"
-                            height="10"
-                            viewBox="0 0 10 10"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clip-path="url(#clip0_4335_44288)">
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                              <path
-                                fill-rule="evenodd"
-                                clip-rule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                stroke="#212529"
-                                stroke-width="0.8"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_4335_44288">
-                                <rect width="10" height="10" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  <br />
-                  <br />
-                  <div class="d-flex align-items-start">
-                    <div class="frame-427319790">
-                      <div
-                        class="nav flex-column nav-pills me-3"
-                        id="v-pills-tab"
-                        role="tablist"
-                        aria-orientation="vertical"
-                      >
-                        <small>Service</small>
-                        <button
-                          class="nav-link active"
-                          id="v-pills-home-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-home"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-home"
-                          aria-selected="true"
-                        >
-                          Category
-                        </button>
-                        <button
-                          class="nav-link"
-                          id="v-pills-profile-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-profile"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-profile"
-                          aria-selected="false"
-                        >
-                          Vendor
-                        </button>
-                        <small>Customer</small>
-                        <button
-                          class="nav-link"
-                          id="v-pills-messages-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-messages"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-messages"
-                          aria-selected="false"
-                        >
-                          Customer
-                        </button>
-                        <button
-                          class="nav-link"
-                          id="v-pills-settings-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-settings"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-settings"
-                          aria-selected="false"
-                        >
-                          Customer Type
-                        </button>
-                        <small>Booking</small>
-                        <button
-                          class="nav-link"
-                          id="v-pills-status-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-status"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-status"
-                          aria-selected="false"
-                        >
-                          Status
-                        </button>
-                        <small>Date</small>
-                        <button
-                          class="nav-link"
-                          id="v-pills-creationDate-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-creationDate"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-creationDate"
-                          aria-selected="false"
-                        >
-                          Creation Date
-                        </button>
-                        <button
-                          class="nav-link"
-                          id="v-pills-commencementDate-tab"
-                          data-bs-toggle="pill"
-                          data-bs-target="#v-pills-commencementDate"
-                          type="button"
-                          role="tab"
-                          aria-controls="v-pills-commencementDate"
-                          aria-selected="false"
-                        >
-                          Commencement Date
-                        </button>
-                      </div>
-                    </div>
-
-                    <div
-                      class="tab-content"
-                      id="v-pills-tabContent"
-                      style={{ position: "relative", left: 20 }}
-                    >
-                      <div
-                        class="tab-pane fade show active"
-                        id="v-pills-home"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-home-tab"
-                      >
-                        <h4>Category</h4>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="search"
-                          style={{ width: 320 }}
-                        />
-                        <br />
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Boat
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Yatch
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            JAt Ski
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Hot air Balloon
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Desert Safari
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-profile"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-profile-tab"
-                      >
-                        <h4>Vendor</h4>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="search"
-                          style={{ width: 320 }}
-                        />
-                        <br />
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Salma international
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Uber Marine Company
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Ghanayem El-Khair
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Flyworld
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Vanuatu
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-messages"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-messages-tab"
-                      >
-                        <h4>Customer</h4>
-                        <input
-                          type="text"
-                          className="form-control"
-                          placeholder="search"
-                        />
-                        <br />
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Shaheel Arham
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Jane Cooper
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Esther Howard
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Cobi Keller
-                          </label>
-                        </div>
-                        <div class="form-check">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value=""
-                            id="Boat"
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <label class="form-check-label" for="Boat">
-                            Manolo Cannon
-                          </label>
-                        </div>
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-settings"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab"
-                      >
-                        Customer Type
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-status"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab"
-                      >
-                        Status
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-creationDate"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab"
-                      >
-                        Creation Date
-                      </div>
-                      <div
-                        class="tab-pane fade"
-                        id="v-pills-commencementDate"
-                        role="tabpanel"
-                        aria-labelledby="v-pills-settings-tab"
-                      >
-                        Commencement Date
-                      </div>
-                    </div>
-                  </div>
-                </Box>
-              </Modal>
+              {open && <RefundHistoryFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}  checkfilterslength={checkfilterslength}/>}
             </div>
           </div>
           <Footer />

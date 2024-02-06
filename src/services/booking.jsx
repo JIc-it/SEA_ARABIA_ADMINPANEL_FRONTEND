@@ -15,12 +15,22 @@ export const getBookingList = (data) => {
   return axiosInstance
     .get(bookingList, { headers: { "Content-Type": "application/json", Accept: "*/*" },
       params: {
-        status: data.status,
-        search: data.search,
-        refund_status: data.refund_status,
-        id: data.id,
+        status: data?.status,
+        search: data?.search,
+        refund_status: data?.refund_status,
+        id: data?.id,
         user:data?.user,
-        guest:data.guest
+        guest:data?.guest,
+        slot_start_date__gte:data?.commencement_date?.from,
+        slot_start_date__lte:data?.commencement_date?.to,
+        user_type:data?.user_type,
+        created_at__gte:data?.creation_date?.from,
+        created_at__lte:data?.creation_date?.to,
+        company:data?.company,
+        category:data?.category,
+        cancelled_by:data?.cancelled_by,
+        cancelled_date__gte:data?.cancelled_on?.from,
+        cancelled_date__lte:data?.cancelled_on?.to
       },
     },)
     .then((response) => response.data)

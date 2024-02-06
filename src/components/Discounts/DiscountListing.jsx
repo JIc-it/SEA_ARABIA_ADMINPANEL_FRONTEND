@@ -40,6 +40,14 @@ function DiscountListing() {
     previous: null,
   });
   const [openfilter, setOpenfilter] = useState(false);
+  const[filters,setFilters]=useState({
+    status: {
+      active:false,
+      inactive:false
+    },
+  startdate: "",
+  enddate: ""
+  })
 
   const handleclosefilter = () => {
     setOpenfilter(false);
@@ -48,31 +56,36 @@ function DiscountListing() {
   const handleopenfilter = () => {
     setOpenfilter(true);
   };
-  const handleToggle = async (itemId, e) => {
-    e.preventDefault();
-    setOffersList((prevItems) =>
-      prevItems.map((item) =>
-        item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
-      )
-    );
 
-    const toggledItem = offerslist.find((item) => item.id === itemId);
-    if (toggledItem) {
-      const data = { is_enable: !toggledItem.is_enable };
-      try {
-        const response = await UpdateStatus(itemId, data);
-        if (response) {
-          setIsLoading(false);
-          window.location.reload();
-          setIsRefetch(!isRefetch);
-        }
-      } catch (error) {
-        console.error("Error updating status:", error);
+  const handleToggle = async (itemId, e) => {
+  e.preventDefault();
+
+  const toggledItem = offerslist.find((item) => item.id === itemId);
+  if (toggledItem) {
+    const data = { is_enable: !toggledItem.is_enable };
+    try {
+      setIsLoading(true);
+      const response = await UpdateStatus(itemId, data);
+
+      if (response) {
+        setOffersList((prevItems) =>
+          prevItems.map((item) =>
+            item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
+          )
+        );
+        setIsLoading(false);
+        setIsRefetch(!isRefetch);
+        toast.success("Updated Successfully");
       }
-    } else {
-      console.error("Item not found");
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(error.message);
     }
-  };
+  } else {
+    console.error("Item not found");
+  }
+};
+
 
   useEffect(() => {
     {
@@ -88,7 +101,7 @@ function DiscountListing() {
         setIsLoading(false);
         toast.error(error?.response?.data);
       });
-  }, [search, isRefetch]);
+  }, [search]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -137,32 +150,24 @@ function DiscountListing() {
     </svg>
   );
 
-  const clearFilter = async () => {
+  const ClearFilter = () => {
+    if (filters.status.active === true && filters.status.inactive === true && filters.startdate !== "" && filters.enddate !== "") {
+      window.location.reload()
 
-    setIsLoading(true);
-
-    if (!isLoading) {
-        try {
-            const adminData = await getDiscountOfferList();
-
-            if (adminData) {
-                setIsLoading(false);
-                setOffersList(adminData?.results);
-                setListPageUrl({ next: adminData.next, previous: adminData.previous });
-
-            } else {
-                setIsLoading(false);
-                toast.error(adminData.error.response.data)
-                //   console.error("Error while creating Admin:", adminData.error);
-            }
-            setIsLoading(false);
-        } catch (err) {
-            setIsLoading(false);
-            toast.error(err.message)
-            // console.log(err);
-        }
+ }
+    if (filters.status.active === true && filters.status.inactive === true) {
+      window.location.reload()
     }
+     if (filters.startdate !== "" && filters.enddate !== "") {
+      window.location.reload()
+    }
+     if (filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== ""){
+      window.location.reload()
+  }
+ 
 }
+
+const checkfilterstate= filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== ""
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -209,7 +214,7 @@ function DiscountListing() {
                 </div>
                 <button
                   className="bg-black"
-                  style={{ borderRadius: "5px", marginLeft: "5px" }}
+                  style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
                   onClick={handleopenfilter}
                   type="button"
                 >
@@ -218,8 +223,11 @@ function DiscountListing() {
                     alt="filter"
                     width={isMobileView ? 15 : 20}
                   />
+                   <span className='py-1' style={{position:"absolute",top:-12,right:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
+                                        {(filters.status.active && filters.status.inactive ? 2: filters.status.active ?1:filters.status.inactive ? 1:0) +(filters.startdate!=="" && filters.enddate!=="" ? 2: filters.startdate!==""?1:filters.enddate!=="" ? 1:0)}
+                                    </span>
                 </button>
-                <button className="mx-2 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={clearFilter}>Clear Filter</button>
+                {checkfilterstate && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={ClearFilter}>Clear Filter</button>}
                 {openfilter && (
                   <PopupFilter
                     setListPageUrl={setListPageUrl}
@@ -227,6 +235,9 @@ function DiscountListing() {
                     open={openfilter}
                     handleOpen={handleopenfilter}
                     handleClose={handleclosefilter}
+                    filters={filters}
+                    setFilters={setFilters}
+                    ClearFilter={ClearFilter}
                   />
                 )}
               </div>
