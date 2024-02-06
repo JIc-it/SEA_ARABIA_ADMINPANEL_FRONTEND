@@ -470,12 +470,6 @@ const RefundHistoryList  = () => {
                       )}
                     </tbody>
                   </table>
-                  {
-                    bookingList.length === 0 &&
-                    (<div style={{ height: "5vh", marginTop: "50px" }} >
-                      <p style={{ textAlign: "center", fontWeight: 550 }}>No Record Found</p>
-                    </div>)
-                  }
                 </div>
                 <div className="card-footer d-flex align-items-center">
                   {/* <p className="m-0 text-secondary">

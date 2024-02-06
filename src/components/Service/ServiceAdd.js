@@ -184,7 +184,7 @@ const ServiceAdd = () => {
       is_day: false,
       is_time: false,
       is_refundable: false,
-      type: false,
+      type: "",
       category: [],
       sub_category: [],
       name: "",
@@ -287,7 +287,7 @@ const ServiceAdd = () => {
         purchase_limit_min: values.purchase_limit_min,
         purchase_limit_max: values.purchase_limit_max,
         is_refundable: returnTrueFalse(values.is_refundable),
-        Type: values.isActivity ? "Activity" : "Service",
+        type: values.isActivity ? "Activity" : "Service",
         prices: values.service_price_service.map((dat) => {
           return {
             is_active: returnTrueFalse(dat.is_active),

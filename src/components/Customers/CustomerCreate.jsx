@@ -7,11 +7,7 @@ import { useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import {
-  createCustomer,
-
-  getLocation,
-} from "../../services/CustomerHandle";
+import { createCustomer, getLocation } from "../../services/CustomerHandle";
 import { passwordRegex } from "../../helpers";
 
 import CountryDropdown from "../SharedComponents/CountryDropDown";
@@ -24,15 +20,12 @@ function CustomerCreate({ show, close }) {
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  
 
   const [location, setLocation] = useState([]);
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
-
-
 
   useEffect(() => {
     getLocation()
@@ -48,15 +41,33 @@ function CustomerCreate({ show, close }) {
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
-      .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
+      .required("First Name is required")
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
 
     last_name: Yup.string()
-      .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
+      .required("Last Name is required")
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
-      .required("Email is required"),
+      .max(50, "Last name must be at most 20 characters")
+      .required("Email is required")
+      .test("custom-email-format", "Invalid email format", (value) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      ),
     password: Yup.string()
       .min(6, "Password should be at least 6 characters")
       .required("Password is required"),
@@ -73,12 +84,13 @@ function CustomerCreate({ show, close }) {
       .max(new Date(), "Date of Birth cannot be in the future"),
     mobile: Yup.string().required("Mobile is required"),
     gender: Yup.string().required("Gender is required"),
-    location: Yup.object({
-      id: Yup.string().required("Location ID is required"),
-      name: Yup.string().required("Location name is required"),
-      label: Yup.string().required("Location label is required"),
-      code: Yup.string().required("Location code is required"),
-    }).required("Location is required"),
+    // location: Yup.object({
+    //   id: Yup.string().required("Location ID is required"),
+    //   name: Yup.string().required("Location name is required"),
+    //   label: Yup.string().required("Location label is required"),
+    //   code: Yup.string().required("Location code is required"),
+    // }).required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -102,7 +114,7 @@ function CustomerCreate({ show, close }) {
             last_name: values.last_name,
             role: "User",
             email: values.email,
-            dob:values.dob,
+            dob: values.dob,
             password: values.password,
             mobile: values.mobile,
 
@@ -161,12 +173,13 @@ function CustomerCreate({ show, close }) {
             type="text"
             placeholder="First Name"
             className="form-control"
-            name="first_name"
+            name="first_name" // Make sure the name attribute matches the Yup field name
+            maxLength={20}
             value={formik.values.first_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? (
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>
@@ -182,6 +195,7 @@ function CustomerCreate({ show, close }) {
             placeholder="Last Name"
             className="form-control"
             name="last_name"
+            maxLength={20}
             value={formik.values.last_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -322,14 +336,14 @@ function CustomerCreate({ show, close }) {
               className="form-control"
               id=""
               name="gender"
-              value={formik.values.gender}
+              value=""
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
             >
               <option value="" label="Select a gender" />
               {gender?.map((item) => (
                 <option key={item.id} value={item.label} label={item.label}>
-                  {item.label}
+                  {/* {item.label} */}
                 </option>
               ))}
               {/* Add more options as needed */}
@@ -394,304 +408,6 @@ function CustomerCreate({ show, close }) {
             ) : null}
           </div>
         </div>
-
-        {/* table */}
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">Sections</th>
-              <th scope="col">Perm 1</th>
-              <th scope="col">Perm 2</th>
-              <th scope="col">Perm 3</th>
-              <th scope="col">Perm 4</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <th scope="row">Section 1</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  {/* <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault"/> */}
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault1"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault2"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault3"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault4"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 2</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault5"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault6"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault7"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault8"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 3</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault9"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault10"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault11"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault12"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 4</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault13"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault14"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault15"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault16"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 5</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault17"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault18"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault19"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault20"
-                  />
-                </div>
-              </td>
-            </tr>
-            <tr>
-              <th scope="row">Section 6</th>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault21"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault22"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault23"
-                  />
-                </div>
-              </td>
-              <td>
-                {" "}
-                <div class="custom-control custom-checkbox">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id="flexCheckDefault24"
-                  />
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        </table>
         <div
           style={{
             display: "flex",

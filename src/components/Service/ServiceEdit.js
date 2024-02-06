@@ -141,6 +141,7 @@ const ServiceEdit = () => {
 
   const formik = useFormik({
     initialValues: {
+      isActivity:false,
       is_verified: false,
       is_active: false,
       is_top_suggestion: false,
@@ -207,6 +208,7 @@ const ServiceEdit = () => {
         });
 
       const data = {
+        isActivity:values.isActivity,
         is_verified: values.is_verified,
         is_active: values.is_active,
         is_top_suggestion: values.is_top_suggestion,
@@ -294,16 +296,6 @@ const ServiceEdit = () => {
     setOpen(true);
   };
 
-  // const [openAddon, setOpenAddon] = useState(false)
-
-  // const handleCloseAddon = () => {
-  //     setOpenAddon(false)
-  // }
-
-  // const handleOpenAddon = () => {
-  //     setOpenAddon(true)
-  // }
-
   useEffect(() => {
     if (isupdated) {
       setIsLoading(false);
@@ -313,6 +305,7 @@ const ServiceEdit = () => {
     getOneService(params.id)
       .then((data) => {
         setIsLoading(false);
+        formik.setFieldValue("isActivity", data?.isActivity);
         formik.setFieldValue("is_verified", data?.is_verified);
         formik.setFieldValue("is_top_suggestion", data?.is_top_suggestion);
         formik.setFieldValue("is_premium", data?.is_premium);
@@ -342,8 +335,6 @@ const ServiceEdit = () => {
         formik.setFieldValue("refund_policy", data?.refund_policy);
         formik.setFieldValue("is_active", data?.is_active);
         formik.setFieldValue("service_image", data?.service_image);
-
-        // formik.setFieldValue("price", data?.price);
         formik.setFieldValue("profit_method", {
           id: data?.profit_method?.id,
           name: data?.profit_method?.name,
