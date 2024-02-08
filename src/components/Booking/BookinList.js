@@ -166,7 +166,7 @@ const BookinList = () => {
                       </svg>
                     }
                     secondCount={count?.today_booking}
-                    thirdLabel={"Total Confirmed Bookings"}
+                    thirdLabel={"Total Completed Bookings"}
                     thirdIcon={
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
