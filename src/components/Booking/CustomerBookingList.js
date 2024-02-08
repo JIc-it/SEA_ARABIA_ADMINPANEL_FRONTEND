@@ -47,6 +47,7 @@ const CustomerBookingList = () => {
 
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
+  const [selectedValue, setSelectedValue] = useState("");
 
   // new api
   useEffect(() => {
@@ -76,7 +77,7 @@ const CustomerBookingList = () => {
           console.error("error fetching customer booking list", error);
         });
     }
-  }, [customerId]);
+  }, [customerId,search,selectedValue]);
 
   useEffect(() => {
     getBookingCount()
@@ -162,26 +163,26 @@ const CustomerBookingList = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
   };
-  const getBookingSearchData = () => {
-    const Pass = { status: "", search: search, refund_status: "" };
-    getBookingList(Pass)
-      .then((data) => {
-        if (data) {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setBookingList(data?.results);
-        } else {
-          refreshPage();
-          setIsLoading(true);
-          setBookingList("");
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        toast.error(error.message);
-      });
-  };
-  const [selectedValue, setSelectedValue] = useState("");
+  // const getBookingSearchData = () => {
+  //   const Pass = { status: "", search: search, refund_status: "" };
+  //   getBookingList(Pass)
+  //     .then((data) => {
+  //       if (data) {
+  //         setIsLoading(false);
+  //         setListPageUrl({ next: data.next, previous: data.previous });
+  //         setBookingList(data?.results);
+  //       } else {
+  //         refreshPage();
+  //         setIsLoading(true);
+  //         setBookingList("");
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       toast.error(error.message);
+  //     });
+  // };
+ 
 
   return (
     <div>
@@ -325,7 +326,7 @@ const CustomerBookingList = () => {
                           type="button"
                           className="btn search_button"
                           style={{ background: "#006875" }}
-                          onClick={getBookingSearchData}
+                          // onClick={getBookingSearchData}
                         >
                           Search
                         </button>

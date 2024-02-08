@@ -2,10 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
-import {
-  getMenuPermissions,
-  removeBaseUrlFromPath,
-} from "../../helpers";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Modal from "@mui/material/Modal";
@@ -29,18 +26,18 @@ const BookinList = () => {
   const [filters, setFilters] = useState({
     category: [],
     vendor: [],
-   customer:[],
-   guest:[],
-   customer_type:[],
-   status:[],
-   creation_date:{
-    from:"",
-    to:""
-   },
-   commencement_date:{
-    from:"",
-    to:""
-   }
+    customer: [],
+    guest: [],
+    customer_type: [],
+    status: [],
+    creation_date: {
+      from: "",
+      to: "",
+    },
+    commencement_date: {
+      from: "",
+      to: "",
+    },
   });
 
   const [listPageUrl, setListPageUrl] = useState({
@@ -49,7 +46,6 @@ const BookinList = () => {
   });
 
   const [isLoading, setIsLoading] = useState(false);
-  
 
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
@@ -109,7 +105,17 @@ const BookinList = () => {
         });
   };
 
-  let checkfilterslength=filters.category.length >0 || filters.vendor.length > 0 || filters.customer.length>0 || filters.guest.length >0 || filters.customer_type.length > 0 || filters.status.length >0 || filters.creation_date.from !=="" || filters.creation_date.to !=="" || filters.commencement_date.from !=="" || filters.commencement_date.to !==""
+  let checkfilterslength =
+    filters.category.length > 0 ||
+    filters.vendor.length > 0 ||
+    filters.customer.length > 0 ||
+    filters.guest.length > 0 ||
+    filters.customer_type.length > 0 ||
+    filters.status.length > 0 ||
+    filters.creation_date.from !== "" ||
+    filters.creation_date.to !== "" ||
+    filters.commencement_date.from !== "" ||
+    filters.commencement_date.to !== "";
 
   return (
     <div>
@@ -263,7 +269,11 @@ const BookinList = () => {
                       </div>
                       <button
                         className="btn  filter-button"
-                        style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
+                        style={{
+                          borderRadius: "5px",
+                          marginLeft: "5px",
+                          position: "relative",
+                        }}
                         onClick={handleOpen}
                         type="button"
                       >
@@ -280,15 +290,57 @@ const BookinList = () => {
                             stroke-width="1.5"
                           />
                         </svg>
-                        <span className='py-1' style={{position:"absolute",top:-12,right:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
-                                        {filters.category.length+filters.vendor.length+filters.customer.length+filters.guest.length+filters.customer_type.length+filters.status.length+(filters.creation_date.from!=="" && filters.creation_date.to!=="" ? 2: filters.creation_date.from!==""?1:filters.creation_date.to!=="" ? 1:0) +(filters.commencement_date.from!=="" && filters.commencement_date.to!=="" ? 2: filters.commencement_date.from!==""?1:filters.commencement_date.to!=="" ? 1:0)}
-                                    </span>
+                        <span
+                          className="py-1"
+                          style={{
+                            position: "absolute",
+                            top: -12,
+                            right: -10,
+                            color: "white",
+                            fontSize: "10px",
+                            backgroundColor: "#2176FF",
+                            width: "22px",
+                            height: "22px",
+                            borderRadius: "33px",
+                          }}
+                        >
+                          {filters.category.length +
+                            filters.vendor.length +
+                            filters.customer.length +
+                            filters.guest.length +
+                            filters.customer_type.length +
+                            filters.status.length +
+                            (filters.creation_date.from !== "" &&
+                            filters.creation_date.to !== ""
+                              ? 2
+                              : filters.creation_date.from !== ""
+                              ? 1
+                              : filters.creation_date.to !== ""
+                              ? 1
+                              : 0) +
+                            (filters.commencement_date.from !== "" &&
+                            filters.commencement_date.to !== ""
+                              ? 2
+                              : filters.commencement_date.from !== ""
+                              ? 1
+                              : filters.commencement_date.to !== ""
+                              ? 1
+                              : 0)}
+                        </span>
                       </button>
-                     {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={()=> {
-                        if(checkfilterslength){
-                          window.location.reload();
-                        }
-                      }}>Clear Filter</button>}
+                      {checkfilterslength && (
+                        <button
+                          className="mx-3 px-3 py-2 btn"
+                          style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                          onClick={() => {
+                            if (checkfilterslength) {
+                              window.location.reload();
+                            }
+                          }}
+                        >
+                          Clear Filter
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -401,7 +453,9 @@ const BookinList = () => {
                                 </td>
                                 <td>
                                   <span className="text-secondary">
-                                    {data?.user_type==="Registered"? data?.user?.first_name:data?.guest?.first_name}
+                                    {data?.user_type === "Registered"
+                                      ? data?.user?.first_name
+                                      : data?.guest?.first_name}
                                   </span>
                                 </td>
                                 <td>
@@ -560,7 +614,19 @@ const BookinList = () => {
                 </div>
               </div>
             </div>
-            {open && <BookingFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}  checkfilterslength={checkfilterslength}/>}
+            {open && (
+              <BookingFilter
+                open={open}
+                handleClose={handleClose}
+                setIsLoading={setIsLoading}
+                isLoading={isLoading}
+                setFilters={setFilters}
+                filters={filters}
+                setBookingList={setBookingList}
+                firstsetListPageUrl={setListPageUrl}
+                checkfilterslength={checkfilterslength}
+              />
+            )}
           </div>
           <Footer />
         </div>
