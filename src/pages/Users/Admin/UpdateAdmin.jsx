@@ -7,9 +7,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateAdminListById,
-
   getAdminListById,
-
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 
@@ -53,23 +51,36 @@ function UpdateAdmin({ show, close }) {
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
-      .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
+      .required("First Name is required")
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
 
     last_name: Yup.string()
-      .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
+      .required("Last Name is required")
+      .max(20, "Name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
-      .required("Email is required"),
+      .max(50, "Last name must be at most 20 characters")
+      .required("Email is required")
+      .test("custom-email-format", "Invalid email format", (value) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      ),
 
     mobile: Yup.string().required("Mobile is required"),
-    location: Yup.object({
-      id: Yup.string().required("Location ID is required"),
-      name: Yup.string().required("Location name is required"),
-      label: Yup.string().required("Location label is required"),
-      code: Yup.string().required("Location code is required"),
-    }).required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -292,6 +303,7 @@ function UpdateAdmin({ show, close }) {
               name="email"
               className="form-control"
               placeholder="Email"
+              maxLength={50}
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

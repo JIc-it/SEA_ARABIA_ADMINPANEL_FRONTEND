@@ -284,6 +284,7 @@ function CreateNewAdmin({ show, close, locationList }) {
               name="email"
               className="form-control"
               placeholder="Email"
+              maxLength={50}
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

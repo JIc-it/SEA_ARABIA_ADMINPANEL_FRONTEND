@@ -1,7 +1,8 @@
 import { Offcanvas } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useContext, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
@@ -11,6 +12,7 @@ import { createSalesRep } from "../../../services/GuestHandle";
 import { passwordRegex } from "../../../helpers";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 function CreateSalesRep({ show, close }) {
   const theme = useTheme();
@@ -68,8 +70,13 @@ function CreateSalesRep({ show, close }) {
         }
       ),
     gender: Yup.string().required("Gender is required"),
-
-    location: Yup.mixed().required("Location is required"),
+    location: Yup.object({
+      id: Yup.string().required("Location ID is required"),
+      name: Yup.string().required("Location name is required"),
+      label: Yup.string().required("Location label is required"),
+      code: Yup.string().required("Location code is required"),
+    }).required("Location is required"),
+    // location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -122,7 +129,18 @@ function CreateSalesRep({ show, close }) {
       }
     },
   });
+  console.log("formik", formik);
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   return (
     <Offcanvas
       show={show}
@@ -350,14 +368,31 @@ function CreateSalesRep({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
               name="password"
               className="form-control"
               placeholder="Password"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
@@ -377,14 +412,31 @@ function CreateSalesRep({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="Password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>

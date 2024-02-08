@@ -2,18 +2,18 @@ import { Offcanvas } from "react-bootstrap";
 // import DropZone from "../Common/DropZone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useParams } from "react-router-dom";
 
-import {
-  UpdateSalesRepListById,
-} from "../../services/GuestHandle";
+import { UpdateSalesRepListById } from "../../services/GuestHandle";
 import { passwordRegex } from "../../helpers";
 import { getCustomerListById } from "../../services/CustomerHandle";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 function CustomerPasswordReset({ show, close }) {
   const theme = useTheme();
@@ -34,7 +34,17 @@ function CustomerPasswordReset({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const validationSchema = Yup.object({
     password: Yup.string()
       .min(6, "Password should be at least 6 characters")
@@ -138,14 +148,31 @@ function CustomerPasswordReset({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
               name="password"
               className="form-control"
               placeholder="Password"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
@@ -165,14 +192,31 @@ function CustomerPasswordReset({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="Password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>

@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 import * as XLSX from "xlsx";
 
-
 import {
   getCustomerlist,
   getCustomerSearch,
@@ -202,7 +201,6 @@ const SalesRepresentatives = () => {
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
-
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -479,6 +477,7 @@ const SalesRepresentatives = () => {
                             <td>
                               <span className="text-secondary">
                                 {item?.location}
+                                {item?.profileextra?.location?.country}
                               </span>
                             </td>
 
