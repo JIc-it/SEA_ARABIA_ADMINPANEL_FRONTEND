@@ -73,7 +73,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
             title: values.title,
             note: values.note,
             attachment: values.files ? values.files : null,
-            time: values.time,
+            time: `${values.time}:00`,
             date: values.date,
           };
 
@@ -112,7 +112,7 @@ function EditSiteVisit({ show, close, setIsRefetch, isRefetch, selectedData }) {
       formik.setFieldValue("title", selectedData.title);
       formik.setFieldValue("note", selectedData.note);
       formik.setFieldValue("date", selectedData.date);
-      formik.setFieldValue("time", selectedData.time);
+      formik.setFieldValue("time", `${selectedData.time}`);
       //   formik.setFieldValue("files", selectedData.attachment);
     }
   }, [selectedData]);
