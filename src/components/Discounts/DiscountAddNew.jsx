@@ -50,7 +50,6 @@ export default function DiscountAddNew() {
     start_date: Yup.string().required("Start Date is required"),
     discount_value: Yup.number()
       .required("Value is Required")
-      .max(100, "Specify Percentage must be less than or equal to 100")
       .min(1, "Must be greater than zero"),
     up_to_amount: Yup.number().when(
       "discount_type",

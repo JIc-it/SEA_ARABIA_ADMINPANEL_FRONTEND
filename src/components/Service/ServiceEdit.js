@@ -58,9 +58,11 @@ const ServiceEdit = () => {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
-    machine_id: Yup.string().required("Machine ID is required"),
+    .required("Name is required")
+    .max(50, "Name must be at most 50 characters"),
+    name: Yup.string()
+    .required("Name is required")
+    .max(50, "Name must be at most 50 characters"),
     description: Yup.string().required("Description is required"),
     pickup_point_or_location: Yup.string().required("Pickup Point is required"),
     cancellation_policy: Yup.string().required("Privacy Policy is required"),
@@ -1115,7 +1117,7 @@ const ServiceEdit = () => {
                       </div>
                     </div>
                     <div className="summary">
-                      <label htmlFor="" className="form-label">
+                      <label htmlFor="" className="form-label" style={{ fontWeight: "600"}}>
                         Embed
                       </label>
                       <textarea

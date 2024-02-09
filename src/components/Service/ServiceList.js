@@ -387,7 +387,7 @@ function ServiceList() {
                   servicelist?.map((data) => (
                     <tr>
                       <td>
-                        <span className="text-secondary" style={{textTransform:"capitalize"}}>{data?.name}</span>
+                        <span className="text-secondary" style={{textTransform:"capitalize",wordBreak:"break-word"}}>{data?.name}</span>
                       </td>
 
                       <td>

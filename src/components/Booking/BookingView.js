@@ -44,8 +44,11 @@ export default function BookingView() {
     if (booking?.status === "Opened") {
       return "Opened";
     }
-    if (booking?.status === "Completed") {
+    if (booking?.status === "Completed" || booking.status === "Confirmed") {
       return "Completed";
+    }
+    if (booking?.status === "Failed") {
+      return "Failed";
     }
     if (booking?.status === "Cancelled") {
       return "Cancelled";
@@ -146,7 +149,7 @@ export default function BookingView() {
                     className={"centered-container"}
                     style={{ height: isMobileView ? "35vh" : "25vh" }}
                   >
-                    {booking?.status === "Complete" && (
+                    {booking?.status === "Completed" || booking?.status === "Confirmed" && (
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width={48}
@@ -250,22 +253,22 @@ export default function BookingView() {
                         />
                       </svg>
                     )}
-                    {booking?.status === "Completed" && (
+                     {booking?.status === "Failed"  && (
                       <svg
-                        width={49}
-                        height={48}
-                        viewBox="0 0 49 48"
+                        width="48"
+                        height="48"
+                        viewBox="0 0 48 48"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <path
                           opacity="0.4"
-                          d="M44.5 24C44.5 35.0457 35.5457 44 24.5 44C13.4543 44 4.5 35.0457 4.5 24C4.5 12.9543 13.4543 4 24.5 4C35.5457 4 44.5 12.9543 44.5 24Z"
-                          fill="#08A747"
+                          d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z"
+                          fill="#DE4E21"
                         />
                         <path
-                          d="M32.5607 17.9393C33.1464 18.5251 33.1464 19.4749 32.5607 20.0607L22.5607 30.0607C21.9749 30.6464 21.0251 30.6464 20.4393 30.0607L16.4393 26.0607C15.8536 25.4749 15.8536 24.5251 16.4393 23.9393C17.0251 23.3536 17.9749 23.3536 18.5607 23.9393L21.5 26.8787L25.9697 22.409L30.4393 17.9393C31.0251 17.3536 31.9749 17.3536 32.5607 17.9393Z"
-                          fill="#08A747"
+                          d="M17.9393 17.9393C18.5251 17.3536 19.4749 17.3536 20.0607 17.9393L24 21.8787L27.9393 17.9394C28.5251 17.3536 29.4749 17.3536 30.0607 17.9394C30.6464 18.5252 30.6464 19.4749 30.0607 20.0607L26.1213 24L30.0606 27.9393C30.6464 28.5251 30.6464 29.4748 30.0606 30.0606C29.4748 30.6464 28.5251 30.6464 27.9393 30.0606L24 26.1213L20.0607 30.0607C19.4749 30.6464 18.5252 30.6464 17.9394 30.0607C17.3536 29.4749 17.3536 28.5251 17.9394 27.9393L21.8787 24L17.9393 20.0607C17.3536 19.4749 17.3536 18.5251 17.9393 17.9393Z"
+                          fill="#DE4E21"
                         />
                       </svg>
                     )}
@@ -302,7 +305,7 @@ export default function BookingView() {
                             ? "#2684FC"
                             : booking.status === "Unsuccessful"
                             ? "#DC7932"
-                            : booking?.status === "Completed"
+                            : booking?.status === "Completed" || booking?.status ==="Confirmed"
                             ? "#08A747"
                             : "#DE4E21",
                       }}
@@ -758,7 +761,7 @@ export default function BookingView() {
                     <div style={{ width: "33%" }}>
                       <div>
                         <p>Payment Status</p>
-                        {booking?.payment?.status === "Completed" ? (
+                        {booking?.status === "Completed" || booking?.status === "Confirmed" ? (
                           <p
                             className="px-2 py-1"
                             style={{
@@ -779,7 +782,38 @@ export default function BookingView() {
                             />
                             &nbsp; Paid
                           </p>
-                        ) : (
+                        ) :booking?.status === "Failed" || booking?.status === "Cancelled" ? (
+                          <p
+                          className="px-2 py-1"
+                            style={{
+                              fontWeight: "500",
+                              border: "2px solid #FF8166",
+                              borderRadius: "30px",
+                              backgroundColor: "#FBD0C7",
+                              width: "fit-content",
+                            }}
+                          >
+                            <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 48 48"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              opacity="0.4"
+                              d="M44 24C44 35.0457 35.0457 44 24 44C12.9543 44 4 35.0457 4 24C4 12.9543 12.9543 4 24 4C35.0457 4 44 12.9543 44 24Z"
+                              fill="#DE4E21"
+                            />
+                            <path
+                              d="M17.9393 17.9393C18.5251 17.3536 19.4749 17.3536 20.0607 17.9393L24 21.8787L27.9393 17.9394C28.5251 17.3536 29.4749 17.3536 30.0607 17.9394C30.6464 18.5252 30.6464 19.4749 30.0607 20.0607L26.1213 24L30.0606 27.9393C30.6464 28.5251 30.6464 29.4748 30.0606 30.0606C29.4748 30.6464 28.5251 30.6464 27.9393 30.0606L24 26.1213L20.0607 30.0607C19.4749 30.6464 18.5252 30.6464 17.9394 30.0607C17.3536 29.4749 17.3536 28.5251 17.9394 27.9393L21.8787 24L17.9393 20.0607C17.3536 19.4749 17.3536 18.5251 17.9393 17.9393Z"
+                              fill="#DE4E21"
+                            />
+                          </svg>
+                          &nbsp; {booking?.status === "Failed" && "Failed"} {booking?.status === "Cancelled" && "Cancelled"}
+                          </p>
+                          
+                        ):booking?.status === "Opened" || booking?.status === "Upcoming" || booking.status ==="Unsuccessful" ? (
                           <p
                             className="px-2 py-1"
                             style={{
@@ -823,7 +857,7 @@ export default function BookingView() {
                             </svg>
                             &nbsp; Pending
                           </p>
-                        )}
+                        ):null}
                       </div>
                       <div>
                         <p style={{ color: "#68727D" }}>Transaction ID</p>

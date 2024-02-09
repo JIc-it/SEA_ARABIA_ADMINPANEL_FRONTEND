@@ -175,7 +175,7 @@ const ServiceView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Name</p>
-                        <p style={{ fontWeight: "550",textTransform:"capitalize" }}>
+                        <p style={{ fontWeight: "550",textTransform:"capitalize",wordBreak:"break-word" }}>
                           {oneservice?.name}
                         </p>
                       </div>
@@ -183,7 +183,7 @@ const ServiceView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>ID</p>
-                        <p style={{ fontWeight: "550" }}>
+                        <p style={{ fontWeight: "550",wordBreak:"break-word" }}>
                           {oneservice?.machine_id}
                         </p>
                       </div>
@@ -562,7 +562,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Privacy Policy</p>
-                        <p style={{fontWeight:"550"}}>{oneservice?.cancellation_policy}</p>
+                        <p style={{fontWeight:"550",wordBreak:"break-word"}}>{oneservice?.cancellation_policy}</p>
                       </div>
                     </div>
                   </div>
@@ -578,7 +578,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Return Policy</p>
-                        <p style={{fontWeight:"550"}}>{oneservice?.refund_policy}</p>
+                        <p style={{fontWeight:"550",wordBreak:"break-word"}}>{oneservice?.refund_policy}</p>
                       </div>
                     </div>
                   </div>

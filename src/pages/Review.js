@@ -143,10 +143,10 @@ const Review = () => {
     <div className="page" style={{ height: "100vh", top: 20 }}>
       <div className='container'>
         <div className='row mb-4'>
-          <div className='col-lg-3' style={{ backgroundColor: '#EDF5F6' }}>
+          <div className='col-lg-3 p-3' style={{ backgroundColor: '#EDF5F6' }}>
             <div className='row'>
               <div className='col-lg-12'>
-                <label className="form-label">Service :</label>
+                <label className="form-label" style={{fontWeight:550}}>Services</label>
                 <div className="status_dropdown">
                   <input
                     type="text"
@@ -157,8 +157,8 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12 mt-2'>
-                <label className="form-label">Vendor :</label>
-                <div className="status_dropdown">
+              <label className="form-label" style={{fontWeight:550}}>Vendor</label>
+                <div>
                   <select
                     type="text"
                     className="form-select mb-3 status_selector"
@@ -177,8 +177,8 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12'>
-                <label className="form-label">Category :</label>
-                <div className="status_dropdown">
+              <label className="form-label" style={{fontWeight:550}}>Category</label>
+                <div>
                   <select
                     type="text"
                     className="form-select mb-3 status_selector"
@@ -197,8 +197,8 @@ const Review = () => {
                 </div>
               </div>
               <div className='col-lg-12'>
-                <label className="form-label">Sub Category :</label>
-                <div className="status_dropdown">
+              <label className="form-label" style={{fontWeight:550}}>Sub Category</label>
+                <div>
                   <select
                     type="text"
                     className="form-select mb-3 status_selector"
@@ -228,7 +228,7 @@ const Review = () => {
                         </div>
                         <div className='w-20' style={{ marginLeft: 10 }}>
                           <span style={{ color: '#68727D' }}>Name</span><br />
-                          <span class="plan-type">{data.name}</span>
+                          <span class="plan-type" style={{wordBreak:"break-word"}}>{data.name}</span>
                         </div>
                       </div>
                     </span>
@@ -250,9 +250,9 @@ const Review = () => {
           <div className='col-lg-8 mx-1' style={{ position: "relative" }}>
             {
               <div className='d-flex justify-content-between align-items-center' >
-                <p>Review</p>
+                <p style={{fontWeight:550}}>Review</p>
                 <div className='d-flex align-items-center'>
-                  <div>Sort by &nbsp;</div>
+                  <div style={{fontWeight:550}}>Sort by &nbsp;</div>
                   <div className="status_dropdown">
                       <StarRatingSelect
                         value={selectedRating}
@@ -274,7 +274,7 @@ const Review = () => {
                       </h4>
                       <h5 class="card-subtitle mb-2 text-muted">{data.service}</h5>
                       {/* <span className='head-text' style={{ textTransform: "capitalize" }}>{data?.review_title}</span> */}
-                      <p class="card-text">{data?.review}</p>
+                      <p class="card-text" style={{wordBreak:"break-word"}}>{data?.review}</p>
                       <div style={{ position: 'relative', bottom: 10 }}>
                         <span style={{ color: '#006875' }}>{data?.user}</span><br></br>
                         <span>{new Date(data?.created_at).toLocaleDateString("es-CL")}</span>

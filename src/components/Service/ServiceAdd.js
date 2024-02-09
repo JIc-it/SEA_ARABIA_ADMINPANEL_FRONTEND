@@ -74,7 +74,7 @@ const ServiceAdd = () => {
   const validationSchema = Yup.object({
     name: Yup.string()
       .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
+      .max(50, "Name must be at most 50 characters"),
     amenities: Yup.array()
       .of(AmenitiesobjectSchema)
       .min(1, "Amenities is required"),
@@ -91,7 +91,9 @@ const ServiceAdd = () => {
     service_price_service: Yup.array()
       .of(servicepriceserviceobjectSchema)
       .min(1, "Price is required"),
-    machine_id: Yup.string().required("Machine ID is required"),
+      machine_id: Yup.string()
+      .required("ID is required")
+      .max(50, "ID must be at most 50 characters"),
     description: Yup.string().required("Description is required"),
     pickup_point_or_location: Yup.string().required("Pickup Point is required"),
     embed: Yup.string().required("Embed is required"),
@@ -1153,7 +1155,7 @@ const ServiceAdd = () => {
                       </div>
                     </div>
                     <div className="summary">
-                      <label htmlFor="" className="form-label">
+                      <label htmlFor="" className="form-label" style={{ fontWeight: "600"}}>
                         Embed
                       </label>
                       <textarea

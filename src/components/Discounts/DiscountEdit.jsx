@@ -50,7 +50,6 @@ export default function DiscountEdit() {
         .required("Start Date is required"),
     discount_value: Yup.number()
         .required("Value is Required")
-        .max(100,"Specify Percentage must be less than or equal to 100")
         .min(1, 'Must be greater than zero'),
     up_to_amount: Yup.number().when("discount_type", ([discount_type], schema) => {
         if (discount_type === "Percentage") {
@@ -177,7 +176,7 @@ export default function DiscountEdit() {
                 {formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no!=="" ? values.multiple_redeem_specify_no : "")}
                 formdata.append("start_date",new Date(values.start_date)?.toISOString().slice(0, -5) + 'Z');
                 formdata.append("is_lifetime",checktrue(values.is_lifetime));
-                {values.end_date.trim()!=="" && formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');}
+                {values.end_date!=="" && formdata.append("end_date", new Date(values.end_date)?.toISOString().slice(0, -5) + 'Z');}
                 formdata.append("on_home_screen",checktrue(values.on_home_screen));
                 formdata.append("on_checkout",checktrue(values.on_checkout));
                 formdata.append("apply_global",checktrue(values.apply_global));

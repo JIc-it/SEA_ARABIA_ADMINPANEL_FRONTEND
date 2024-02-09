@@ -483,16 +483,16 @@ const BookinList = () => {
                                       padding: "7px 9px 5px 9px ",
                                       borderRadius: "4px",
                                       background:
-                                        data?.status === "Completed"
+                                        data?.status === "Completed" || data?.status === "Confirmed"
                                           ? "#13B370"
                                           : data?.status === "Unsuccessful"
                                           ? "#DC7932"
-                                          : data?.status === "Cancelled"
+                                          : data?.status === "Cancelled" || data?.status === "Failed"
                                           ? "#DE4E21"
                                           : "#2684FC",
                                     }}
                                   >
-                                    {data?.status ? data?.status : "-"}
+                                    {data?.status==="Completed" || data?.status === "Confirmed"?  "Completed": data?.status === "Unsuccessful"? "Unsuccessfull" :data.status? data.status:"-"}
                                   </span>
                                 </td>
                                 <td
