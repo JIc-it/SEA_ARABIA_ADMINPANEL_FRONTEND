@@ -7,6 +7,7 @@ const UpdateOffers="offer/offers";
 const companylisting="company/company-cms-list"
 const serviceOnelisting="service/service-filter-list-cms"
 const getcompanylist="offer/offer-service-info"
+const exportURL="offer/export-offer-list"
 
 
 
@@ -82,11 +83,7 @@ export const UpdateOffer = (id,data) => {
 export const CreateOffer = (data) => {
   console.log(data)
     return axiosInstance
-      .post(`${UpdateOffers}/create/`,data,
-      //  {
-      //   headers: {
-      //       'Content-Type': 'multipart/form-data', // Important for sending form data
-      //   }}
+      .post(`${UpdateOffers}/create/`,data
         )
       .then((response) => response.data)
       .catch((error) => {
@@ -104,4 +101,15 @@ export const getDiscountOfferView = (id) => {
         throw error;
       });
   };
+
+  export const getExport = () => {
+    return axiosInstance
+      .get(exportURL)
+      .then((response) => response.data)
+      .catch((error) => {
+        console.error("Error while fetching lead request:", error);
+        throw error;
+      });
+  };
+
 

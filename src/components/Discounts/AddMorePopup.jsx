@@ -90,8 +90,8 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
 
     const lowercasedFilter = search.toLowerCase();
     const filteredData = companylist?.filter(item => {
-      return Object.keys(item).some(key =>
-        item[key].toLowerCase().includes(lowercasedFilter)
+      return Object?.keys(item)?.some(key =>
+        item[key]?.toLowerCase()?.includes(lowercasedFilter)
       );
     });
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { CSVLink, CSVDownload } from "react-csv";
 import filterIcon from "../../static/img/Filter.png";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -7,13 +8,14 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   getDiscountOfferList,
   UpdateStatus,
+  getExport
 } from "../../services/offers";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   getMenuPermissions,
   removeBaseUrlFromPath,
 } from "../../helpers";
-
+import { API_BASE_URL } from "../../services/authHandle";
 import { getListDataInPagination } from "../../services/commonServices";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,13 +42,14 @@ function DiscountListing() {
     previous: null,
   });
   const [openfilter, setOpenfilter] = useState(false);
-  const[filters,setFilters]=useState({
+  const [csvData, setCSVData] = useState([])
+  const [filters, setFilters] = useState({
     status: {
-      active:false,
-      inactive:false
+      active: false,
+      inactive: false
     },
-  startdate: "",
-  enddate: ""
+    startdate: "",
+    enddate: ""
   })
 
   const handleclosefilter = () => {
@@ -58,33 +61,33 @@ function DiscountListing() {
   };
 
   const handleToggle = async (itemId, e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const toggledItem = offerslist.find((item) => item.id === itemId);
-  if (toggledItem) {
-    const data = { is_enable: !toggledItem.is_enable };
-    try {
-      setIsLoading(true);
-      const response = await UpdateStatus(itemId, data);
+    const toggledItem = offerslist.find((item) => item.id === itemId);
+    if (toggledItem) {
+      const data = { is_enable: !toggledItem.is_enable };
+      try {
+        setIsLoading(true);
+        const response = await UpdateStatus(itemId, data);
 
-      if (response) {
-        setOffersList((prevItems) =>
-          prevItems.map((item) =>
-            item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
-          )
-        );
+        if (response) {
+          setOffersList((prevItems) =>
+            prevItems.map((item) =>
+              item.id === itemId ? { ...item, is_enable: !item.is_enable } : item
+            )
+          );
+          setIsLoading(false);
+          setIsRefetch(!isRefetch);
+          toast.success("Updated Successfully");
+        }
+      } catch (error) {
         setIsLoading(false);
-        setIsRefetch(!isRefetch);
-        toast.success("Updated Successfully");
+        toast.error(error.message);
       }
-    } catch (error) {
-      setIsLoading(false);
-      toast.error(error.message);
+    } else {
+      console.error("Item not found");
     }
-  } else {
-    console.error("Item not found");
-  }
-};
+  };
 
 
   useEffect(() => {
@@ -99,9 +102,20 @@ function DiscountListing() {
       })
       .catch((error) => {
         setIsLoading(false);
-        toast.error(error?.response?.data);
+        toast.error(error.message);
       });
   }, [search]);
+
+  useEffect(() => {
+    getExport()
+      .then((data) => {
+        setCSVData(data)
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }, [])
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -109,8 +123,8 @@ function DiscountListing() {
       type === "next"
         ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
         : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
+          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
+          : null;
     convertedUrl &&
       getListDataInPagination(convertedUrl)
         .then((data) => {
@@ -154,20 +168,20 @@ function DiscountListing() {
     if (filters.status.active === true && filters.status.inactive === true && filters.startdate !== "" && filters.enddate !== "") {
       window.location.reload()
 
- }
+    }
     if (filters.status.active === true && filters.status.inactive === true) {
       window.location.reload()
     }
-     if (filters.startdate !== "" && filters.enddate !== "") {
+    if (filters.startdate !== "" && filters.enddate !== "") {
       window.location.reload()
     }
-     if (filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== ""){
+    if (filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== "") {
       window.location.reload()
-  }
- 
-}
+    }
 
-const checkfilterstate= filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== ""
+  }
+
+  const checkfilterstate = filters.status.active === true || filters.status.inactive === true || filters.startdate !== "" || filters.enddate !== ""
   return (
     <div>
       <div className="col-12 actions_menu my-2">
@@ -214,7 +228,7 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
                 </div>
                 <button
                   className="bg-black"
-                  style={{ borderRadius: "5px", marginLeft: "5px",position:"relative" }}
+                  style={{ borderRadius: "5px", marginLeft: "5px", position: "relative" }}
                   onClick={handleopenfilter}
                   type="button"
                 >
@@ -223,11 +237,11 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
                     alt="filter"
                     width={isMobileView ? 15 : 20}
                   />
-                   <span className='py-1' style={{position:"absolute",top:-12,right:-10,color:"white",fontSize:"10px",backgroundColor:"#2176FF",width:"22px",height:"22px",borderRadius:"33px"}}>
-                                        {(filters.status.active && filters.status.inactive ? 2: filters.status.active ?1:filters.status.inactive ? 1:0) +(filters.startdate!=="" && filters.enddate!=="" ? 2: filters.startdate!==""?1:filters.enddate!=="" ? 1:0)}
-                                    </span>
+                  <span className='py-1' style={{ position: "absolute", top: -12, right: -10, color: "white", fontSize: "10px", backgroundColor: "#2176FF", width: "22px", height: "22px", borderRadius: "33px" }}>
+                    {(filters.status.active && filters.status.inactive ? 2 : filters.status.active ? 1 : filters.status.inactive ? 1 : 0) + (filters.startdate !== "" && filters.enddate !== "" ? 2 : filters.startdate !== "" ? 1 : filters.enddate !== "" ? 1 : 0)}
+                  </span>
                 </button>
-                {checkfilterstate && <button className="mx-3 px-3 py-2 btn" style={{color:"#ffff",backgroundColor:"#2176FF"}} onClick={ClearFilter}>Clear Filter</button>}
+                {checkfilterstate && <button className="mx-3 px-3 py-2 btn" style={{ color: "#ffff", backgroundColor: "#2176FF" }} onClick={ClearFilter}>Clear Filter</button>}
                 {openfilter && (
                   <PopupFilter
                     setListPageUrl={setListPageUrl}
@@ -244,25 +258,16 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
             </>
           </div>
         </div>
-        <div className="action_buttons col-4">
+        <div className="action_buttons col-4" style={{transform:"translateX(-1%)"}}>
           {userPermissionList &&
             getMenuPermissions(
               userPermissionList,
               menuIdConstant.offer,
               permissionCategory.action
             ) && (
-              <button
-                className="btn btn-outline"
-                style={{ borderRadius: "6px" }}
-              >
-                <a
-                  style={{ textDecoration: "none" }}
-                  href="https://seaarabia.jicitsolution.com/offer/export-offer-list/"
-                >
+                <CSVLink data={csvData}  filename={"Offers_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
                   Export
-                </a>
-                {/* Export &nbsp; */}
-                <svg
+                  <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
                   height="20"
@@ -283,7 +288,7 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
                     strokeLinejoin="round"
                   />
                 </svg>
-              </button>
+                  </CSVLink>
             )}
           <AddOfferWithPermission />
         </div>
@@ -297,7 +302,7 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
                   <span>Discount Code</span>
                 </th>
                 <th>
-                  <span>Campaign Name</span>
+                  <span>Coupon Name</span>
                 </th>
                 <th>
                   {" "}
@@ -351,14 +356,14 @@ const checkfilterstate= filters.status.active === true || filters.status.inactiv
                         </td>
                         <td>
                           <span className="text-secondary">
-                            {new Date(item.end_date).toLocaleDateString(
+                            {item?.end_date !== null ? new Date(item.end_date).toLocaleDateString(
                               "en-US",
                               {
                                 day: "2-digit",
                                 month: "short",
                                 year: "numeric",
                               }
-                            )}
+                            ) : "-"}
                           </span>
                         </td>
                         <td
