@@ -150,14 +150,14 @@ const ServiceView = () => {
                   style={{ backgroundColor: "#FFFF", borderRadius: "5px" }}
                   className="mt-4 w-100 px-2"
                 >
-                  <p className="p-2" style={{ fontWeight: "700" }}>
+                  <p className="p-2" style={{ fontWeight: "550" }}>
                     Service Details
                   </p>
                   <div className="d-flex">
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Category</p>
-                        <p style={{ fontWeight: "700" }}>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.category?.[0]?.name}
                         </p>
                       </div>
@@ -165,8 +165,26 @@ const ServiceView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Sub Category</p>
-                        <p style={{ fontWeight: "700" }}>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.sub_category?.[0]?.name}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex">
+                    <div className="col-6 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Name</p>
+                        <p style={{ fontWeight: "550",textTransform:"capitalize" }}>
+                          {oneservice?.name}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="col-6 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>ID</p>
+                        <p style={{ fontWeight: "550" }}>
+                          {oneservice?.machine_id}
                         </p>
                       </div>
                     </div>
@@ -175,7 +193,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Description</p>
-                        <p>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.description &&
                             HTMLParse(oneservice?.description)}
                         </p>
@@ -186,7 +204,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Details</p>
-                        <p>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.lounge} Lounge &nbsp;{" "}
                           {oneservice?.bedroom} Bedroom &nbsp;{" "}
                           {oneservice?.toilet} Toilet
@@ -198,7 +216,7 @@ const ServiceView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Capacity</p>
-                        <p style={{ fontWeight: "700" }}>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.capacity}
                         </p>
                       </div>
@@ -206,7 +224,7 @@ const ServiceView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Amenities</p>
-                        <p style={{ fontWeight: "700" }}>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.amenities?.length > 1
                             ? oneservice?.amenities?.map(
                                 (data) => data.name + "" + ","
@@ -220,7 +238,7 @@ const ServiceView = () => {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Pickup Point</p>
-                        <p style={{ textTransform: "capitalize" }}>
+                        <p style={{ textTransform: "capitalize",fontWeight: "550"}}>
                           {oneservice?.pickup_point_or_location}
                         </p>
                       </div>
@@ -230,7 +248,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Embed</p>
-                        <p className="embed-data">{oneservice?.map_embed}</p>
+                        <p className="embed-data" style={{fontWeight:"550"}}>{oneservice?.map_embed}</p>
                       </div>
                     </div>
                   </div>
@@ -239,14 +257,14 @@ const ServiceView = () => {
                   style={{ backgroundColor: "#FFFF", borderRadius: "5px" }}
                   className="mt-4 w-100 px-2"
                 >
-                  <p className="p-2" style={{ fontWeight: "700" }}>
+                  <p className="p-2" style={{ fontWeight: "550" }}>
                     Pricing
                   </p>
                   <div className="d-flex">
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Profit Method</p>
-                        <p style={{ fontWeight: "700" }}>
+                        <p style={{ fontWeight: "550" }}>
                           {oneservice?.profit_method?.name}
                         </p>
                       </div>
@@ -261,10 +279,10 @@ const ServiceView = () => {
                           ? "Markup Fee"
                           : oneservice?.profit_method?.name ===
                             "Revenue Sharing"
-                          ? `Sea Arabia Percentage - ${oneservice.sea_arabia_percentage}% , Vendor Percentage - ${oneservice.vendor_percentage}%`
+                          ? `Sea Arabia - ${oneservice.sea_arabia_percentage}% , Vendor - ${oneservice.vendor_percentage}%`
                           : null}
                       </p>
-                      <p style={{ fontWeight: "700" }}>
+                      <p style={{ fontWeight: "550" }}>
                         {oneservice?.profit_method?.name ===
                           "Upselling With Markup" && oneservice?.markup_fee}
                       </p>
@@ -273,7 +291,7 @@ const ServiceView = () => {
                   <div className="col-6 px-2">
                     <div>
                       <p style={{ color: "#68727D" }}>Price Criterion</p>
-                      <p style={{ fontWeight: "700" }}>{price_cretrion()}</p>
+                      <p style={{ fontWeight: "550" }}>{price_cretrion()}</p>
                     </div>
                   </div>
 
@@ -537,14 +555,14 @@ const ServiceView = () => {
                   style={{ backgroundColor: "#FFFF", borderRadius: "5px" }}
                   className="mt-4 w-100 px-2"
                 >
-                  <p className="p-2" style={{ fontWeight: "700" }}>
+                  <p className="p-2" style={{ fontWeight: "550" }}>
                     Policy
                   </p>
                   <div className="d-flex">
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Privacy Policy</p>
-                        <p>{oneservice?.cancellation_policy}</p>
+                        <p style={{fontWeight:"550"}}>{oneservice?.cancellation_policy}</p>
                       </div>
                     </div>
                   </div>
@@ -552,7 +570,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Refund Available</p>
-                        <p>{oneservice?.is_refundable ? "Yes" : "No"}</p>
+                        <p style={{fontWeight:"550"}}>{oneservice?.is_refundable ? "Yes" : "No"}</p>
                       </div>
                     </div>
                   </div>
@@ -560,7 +578,7 @@ const ServiceView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Return Policy</p>
-                        <p>{oneservice?.refund_policy}</p>
+                        <p style={{fontWeight:"550"}}>{oneservice?.refund_policy}</p>
                       </div>
                     </div>
                   </div>
@@ -571,10 +589,10 @@ const ServiceView = () => {
                   style={{ backgroundColor: "#FFFF", borderRadius: "5px" }}
                   className="mt-4 w-100 px-2"
                 >
-                  <p className="p-2" style={{ fontWeight: "700" }}>
+                  <p className="p-2" style={{ fontWeight: "550" }}>
                     Images
                   </p>
-                  <p style={{ fontWeight: "700" }}>Thumbnail</p>
+                  <p style={{ fontWeight: "550" }}>Thumbnail</p>
                   <div className="row">
                     {oneservice?.service_image?.length > 0 &&
                       oneservice?.service_image?.map((data, index) => (
@@ -640,7 +658,7 @@ const ServiceView = () => {
               {/* <div className='col-lg-4' style={{position:"absolute",top:"400px",right:"0%",display:isMobileView?"none":""}}>
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
                             <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
+                            <p className="p-2" style={{ fontWeight: "550" }}>Add on services</p>
                             
                             </div>
                            
@@ -709,7 +727,7 @@ const ServiceView = () => {
                     <div className='col-lg-4' style={{display:isMobileView?"block":"none"}}>
                         <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
                         <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "700" }}>Add on services</p>
+                            <p className="p-2" style={{ fontWeight: "550" }}>Add on services</p>
                             
                             </div>
                             <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>

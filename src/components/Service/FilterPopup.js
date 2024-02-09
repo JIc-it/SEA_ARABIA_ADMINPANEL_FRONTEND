@@ -710,15 +710,9 @@ export default function FilterPopup({
                       return { ...prev, category: e.target.value };
                     })
                   }
-                  style={{ width: 320 }}
                 />
                 <br />
-                <div
-                  style={{
-                    height: categorylist.length > 14 ? "50vh" : "",
-                    overflowY: categorylist.length > 14 ? "scroll" : "",
-                  }}
-                >
+                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
                   {categorylist
                     .filter((dat) =>
                       dat["name"]
@@ -762,15 +756,9 @@ export default function FilterPopup({
                       return { ...prev, vendor: e.target.value };
                     })
                   }
-                  style={{ width: 320 }}
                 />
                 <br />
-                <div
-                  style={{
-                    height: vendorlist.length > 14 ? "50vh" : "",
-                    overflowY: vendorlist.length > 14 ? "scroll" : "",
-                  }}
-                >
+                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
                   {vendorlist
                     .filter((dat) =>
                       dat["name"]
@@ -814,15 +802,9 @@ export default function FilterPopup({
                       return { ...prev, sub_category: e.target.value };
                     })
                   }
-                  style={{ width: 320 }}
                 />
                 <br />
-                <div
-                  style={{
-                    height: subcategorylist.length > 14 ? "50vh" : "",
-                    overflowY: subcategorylist.length > 14 ? "scroll" : "",
-                  }}
-                >
+                <div style={{ height: "400px", overflow: "scroll", width: "500px" }} className='mx-2 p-2'>
                   {subcategorylist
                     .filter((dat) =>
                       dat["name"]

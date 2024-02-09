@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CSVLink, CSVDownload } from "react-csv";
+import { CSVLink } from "react-csv";
 import filterIcon from "../../static/img/Filter.png";
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";

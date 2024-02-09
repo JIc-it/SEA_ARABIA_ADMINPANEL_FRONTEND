@@ -2,15 +2,15 @@ import { Link } from "react-router-dom";
 
 import filterIcon from "../../static/img/Filter.png";
 import { useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import foodImg from "../../static/img/food.png";
+import { CSVLink } from "react-csv";
 import totalVendor from "../../static/img/total-vendor.png";
 import totalMachine from "../../static/img/total-machine.png";
 import ActiveMachine from "../../static/img/active-machine.png";
 import inactiveMachine from "../../static/img/inactive-machine.png";
 import {
   getServiceListing,
-  getCount
+  getCount,
+  getExport
 } from "../../services/service";
 import CircularProgress from "@mui/material/CircularProgress";
 import {
@@ -31,6 +31,7 @@ import { MainPageContext } from "../../Context/MainPageContext";
 function ServiceList() {
   const { userPermissionList } = useContext(MainPageContext);
   const [search, setSearch] = useState(null);
+  const [csvData, setCSVData] = useState([])
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
@@ -73,6 +74,17 @@ function ServiceList() {
       });
   }, [search]);
 
+  useEffect(()=>{
+    getExport()
+    .then((data) => {
+      setCSVData(data)
+      setIsLoading(false);
+    })
+    .catch((error) => {
+      toast.error(error.message);
+    });
+  },[])
+
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -112,39 +124,6 @@ function ServiceList() {
       });
   }, []);
 
-  const clearFilter = async () => {
-    setIsLoading(true);
-
-    if (!isLoading) {
-      try {
-        const adminData = await getServiceListing();
-
-        if (adminData) {
-          setFilters({
-            category: [],
-            sub_category: [],
-            vendor: [],
-            status: true,
-          });
-          setIsLoading(false);
-          setServiceList(adminData?.results);
-          setListPageUrl({
-            next: adminData.next,
-            previous: adminData.previous,
-          });
-        } else {
-          setIsLoading(false);
-          toast.error(adminData.error.response.data);
-          //   console.error("Error while creating Admin:", adminData.error);
-        }
-        setIsLoading(false);
-      } catch (err) {
-        setIsLoading(false);
-        toast.error(err.message);
-        // console.log(err);
-      }
-    }
-  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -346,39 +325,30 @@ function ServiceList() {
                 menuIdConstant.serviceManagement,
                 permissionCategory.action
               ) && (
-                <button
-                  className="btn btn-outline"
-                  style={{ borderRadius: "6px" }}
-                >
-                  <a
-                    style={{ textDecoration: "none" }}
-                    href="https://seaarabia.jicitsolution.com/service/export-service-list"
-                  >
-                    Export
-                  </a>
-
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                  >
-                    <path
-                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                      stroke="#252525"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                      stroke="#252525"
-                      strokeWidth="1.5"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
+                <CSVLink data={csvData}  filename={"Service_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
+                Export
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+                </CSVLink>
               )}
           </div>
         </div>
@@ -417,7 +387,7 @@ function ServiceList() {
                   servicelist?.map((data) => (
                     <tr>
                       <td>
-                        <span className="text-secondary">{data?.name}</span>
+                        <span className="text-secondary" style={{textTransform:"capitalize"}}>{data?.name}</span>
                       </td>
 
                       <td>

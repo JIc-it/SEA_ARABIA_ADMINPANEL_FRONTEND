@@ -15,6 +15,7 @@ const locationlistURl="service/destination-list"
 const profitMethodURl="service/profit-method-list"
 const deletePriceURl="/service/price/delete"
 const CountURl="service/admin/count"
+const exportURL="service/export-service-list"
 
 
 export const getCount = () => {
@@ -165,6 +166,16 @@ export const SetThumbNail = (id, data) => {
 export const DeleteOnePrice = (id) => {
   return axiosInstance
     .delete(`${deletePriceURl}/${id}`)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getExport = () => {
+  return axiosInstance
+    .get(exportURL)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

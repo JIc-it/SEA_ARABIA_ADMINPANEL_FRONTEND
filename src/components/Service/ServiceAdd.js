@@ -1138,7 +1138,7 @@ const ServiceAdd = () => {
                             renderInput={(params) => (
                               <TextField
                                 {...params}
-                                placeholder="Services"
+                                placeholder="Amenities"
                                 size="small"
                               />
                             )}
@@ -1206,7 +1206,7 @@ const ServiceAdd = () => {
                           >
                             <div
                               className="card p-2"
-                              style={{ height: "200px", width: "15vw" }}
+                              style={{ height: "150px", width: "15vw" }}
                             >
                               <div className="d-flex justify-content-between align-items-center">
                                 <img
