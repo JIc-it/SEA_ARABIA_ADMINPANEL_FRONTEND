@@ -58,6 +58,7 @@ const Login = () => {
         };
         const { access, refresh, role } = await loginRequest(data);
         if (access) {
+          console.log(access, "access_token first");
           localStorage.setItem("access_token", access);
           localStorage.setItem("refresh_token", refresh);
           localStorage.setItem("role", role);

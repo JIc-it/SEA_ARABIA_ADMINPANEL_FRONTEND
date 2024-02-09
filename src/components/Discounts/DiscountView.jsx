@@ -16,9 +16,8 @@ import {
 export default function DiscountView() {
   const [offerview, setOfferView] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [redemptiontype, setRedemptionType] = useState("");
-  const [copys, setCopies] = useState("Copy");
   const params = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setIsLoading(true);
@@ -56,24 +55,7 @@ export default function DiscountView() {
       });
   }, [params.id]);
 
-  const navigate = useNavigate();
-
-  const handlecheckredemptiontype = () => {
-    if (offerview?.allow_multiple_redeem === false) {
-      setRedemptionType("One-Time");
-    }
-    if (offerview?.max_redeem_count < 9999) {
-      setRedemptionType("Limited Time");
-    }
-    if (offerview?.max_redeem_count === 9999) {
-      setRedemptionType("Unlimited");
-    }
-  };
-  useEffect(() => {
-    handlecheckredemptiontype();
-  }, [offerview]);
-
-  function companywithservice(companyid) {
+function companywithservice(companyid) {
     const serviceCount =
       offerview?.servicelist?.map((dat) => {
         if (dat.company_id === companyid) {
@@ -162,9 +144,10 @@ export default function DiscountView() {
               </svg>{" "}
               &nbsp;<span style={{ fontWeight: "500" }}>Back</span>
             </div>
-            <EditDiscountWithPermission />
+            <div style={{transform:"translateX(-20%)"}}><EditDiscountWithPermission /></div>
           </div>
 
+          <div style={{marginLeft:"-2%"}}>
           <div
             className="container"
             style={{
@@ -182,7 +165,7 @@ export default function DiscountView() {
               <div className="w-50">
                 <div>
                   <p style={{ color: "#68727D", fontSize: "16px" }}>
-                    Campaign Name
+                    Coupon Name
                   </p>
                   <p style={{ fontWeight: "700", fontSize: "14px" }}>
                     {offerview?.name}
@@ -209,7 +192,7 @@ export default function DiscountView() {
                     Expiration
                   </p>
                   <p style={{ fontWeight: "700", fontSize: "14px" }}>
-                    {offerview?.end_date?.trim() !== ""
+                    {offerview?.end_date!== null
                       ? "Limited Time"
                       : "No Expiry"}
                   </p>
@@ -229,11 +212,10 @@ export default function DiscountView() {
                   >
                     {offerview?.coupon_code} &nbsp;
                     <button
-                      title={copys}
                       style={{ backgroundColor: "transparent", border: "none" }}
                       onClick={() => {
                         navigator.clipboard.writeText(offerview?.coupon_code);
-                        setCopies("Copied");
+                        toast.success("Copied")
                       }}
                     >
                       <svg
@@ -276,13 +258,13 @@ export default function DiscountView() {
                     Validity Period
                   </p>
                   <p style={{ fontWeight: "700", fontSize: "14px" }}>
-                    {new Date(offerview?.end_date).toLocaleDateString("en-US", {
+                    {offerview?.end_date!== null ?new Date(offerview?.end_date).toLocaleDateString("en-US", {
                       day: "2-digit",
                       month: "short",
                       year: "numeric",
                       hour: "2-digit",
                       minute: "2-digit",
-                    })}
+                    }):"None"}
                   </p>
                 </div>
               </div>
@@ -362,6 +344,7 @@ export default function DiscountView() {
                 </p>
               </div>
             </div>
+          </div>
           </div>
         </div>
       )}

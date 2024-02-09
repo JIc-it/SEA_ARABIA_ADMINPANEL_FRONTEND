@@ -43,8 +43,8 @@ export default function DiscountAddNew() {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Campaign Name is required")
-      .max(20, "Campaign Name must be at most 20 characters"),
+      .required("Coupon Name is required")
+      .max(20, "Coupon Name must be at most 20 characters"),
     coupon_code: Yup.string().required("Coupon Code is required"),
     discount_type: Yup.string().required("Discount type is required"),
     start_date: Yup.string().required("Start Date is required"),
@@ -137,8 +137,8 @@ export default function DiscountAddNew() {
       name: "",
       coupon_code: "",
       discount_type: "Percentage",
-      discount_value: 0,
-      up_to_amount: 0,
+      discount_value:"",
+      up_to_amount: "",
       redemption_type: "One-Time",
       specify_no: 1,
       allow_multiple_redeem: "One-Time",
@@ -152,7 +152,7 @@ export default function DiscountAddNew() {
       services: [],
       companies: [],
       purchase_requirement: true,
-      min_purchase_amount: 0,
+      min_purchase_amount: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -181,17 +181,11 @@ export default function DiscountAddNew() {
           formdata.append("coupon_code", values.coupon_code);
           formdata.append("discount_type", values.discount_type);
           formdata.append("discount_value", values.discount_value);
-          formdata.append("up_to_amount", values.up_to_amount);
+          {values.discount_type==="Percentage" && formdata.append("up_to_amount", values.up_to_amount);}
           formdata.append("redemption_type", values.redemption_type);
           formdata.append("specify_no", values.specify_no);
-          formdata.append(
-            "allow_multiple_redeem",
-            values.allow_multiple_redeem
-          );
-          formdata.append(
-            "multiple_redeem_specify_no",
-            values.multiple_redeem_specify_no
-          );
+          {formdata.append("allow_multiple_redeem",values.allow_multiple_redeem !=="" ? values.allow_multiple_redeem :"")}
+          {formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no!=="" ? values.multiple_redeem_specify_no : "")}
           formdata.append(
             "start_date",
             new Date(values.start_date)?.toISOString().slice(0, -5) + "Z"
@@ -213,7 +207,7 @@ export default function DiscountAddNew() {
             "purchase_requirement",
             checktrue(values.purchase_requirement)
           );
-          formdata.append("min_purchase_amount", values.min_purchase_amount);
+          {values.purchase_requirement && formdata.append("min_purchase_amount", values.min_purchase_amount)};
 
           const adminData = await CreateOffer(formdata);
 
@@ -439,7 +433,7 @@ export default function DiscountAddNew() {
             </div>
           </div>
 
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={formik.handleSubmit} style={{marginLeft:"-2%"}}>
             <div
               className="container"
               style={{
@@ -457,7 +451,7 @@ export default function DiscountAddNew() {
                 <div className={isMobileView ? "w-100" : "w-50"}>
                   <div>
                     <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                      Campaign Name <span style={{ color: "red" }}>*</span>
+                      Coupon Name <span style={{ color: "red" }}>*</span>
                     </p>
                     <input
                       type="text"
@@ -652,13 +646,15 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "One-Time",
                         specify_no: 1,
-                        allow_multiple_redeem:"One-Time"
+                        allow_multiple_redeem:"One-Time",
+                        multiple_redeem_specify_no:1
                       })
                     }
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      cursor:"pointer",
                       border: "1px solid lightgray",
                       width: isMobileView ? "100%" : "30%",
                       border:
@@ -680,7 +676,8 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "Unlimited",
                         specify_no: 9999,
-                        allow_multiple_redeem:""
+                        allow_multiple_redeem:"",
+                        multiple_redeem_specify_no:""
                       })
                     }
                     style={{
@@ -688,6 +685,7 @@ export default function DiscountAddNew() {
                       justifyContent: "space-between",
                       marginTop: isMobileView ? "5px" : "",
                       alignItems: "center",
+                      cursor:"pointer",
                       border:
                         formik.values.redemption_type === "Unlimited"
                           ? "2px solid rgb(112, 112, 241)"
@@ -708,8 +706,9 @@ export default function DiscountAddNew() {
                       updateFormValues({
                         ...formik.values,
                         redemption_type: "Limited-Number",
-                        specify_no: 0,
-                        allow_multiple_redeem:""
+                        specify_no: "",
+                        allow_multiple_redeem:"",
+                        multiple_redeem_specify_no:""
                       })
                     }
                     style={{
@@ -717,6 +716,7 @@ export default function DiscountAddNew() {
                       justifyContent: "space-between",
                       marginTop: isMobileView ? "5px" : "",
                       alignItems: "center",
+                      cursor:"pointer",
                       border:
                         formik.values.redemption_type === "Limited-Number"
                           ? "2px solid rgb(112, 112, 241)"
@@ -817,6 +817,7 @@ export default function DiscountAddNew() {
                         updateFormValues({
                           ...formik.values,
                           allow_multiple_redeem: "Multiple-time",
+                          multiple_redeem_specify_no:""
                         })
                       }
                     >
@@ -869,7 +870,14 @@ export default function DiscountAddNew() {
                   name="start_date"
                   className="discount-input"
                   style={{ padding: "5px" }}
-                  onChange={formik.handleChange}
+                  onChange={(e)=>{
+                    if(new Date(e.target.value) < new Date()){
+                      toast.error("Can't Choose Past Date and Time")
+                    }
+                    else{
+                      formik.setFieldValue("start_date",e.target.value)
+                    }
+                  }}
                   onBlur={formik.handleBlur}
                   min="2024-01-01T00:00:00"
                 />
@@ -953,7 +961,17 @@ export default function DiscountAddNew() {
                     disabled={formik.values.is_lifetime === true}
                     className="discount-input"
                     style={{ padding: "5px" }}
-                    onChange={formik.handleChange}
+                    onChange={(e)=>{
+                    if(e.target.value===formik.values.start_date){
+                      toast.error("Start Date and Validity Period not same")
+                    }
+                    else  if(new Date(e.target.value)< new Date()){
+                      toast.error("Can't Choose Past Date and Time")
+                    }
+                    else{
+                      formik.setFieldValue("end_date",e.target.value)
+                    }
+                    }}
                     onBlur={formik.handleBlur}
                     min="2024-01-01T00:00:00"
                   />
@@ -1112,7 +1130,7 @@ export default function DiscountAddNew() {
                             ...formik.values,
                             purchase_requirement:
                               !formik.values.purchase_requirement,
-                            min_purchase_amount: 0,
+                            min_purchase_amount: "",
                           })
                         }
                       >
@@ -1282,8 +1300,8 @@ export default function DiscountAddNew() {
                 )}
               </Box>
             </div>
-            <hr style={{ borderBottom: "2px solid black" }} />
-            <div className="d-flex justify-content-end">
+            <hr style={{ borderBottom: "2px solid black",width:"90%" }} className="mx-auto" />
+            <div className="d-flex justify-content-end px-6 pb-1">
               <button
                 type="reset"
                 className="m-1 btn btn-small btn-white"
