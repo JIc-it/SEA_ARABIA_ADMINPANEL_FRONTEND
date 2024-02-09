@@ -12,7 +12,9 @@ import { passwordRegex } from "../../helpers";
 
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 import { AppContext } from "../../Context/AppContext";
-
+import { IconButton, InputAdornment, TextField } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 function CustomerCreate({ show, close }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
@@ -26,7 +28,17 @@ function CustomerCreate({ show, close }) {
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   useEffect(() => {
     getLocation()
       .then((data) => {
@@ -266,6 +278,7 @@ function CustomerCreate({ show, close }) {
               name="email"
               className="form-control"
               placeholder="Email"
+              maxLength={50}
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -367,14 +380,34 @@ function CustomerCreate({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
               name="password"
               className="form-control"
               placeholder="Password"
+              style={{
+                lineHeight: "1px",
+              }}
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
@@ -394,7 +427,7 @@ function CustomerCreate({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
+            <TextField
               type="Password"
               name="confirmPassword"
               className="form-control"
@@ -402,6 +435,23 @@ function CustomerCreate({ show, close }) {
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>
@@ -438,7 +488,7 @@ function CustomerCreate({ show, close }) {
                 backgroundColor: "#006875",
               }}
             >
-              Confirm
+              Add
             </button>
           </div>
         </div>

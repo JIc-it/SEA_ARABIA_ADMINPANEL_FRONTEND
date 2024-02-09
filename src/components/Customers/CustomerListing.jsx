@@ -41,11 +41,12 @@ export default function CustomerListing() {
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
+  const [categorylist, setCategoryList] = useState([]);
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
-
+  const [active, setActive] = useState("Category");
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const { userPermissionList } = useContext(MainPageContext);
   const [filters, setFilters] = useState({
@@ -206,6 +207,35 @@ export default function CustomerListing() {
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
+  // new
+  const handleFilterCategory = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prevFilters) => {
+      // Check if category already has data
+      const categoryArray =
+        prevFilters.category.length > 0 ? prevFilters.category : [];
+
+      // Check if the value already exists in the category array
+      const existingCategoryIndex = categoryArray.findIndex(
+        (item) => item.id === value
+      );
+
+      // If the value exists, remove it; otherwise, add or update it
+      const updatedCategory =
+        existingCategoryIndex !== -1
+          ? [
+              ...categoryArray.slice(0, existingCategoryIndex),
+              ...categoryArray.slice(existingCategoryIndex + 1),
+            ]
+          : [...categoryArray, { id: value, name }];
+
+      return {
+        ...prevFilters,
+        category: updatedCategory,
+      };
+    });
+  };
 
   return (
     <div style={{ height: "100vh" }}>
@@ -259,68 +289,6 @@ export default function CustomerListing() {
                 >
                   <img src={filterIcon} alt="filter" width={25} />
                 </button>
-
-                {/* <button
-                  className="btn  filter-button"
-                  style={{
-                    borderRadius: "5px",
-                    marginLeft: "5px",
-                    position: "relative",
-                  }}
-                  onClick={handleOpen}
-                  type="button"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    viewBox="0 0 20 20"
-                    fill="none"
-                  >
-                    <path
-                      d="M15.8332 2.5H4.1665C2.98799 2.5 2.39874 2.5 2.03262 2.8435C1.6665 3.187 1.6665 3.73985 1.6665 4.84555V5.4204C1.6665 6.28527 1.6665 6.7177 1.88284 7.07618C2.09917 7.43466 2.4944 7.65715 3.28485 8.10212L5.71237 9.46865C6.24272 9.7672 6.5079 9.91648 6.69776 10.0813C7.09316 10.4246 7.33657 10.8279 7.44687 11.3226C7.49984 11.5602 7.49984 11.8382 7.49984 12.3941L7.49984 14.6187C7.49984 15.3766 7.49984 15.7556 7.70977 16.0511C7.91971 16.3465 8.29257 16.4923 9.0383 16.7838C10.6038 17.3958 11.3866 17.7018 11.9432 17.3537C12.4998 17.0055 12.4998 16.2099 12.4998 14.6187V12.3941C12.4998 11.8382 12.4998 11.5602 12.5528 11.3226C12.6631 10.8279 12.9065 10.4246 13.3019 10.0813C13.4918 9.91648 13.757 9.7672 14.2873 9.46865L16.7148 8.10212C17.5053 7.65715 17.9005 7.43466 18.1168 7.07618C18.3332 6.7177 18.3332 6.28527 18.3332 5.4204V4.84555C18.3332 3.73985 18.3332 3.187 17.9671 2.8435C17.6009 2.5 17.0117 2.5 15.8332 2.5Z"
-                      stroke="white"
-                      stroke-width="1.5"
-                    />
-                  </svg>
-                  <span
-                    className="py-1"
-                    style={{
-                      position: "absolute",
-                      top: -12,
-                      right: -10,
-                      color: "white",
-                      fontSize: "10px",
-                      backgroundColor: "#2176FF",
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "33px",
-                    }}
-                  >
-                    {filters.category.length +
-                      filters.vendor.length +
-                      filters.customer.length +
-                      filters.guest.length +
-                      filters.customer_type.length +
-                      filters.status.length +
-                      (filters.creation_date.from !== "" &&
-                      filters.creation_date.to !== ""
-                        ? 2
-                        : filters.creation_date.from !== ""
-                        ? 1
-                        : filters.creation_date.to !== ""
-                        ? 1
-                        : 0) +
-                      (filters.commencement_date.from !== "" &&
-                      filters.commencement_date.to !== ""
-                        ? 2
-                        : filters.commencement_date.from !== ""
-                        ? 1
-                        : filters.commencement_date.to !== ""
-                        ? 1
-                        : 0)}
-                  </span>
-                </button> */}
               </div>
             </div>
             {/* </form> */}
@@ -349,34 +317,108 @@ export default function CustomerListing() {
                 <CloseIcon />
               </IconButton>
               <div class="frame-427319784 mt-3">
-                <div class="components-selection-item">
+                {filters.category.length > 0 && (
+                  <div class="components-selection-item">
+                    <div class="frame-427319782">
+                      <div class="frame-427319783">
+                        <div class="category">Vendor status--</div>
+                        <div class="div">:</div>
+                      </div>
+                      <div
+                        style={{
+                          width: "50vw",
+                          display: "flex",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          class="yacht-boat-heli-tour "
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          {filters.category.map((data) => (
+                            <div key={data.id} className="mx-1">
+                              <span>{data.name}</span>
+                              <span className="mx-1">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={10}
+                                  height={10}
+                                  viewBox="0 0 10 10"
+                                  fill="none"
+                                >
+                                  <g clipPath="url(#clip0_5512_51442)">
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                      fill="#212529"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                      fill="#212529"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                      stroke="#212529"
+                                      strokeWidth="0.8"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                      stroke="#212529"
+                                      strokeWidth="0.8"
+                                    />
+                                  </g>
+                                  <defs>
+                                    <clipPath id="clip0_5512_51442">
+                                      <rect
+                                        width={10}
+                                        height={10}
+                                        fill="white"
+                                      />
+                                    </clipPath>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div class="components-selection-item mt-1">
                   <div class="frame-427319782">
                     <div class="frame-427319783">
-                      <div class="category">Category</div>
+                      <div class="vendor">Sub Category</div>
                       <div class="div">:</div>
                     </div>
                     <div
                       style={{
                         width: "50vw",
                         display: "flex",
-                        // flexWrap: filters.category.length > 5 ? "wrap" : "",
+                        flexWrap: "wrap",
                       }}
                     >
                       <div
                         class="yacht-boat-heli-tour "
                         style={{
                           display: "flex",
-                          // flexWrap: filters.category.length > 5 ? "wrap" : "",
+                          flexWrap: "wrap",
                         }}
                       >
                         <div className="mx-1">
-                          {/* <span>{data.name}</span> */}
-                          <span
-                            className="mx-1"
-                            // onClick={() =>
-                            //   findAndRemoveCategory("Category", data.id)
-                            // }
-                          >
+                          <span></span>
+                          <span className="mx-1">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               width={10}
@@ -420,8 +462,416 @@ export default function CustomerListing() {
                             </svg>
                           </span>
                         </div>
-                        {/* ))} */}
                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="components-selection-item mt-1">
+                  <div class="frame-427319782">
+                    <div class="frame-427319783">
+                      <div class="vendor">Vendor</div>
+                      <div class="div">:</div>
+                    </div>
+                    <div
+                      style={{
+                        width: "50vw",
+                        display: "flex",
+                        flexWrap: "wrap",
+                      }}
+                    >
+                      <div
+                        class="yacht-boat-heli-tour "
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        {filters.vendor.map((data) => (
+                          <div key={data.id} className="mx-1">
+                            <span>{data.name}</span>
+                            <span className="mx-1">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={10}
+                                height={10}
+                                viewBox="0 0 10 10"
+                                fill="none"
+                              >
+                                <g clipPath="url(#clip0_5512_51442)">
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_5512_51442">
+                                    <rect width={10} height={10} fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="d-flex align-items-start">
+                <div
+                  class="frame-427319790"
+                  style={{ height: "50vh", width: "30%" }}
+                >
+                  <div
+                    class="nav flex-column nav-pills me-3"
+                    id="v-pills-tab"
+                    role="tablist"
+                    aria-orientation="vertical"
+                  >
+                    <small>Customer</small>
+                    <button
+                      onClick={() => setActive("Customer Status")}
+                      style={{
+                        width: "12vw",
+                        backgroundColor: "white",
+                        border:
+                          active === "Customer Status"
+                            ? "1px solid #2176FF"
+                            : "",
+                      }}
+                      class="nav-link active mt-2 d-flex justify-content-between"
+                      id="v-pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#v-pills-home"
+                      type="button"
+                      role="tab"
+                      aria-controls="v-pills-home"
+                      aria-selected="true"
+                    >
+                      <span style={{ backgroundColor: "red" }}>
+                        {" "}
+                        Customer Status 
+                      </span>
+                      <span
+                        className="py-1"
+                        style={{
+                          color: "white",
+                          fontSize: "12px",
+                          backgroundColor:
+                            active === "Customer Status" ? "#2176FF" : "gray",
+                          width: "22px",
+                          height: "22px",
+                          borderRadius: "33px",
+                        }}
+                      ></span>
+                      <span>
+                        <svg
+                          width={18}
+                          height={18}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                            stroke={active === "Category" ? "#2176FF" : "gray"}
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                    <button
+                      onClick={() => setActive("Sub-Category")}
+                      style={{
+                        width: "12vw",
+                        backgroundColor: "white",
+                        border:
+                          active === "Sub-Category" ? "1px solid #2176FF" : "",
+                      }}
+                      class="nav-link mt-2 d-flex justify-content-between"
+                      id="v-pills-home-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#v-pills-home2"
+                      type="button"
+                      role="tab"
+                      aria-controls="v-pills-home2"
+                      aria-selected="true"
+                    >
+                      <span style={{ backgroundColor: "yellowgreen" }}>
+                        Location
+                      </span>
+                      <span
+                        className="py-1"
+                        style={{
+                          color: "white",
+                          fontSize: "12px",
+                          backgroundColor:
+                            active === "Sub-Category" ? "#2176FF" : "gray",
+                          width: "22px",
+                          height: "22px",
+                          borderRadius: "33px",
+                        }}
+                      ></span>
+                      <span>
+                        <svg
+                          width={18}
+                          height={18}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                            stroke={
+                              active === "Sub-Category" ? "#2176FF" : "gray"
+                            }
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+
+                    <button
+                      onClick={() => setActive("Service-Status")}
+                      style={{
+                        width: "12vw",
+                        backgroundColor: "white",
+                        border:
+                          active === "Service-Status"
+                            ? "1px solid #2176FF"
+                            : "",
+                      }}
+                      class="nav-link  mt-2 d-flex justify-content-between"
+                      id="v-pills-messages-tab"
+                      data-bs-toggle="pill"
+                      data-bs-target="#v-pills-messages"
+                      type="button"
+                      role="tab"
+                      aria-controls="v-pills-messages"
+                      aria-selected="false"
+                    >
+                      <span>Onboarded on Status</span>
+                      {console.log(filters)}
+                      <span
+                        className="py-1"
+                        style={{
+                          color: "white",
+                          fontSize: "12px",
+                          backgroundColor:
+                            active === "Service-Status" ? "#2176FF" : "gray",
+                          width: "22px",
+                          height: "22px",
+                          borderRadius: "33px",
+                        }}
+                      >
+                        {filters.status.active === true &&
+                        filters.status.inactive === true
+                          ? "2"
+                          : filters.status.active
+                          ? "1"
+                          : filters.status.inactive
+                          ? "1"
+                          : "0"}
+                      </span>
+                      <span>
+                        <svg
+                          width={18}
+                          height={18}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                            stroke={
+                              active === "Service-Status" ? "#2176FF" : "gray"
+                            }
+                            strokeWidth={2}
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </span>
+                    </button>
+                  </div>
+                </div>
+                {/* customer status */}
+                <div
+                  class="tab-content"
+                  id="v-pills-tabContent"
+                  style={{ position: "relative", left: 20 }}
+                >
+                  <div
+                    class="tab-pane fade show active"
+                    id="v-pills-home"
+                    role="tabpanel"
+                    aria-labelledby="v-pills-home-tab"
+                  >
+                    <h4 style={{ backgroundColor: "red" }}>Customer Status</h4>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="search"
+                      onChange={(e) =>
+                        setSearch((prev) => {
+                          return { ...prev, category: e.target.value };
+                        })
+                      }
+                      style={{ width: 320 }}
+                    />
+                    <br />
+                    <div
+                      style={{
+                        height: categorylist.length > 14 ? "50vh" : "",
+                        overflowY: categorylist.length > 14 ? "scroll" : "",
+                      }}
+                    >
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          onChange={(e) => handleFilterCategory(e)}
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <label class="form-check-label" for="Boat"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="tab-pane fade"
+                    id="v-pills-profile"
+                    role="tabpanel"
+                    aria-labelledby="v-pills-profile-tab"
+                  >
+                    <h4>Vendor</h4>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="search"
+                      onChange={(e) =>
+                        setSearch((prev) => {
+                          return { ...prev, vendor: e.target.value };
+                        })
+                      }
+                      style={{ width: 320 }}
+                    />
+                    <br />
+                    <div
+                      style={{
+                        height: "50vh",
+                        overflowY: "scroll",
+                      }}
+                    >
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <label class="form-check-label" for="Boat"></label>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="tab-pane fade"
+                    id="v-pills-home2"
+                    role="tabpanel"
+                    aria-labelledby="v-pills-home-tab"
+                  >
+                    <h4 style={{ backgroundColor: "yellowgreen" }}>
+                      Customer Stat
+                    </h4>
+                    <input
+                      type="text"
+                      className="form-control"
+                      placeholder="search"
+                      onChange={(e) =>
+                        setSearch((prev) => {
+                          return { ...prev, sub_category: e.target.value };
+                        })
+                      }
+                      style={{ width: 320 }}
+                    />
+                    <br />
+                    <div
+                      style={{
+                        height: "50vh",
+                        overflowY: "scroll",
+                      }}
+                    >
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <label class="form-check-label" for="Boat">
+                          Kuwait
+                        </label>
+                      </div>
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <label class="form-check-label" for="Boat">
+                          Kochi
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "row",
+                      justifyContent: "space-evenly",
+                      alignItems: "center",
+                    }}
+                    // class="tab-pane fade"
+                    id="v-pills-messages"
+                    role="tabpanel"
+                    aria-labelledby="v-pills-messages-tab"
+                  >
+                    <h4>Onboarded On</h4>
+
+                    <div class="form-check">
+                      <label class="form-check-label" for="Boat">
+                        From
+                      </label>
+                    </div>
+                    <div class="form-check">
+                      <label class="form-check-label" for="Boat">
+                        To
+                      </label>
                     </div>
                   </div>
                 </div>

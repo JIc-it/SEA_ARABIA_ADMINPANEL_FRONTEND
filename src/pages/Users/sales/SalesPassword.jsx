@@ -11,7 +11,9 @@ import {
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 function SalesPassword({ show, close }) {
   const theme = useTheme();
   const [isRefetch, setIsRefetch] = useState();
@@ -43,7 +45,17 @@ function SalesPassword({ show, close }) {
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
   });
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const formik = useFormik({
     initialValues: {
       password: salesRepDetails?.password || "",
@@ -132,7 +144,7 @@ function SalesPassword({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
+            <TextField
               type="password"
               name="password"
               className="form-control"
@@ -140,6 +152,23 @@ function SalesPassword({ show, close }) {
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
@@ -159,7 +188,7 @@ function SalesPassword({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
+            <TextField
               type="Password"
               name="confirmPassword"
               className="form-control"
@@ -167,6 +196,23 @@ function SalesPassword({ show, close }) {
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>

@@ -55,24 +55,36 @@ function UpdateSalesRep({ show, close }) {
   const validationSchema = Yup.object({
     first_name: Yup.string()
       .required("First name is required")
-      .max(20, "First name must be at most 20 characters"),
-
+      .max(20, "First name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "First Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     last_name: Yup.string()
       .required("Last name is required")
-      .max(20, "Last name must be at most 20 characters"),
+      .max(20, "Last name must be at most 20 characters")
+      .test(
+        "is-not-blank",
+        "Last Name must not contain only blank spaces",
+        (value) => {
+          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+        }
+      ),
     email: Yup.string()
       .email("Invalid email address")
-      .required("Email is required"),
+      .max(50, "Last name must be at most 20 characters")
+      .required("Email is required")
+      .test("custom-email-format", "Invalid email format", (value) =>
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
+      ),
 
     mobile: Yup.string().required("Mobile is required"),
 
     gender: Yup.string().required("Gender is required"),
-    location: Yup.object({
-      id: Yup.string().required("Location ID is required"),
-      name: Yup.string().required("Location name is required"),
-      label: Yup.string().required("Location label is required"),
-      code: Yup.string().required("Location code is required"),
-    }).required("Location is required"),
+    location: Yup.mixed().required("Location is required"),
   });
 
   const formik = useFormik({
@@ -305,7 +317,6 @@ function UpdateSalesRep({ show, close }) {
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}
-          
           </div>
         </div>
         {/* <div style={{ margin: "20px" }}>
