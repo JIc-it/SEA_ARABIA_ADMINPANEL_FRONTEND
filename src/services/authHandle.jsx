@@ -26,7 +26,9 @@ export const refreshAccessToken = async () => {
   }
 
   try {
-    const response = await axios.post(REFRESH_URL, { refresh: refreshToken });
+    const response = await axiosInstance.post(REFRESH_URL, {
+      refresh: refreshToken,
+    });
 
     if (response.data && response.data.access) {
       const newAccessToken = response.data.access;
@@ -39,8 +41,12 @@ export const refreshAccessToken = async () => {
 };
 
 export const verifyAccessToken = async () => {
+  const accessToken = localStorage.getItem("access_token");
+  console.log(accessToken, "accessToken");
   try {
-    const response = await axiosInstance.post(VERIFY_URL);
+    const response = await axiosInstance.post(VERIFY_URL, {
+      token: accessToken,
+    });
     return response.status === 200;
   } catch (error) {
     console.error("Error verifying access token:", error);
