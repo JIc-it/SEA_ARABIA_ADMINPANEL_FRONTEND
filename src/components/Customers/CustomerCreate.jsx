@@ -91,9 +91,17 @@ function CustomerCreate({ show, close }) {
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
+
     dob: Yup.date()
       .required("Date of Birth is required")
-      .max(new Date(), "Date of Birth cannot be in the future"),
+      .max(new Date(), "Date of Birth cannot be in the future")
+      .test("year-length", "Year must be 4 digits", function (value) {
+        if (!value) return false;
+        const year = value.getFullYear();
+        return year.toString().length === 4;
+      }),
+    // other fields...
+
     mobile: Yup.string().required("Mobile is required"),
     gender: Yup.string().required("Gender is required"),
     // location: Yup.object({
@@ -135,7 +143,7 @@ function CustomerCreate({ show, close }) {
           };
 
           const customerData = await createCustomer(data);
-          // console.log("create customer", createCustomer);
+          console.log("create customer", createCustomer);
           if (customerData) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
@@ -167,7 +175,13 @@ function CustomerCreate({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Customer </Offcanvas.Title>
+        <Offcanvas.Title
+          style={{
+            fontWeight: "600",
+          }}
+        >
+          Add Customer{" "}
+        </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -198,7 +212,11 @@ function CustomerCreate({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             Last Name
           </label>
@@ -329,9 +347,9 @@ function CustomerCreate({ show, close }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.dob && formik.errors.dob ? (
+          {formik.touched.dob && formik.errors.dob && (
             <div className="error">{formik.errors.dob}</div>
-          ) : null}
+          )}
         </div>
         <div style={{ margin: "20px" }}>
           <label

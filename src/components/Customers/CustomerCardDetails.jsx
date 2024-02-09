@@ -216,7 +216,7 @@ function CustomerCardDetails() {
             </div>
 
             <div className="d-flex justify-content-start align-items-center my-2">
-              <img src={customerImg} />
+              {/* <img src={customerImg} /> */}
               <div className="mx-2">
                 <p style={{ fontWeight: "600" }}>Profile Picture</p>
                 <p>Recommended Size is 256 x 256 Pixels</p>

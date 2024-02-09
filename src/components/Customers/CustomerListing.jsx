@@ -71,8 +71,12 @@ export default function CustomerListing() {
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {
-        // console.log("customer-list", data.results);
+        console.log("customer-list", data.results);
         setListDiscount(data.results);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
       })
       .catch((error) => {
         toast.error(error.message);
@@ -273,14 +277,14 @@ export default function CustomerListing() {
                       setSearch(e.target.value);
                     }}
                   />
-                  <button
+                  {/* <button
                     type="button"
                     className="btn search_button"
                     style={{ background: "#006875" }}
                     onClick={getCustomerListData}
                   >
                     Search
-                  </button>
+                  </button> */}
                 </div>
                 <button
                   onClick={handleOpen}
@@ -574,7 +578,7 @@ export default function CustomerListing() {
                     >
                       <span style={{ backgroundColor: "red" }}>
                         {" "}
-                        Customer Status 
+                        Customer Status
                       </span>
                       <span
                         className="py-1"
@@ -1066,6 +1070,7 @@ export default function CustomerListing() {
                         <td>
                           <span className="text-secondary">
                             {item?.location}
+                            {item?.profileextra?.location?.country}
                           </span>
                         </td>
                         <td>

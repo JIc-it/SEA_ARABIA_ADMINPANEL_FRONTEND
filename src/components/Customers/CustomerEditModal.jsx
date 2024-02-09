@@ -151,7 +151,13 @@ function CustomerEditModal({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Details </Offcanvas.Title>
+        <Offcanvas.Title
+          style={{
+            fontWeight: "600",
+          }}
+        >
+          Edit Details{" "}
+        </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -181,7 +187,11 @@ function CustomerEditModal({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             Last Name
           </label>
@@ -301,7 +311,11 @@ function CustomerEditModal({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             DOB
           </label>
@@ -321,7 +335,11 @@ function CustomerEditModal({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             Gender
           </label>

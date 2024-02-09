@@ -152,7 +152,13 @@ function CreateSalesRep({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Add Sales Rep </Offcanvas.Title>
+        <Offcanvas.Title
+          style={{
+            fontWeight: "600",
+          }}
+        >
+          Add Sales Rep{" "}
+        </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -183,7 +189,11 @@ function CreateSalesRep({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             Last Name
           </label>
