@@ -4,9 +4,17 @@ import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
+import {
+  getCategoryList,
+  getsubcategorylist,
+  getServiceListing,
+} from "../../services/service";
+import { getCompanyListing } from "../../services/offers";
+import { Visibility } from "@mui/icons-material";
+import { getCustomerSearch } from "../../services/CustomerHandle";
+import { toast } from "react-toastify";
 
-
-export default function UserFilterPopup({
+export default function FilterPopup({
   open,
   handleClose,
   setIsLoading,
@@ -38,6 +46,181 @@ export default function UserFilterPopup({
     p: 3,
     overflowY: "scroll",
   };
+  useEffect(() => {
+    getCategoryList()
+      .then((data) => setCategoryList(data))
+      .catch((error) => console.error(error));
+  }, []);
+
+  useEffect(() => {
+    getsubcategorylist()
+      .then((data) => setSubcategoryList(data))
+      .catch((error) => console.error(error));
+  }, []);
+  const [listDiscount, setListDiscount] = useState([]);
+  useEffect(() => {
+    getCustomerSearch({ search: "", status: "", role: "User" })
+      .then((data) => {
+        console.log("customer-list", data.results);
+        setListDiscount(data.results);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
+      })
+      .catch((error) => {
+        toast.error(error.message);
+        console.error("Error fetching Customer List data:", error);
+      });
+  }, []);
+
+  const handleFilterOnBoard = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prevFilters) => {
+      // Check if category already has data
+      const onBoardedArray =
+        prevFilters.category.length > 0 ? prevFilters.category : [];
+
+      // Check if the value already exists in the category array
+      const existingonBoarded_on = onBoardedArray.findIndex(
+        (item) => item.id === value
+      );
+
+      // If the value exists, remove it; otherwise, add or update it
+      const updatedOnBoarded_on =
+        existingonBoarded_on !== -1
+          ? [
+              ...onBoardedArray.slice(0, existingonBoarded_on),
+              ...onBoardedArray.slice(existingonBoarded_on + 1),
+            ]
+          : [...onBoardedArray, { id: value, name }];
+
+      return {
+        ...prevFilters,
+        category: updatedOnBoarded_on,
+      };
+    });
+  };
+
+  const handleFilterLocation = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prevFilters) => {
+      // Check if sub_category already has data
+      const locationArray =
+        prevFilters.location.length > 0 ? prevFilters.location : [];
+
+      // Check if the value already exists in the sub_category array
+      const existingLocationIndex = locationArray.findIndex(
+        (item) => item.id === value
+      );
+
+      // If the value exists, remove it; otherwise, add or update it
+      const updatedSubCategory =
+        existingLocationIndex !== -1
+          ? [
+              ...locationArray.slice(0, existingLocationIndex),
+              ...locationArray.slice(existingLocationIndex + 1),
+            ]
+          : [...locationArray, { id: value, name }];
+
+      return {
+        ...prevFilters,
+        sub_category: updatedSubCategory,
+      };
+    });
+  };
+
+  const handleFilterCustomer = (e) => {
+    const { name, value } = e.target;
+
+    setFilters((prevFilters) => {
+      // Check if vendor already has data
+      const customerArray =
+        prevFilters.vendor.length > 0 ? prevFilters.customer : [];
+
+      // Check if the value already exists in the vendor array
+      const existingVendorIndex = customerArray.findIndex(
+        (item) => item.id === value
+      );
+
+      // If the value exists, remove it; otherwise, add or update it
+      const updatedCustomer =
+        existingVendorIndex !== -1
+          ? [
+              ...customerArray.slice(0, existingVendorIndex),
+              ...customerArray.slice(existingVendorIndex + 1),
+            ]
+          : [...customerArray, { id: value, name }];
+
+      return {
+        ...prevFilters,
+        customer: updatedCustomer,
+      };
+    });
+  };
+
+  const findAndRemoveCategory = (field, data) => {
+    if (field === "Customer") {
+      setFilters((prevFilters) => {
+        const updatedCategory = prevFilters.category.filter(
+          (item) => item.id !== data
+        );
+        return { ...prevFilters, category: updatedCategory };
+      });
+    }
+    if (field === "Location") {
+      setFilters((prevFilters) => {
+        const updatedCategory = prevFilters.sub_category.filter(
+          (item) => item.id !== data
+        );
+        return { ...prevFilters, sub_category: updatedCategory };
+      });
+    }
+    if (field === "OnBoarded On") {
+      setFilters((prevFilters) => {
+        const updatedCategory = prevFilters.vendor.filter(
+          (item) => item.id !== data
+        );
+        return { ...prevFilters, vendor: updatedCategory };
+      });
+    }
+  };
+
+  const handleApplyFilter = async () => {
+    setIsLoading(true);
+    const customerMapped = filters.customer.map((data) => data.id);
+    const customerSplitted = customerMapped.join(",");
+
+    const locationmapped = filters.vendor.map((data) => data.id);
+    const locationSplitted = locationmapped.join(",");
+
+    const checkstatus =
+      filters.status.active && filters.status.inactive
+        ? ""
+        : filters.status.active
+        ? true
+        : filters.status.inactive && false;
+    const getFiltereddata = await getCustomerSearch(
+      null,
+      null,
+      customerSplitted,
+
+      locationSplitted,
+      checkstatus
+    );
+
+    if (getFiltereddata) {
+      setIsLoading(false);
+      setServiceList(getFiltereddata.results);
+      setListPageUrl({
+        next: getFiltereddata.next,
+        previous: getFiltereddata.previous,
+      });
+      handleClose();
+    }
+  };
 
   return (
     <div>
@@ -63,87 +246,470 @@ export default function UserFilterPopup({
             <CloseIcon />
           </IconButton>
           <div class="frame-427319784 mt-3">
-            <div class="components-selection-item">
-              <div class="frame-427319782">
-                <div class="frame-427319783">
-                  <div class="category">Category</div>
-                  <div class="div">:</div>
-                </div>
-                <div
-                  style={{
-                    width: "50vw",
-                    display: "flex",
-                    // flexWrap: filters.category.length > 5 ? "wrap" : "",
-                  }}
-                >
+            {filters.category.length > 0 && (
+              <div class="components-selection-item">
+                <div class="frame-427319782">
+                  <div class="frame-427319783">
+                    <div class="category">Category</div>
+                    <div class="div">:</div>
+                  </div>
                   <div
-                    class="yacht-boat-heli-tour "
                     style={{
+                      width: "50vw",
                       display: "flex",
-                      // flexWrap: filters.category.length > 5 ? "wrap" : "",
+                      flexWrap: filters.category.length > 5 ? "wrap" : "",
                     }}
                   >
-                   
-                      <div  className="mx-1">
-                        {/* <span>{data.name}</span> */}
-                        <span
-                          className="mx-1"
-                          // onClick={() =>
-                          //   findAndRemoveCategory("Category", data.id)
-                          // }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width={10}
-                            height={10}
-                            viewBox="0 0 10 10"
-                            fill="none"
+                    <div
+                      class="yacht-boat-heli-tour "
+                      style={{
+                        display: "flex",
+                        flexWrap: filters.category.length > 5 ? "wrap" : "",
+                      }}
+                    >
+                      {filters.category.map((data) => (
+                        <div key={data.id} className="mx-1">
+                          <span>{data.name}</span>
+                          <span
+                            className="mx-1"
+                            onClick={() =>
+                              findAndRemoveCategory("Category", data.id)
+                            }
                           >
-                            <g clipPath="url(#clip0_5512_51442)">
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                fill="#212529"
-                              />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                stroke="#212529"
-                                strokeWidth="0.8"
-                              />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                stroke="#212529"
-                                strokeWidth="0.8"
-                              />
-                            </g>
-                            <defs>
-                              <clipPath id="clip0_5512_51442">
-                                <rect width={10} height={10} fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </span>
-                      </div>
-                    {/* ))} */}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width={10}
+                              height={10}
+                              viewBox="0 0 10 10"
+                              fill="none"
+                            >
+                              <g clipPath="url(#clip0_5512_51442)">
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_5512_51442">
+                                  <rect width={10} height={10} fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
+
+            {filters.sub_category.length > 0 && (
+              <div class="components-selection-item mt-1">
+                <div class="frame-427319782">
+                  <div class="frame-427319783">
+                    <div class="vendor">Sub Category</div>
+                    <div class="div">:</div>
+                  </div>
+                  <div
+                    style={{
+                      width: "50vw",
+                      display: "flex",
+                      flexWrap: filters.sub_category.length > 5 ? "wrap" : "",
+                    }}
+                  >
+                    <div
+                      class="yacht-boat-heli-tour "
+                      style={{
+                        display: "flex",
+                        flexWrap: filters.sub_category.length > 5 ? "wrap" : "",
+                      }}
+                    >
+                      {filters.sub_category.map((data) => (
+                        <div key={data.id} className="mx-1">
+                          <span>{data.name}</span>
+                          <span
+                            className="mx-1"
+                            onClick={() =>
+                              findAndRemoveCategory("Sub-Category", data.id)
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width={10}
+                              height={10}
+                              viewBox="0 0 10 10"
+                              fill="none"
+                            >
+                              <g clipPath="url(#clip0_5512_51442)">
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_5512_51442">
+                                  <rect width={10} height={10} fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+            {filters.vendor.length > 0 && (
+              <div class="components-selection-item mt-1">
+                <div class="frame-427319782">
+                  <div class="frame-427319783">
+                    <div class="vendor">Vendor</div>
+                    <div class="div">:</div>
+                  </div>
+                  <div
+                    style={{
+                      width: "50vw",
+                      display: "flex",
+                      flexWrap: filters.vendor.length > 5 ? "wrap" : "",
+                    }}
+                  >
+                    <div
+                      class="yacht-boat-heli-tour "
+                      style={{
+                        display: "flex",
+                        flexWrap: filters.vendor.length > 5 ? "wrap" : "",
+                      }}
+                    >
+                      {filters.vendor.map((data) => (
+                        <div key={data.id} className="mx-1">
+                          <span>{data.name}</span>
+                          <span
+                            className="mx-1"
+                            onClick={() =>
+                              findAndRemoveCategory("Vendor", data.id)
+                            }
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width={10}
+                              height={10}
+                              viewBox="0 0 10 10"
+                              fill="none"
+                            >
+                              <g clipPath="url(#clip0_5512_51442)">
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  fill="#212529"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                                <path
+                                  fillRule="evenodd"
+                                  clipRule="evenodd"
+                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                  stroke="#212529"
+                                  strokeWidth="0.8"
+                                />
+                              </g>
+                              <defs>
+                                <clipPath id="clip0_5512_51442">
+                                  <rect width={10} height={10} fill="white" />
+                                </clipPath>
+                              </defs>
+                            </svg>
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
           <br />
           <br />
           <div class="d-flex align-items-start">
+            <div
+              class="frame-427319790"
+              style={{ height: "50vh", width: "30%" }}
+            >
+              <div
+                class="nav flex-column nav-pills me-3"
+                id="v-pills-tab"
+                role="tablist"
+                aria-orientation="vertical"
+              >
+                <small>Service</small>
+                <button
+                  onClick={() => setActive("Category")}
+                  style={{
+                    width: "12vw",
+                    backgroundColor: "white",
+                    border: active === "Category" ? "1px solid #2176FF" : "",
+                  }}
+                  class="nav-link active mt-2 d-flex justify-content-between"
+                  id="v-pills-home-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#v-pills-home"
+                  type="button"
+                  role="tab"
+                  aria-controls="v-pills-home"
+                  aria-selected="true"
+                >
+                  <span> Category</span>
+                  <span
+                    className="py-1"
+                    style={{
+                      color: "white",
+                      fontSize: "12px",
+                      backgroundColor:
+                        active === "Category" ? "#2176FF" : "gray",
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "33px",
+                    }}
+                  >
+                    {filters.category.length}
+                  </span>
+                  <span>
+                    <svg
+                      width={18}
+                      height={18}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                        stroke={active === "Category" ? "#2176FF" : "gray"}
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActive("Sub-Category")}
+                  style={{
+                    width: "12vw",
+                    backgroundColor: "white",
+                    border:
+                      active === "Sub-Category" ? "1px solid #2176FF" : "",
+                  }}
+                  class="nav-link mt-2 d-flex justify-content-between"
+                  id="v-pills-home-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#v-pills-home2"
+                  type="button"
+                  role="tab"
+                  aria-controls="v-pills-home2"
+                  aria-selected="true"
+                >
+                  <span> Sub Category</span>
+                  <span
+                    className="py-1"
+                    style={{
+                      color: "white",
+                      fontSize: "12px",
+                      backgroundColor:
+                        active === "Sub-Category" ? "#2176FF" : "gray",
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "33px",
+                    }}
+                  >
+                    {filters.sub_category.length}
+                  </span>
+                  <span>
+                    <svg
+                      width={18}
+                      height={18}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                        stroke={active === "Sub-Category" ? "#2176FF" : "gray"}
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+                <button
+                  onClick={() => setActive("Vendor")}
+                  style={{
+                    width: "12vw",
+                    backgroundColor: "white",
+                    border: active === "Vendor" ? "1px solid #2176FF" : "",
+                  }}
+                  class="nav-link  mt-2 d-flex justify-content-between"
+                  id="v-pills-profile-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#v-pills-profile"
+                  type="button"
+                  role="tab"
+                  aria-controls="v-pills-profile"
+                  aria-selected="false"
+                >
+                  <span>Vendor</span>
+                  <span
+                    className="py-1"
+                    style={{
+                      color: "white",
+                      fontSize: "12px",
+                      backgroundColor: active === "Vendor" ? "#2176FF" : "gray",
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "33px",
+                    }}
+                  >
+                    {filters.vendor.length}
+                  </span>
+                  <span>
+                    <svg
+                      width={18}
+                      height={18}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                        stroke={active === "Vendor" ? "#2176FF" : "gray"}
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => setActive("Service-Status")}
+                  style={{
+                    width: "12vw",
+                    backgroundColor: "white",
+                    border:
+                      active === "Service-Status" ? "1px solid #2176FF" : "",
+                  }}
+                  class="nav-link  mt-2 d-flex justify-content-between"
+                  id="v-pills-messages-tab"
+                  data-bs-toggle="pill"
+                  data-bs-target="#v-pills-messages"
+                  type="button"
+                  role="tab"
+                  aria-controls="v-pills-messages"
+                  aria-selected="false"
+                >
+                  <span>Service Status</span>
+                  {console.log(filters)}
+                  <span
+                    className="py-1"
+                    style={{
+                      color: "white",
+                      fontSize: "12px",
+                      backgroundColor:
+                        active === "Service-Status" ? "#2176FF" : "gray",
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "33px",
+                    }}
+                  >
+                    {filters.status.active === true &&
+                    filters.status.inactive === true
+                      ? "2"
+                      : filters.status.active
+                      ? "1"
+                      : filters.status.inactive
+                      ? "1"
+                      : "0"}
+                  </span>
+                  <span>
+                    <svg
+                      width={18}
+                      height={18}
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
+                        stroke={
+                          active === "Service-Status" ? "#2176FF" : "gray"
+                        }
+                        strokeWidth={2}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+            </div>
+
             <div
               class="tab-content"
               id="v-pills-tabContent"
@@ -155,7 +721,7 @@ export default function UserFilterPopup({
                 role="tabpanel"
                 aria-labelledby="v-pills-home-tab"
               >
-                <h4>Category</h4>
+                <h4>Customer</h4>
                 <input
                   type="text"
                   className="form-control"
@@ -165,41 +731,152 @@ export default function UserFilterPopup({
                       return { ...prev, category: e.target.value };
                     })
                   }
-                  style={{ width: 320 }}
                 />
                 <br />
                 <div
-                  // style={{
-                  //   height: categorylist.length > 14 ? "50vh" : "",
-                  //   overflowY: categorylist.length > 14 ? "scroll" : "",
-                  // }}
+                  style={{
+                    height: "400px",
+                    overflow: "scroll",
+                    width: "500px",
+                  }}
+                  className="mx-2 p-2"
                 >
-                  {/* {categorylist
+                  {listDiscount
                     .filter((dat) =>
                       dat["name"]
                         .toLowerCase()
                         .includes(search.category.toLowerCase())
                     )
-                    .map((data) => ( */}
+                    .map((data) => (
                       <div class="form-check">
                         <input
                           class="form-check-input"
                           type="checkbox"
-                          // value={data.id}
-                          // name={data.name}
-                          // id={data.name}
-                          // checked={filters.category.find(
-                          //   (items) => items.id === data.id
-                          // )}
-                          // onChange={(e) => handleFilterCategory(e)}
+                          value={data.id}
+                          name={data.name}
+                          id={data.name}
+                          checked={filters.category.find(
+                            (items) => items.id === data.id
+                          )}
+                          onChange={(e) => handleFilterCustomer(e)}
                           style={{ width: 20, height: 20 }}
                         />
                         <label class="form-check-label" for="Boat">
-                          {/* {data?.name} */}
-                          Active
+                          {data?.name}
                         </label>
                       </div>
-                    {/* ))} */}
+                    ))}
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="v-pills-profile"
+                role="tabpanel"
+                aria-labelledby="v-pills-profile-tab"
+              >
+                <h4>Vendor</h4>
+                <input
+                  type="text"
+                  className="form-control"
+                  placeholder="search"
+                  onChange={(e) =>
+                    setSearch((prev) => {
+                      return { ...prev, vendor: e.target.value };
+                    })
+                  }
+                />
+                <br />
+                <div
+                  style={{
+                    height: "400px",
+                    overflow: "scroll",
+                    width: "500px",
+                  }}
+                  className="mx-2 p-2"
+                >
+                  {listDiscount
+                    .filter((dat) =>
+                      dat["name"]
+                        .toLowerCase()
+                        .includes(search?.vendor.toLowerCase())
+                    )
+                    .map((data) => (
+                      <div class="form-check">
+                        <input
+                          class="form-check-input"
+                          type="checkbox"
+                          value={data.id}
+                          name={data.name}
+                          checked={filters.vendor.find(
+                            (items) => items.id === data.id
+                          )}
+                          onChange={(e) => handleFilterLocation(e)}
+                          id={data?.profileextra?.location?.country}
+                          style={{ width: 20, height: 20 }}
+                        />
+                        <label class="form-check-label" for="Boat">
+                          {data?.profileextra?.location?.country}
+                        </label>
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              <div
+                class="tab-pane fade"
+                id="v-pills-messages"
+                role="tabpanel"
+                aria-labelledby="v-pills-messages-tab"
+              >
+                <h4>Service Status</h4>
+
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id=""
+                    defaultChecked={filters.status.active}
+                    onChange={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          status: {
+                            active: !filters.status.active,
+                            inactive: filters.status.inactive,
+                          },
+                        };
+                      });
+                    }}
+                    style={{ width: 20, height: 20 }}
+                  />
+                  <label class="form-check-label" for="Boat">
+                    {"Active"}
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id=""
+                    defaultChecked={filters.status.inactive}
+                    onChange={(e) => {
+                      setFilters((prev) => {
+                        return {
+                          ...prev,
+                          status: {
+                            inactive: !filters.status.inactive,
+                            active: filters.status.active,
+                          },
+                        };
+                      });
+                    }}
+                    style={{ width: 20, height: 20 }}
+                  />
+                  <label class="form-check-label" for="Boat">
+                    {"Inactive"}
+                  </label>
                 </div>
               </div>
             </div>
@@ -220,7 +897,7 @@ export default function UserFilterPopup({
               type="button"
               className="m-1 btn btn-small"
               style={{ backgroundColor: "#006875", color: "white" }}
-              // onClick={handleApplyFilter}
+              onClick={handleApplyFilter}
             >
               Apply Filter
             </button>

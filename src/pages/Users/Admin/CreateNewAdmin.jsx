@@ -256,20 +256,23 @@ function CreateNewAdmin({ show, close, locationList }) {
           </label>
           <div style={{ position: "relative" }}>
             <select
-              className="form-control"
-              id=""
+              className="form-select"
+              id="gender"
               name="gender"
-              value={formik.values.gender}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              value={formik.values.gender}
             >
               <option value="" label="Select a gender" />
-              {gender?.map((item) => (
-                <option key={item.id} value={item.id} label={item.label}>
-                  {item.label}
+              {gender.map((option) => (
+                <option
+                  key={option.id}
+                  value={option.label}
+                  label={option.label}
+                >
+                  {option.label}
                 </option>
               ))}
-              {/* Add more options as needed */}
             </select>
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>

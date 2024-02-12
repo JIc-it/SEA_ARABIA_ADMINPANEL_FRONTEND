@@ -49,18 +49,12 @@ export default function CustomerListing() {
   const [active, setActive] = useState("Category");
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const { userPermissionList } = useContext(MainPageContext);
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+
   const [filters, setFilters] = useState({
-    category: [],
-    vendor: [],
-    customer: [],
-    guest: [],
-    customer_type: [],
-    status: [],
-    creation_date: {
-      from: "",
-      to: "",
-    },
-    commencement_date: {
+    customer_status: [],
+    location: [],
+    onboarded_on: {
       from: "",
       to: "",
     },
@@ -123,11 +117,16 @@ export default function CustomerListing() {
         console.error("Error fetching data:", error.message);
       });
   };
-  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
-  const handleFilterButtonClick = () => {
-    setIsFilterPopupOpen(!isFilterPopupOpen);
-  };
+  let checkfilterslength =
+    filters.customer_status?.length > 0 ||
+    filters.location?.length > 0 ||
+    filters.onboarded_on?.length > 0;
+    // filters.status.active ||
+    // filters.status.inactive;
+
+
+
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -286,602 +285,80 @@ export default function CustomerListing() {
                     Search
                   </button> */}
                 </div>
-                <button
+                {/* <button
                   onClick={handleOpen}
                   className="bg-black"
                   style={{ borderRadius: "5px", marginLeft: "5px" }}
                 >
                   <img src={filterIcon} alt="filter" width={25} />
+                </button> */}
+                <button
+                  className="bg-black"
+                  style={{
+                    borderRadius: "5px",
+                    marginLeft: "5px",
+                    position: "relative",
+                  }}
+                  onClick={() => setOpen(true)}
+                >
+                  <img src={filterIcon} alt="filter" width={25} />
+                  <span
+                    className="py-1"
+                    style={{
+                      position: "absolute",
+                      top: -10,
+                      color: "white",
+                      fontSize: "10px",
+                      backgroundColor: "#2176FF",
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "33px",
+                    }}
+                  >
+                    {filters.category.length +
+                      filters.sub_category.length +
+                      filters.vendor.length +
+                      (filters.status.active === true &&
+                      filters.status.inactive === true
+                        ? 2
+                        : filters.status.active === true
+                        ? 1
+                        : filters.status.inactive === true
+                        ? 1
+                        : 0)}
+                  </span>
                 </button>
+                {checkfilterslength && (
+                  <button
+                    className="mx-3 px-3 py-2 btn"
+                    style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                    onClick={() => {
+                      if (checkfilterslength) {
+                        window.location.reload();
+                      }
+                    }}
+                  >
+                    Clear Filter
+                  </button>
+                )}
               </div>
             </div>
             {/* </form> */}
           </div>
 
           {/* Modal */}
-          <Modal
-            open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
-          >
-            <Box sx={style}>
-              <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                Filter
-              </Typography>
-              <IconButton
-                edge="end"
-                color="inherit"
-                onClick={() => {
-                  handleClose();
-                }}
-                aria-label="close"
-                sx={{ position: "absolute", top: 8, right: 14 }}
-              >
-                <CloseIcon />
-              </IconButton>
-              <div class="frame-427319784 mt-3">
-                {filters.category.length > 0 && (
-                  <div class="components-selection-item">
-                    <div class="frame-427319782">
-                      <div class="frame-427319783">
-                        <div class="category">Vendor status--</div>
-                        <div class="div">:</div>
-                      </div>
-                      <div
-                        style={{
-                          width: "50vw",
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <div
-                          class="yacht-boat-heli-tour "
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          {filters.category.map((data) => (
-                            <div key={data.id} className="mx-1">
-                              <span>{data.name}</span>
-                              <span className="mx-1">
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={10}
-                                  height={10}
-                                  viewBox="0 0 10 10"
-                                  fill="none"
-                                >
-                                  <g clipPath="url(#clip0_5512_51442)">
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                      fill="#212529"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                      fill="#212529"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                      stroke="#212529"
-                                      strokeWidth="0.8"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                      stroke="#212529"
-                                      strokeWidth="0.8"
-                                    />
-                                  </g>
-                                  <defs>
-                                    <clipPath id="clip0_5512_51442">
-                                      <rect
-                                        width={10}
-                                        height={10}
-                                        fill="white"
-                                      />
-                                    </clipPath>
-                                  </defs>
-                                </svg>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div class="components-selection-item mt-1">
-                  <div class="frame-427319782">
-                    <div class="frame-427319783">
-                      <div class="vendor">Sub Category</div>
-                      <div class="div">:</div>
-                    </div>
-                    <div
-                      style={{
-                        width: "50vw",
-                        display: "flex",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <div
-                        class="yacht-boat-heli-tour "
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <div className="mx-1">
-                          <span></span>
-                          <span className="mx-1">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={10}
-                              height={10}
-                              viewBox="0 0 10 10"
-                              fill="none"
-                            >
-                              <g clipPath="url(#clip0_5512_51442)">
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_5512_51442">
-                                  <rect width={10} height={10} fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <div class="components-selection-item mt-1">
-                  <div class="frame-427319782">
-                    <div class="frame-427319783">
-                      <div class="vendor">Vendor</div>
-                      <div class="div">:</div>
-                    </div>
-                    <div
-                      style={{
-                        width: "50vw",
-                        display: "flex",
-                        flexWrap: "wrap",
-                      }}
-                    >
-                      <div
-                        class="yacht-boat-heli-tour "
-                        style={{
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        {filters.vendor.map((data) => (
-                          <div key={data.id} className="mx-1">
-                            <span>{data.name}</span>
-                            <span className="mx-1">
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width={10}
-                                height={10}
-                                viewBox="0 0 10 10"
-                                fill="none"
-                              >
-                                <g clipPath="url(#clip0_5512_51442)">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                    fill="#212529"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                    fill="#212529"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                    stroke="#212529"
-                                    strokeWidth="0.8"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                    stroke="#212529"
-                                    strokeWidth="0.8"
-                                  />
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_5512_51442">
-                                    <rect width={10} height={10} fill="white" />
-                                  </clipPath>
-                                </defs>
-                              </svg>
-                            </span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="d-flex align-items-start">
-                <div
-                  class="frame-427319790"
-                  style={{ height: "50vh", width: "30%" }}
-                >
-                  <div
-                    class="nav flex-column nav-pills me-3"
-                    id="v-pills-tab"
-                    role="tablist"
-                    aria-orientation="vertical"
-                  >
-                    <small>Customer</small>
-                    <button
-                      onClick={() => setActive("Customer Status")}
-                      style={{
-                        width: "12vw",
-                        backgroundColor: "white",
-                        border:
-                          active === "Customer Status"
-                            ? "1px solid #2176FF"
-                            : "",
-                      }}
-                      class="nav-link active mt-2 d-flex justify-content-between"
-                      id="v-pills-home-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-home"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-home"
-                      aria-selected="true"
-                    >
-                      <span style={{ backgroundColor: "red" }}>
-                        {" "}
-                        Customer Status
-                      </span>
-                      <span
-                        className="py-1"
-                        style={{
-                          color: "white",
-                          fontSize: "12px",
-                          backgroundColor:
-                            active === "Customer Status" ? "#2176FF" : "gray",
-                          width: "22px",
-                          height: "22px",
-                          borderRadius: "33px",
-                        }}
-                      ></span>
-                      <span>
-                        <svg
-                          width={18}
-                          height={18}
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                            stroke={active === "Category" ? "#2176FF" : "gray"}
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                    <button
-                      onClick={() => setActive("Sub-Category")}
-                      style={{
-                        width: "12vw",
-                        backgroundColor: "white",
-                        border:
-                          active === "Sub-Category" ? "1px solid #2176FF" : "",
-                      }}
-                      class="nav-link mt-2 d-flex justify-content-between"
-                      id="v-pills-home-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-home2"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-home2"
-                      aria-selected="true"
-                    >
-                      <span style={{ backgroundColor: "yellowgreen" }}>
-                        Location
-                      </span>
-                      <span
-                        className="py-1"
-                        style={{
-                          color: "white",
-                          fontSize: "12px",
-                          backgroundColor:
-                            active === "Sub-Category" ? "#2176FF" : "gray",
-                          width: "22px",
-                          height: "22px",
-                          borderRadius: "33px",
-                        }}
-                      ></span>
-                      <span>
-                        <svg
-                          width={18}
-                          height={18}
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                            stroke={
-                              active === "Sub-Category" ? "#2176FF" : "gray"
-                            }
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-
-                    <button
-                      onClick={() => setActive("Service-Status")}
-                      style={{
-                        width: "12vw",
-                        backgroundColor: "white",
-                        border:
-                          active === "Service-Status"
-                            ? "1px solid #2176FF"
-                            : "",
-                      }}
-                      class="nav-link  mt-2 d-flex justify-content-between"
-                      id="v-pills-messages-tab"
-                      data-bs-toggle="pill"
-                      data-bs-target="#v-pills-messages"
-                      type="button"
-                      role="tab"
-                      aria-controls="v-pills-messages"
-                      aria-selected="false"
-                    >
-                      <span>Onboarded on Status</span>
-                      {console.log(filters)}
-                      <span
-                        className="py-1"
-                        style={{
-                          color: "white",
-                          fontSize: "12px",
-                          backgroundColor:
-                            active === "Service-Status" ? "#2176FF" : "gray",
-                          width: "22px",
-                          height: "22px",
-                          borderRadius: "33px",
-                        }}
-                      >
-                        {filters.status.active === true &&
-                        filters.status.inactive === true
-                          ? "2"
-                          : filters.status.active
-                          ? "1"
-                          : filters.status.inactive
-                          ? "1"
-                          : "0"}
-                      </span>
-                      <span>
-                        <svg
-                          width={18}
-                          height={18}
-                          viewBox="0 0 20 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                            stroke={
-                              active === "Service-Status" ? "#2176FF" : "gray"
-                            }
-                            strokeWidth={2}
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </span>
-                    </button>
-                  </div>
-                </div>
-                {/* customer status */}
-                <div
-                  class="tab-content"
-                  id="v-pills-tabContent"
-                  style={{ position: "relative", left: 20 }}
-                >
-                  <div
-                    class="tab-pane fade show active"
-                    id="v-pills-home"
-                    role="tabpanel"
-                    aria-labelledby="v-pills-home-tab"
-                  >
-                    <h4 style={{ backgroundColor: "red" }}>Customer Status</h4>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="search"
-                      onChange={(e) =>
-                        setSearch((prev) => {
-                          return { ...prev, category: e.target.value };
-                        })
-                      }
-                      style={{ width: 320 }}
-                    />
-                    <br />
-                    <div
-                      style={{
-                        height: categorylist.length > 14 ? "50vh" : "",
-                        overflowY: categorylist.length > 14 ? "scroll" : "",
-                      }}
-                    >
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          onChange={(e) => handleFilterCategory(e)}
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="tab-pane fade"
-                    id="v-pills-profile"
-                    role="tabpanel"
-                    aria-labelledby="v-pills-profile-tab"
-                  >
-                    <h4>Vendor</h4>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="search"
-                      onChange={(e) =>
-                        setSearch((prev) => {
-                          return { ...prev, vendor: e.target.value };
-                        })
-                      }
-                      style={{ width: 320 }}
-                    />
-                    <br />
-                    <div
-                      style={{
-                        height: "50vh",
-                        overflowY: "scroll",
-                      }}
-                    >
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat"></label>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    class="tab-pane fade"
-                    id="v-pills-home2"
-                    role="tabpanel"
-                    aria-labelledby="v-pills-home-tab"
-                  >
-                    <h4 style={{ backgroundColor: "yellowgreen" }}>
-                      Customer Stat
-                    </h4>
-                    <input
-                      type="text"
-                      className="form-control"
-                      placeholder="search"
-                      onChange={(e) =>
-                        setSearch((prev) => {
-                          return { ...prev, sub_category: e.target.value };
-                        })
-                      }
-                      style={{ width: 320 }}
-                    />
-                    <br />
-                    <div
-                      style={{
-                        height: "50vh",
-                        overflowY: "scroll",
-                      }}
-                    >
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat">
-                          Kuwait
-                        </label>
-                      </div>
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat">
-                          Kochi
-                        </label>
-                      </div>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-evenly",
-                      alignItems: "center",
-                    }}
-                    // class="tab-pane fade"
-                    id="v-pills-messages"
-                    role="tabpanel"
-                    aria-labelledby="v-pills-messages-tab"
-                  >
-                    <h4>Onboarded On</h4>
-
-                    <div class="form-check">
-                      <label class="form-check-label" for="Boat">
-                        From
-                      </label>
-                    </div>
-                    <div class="form-check">
-                      <label class="form-check-label" for="Boat">
-                        To
-                      </label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </Box>
-          </Modal>
+          {open && (
+            <UserFilterPopup
+              checkfilterslength={checkfilterslength}
+              open={open}
+              setIsLoading={setIsLoading}
+              setListDiscount={setListDiscount}
+              setListPageUrl={setListPageUrl}
+              handleClose={handleClose}
+              setFilters={setFilters}
+              filters={filters}
+            />
+          )}
         </div>
         <div className="action_buttons col-4">
           {userPermissionList &&

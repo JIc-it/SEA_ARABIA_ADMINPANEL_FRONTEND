@@ -149,12 +149,20 @@ function CustomerCardDetails() {
     // Navigate using window.location.href
     window.location.href = gmailSignInURL;
   };
+  const handleCall = (mobile) => {
+    if (!mobile || !/^\d+$/.test(mobile)) {
+      console.error("Invalid phone number");
+      return;
+    }
 
-  const phoneNumber = "123456789";
-  const handleCall = () => {
-    const telUri = `tel:${phoneNumber}`;
-    window.open(telUri, "_blank");
+    const indiaCountryCode = "+91";
+    const calling = `tel:${indiaCountryCode}${mobile}`;
+    console.log("mobile", mobile);
+
+    console.log("whatsappUri", calling);
+    window.open(calling, "_blank");
   };
+
   return (
     <div
       className={
@@ -292,7 +300,10 @@ function CustomerCardDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button_customer btn "
-                onClick={handleCall}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCall(customerDetails?.mobile);
+                }}
               >
                 Call Customer &nbsp;
                 <svg

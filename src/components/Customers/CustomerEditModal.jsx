@@ -62,7 +62,10 @@ function CustomerEditModal({ show, close }) {
     gender: Yup.string().required("Gender is required"),
     location: Yup.mixed().required("Location is required"),
   });
-
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
@@ -108,7 +111,7 @@ function CustomerEditModal({ show, close }) {
           };
 
           const customerData = await UpdateCustomerListById(customerId, data);
-          // console.log("customer updated detail is ---", customerData);
+          console.log("customer updated detail is ---", customerData);
           if (customerData) {
             setIsLoading(false);
             window.location.reload();
@@ -320,6 +323,7 @@ function CustomerEditModal({ show, close }) {
             DOB
           </label>
           <input
+            max="9999-12-31"
             type="date"
             name="dob" // Make sure this matches the name used in initialValues and validationSchema
             className="form-control"
@@ -344,6 +348,21 @@ function CustomerEditModal({ show, close }) {
             Gender
           </label>
           <select
+            className="form-select"
+            id="gender"
+            name="gender"
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            value={formik.values.gender}
+          >
+            <option value="" label="Select a gender" />
+            {gender.map((option) => (
+              <option key={option.id} value={option.label} label={option.label}>
+                {console.log("options", option)} {option.label}
+              </option>
+            ))}
+          </select>
+          {/* <select
             name="gender"
             className="form-select"
             value={formik?.values?.gender}
@@ -356,7 +375,7 @@ function CustomerEditModal({ show, close }) {
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
-          </select>
+          </select> */}
           {formik.touched.gender && formik.errors.gender ? (
             <div className="error">{formik.errors.gender}</div>
           ) : null}

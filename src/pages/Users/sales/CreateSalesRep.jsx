@@ -78,7 +78,10 @@ function CreateSalesRep({ show, close }) {
     }).required("Location is required"),
     // location: Yup.mixed().required("Location is required"),
   });
-
+  const [gender, setGender] = useState([
+    { id: "1", label: "Male" },
+    { id: "2", label: "Female" },
+  ]);
   const formik = useFormik({
     initialValues: {
       first_name: "",
@@ -267,18 +270,23 @@ function CreateSalesRep({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             <select
-              name="gender"
               className="form-select"
-              value={formik?.values?.gender}
+              id="gender"
+              name="gender"
               onChange={formik.handleChange}
-              // onChange={(e) => {
-              //   formik.handleChange(e);
-              //   formik.setFieldValue("gender", e.target.value);
-              // }}
               onBlur={formik.handleBlur}
+              value={formik.values.gender}
             >
-              <option value="male">Male</option>
-              <option value="female">Female</option>
+              <option value="" label="Select a gender" />
+              {gender.map((option) => (
+                <option
+                  key={option.id}
+                  value={option.label}
+                  label={option.label}
+                >
+                  {option.label}
+                </option>
+              ))}
             </select>
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>

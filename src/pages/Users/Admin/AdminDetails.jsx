@@ -38,6 +38,8 @@ function AdminDetails() {
 
   const handleCall = (mobile) => {
     const telUri = `tel:${mobile}`;
+    console.log("mob", mobile);
+
     console.log("mobile", telUri);
     window.open(telUri, "_blank");
   };
@@ -271,7 +273,10 @@ function AdminDetails() {
             <div className="bottom_button">
               <a
                 className="call_vendor_button_customer btn "
-                onClick={() => handleCall(adminDetails?.mobile)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleCall(adminDetails?.mobile);
+                }}
               >
                 Call Admin &nbsp;
                 <svg

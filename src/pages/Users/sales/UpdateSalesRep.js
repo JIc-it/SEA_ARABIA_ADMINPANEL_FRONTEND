@@ -330,59 +330,7 @@ function UpdateSalesRep({ show, close }) {
             ) : null}
           </div>
         </div>
-        {/* <div style={{ margin: "20px" }}>
-          <label
-            htmlFor=""
-            style={{
-              paddingBottom: "10px",
-              fontWeight: "600",
-              fontSize: "13px",
-            }}
-          >
-            Location <span style={{ color: "red" }}>*</span>
-          </label>
-          <div style={{ position: "relative" }}>
-            <input
-              className="form-control"
-              type="text"
-              id=""
-              name="location"
-              placeholder="Location"
-              value={formik.values.location}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                stroke-width="1.5"
-              />
-            </svg>
-          </div>
-        </div> */}
+       
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
