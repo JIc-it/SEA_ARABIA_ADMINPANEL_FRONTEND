@@ -31,7 +31,7 @@ const style = {
 };
 
 
-export default function AddMorePopup({service,companies, handleClose, handleOpen, open,updateOneServiceIndex,handleServiceAdd,setServiceListing }) {
+export default function AddMorePopup({service,companies, handleClose, handleOpen, open,updateOneServiceIndex,handleServiceAdd,setServiceListing,check }) {
     const [companylist,setCompanyList]=useState([])
     const [isLoading,setIsLoading]=useState(false);
     const [search,setSearch]=useState("")
@@ -81,7 +81,6 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
         getOneServiceListing()
             .then((data) => {
                 setServiceListing(data)
-                console.log(data, "oneservice");
             })
             .catch((error) => {
                 console.error("Error fetching data:", error);
@@ -110,7 +109,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
     };
     return (
         <div>
-            <Button onClick={handleOpen} style={{ backgroundColor: "#187AF7", color: "white",textTransform:"capitalize" }} size='small'>
+            <Button onClick={handleOpen} style={{ backgroundColor: check? "#6ba9fa" :"#187AF7",cursor:"pointer", color: "white",textTransform:"capitalize" }} size='small' disabled={check}>
                 Add More
             </Button>
             <Modal

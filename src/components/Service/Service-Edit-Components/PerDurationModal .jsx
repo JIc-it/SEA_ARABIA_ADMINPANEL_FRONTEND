@@ -88,11 +88,11 @@ export default function PerDurationModal({ handleClose, handleOpen, open, formik
     });
 
     let duration = []
-    for (let i = 1; i <= 23; i++) {
+    for (let i = 0; i <= 23; i++) {
         duration.push(i)
     }
     let minute = []
-    for (let i = 1; i <= 59; i++) {
+    for (let i = 0; i <= 59; i++) {
         minute.push(i)
     }
 

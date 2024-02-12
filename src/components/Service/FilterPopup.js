@@ -651,7 +651,6 @@ export default function FilterPopup({
                   aria-selected="false"
                 >
                   <span>Service Status</span>
-                  {console.log(filters)}
                   <span
                     className="py-1"
                     style={{

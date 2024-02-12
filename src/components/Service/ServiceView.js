@@ -279,7 +279,17 @@ const ServiceView = () => {
                           ? "Markup Fee"
                           : oneservice?.profit_method?.name ===
                             "Revenue Sharing"
-                          ? `Sea Arabia - ${oneservice.sea_arabia_percentage}% , Vendor - ${oneservice.vendor_percentage}%`
+                            ? (<div className="d-flex">
+                              <div className="">
+                                <p>Sea Arabia Percentage</p>
+                                <p style={{ fontWeight: "550",color:"black" }}>{oneservice.sea_arabia_percentage}</p>
+                              </div>
+                              <div className="mx-5">
+                                <p>Vendor Percentage</p>
+                                <p style={{ fontWeight: "550",color:"black" }}>{oneservice.vendor_percentage}</p>
+                              </div>
+                            </div>
+                          )
                           : null}
                       </p>
                       <p style={{ fontWeight: "550" }}>

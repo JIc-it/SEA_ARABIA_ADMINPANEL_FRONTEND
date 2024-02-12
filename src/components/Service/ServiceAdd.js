@@ -73,8 +73,11 @@ const ServiceAdd = () => {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required")
-      .max(50, "Name must be at most 50 characters"),
+    .required("Name is required")
+    .max(20, "Name must be at most 20 characters"),
+    machine_id: Yup.string()
+    .required("ID is required")
+    .max(20, "ID must be at most 20 characters"),
     amenities: Yup.array()
       .of(AmenitiesobjectSchema)
       .min(1, "Amenities is required"),
@@ -91,9 +94,6 @@ const ServiceAdd = () => {
     service_price_service: Yup.array()
       .of(servicepriceserviceobjectSchema)
       .min(1, "Price is required"),
-      machine_id: Yup.string()
-      .required("ID is required")
-      .max(50, "ID must be at most 50 characters"),
     description: Yup.string().required("Description is required"),
     pickup_point_or_location: Yup.string().required("Pickup Point is required"),
     embed: Yup.string().required("Embed is required"),
@@ -139,7 +139,9 @@ const ServiceAdd = () => {
       "profit_method",
       ([profit_method], schema) => {
         if (profit_method.name === "Revenue Sharing") {
-          return schema.required("Vendor Percentage is Required");
+          return schema
+          .required("Vendor Percentage is Required")
+          .min(1, 'Must be greater than zero')
         } else {
           return schema.notRequired();
         }
@@ -149,7 +151,9 @@ const ServiceAdd = () => {
       "profit_method",
       ([profit_method], schema) => {
         if (profit_method.name === "Revenue Sharing") {
-          return schema.required("Sea Arbia Percentage is Required");
+          return schema
+          .required("Sea Arbia Percentage is Required")
+          .min(1, 'Must be greater than zero')
         } else {
           return schema.notRequired();
         }
@@ -167,6 +171,7 @@ const ServiceAdd = () => {
       .max(10, "Toilet must be less than or equal to 10"),
     capacity: Yup.number()
       .notOneOf([0], "Capacity cannot be zero")
+      .min(1, 'Must be greater than zero')
       .max(10, "Capacity must be less than or equal to 10"),
     profit_method: Yup.object({
       id: Yup.string().required("ID is required"),
@@ -195,7 +200,7 @@ const ServiceAdd = () => {
       lounge: 0,
       bedroom: 0,
       toilet: 0,
-      capacity: 0,
+      capacity: "",
       amenities: [],
       pickup_point_or_location: "",
       cancellation_policy: "",
@@ -206,12 +211,12 @@ const ServiceAdd = () => {
         id: "",
         name: "",
       },
-      markup_fee: 0,
-      vendor_percentage: 0,
-      sea_arabia_percentage: 0,
+      markup_fee: "",
+      vendor_percentage: "",
+      sea_arabia_percentage: "",
       per_head_booking: false,
-      purchase_limit_min: 0,
-      purchase_limit_max: 0,
+      purchase_limit_min: "",
+      purchase_limit_max: "",
       service_price_service: [],
       isActivity: false,
     },
@@ -270,7 +275,7 @@ const ServiceAdd = () => {
         lounge: values.lounge,
         bedroom: values.bedroom,
         toilet: values.toilet,
-        capacity: values.capacity,
+        capacity: values.capacity!==""? values.capacity:0,
         amenities: formattedAmenities,
         pickup_point_or_location: values.pickup_point_or_location,
         cancellation_policy: values.cancellation_policy,
@@ -281,13 +286,13 @@ const ServiceAdd = () => {
         is_time: returnTrueFalse(values.is_time),
         is_destination: returnTrueFalse(values.is_destination),
         profit_method: values.profit_method.id,
-        vendor_percentage: values.vendor_percentage,
-        sea_arabia_percentage: values.sea_arabia_percentage,
-        markup_fee: values.markup_fee,
+        vendor_percentage: values.vendor_percentage!=="" ? values.vendor_percentage:0 ,
+        sea_arabia_percentage: values.sea_arabia_percentage!=="" ? values.sea_arabia_percentage:0 ,
+        markup_fee: values.markup_fee!==""? values.markup_fee:0,
         per_head_booking: returnTrueFalse(values.per_head_booking),
         map_embed: values.embed,
-        purchase_limit_min: values.purchase_limit_min,
-        purchase_limit_max: values.purchase_limit_max,
+        purchase_limit_min: values.purchase_limit_min !=="" ? values.purchase_limit_min:0,
+        purchase_limit_max: values.purchase_limit_max !=="" ? values.purchase_limit_max:0,
         is_refundable: returnTrueFalse(values.is_refundable),
         type: values.isActivity ? "Activity" : "Service",
         prices: values.service_price_service.map((dat) => {
@@ -451,7 +456,7 @@ const ServiceAdd = () => {
         service_image: updatedServicePriceService,
       };
     });
-    toast.success("Removed Succesfully");
+    toast.success("Image Removed Successfully");
   };
 
   const settingthumbnailTrue = (index, dat) => {
@@ -474,19 +479,9 @@ const ServiceAdd = () => {
         };
       }
     });
-    toast.success("Added Successfully");
+    toast.success("Thumbnail Set Successfully");
   };
 
-  const [validateeditor, setValidateEditor] = useState("");
-
-  function submit(e) {
-    e.preventDefault();
-    if (formik.values.description.replace("<p><br></p>", "").trim() === "") {
-      return setValidateEditor("Description Required");
-    } else if (formik.values.description.trim() !== "") {
-      return formik.handleSubmit();
-    }
-  }
 
   const handleopendestination = () => {
     setPerDestinationopen(true);
@@ -607,7 +602,7 @@ const ServiceAdd = () => {
               </div>
             </div>
             <form
-              onSubmit={submit}
+              onSubmit={formik.handleSubmit}
               className="row"
               style={{ position: "relative" }}
             >
@@ -815,9 +810,7 @@ const ServiceAdd = () => {
                         Description <span style={{ color: "red" }}>*</span>
                       </label>
                       <TextEditor
-                        formik={formik}
-                        validateeditor={validateeditor}
-                        setValidateEditor={setValidateEditor}
+                        {...formik}
                       />
                     </div>
                     <br></br>
@@ -1031,16 +1024,7 @@ const ServiceAdd = () => {
                             className="form-control"
                             placeholder="0"
                             value={formik.values.capacity}
-                            onChange={(e) => {
-                              if (e.target.value <= 0) {
-                                return formik.setFieldValue("capacity", 0);
-                              } else {
-                                formik.setFieldValue(
-                                  "capacity",
-                                  e.target.value
-                                );
-                              }
-                            }}
+                            onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                           />
                           {formik.touched.capacity && formik.errors.capacity ? (
@@ -1192,17 +1176,17 @@ const ServiceAdd = () => {
                       }}
                     >
                       {ProfitMethods &&
-                        ProfitMethods.reverse().map((data) => (
+                        ProfitMethods.map((data) => (
                           <div
                             className={`${isMobileView}? "col-12":"col-4" mx-1`}
-                            style={{ marginBottom: isMobileView ? "5px" : "" }}
+                            style={{ marginBottom: isMobileView ? "5px" : "",cursor:"pointer" }}
                             onClick={() => {
                               updateFormValues({
                                 ...formik.values,
                                 profit_method: { id: data.id, name: data.name },
-                                markup_fee: 0,
-                                sea_arabia_percentage: 0,
-                                vendor_percentage: 0,
+                                markup_fee: "",
+                                sea_arabia_percentage: "",
+                                vendor_percentage: "",
                               });
                             }}
                           >
@@ -1277,13 +1261,7 @@ const ServiceAdd = () => {
                         className="form-control"
                         placeholder="0"
                         value={formik.values.markup_fee}
-                        onChange={(e) => {
-                          if (e.target.value <= 0) {
-                            formik.setFieldValue("markup_fee", 0);
-                          } else {
-                            formik.setFieldValue("markup_fee", e.target.value);
-                          }
-                        }}
+                        onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.markup_fee && formik.errors.markup_fee ? (

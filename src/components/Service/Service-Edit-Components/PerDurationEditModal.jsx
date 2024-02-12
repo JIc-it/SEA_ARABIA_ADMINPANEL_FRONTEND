@@ -92,11 +92,11 @@ export default function PerDurationEditModal ({ handleClose, handleOpen, open,da
 
  
     let duration=[]
-    for(let i=1;i<=23;i++){
+    for(let i=0;i<=23;i++){
         duration.push(i)
     }
         let minutes=[]
-    for(let i=1;i<=59;i++){
+    for(let i=0;i<=59;i++){
         minutes.push(i)
     }
 
