@@ -285,7 +285,9 @@ function companywithservice(companyid) {
             <p style={{ color: "#68727D", fontSize: "16px" }}>
               Services/Vendors
             </p>
-
+            {(offerview?.companies?.length ===0) && (offerview?.services?.length === 0) &&
+            <p style={{textAlign:"center",fontWeight: "700", fontSize: "14px" }}>Applied to All Services / Vendors </p>
+            }
             {offerview?.companies?.map((datas) => (
               <div
                 style={{

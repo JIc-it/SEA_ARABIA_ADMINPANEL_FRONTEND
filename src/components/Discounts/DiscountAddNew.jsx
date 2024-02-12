@@ -45,9 +45,12 @@ export default function DiscountAddNew() {
     name: Yup.string()
       .required("Coupon Name is required")
       .max(20, "Coupon Name must be at most 20 characters"),
-    coupon_code: Yup.string().required("Coupon Code is required"),
+    coupon_code: Yup.string()
+    .required("Coupon Code is required")
+    .max(20, "Coupon Name must be at most 20 characters"),
     discount_type: Yup.string().required("Discount type is required"),
     start_date: Yup.string().required("Start Date is required"),
+    start_time: Yup.string().required("Start Time is required"),
     discount_value: Yup.number()
       .required("Value is Required")
       .min(1, "Must be greater than zero"),
@@ -96,15 +99,22 @@ export default function DiscountAddNew() {
       ([allow_multiple_redeem], schema) => {
         return allow_multiple_redeem === "Multiple-time"
           ? schema
-              .required("Specify Number is Required")
-              .min(1, "Must be greater than zero")
+            .required("Specify Number is Required")
+            .min(1, "Must be greater than zero")
           : schema.notRequired();
       }
     ),
 
     end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
       if (is_lifetime === false) {
-        return schema.required("Validity is Required");
+        return schema.required("Date is Required");
+      } else {
+        return schema.notRequired();
+      }
+    }),
+    end_time: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
+      if (is_lifetime === false) {
+        return schema.required("Time is Required");
       } else {
         return schema.notRequired();
       }
@@ -123,10 +133,20 @@ export default function DiscountAddNew() {
         }
         return /^image\/(jpeg|png|gif)$/i.test(value.type);
       }),
-    services: Yup.array().of(serviceObjectSchema).min(1, "service is required"),
-    companies: Yup.array()
-      .of(companyObjectSchema)
-      .min(1, "Vendor / Service is required"),
+    services: Yup.array().when("apply_global", ([apply_global], schema) => {
+      if (apply_global === false) {
+        return schema.of(serviceObjectSchema).min(1, "Services/Vendors is required")
+      } else {
+        return schema.notRequired();
+      }
+    }),
+    companies: Yup.array().when("apply_global", ([apply_global], schema) => {
+      if (apply_global === false) {
+        return schema.of(companyObjectSchema).min(1, "Services/Vendors is required")
+      } else {
+        return schema.notRequired();
+      }
+    }),
   });
 
   const formik = useFormik({
@@ -136,15 +156,17 @@ export default function DiscountAddNew() {
       name: "",
       coupon_code: "",
       discount_type: "Percentage",
-      discount_value:"",
+      discount_value: "",
       up_to_amount: "",
       redemption_type: "One-Time",
       specify_no: 1,
       allow_multiple_redeem: "One-Time",
       multiple_redeem_specify_no: 1,
       start_date: "",
+      start_time: "",
       is_lifetime: false,
       end_date: "",
+      end_time: "",
       on_home_screen: true,
       on_checkout: true,
       apply_global: true,
@@ -174,39 +196,54 @@ export default function DiscountAddNew() {
             return data.id;
           });
 
+          const startDateTime = () => {
+            if (formik.values.start_date !== "" && formik.values.start_time !== "") {
+              const isoString = formik?.values?.start_date + 'T' + formik?.values?.start_time +":00"+"Z"
+        
+              return isoString
+            }
+          }
+          const endDateTime = () => {
+            if (formik.values.end_date !== "" && formik.values.end_time !== "") {
+              const isoString = formik?.values?.end_date + 'T' + formik?.values?.end_time +":00"+"Z"
+        
+              return isoString
+            }
+          }
+
           formdata.append("is_enable", checktrue(values.is_enable));
           formdata.append("image", values.image);
           formdata.append("name", values.name);
           formdata.append("coupon_code", values.coupon_code);
           formdata.append("discount_type", values.discount_type);
           formdata.append("discount_value", values.discount_value);
-          {values.discount_type==="Percentage" && formdata.append("up_to_amount", values.up_to_amount);}
+          { values.discount_type === "Percentage" && formdata.append("up_to_amount", values.up_to_amount); }
           formdata.append("redemption_type", values.redemption_type);
           formdata.append("specify_no", values.specify_no);
-          {formdata.append("allow_multiple_redeem",values.allow_multiple_redeem !=="" ? values.allow_multiple_redeem :"")}
-          {formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no!=="" ? values.multiple_redeem_specify_no : "")}
+          { formdata.append("allow_multiple_redeem", values.allow_multiple_redeem !== "" ? values.allow_multiple_redeem : "") }
+          { formdata.append("multiple_redeem_specify_no", values.multiple_redeem_specify_no !== "" ? values.multiple_redeem_specify_no : "") }
           formdata.append(
             "start_date",
-            new Date(values.start_date)?.toISOString().slice(0, -5) + "Z"
+            startDateTime()
           );
           formdata.append("is_lifetime", checktrue(values.is_lifetime));
           {
             values.end_date.trim() !== "" &&
               formdata.append(
                 "end_date",
-                new Date(values.end_date)?.toISOString().slice(0, -5) + "Z"
+                endDateTime()
               );
           }
           formdata.append("on_home_screen", checktrue(values.on_home_screen));
           formdata.append("on_checkout", checktrue(values.on_checkout));
           formdata.append("apply_global", checktrue(values.apply_global));
-          formdata.append(`companies`, companiesId);
-          formdata.append(`services`, servicesId);
+          { !values.apply_global && formdata.append(`companies`, companiesId); }
+          { !values.apply_global && formdata.append(`services`, servicesId); }
           formdata.append(
             "purchase_requirement",
             checktrue(values.purchase_requirement)
           );
-          {values.purchase_requirement && formdata.append("min_purchase_amount", values.min_purchase_amount)};
+          { values.purchase_requirement && formdata.append("min_purchase_amount", values.min_purchase_amount) };
 
           const adminData = await CreateOffer(formdata);
 
@@ -265,13 +302,6 @@ export default function DiscountAddNew() {
   const navigate = useNavigate();
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
-  const convertAndFormatDateTime = (dateTimeString) => {
-    const formattedDateTime = moment(dateTimeString)
-      .tz("Asia/Kolkata")
-      .format("YYYY-MM-DDTHH:mm");
-
-    return formattedDateTime;
-  };
 
   const deletecompany = (id) => {
     formik.setValues((prev) => ({
@@ -296,10 +326,10 @@ export default function DiscountAddNew() {
       const updatedCompanyList =
         existingCompanyIndex !== -1
           ? [
-              ...prev.companies.slice(0, existingCompanyIndex),
-              { id: id, name: name },
-              ...prev.companies.slice(existingCompanyIndex + 1),
-            ]
+            ...prev.companies.slice(0, existingCompanyIndex),
+            { id: id, name: name },
+            ...prev.companies.slice(existingCompanyIndex + 1),
+          ]
           : [...prev.companies, { id: id, name: name }];
 
       // Update services list
@@ -327,13 +357,13 @@ export default function DiscountAddNew() {
               })),
           ];
 
-          if (existingCompanyIndex !== -1) {
-            return {
-              ...prev,
-              services: prev.services.filter((service) => service.company_id !== id),
-              companies: prev.companies.filter((service) => service.id !== id),
-            };
-          }
+      if (existingCompanyIndex !== -1) {
+        return {
+          ...prev,
+          services: prev.services.filter((service) => service.company_id !== id),
+          companies: prev.companies.filter((service) => service.id !== id),
+        };
+      }
 
       return {
         ...prev,
@@ -385,7 +415,12 @@ export default function DiscountAddNew() {
     return serviceCount.length;
   }
 
-  console.log(formik.values);
+  const startDate =formik?.values?.start_date!=="" && formik?.values?.start_date;
+  const startDateObject = new Date(startDate);
+
+  startDateObject?.setDate(startDateObject?.getDate() + 1);
+  const newDate = startDateObject?.toISOString()?.split('T')[0];
+
   if (!isLoading) {
     return (
       <>
@@ -432,7 +467,7 @@ export default function DiscountAddNew() {
             </div>
           </div>
 
-          <form onSubmit={formik.handleSubmit} style={{marginLeft:"-2%"}}>
+          <form onSubmit={formik.handleSubmit} style={{ marginLeft: "-2%" }}>
             <div
               className="container"
               style={{
@@ -571,7 +606,7 @@ export default function DiscountAddNew() {
                           onBlur={formik.handleBlur}
                         />
                         {formik.touched.discount_value &&
-                        formik.errors.discount_value ? (
+                          formik.errors.discount_value ? (
                           <div className="error">
                             {formik.errors.discount_value}
                           </div>
@@ -591,7 +626,7 @@ export default function DiscountAddNew() {
                           onBlur={formik.handleBlur}
                         />
                         {formik.touched.up_to_amount &&
-                        formik.errors.up_to_amount ? (
+                          formik.errors.up_to_amount ? (
                           <div className="error">
                             {formik.errors.up_to_amount}
                           </div>
@@ -613,7 +648,7 @@ export default function DiscountAddNew() {
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.discount_value &&
-                      formik.errors.discount_value ? (
+                        formik.errors.discount_value ? (
                         <div className="error">
                           {formik.errors.discount_value}
                         </div>
@@ -645,15 +680,15 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "One-Time",
                         specify_no: 1,
-                        allow_multiple_redeem:"One-Time",
-                        multiple_redeem_specify_no:1
+                        allow_multiple_redeem: "One-Time",
+                        multiple_redeem_specify_no: 1
                       })
                     }
                     style={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      cursor:"pointer",
+                      cursor: "pointer",
                       border: "1px solid lightgray",
                       width: isMobileView ? "100%" : "30%",
                       border:
@@ -675,8 +710,8 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "Unlimited",
                         specify_no: 9999,
-                        allow_multiple_redeem:"",
-                        multiple_redeem_specify_no:""
+                        allow_multiple_redeem: "",
+                        multiple_redeem_specify_no: ""
                       })
                     }
                     style={{
@@ -684,7 +719,7 @@ export default function DiscountAddNew() {
                       justifyContent: "space-between",
                       marginTop: isMobileView ? "5px" : "",
                       alignItems: "center",
-                      cursor:"pointer",
+                      cursor: "pointer",
                       border:
                         formik.values.redemption_type === "Unlimited"
                           ? "2px solid rgb(112, 112, 241)"
@@ -706,8 +741,8 @@ export default function DiscountAddNew() {
                         ...formik.values,
                         redemption_type: "Limited-Number",
                         specify_no: "",
-                        allow_multiple_redeem:"",
-                        multiple_redeem_specify_no:""
+                        allow_multiple_redeem: "",
+                        multiple_redeem_specify_no: ""
                       })
                     }
                     style={{
@@ -715,7 +750,7 @@ export default function DiscountAddNew() {
                       justifyContent: "space-between",
                       marginTop: isMobileView ? "5px" : "",
                       alignItems: "center",
-                      cursor:"pointer",
+                      cursor: "pointer",
                       border:
                         formik.values.redemption_type === "Limited-Number"
                           ? "2px solid rgb(112, 112, 241)"
@@ -801,12 +836,12 @@ export default function DiscountAddNew() {
                         textTransform: "capitalize",
                         backgroundColor:
                           formik.values.allow_multiple_redeem ===
-                          "Multiple-time"
+                            "Multiple-time"
                             ? "black"
                             : "",
                         color:
                           formik.values.allow_multiple_redeem ===
-                          "Multiple-time"
+                            "Multiple-time"
                             ? "white"
                             : "",
                         padding: "3px 30px",
@@ -816,7 +851,7 @@ export default function DiscountAddNew() {
                         updateFormValues({
                           ...formik.values,
                           allow_multiple_redeem: "Multiple-time",
-                          multiple_redeem_specify_no:""
+                          multiple_redeem_specify_no: ""
                         })
                       }
                     >
@@ -833,8 +868,8 @@ export default function DiscountAddNew() {
                     Specify Number{" "}
                     {formik.values.allow_multiple_redeem ===
                       "Multiple-time" && (
-                      <span style={{ color: "red" }}>*</span>
-                    )}
+                        <span style={{ color: "red" }}>*</span>
+                      )}
                   </p>
                   <input
                     type="number"
@@ -849,40 +884,55 @@ export default function DiscountAddNew() {
                     onBlur={formik.handleBlur}
                   />
                   {formik.touched.multiple_redeem_specify_no &&
-                  formik.errors.multiple_redeem_specify_no ? (
+                    formik.errors.multiple_redeem_specify_no ? (
                     <div className="error">
                       {formik.errors.multiple_redeem_specify_no}
                     </div>
                   ) : null}
                 </div>
               </div>
-              <div
-                className={isMobileView ? "w-100" : "w-50"}
-                style={{ marginTop: "8px" }}
-              >
-                <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                  Start Date <span style={{ color: "red" }}>*</span>
-                </p>
-                <input
-                  type="datetime-local"
-                  value={convertAndFormatDateTime(formik?.values?.start_date)}
-                  name="start_date"
-                  className="discount-input"
-                  style={{ padding: "5px" }}
-                  onChange={(e)=>{
-                    if(new Date(e.target.value) < new Date()){
-                      toast.error("Can't Choose Past Date and Time")
-                    }
-                    else{
-                      formik.setFieldValue("start_date",e.target.value)
-                    }
-                  }}
-                  onBlur={formik.handleBlur}
-                  min="2024-01-01T00:00:00"
-                />
-                {formik.touched.start_date && formik.errors.start_date ? (
-                  <div className="error">{formik.errors.start_date}</div>
-                ) : null}
+              <div className="d-flex">
+                <div
+                  className={isMobileView ? "w-100" : "w-25"}
+                  style={{ marginTop: "8px" }}
+                >
+                  <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                    Start Date <span style={{ color: "red" }}>*</span>
+                  </p>
+                  <input
+                    type="date"
+                    value={formik?.values?.start_date}
+                    name="start_date"
+                    className="discount-input"
+                    style={{ padding: "5px" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    min={new Date()?.toISOString().split('T')[0]}
+                  />
+                  {formik.touched.start_date && formik.errors.start_date ? (
+                    <div className="error">{formik.errors.start_date}</div>
+                  ) : null}
+                </div><div
+                  className={isMobileView ? "w-100" : "w-25"}
+                  style={{ marginTop: "8px" }}
+                >
+                  <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                    Start Time <span style={{ color: "red" }}>*</span>
+                  </p>
+                  <input
+                    type="time"
+                    value={formik?.values?.start_time}
+                    name="start_time"
+                    className="discount-input"
+                    style={{ padding: "5px" }}
+                    onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                    disabled={formik.values.start_date === ""}
+                  />
+                  {formik.touched.start_time && formik.errors.start_time ? (
+                    <div className="error">{formik.errors.start_time}</div>
+                  ) : null}
+                </div>
               </div>
               <div className={isMobileView ? "d-flex flex-column" : "d-flex"}>
                 <div className={isMobileView ? "w-100" : "w-50"}>
@@ -914,6 +964,7 @@ export default function DiscountAddNew() {
                           ...formik.values,
                           is_lifetime: !formik.values.is_lifetime,
                           end_date: "",
+                          end_time:""
                         })
                       }
                     >
@@ -943,40 +994,57 @@ export default function DiscountAddNew() {
                   </ButtonGroup>
                 </div>
 
-                <div
-                  className={isMobileView ? "w-100" : "w-50"}
-                  style={{ marginTop: "8px" }}
-                >
-                  <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                    Validity Period{" "}
-                    {formik.values.is_lifetime === false && (
-                      <span style={{ color: "red" }}>*</span>
-                    )}
-                  </p>
-                  <input
-                    type="datetime-local"
-                    value={convertAndFormatDateTime(formik.values?.end_date)}
-                    name="end_date"
-                    disabled={formik.values.is_lifetime === true}
-                    className="discount-input"
-                    style={{ padding: "5px" }}
-                    onChange={(e)=>{
-                    if(e.target.value===formik.values.start_date){
-                      toast.error("Start Date and Validity Period not same")
-                    }
-                    else  if(new Date(e.target.value)< new Date()){
-                      toast.error("Can't Choose Past Date and Time")
-                    }
-                    else{
-                      formik.setFieldValue("end_date",e.target.value)
-                    }
-                    }}
-                    onBlur={formik.handleBlur}
-                    min="2024-01-01T00:00:00"
-                  />
-                  {formik.touched.end_date && formik.errors.end_date ? (
-                    <div className="error">{formik.errors.end_date}</div>
-                  ) : null}
+                <div className="d-flex justify-content-between">
+                  <div
+
+                    style={{ marginTop: "8px",width:"50%" }}
+                  >
+                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                      Validity Date{" "}
+                      {formik.values.is_lifetime === false && (
+                        <span style={{ color: "red" }}>*</span>
+                      )}
+                    </p>
+                    <input
+                      type="date"
+                      value={formik.values?.end_date}
+                      name="end_date"
+                      min={newDate}
+                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
+                      className="discount-input"
+                      style={{ padding: "5px",width:"100%" }}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                    />
+                    {formik.touched.end_date && formik.errors.end_date ? (
+                      <div className="error">{formik.errors.end_date}</div>
+                    ) : null}
+                  </div>
+                  <div
+                    className="mx-4"
+                    style={{ marginTop: "8px" }}
+                  >
+                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                      Validity Time{" "}
+                      {formik.values.is_lifetime === false && (
+                        <span style={{ color: "red" }}>*</span>
+                      )}
+                    </p>
+                    <input
+                      type="time"
+                      value={formik.values?.end_time}
+                      name="end_time"
+                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
+                      className="discount-input"
+                      style={{ padding: "5px",width:"100%" }}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
+                      min={formik.values.start_date}
+                    />
+                    {formik.touched.end_time && formik.errors.end_time ? (
+                      <div className="error">{formik.errors.end_time}</div>
+                    ) : null}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1002,9 +1070,9 @@ export default function DiscountAddNew() {
                     <label class="switch" style={{ marginRight: "5px" }}>
                       <input
                         type="checkbox"
-                        defaultChecked
-                        name="allow_global_redeem"
-                        value={formik.values.allow_global_redeem}
+                        checked={formik.values.apply_global}
+                        name="apply_global"
+                        value={formik.values.apply_global}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
@@ -1013,6 +1081,7 @@ export default function DiscountAddNew() {
                     {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                   </div>
                   <AddMorePopup
+                    check={formik?.values?.apply_global}
                     service={formik.values.services}
                     companies={formik.values.companies}
                     setServiceListing={setServiceListing}
@@ -1024,7 +1093,10 @@ export default function DiscountAddNew() {
                   />
                 </div>
               </div>
-              {formik.values.companies.length === 0 && (
+              {formik.values.apply_global &&
+            <p style={{textAlign:"center",fontWeight: "700", fontSize: "14px" }}>Applied to All Services / Vendors </p>
+            }
+              {!formik.values.apply_global && (
                 <div style={{ fontWeight: 550, textAlign: "center" }}>
                   {" "}
                   No Service/Vendor Found
@@ -1184,7 +1256,7 @@ export default function DiscountAddNew() {
                     disabled={formik.values.purchase_requirement === false}
                   />
                   {formik.touched.min_purchase_amount &&
-                  formik.errors.min_purchase_amount ? (
+                    formik.errors.min_purchase_amount ? (
                     <div className="error">
                       {formik.errors.min_purchase_amount}
                     </div>
@@ -1299,7 +1371,7 @@ export default function DiscountAddNew() {
                 )}
               </Box>
             </div>
-            <hr style={{ borderBottom: "2px solid black",width:"90%" }} className="mx-auto" />
+            <hr style={{ borderBottom: "2px solid black", width: "90%" }} className="mx-auto" />
             <div className="d-flex justify-content-end px-6 pb-1">
               <button
                 type="reset"

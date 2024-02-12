@@ -44,10 +44,8 @@ const ServiceEdit = () => {
   const [isupdated, setIsUpdated] = useState(false);
 
   const ServiceImagebjectSchema = Yup.object({
-    image: Yup.mixed().test("file-type", "Image is required", (value) => {
-      return typeof value === "object" && value instanceof File;
-    }),
-    service: Yup.string().required(),
+    id: Yup.string().required(),
+    image: Yup.string().required(),
     is_thumbnail: Yup.string().required(),
   });
 
@@ -59,10 +57,10 @@ const ServiceEdit = () => {
   const validationSchema = Yup.object({
     name: Yup.string()
     .required("Name is required")
-    .max(50, "Name must be at most 50 characters"),
-    name: Yup.string()
-    .required("Name is required")
-    .max(50, "Name must be at most 50 characters"),
+    .max(20, "Name must be at most 20 characters"),
+    machine_id: Yup.string()
+    .required("ID is required")
+    .max(20, "ID must be at most 20 characters"),
     description: Yup.string().required("Description is required"),
     pickup_point_or_location: Yup.string().required("Pickup Point is required"),
     cancellation_policy: Yup.string().required("Privacy Policy is required"),
@@ -70,6 +68,9 @@ const ServiceEdit = () => {
     service_price_service: Yup.array()
       .of(servicepriceserviceobjectSchema)
       .min(1, "Price is required"),
+    service_image: Yup.array()
+      .of(ServiceImagebjectSchema)
+      .min(1, "Image is required"),
     purchase_limit_min: Yup.number().when(
       "per_head_booking",
       ([per_head_booking], schema) => {
@@ -106,6 +107,7 @@ const ServiceEdit = () => {
       .max(10, "Toilet must be less than or equal to 10"),
     capacity: Yup.number()
       .notOneOf([0], "Capacity cannot be zero")
+      .min(1, 'Must be greater than zero')
       .max(10, "Capacity must be less than or equal to 10"),
     markup_fee: Yup.number().when(
       "profit_method",
@@ -123,7 +125,9 @@ const ServiceEdit = () => {
       "profit_method",
       ([profit_method], schema) => {
         if (profit_method.name === "Revenue Sharing") {
-          return schema.required("Vendor Percentage is Required");
+          return schema
+          .required("Vendor Percentage is Required")
+          .min(1, 'Must be greater than zero')
         } else {
           return schema.notRequired();
         }
@@ -133,7 +137,9 @@ const ServiceEdit = () => {
       "profit_method",
       ([profit_method], schema) => {
         if (profit_method.name === "Revenue Sharing") {
-          return schema.required("Sea Arbia Percentage is Required");
+          return schema
+          .required("Sea Arbia Percentage is Required")
+          .min(1, 'Must be greater than zero')
         } else {
           return schema.notRequired();
         }
@@ -163,7 +169,7 @@ const ServiceEdit = () => {
       lounge: 0,
       bedroom: 0,
       toilet: 0,
-      capacity: 0,
+      capacity: "",
       amenities: [],
       pickup_point_or_location: "",
       embed: "",
@@ -175,12 +181,12 @@ const ServiceEdit = () => {
         id: "",
         name: "",
       },
-      markup_fee: 0,
-      vendor_percentage: 0,
-      sea_arabia_percentage: 0,
+      markup_fee: "",
+      vendor_percentage: "",
+      sea_arabia_percentage: "",
       per_head_booking: false,
-      purchase_limit_min: 0,
-      purchase_limit_max: 0,
+      purchase_limit_min: "",
+      purchase_limit_max: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -228,7 +234,7 @@ const ServiceEdit = () => {
         lounge: values.lounge,
         bedroom: values.bedroom,
         toilet: values.toilet,
-        capacity: values.capacity,
+        capacity: values.capacity!==""? values.capacity:0,
         pickup_point_or_location: values.pickup_point_or_location,
         map_embed: values.embed,
         cancellation_policy: values.cancellation_policy,
@@ -237,12 +243,12 @@ const ServiceEdit = () => {
         sub_category: values.sub_category[0]?.id,
         amenities: formattedAmenities,
         profit_method: values.profit_method.id,
-        markup_fee: values.markup_fee,
-        vendor_percentage: values.vendor_percentage,
-        sea_arabia_percentage: values.sea_arabia_percentage,
+        vendor_percentage: values.vendor_percentage!=="" ? values.vendor_percentage:0 ,
+        sea_arabia_percentage: values.sea_arabia_percentage!=="" ? values.sea_arabia_percentage:0 ,
+        markup_fee: values.markup_fee!==""? values.markup_fee:0,
         per_head_booking: values.per_head_booking,
-        purchase_limit_min: values.purchase_limit_min,
-        purchase_limit_max: values.purchase_limit_max,
+        purchase_limit_min: values.purchase_limit_min !=="" ? values.purchase_limit_min:0,
+        purchase_limit_max: values.purchase_limit_max !=="" ? values.purchase_limit_max:0,
         service_price_service: findservice_price_service_destination_id,
         // removeServiceKey(values)
       };
@@ -454,18 +460,7 @@ const ServiceEdit = () => {
       .catch((error) => toast.error(error.message));
   };
 
-  function submit(e) {
-    e.preventDefault();
-    if (formik.values.service_image.length === 0) {
-      return setCheckImage("Image Required");
-    }
-    if (formik.values.description.replace("<p><br></p>", "").trim() === "") {
-      return setValidateEditor("Description Required");
-    } else if (formik.values.description.trim() !== "") {
-      return formik.handleSubmit();
-    }
-  }
-
+  
   const handleopendestination = () => {
     setPerDestinationopen(true);
   };
@@ -589,7 +584,7 @@ const ServiceEdit = () => {
               </div>
             </div>
             <form
-              onSubmit={submit}
+              onSubmit={formik.handleSubmit}
               className="row"
               style={{ position: "relative" }}
             >
@@ -784,9 +779,7 @@ const ServiceEdit = () => {
                       </label>
 
                       <TextEditor
-                        formik={formik}
-                        validateeditor={validateeditor}
-                        setValidateEditor={setValidateEditor}
+                        {...formik}
                       />
                     </div>
                     <br></br>
@@ -1000,16 +993,7 @@ const ServiceEdit = () => {
                             className="form-control"
                             placeholder="0"
                             value={formik.values.capacity}
-                            onChange={(e) => {
-                              if (e.target.value <= 0) {
-                                return formik.setFieldValue("capacity", 0);
-                              } else {
-                                formik.setFieldValue(
-                                  "capacity",
-                                  e.target.value
-                                );
-                              }
-                            }}
+                            onChange={formik.handleChange}
                             onBlur={formik.handleBlur}
                           />
                           {formik.touched.capacity && formik.errors.capacity ? (
@@ -1152,17 +1136,17 @@ const ServiceEdit = () => {
                       }}
                     >
                       {ProfitMethods &&
-                        ProfitMethods.reverse().map((data) => (
+                        ProfitMethods.map((data) => (
                           <div
                             className={`${isMobileView}? "col-12":"col-4" mx-1`}
-                            style={{ marginBottom: isMobileView ? "5px" : "" }}
+                            style={{ marginBottom: isMobileView ? "5px" : "",cursor:"pointer" }}
                             onClick={() => {
                               updateFormValues({
                                 ...formik.values,
                                 profit_method: { id: data.id, name: data.name },
-                                markup_fee: 0,
-                                sea_arabia_percentage: 0,
-                                vendor_percentage: 0,
+                                markup_fee: "",
+                                sea_arabia_percentage: "",
+                                vendor_percentage: "",
                               });
                             }}
                           >
@@ -1231,13 +1215,7 @@ const ServiceEdit = () => {
                         className="form-control"
                         placeholder="0"
                         value={formik.values.markup_fee}
-                        onChange={(e) => {
-                          if (e.target.value <= 0) {
-                            formik.setFieldValue("markup_fee", 0);
-                          } else {
-                            formik.setFieldValue("markup_fee", e.target.value);
-                          }
-                        }}
+                        onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
                       {formik.touched.markup_fee && formik.errors.markup_fee ? (
@@ -2058,8 +2036,21 @@ const ServiceEdit = () => {
                         </div>
                       </div>
                     ))}
-                    {checkImage.trim() !== "" && (
-                      <div className="error">{checkImage}</div>
+                   {formik.touched.service_image &&
+                    formik.errors.service_image ? (
+                      <div className="error">{formik.errors.service_image}</div>
+                    ) : null}
+                    {formik.values.service_image.length === 0 && (
+                      <p
+                        style={{
+                          fontSize: "14px",
+                          padding: "10px",
+                          margin: "10px",
+                          textAlign: "center",
+                        }}
+                      >
+                        No Image Found
+                      </p>
                     )}
                   </div>
                 </div>
