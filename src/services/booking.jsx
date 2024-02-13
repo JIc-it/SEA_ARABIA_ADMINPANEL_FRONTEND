@@ -10,6 +10,9 @@ const refundrequestCountURL = "booking/admin-refund-count";
 const refundhistoryCountURL = "booking/admin-refund-history-count";
 const userListURl="booking/UserList"
 const guestListURl="booking/GuestList"
+const bookingExport="booking/booking-export/"
+const refundRequestExport="booking/refund-request-export/"
+const refundHistoryExport="booking/refund-history-export/"
 
 export const getBookingList = (data) => {
   return axiosInstance
@@ -112,6 +115,34 @@ export const getUserList = () => {
 export const getGuestList = () => {
   return axiosInstance
     .get(guestListURl)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getBookingExport = () => {
+  return axiosInstance
+    .get(bookingExport)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+export const getRefundRequestExport = () => {
+  return axiosInstance
+    .get(refundRequestExport)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+export const getRefundHistoryExport = () => {
+  return axiosInstance
+    .get(refundHistoryExport)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

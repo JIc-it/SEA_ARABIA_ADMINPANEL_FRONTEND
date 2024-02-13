@@ -5,6 +5,7 @@ const CountURL="service/package-count"
 const eventViewURL="service/package-view"
 const updateEventURL="service/package-update"
 const createEventURL="service/package-create"
+const exportURL="service/export-package-list"
 
 export const getEventList = (search) => {
   return axiosInstance
@@ -50,6 +51,16 @@ export const updateEvent = (id,data) => {
 export const createEvent = (data) => {
   return axiosInstance
     .post(`${createEventURL}`,data)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error("Error while fetching lead request:", error);
+      throw error;
+    });
+};
+
+export const getExport = () => {
+  return axiosInstance
+    .get(exportURL)
     .then((response) => response.data)
     .catch((error) => {
       console.error("Error while fetching lead request:", error);

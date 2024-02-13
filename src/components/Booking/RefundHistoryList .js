@@ -1,21 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
+import { CSVLink } from "react-csv";
 import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import { getBookingList,getRefundHistoryCount } from "../../services/booking"
+import { getBookingList,getRefundHistoryCount,getRefundHistoryExport } from "../../services/booking"
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 import { menuIdConstant, permissionCategory } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
-import { API_BASE_URL } from "../../services/authHandle";
 import RefundHistoryFilter from "./RefundHistoryFilter";
 
 
 const RefundHistoryList  = () => {
   const { userPermissionList } = useContext(MainPageContext);
+
+  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -46,6 +49,7 @@ const RefundHistoryList  = () => {
  
   const [bookingList, setBookingList] = useState([]);
   const [count,setCount]=useState({})
+  const [csvData, setCSVData] = useState([])
 
   useEffect(() => {
     {search.trim()!=="" ? setIsLoading(false):setIsLoading(true);}
@@ -78,7 +82,18 @@ const RefundHistoryList  = () => {
       });
   },[])
 
-
+  useEffect(()=>{
+    if(getPermission){
+      getRefundHistoryExport()
+      .then((data) => {
+        setCSVData(data)
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    }
+  },[getPermission])
   
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -250,35 +265,31 @@ const RefundHistoryList  = () => {
                       userPermissionList,
                       menuIdConstant.booking,
                       permissionCategory.action
-                    ) &&  <button
-                    className="btn btn-outline"
-                    style={{ borderRadius: "6px" }}
-                  >
-                    <a style={{textDecoration:"none"}} href={`${API_BASE_URL}booking/refund-history-export/`}>
-                    Export &nbsp;
-                    </a>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 20 20"
-                      fill="none"
-                    >
-                      <path
-                        d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                        stroke="#252525"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                      />
-                      <path
-                        d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                        stroke="#252525"
-                        strokeWidth="1.5"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </button>}
+                    ) &&  
+                    <CSVLink data={csvData}  filename={"Refund_History_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
+                Export
+                <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 20 20"
+                fill="none"
+              >
+                <path
+                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                  stroke="#252525"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+                </CSVLink>}
                   {/*<button
                     onClick={handleOpenOffcanvas}
                     className="btn btn-info vendor_button"

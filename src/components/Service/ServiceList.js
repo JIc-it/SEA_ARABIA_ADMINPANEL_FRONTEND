@@ -30,6 +30,8 @@ import { MainPageContext } from "../../Context/MainPageContext";
 
 function ServiceList() {
   const { userPermissionList } = useContext(MainPageContext);
+  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+
   const [search, setSearch] = useState(null);
   const [csvData, setCSVData] = useState([])
   const [listPageUrl, setListPageUrl] = useState({
@@ -75,15 +77,17 @@ function ServiceList() {
   }, [search]);
 
   useEffect(()=>{
-    getExport()
-    .then((data) => {
-      setCSVData(data)
-      setIsLoading(false);
-    })
-    .catch((error) => {
-      toast.error(error.message);
-    });
-  },[])
+    if(getPermission){
+      getExport()
+      .then((data) => {
+        setCSVData(data)
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+    }
+  },[getPermission])
 
   const handlePagination = async (type) => {
     setIsLoading(true);

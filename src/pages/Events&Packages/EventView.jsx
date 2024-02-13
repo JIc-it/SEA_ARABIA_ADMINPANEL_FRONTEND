@@ -7,7 +7,6 @@ import { Breadcrumb } from "react-bootstrap";
 import HTMLParse from "html-react-parser";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { MainPageContext } from "../../Context/MainPageContext";
 import WithPermission from "../../components/HigherOrderComponents/PermissionCheck/WithPermission";
 import CommonButtonForPermission from "../../components/HigherOrderComponents/CommonButtonForPermission";
 import {
@@ -16,7 +15,6 @@ import {
 } from "../../components/Permissions/PermissionConstants";
 
 const EventView = () => {
-  const { userPermissionList } = useContext(MainPageContext);
 
   const navigate = useNavigate();
   const params = useParams();
@@ -39,7 +37,7 @@ const EventView = () => {
       });
   }, [params.id]);
 
-  const AddEventWithPermission = WithPermission(
+  const EditEventWithPermission = WithPermission(
     CommonButtonForPermission,
     permissionCategory.edit,
     menuIdConstant.eventsPackages,
@@ -120,7 +118,7 @@ const EventView = () => {
                 >
                   {oneservice.is_active === true ? "Active" : "Inactive"}
                 </div>
-                <AddEventWithPermission />
+                <EditEventWithPermission />
                 {/* <button
                   className="btn btn-info vendor_button"
                   style={{ borderRadius: "6px" }}

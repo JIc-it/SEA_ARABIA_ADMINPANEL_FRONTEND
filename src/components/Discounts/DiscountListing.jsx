@@ -30,6 +30,8 @@ import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForP
 
 function DiscountListing() {
   const { userPermissionList } = useContext(MainPageContext);
+  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+
   const [isRefetch, setIsRefetch] = useState(false);
   const theme = useTheme();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
@@ -107,7 +109,8 @@ function DiscountListing() {
   }, [search]);
 
   useEffect(() => {
-    getExport()
+    if(getPermission){
+      getExport()
       .then((data) => {
         setCSVData(data)
         setIsLoading(false);
@@ -115,7 +118,8 @@ function DiscountListing() {
       .catch((error) => {
         toast.error(error.message);
       });
-  }, [])
+    }
+  }, [getPermission])
 
   const handlePagination = async (type) => {
     setIsLoading(true);
