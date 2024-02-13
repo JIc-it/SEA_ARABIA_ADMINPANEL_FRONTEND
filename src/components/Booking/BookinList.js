@@ -465,7 +465,9 @@ const BookinList = () => {
                                 </td>
                                 <td>
                                   <span className="text-secondary">
-                                    {data?.slot_start_date}
+                                    {new Date(
+                                      data?.slot_start_date
+                                    ).toLocaleDateString("es-CL")}
                                   </span>
                                 </td>
                                 <td>
@@ -485,14 +487,14 @@ const BookinList = () => {
                                       background:
                                         data?.status === "Completed" || data?.status === "Confirmed"
                                           ? "#13B370"
-                                          : data?.status === "Unsuccessful"
+                                          : data?.status === "Unsuccessful" || data?.status === "Failed"
                                           ? "#DC7932"
-                                          : data?.status === "Cancelled" || data?.status === "Failed"
-                                          ? "#DE4E21"
-                                          : "#2684FC",
+                                          : data?.status === "Cancelled" ?
+                                           "#DE4E21"
+                                          :data?.status==="Upcoming" && "#2684FC",
                                     }}
                                   >
-                                    {data?.status==="Completed" || data?.status === "Confirmed"?  "Completed": data?.status === "Unsuccessful"? "Unsuccessfull" :data.status? data.status:"-"}
+                                    {data?.status==="Completed" || data?.status === "Confirmed"?  "Completed": data?.status === "Unsuccessful" || data?.status === "Failed" ? "Unsuccessful" :data?.status === "Cancelled"? "Cancelled":data?.status==="Upcoming"  && "Upcoming"}
                                   </span>
                                 </td>
                                 <td
