@@ -3,7 +3,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { passwordRegex } from "../../../helpers";
 import { useState } from "react";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -12,6 +13,7 @@ import { createAdmin } from "../../../services/GuestHandle";
 import { AppContext } from "../../../Context/AppContext";
 
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 function CreateNewAdmin({ show, close, locationList }) {
   const [isRefetch, setIsRefetch] = useState();
@@ -75,7 +77,33 @@ function CreateNewAdmin({ show, close, locationList }) {
       ),
     location: Yup.mixed().required("Location is required"),
   });
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
   const formik = useFormik({
     initialValues: {
       first_name: "",
@@ -347,17 +375,35 @@ function CreateNewAdmin({ show, close, locationList }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="password"
-              name="password"
+
+            <TextField
+              type={values.showPassword ? "text" : "password"}
+              name="changePassword"
               className="form-control"
               placeholder="Password"
-              value={formik.values.password}
+              value={formik.values.ChangePassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
+            {formik.touched.ChangePassword && formik.errors.ChangePassword ? (
+              <div className="error">{formik.errors.ChangePassword}</div>
             ) : null}
           </div>
         </div>
@@ -374,14 +420,32 @@ function CreateNewAdmin({ show, close, locationList }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="Password"
+
+            <TextField
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
+                      edge="end"
+                    >
+                      {valuesConfirm.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>

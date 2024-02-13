@@ -4,14 +4,14 @@ import {
   getGuestUserRequest,
   getTotalGuestUser,
   guestExport,
-} from "../../services/CustomerHandle.jsx";
-import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers.js";
-import { getListDataInPagination } from "../../services/commonServices.js";
-import { MainPageContext } from "../../Context/MainPageContext.js";
+} from "../../../services/CustomerHandle.jsx";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../../helpers.js";
+import { getListDataInPagination } from "../../../services/commonServices.js";
+import { MainPageContext } from "../../../Context/MainPageContext.js";
 import {
   menuIdConstant,
   permissionCategory,
-} from "../../components/Permissions/PermissionConstants.js";
+} from "../../../components/Permissions/PermissionConstants.js";
 import * as XLSX from "xlsx";
 
 const GuestUser = () => {
@@ -30,14 +30,15 @@ const GuestUser = () => {
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { userPermissionList } = useContext(MainPageContext);
-
+  const [search, setSearch] = useState();
+  const [selectedValue, setSelectedValue] = useState("");
   useEffect(() => {
     getGuestUserRequest()
       .then((data) => {
-        console.log("Fetched data:", data);
+        console.log("Fetched data:", data.results);
         setListPageUrl({
-          next: data.next,
-          previous: data.previous,
+          next: data?.next,
+          previous: data?.previous,
         });
         setGuestUsertData(data.results);
         setGuestId(data.results?.id);
@@ -47,25 +48,47 @@ const GuestUser = () => {
         console.error("Error fetching lead data:", error);
       });
   }, []);
-  const handleBookingButtonClick = () => {
-    navigate(`/bookings/${guestId}`);
+
+  // const getGuestSearchData = async () => {
+  //   getGuestUserRequest(search, selectedValue)
+  //     .then((data) => {
+  //       console.log("---search", data);
+  //       setIsLoading(false);
+  //       setListPageUrl({ next: data.next, previous: data.previous });
+
+  //       setGuestUsertData(data.results);
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.error("failed to search error", error);
+  //     });
+  // };
+  const refreshPage = () => {
+    window.location.reload();
   };
-  const [search, setSearch] = useState();
-  const [selectedValue, setSelectedValue] = useState("");
-
-  const getGuestSearchData = async () => {
-    getGuestUserRequest(search, selectedValue)
+  useEffect(() => {
+    const data = { search: search, status: selectedValue};
+    setIsLoading(true);
+    getGuestUserRequest(data)
       .then((data) => {
-        // console.log("search", data);
-        setIsLoading(false);
-        setListPageUrl({ next: data.next, previous: data.previous });
-
-        setGuestUsertData(data.results);
+        if (data) {
+          setIsLoading(false);
+          setListPageUrl({ next: data.next, previous: data.previous });
+          setGuestUsertData(data?.results);
+        } else {
+          refreshPage();
+          setIsLoading(true);
+          setSearch("");
+          setGuestUsertData(data?.results);
+        }
       })
       .catch((error) => {
         setIsLoading(false);
-        console.error("failed to search error", error);
+        console.error("Error fetching  data:", error);
       });
+  }, [selectedValue, isRefetch, search]);
+  const handleBookingButtonClick = () => {
+    navigate(`/bookings/${guestId}`);
   };
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -81,23 +104,13 @@ const GuestUser = () => {
           setIsLoading(false);
           setListPageUrl({ next: data.next, previous: data.previous });
 
-          setGuestUsertData(data.result);
+          setGuestUsertData(data?.results);
         })
         .catch((error) => {
           setIsLoading(false);
           console.error("Error fetching  data:", error);
         });
   };
-  useEffect(() => {
-    getTotalGuestUser()
-      .then((data) => {
-        setTotalGuestUser(data.count);
-      })
-      .catch((error) => {
-        console.error("Error fetching total booking data:", error);
-      });
-  }, []);
-
   const filteredItems =
     reward_product_data && reward_product_data.length > 0
       ? reward_product_data.filter((rw_data) => {
@@ -192,14 +205,14 @@ const GuestUser = () => {
                         setSearch(e.target.value);
                       }}
                     />
-                    <button
+                    {/* <button
                       type="button"
                       className="btn search_button"
                       style={{ background: "#006875" }}
                       onClick={getGuestSearchData}
                     >
                       Search
-                    </button>
+                    </button> */}
                   </div>
                 </div>
               </form>

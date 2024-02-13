@@ -369,6 +369,76 @@ function AdminDetails() {
                   </p>
 
                   <div className="d-flex">
+                    <div className="col-4 px-4">
+                      <div>
+                        <p style={{ color: "#68727D" }}>First Name</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.first_name}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Date of Birth</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.profileextra?.dob}
+                          {/* {console.log("c details", adminDetails)} */}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Location</p>
+                        <div className="d-flex justify-content-between">
+                          <p style={{ fontWeight: "700" }}>
+                            {adminDetails?.profileextra?.location?.country}
+                          </p>
+                          <p>
+                            <svg
+                              width="18"
+                              height="22"
+                              viewBox="0 0 22 22"
+                              fill="none"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              {/* ... (your SVG path) */}
+                            </svg>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="col-4 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Last Name</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.last_name}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Phone</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.mobile}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="col-4 px-2">
+                      <div>
+                        <p style={{ color: "#68727D" }}>Email</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.email}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p style={{ color: "#68727D" }}>Gender</p>
+                        <p style={{ fontWeight: "700" }}>
+                          {adminDetails?.profileextra?.gender}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="d-flex">
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>First Name</p>
@@ -422,7 +492,16 @@ function AdminDetails() {
                         </p>
                       </div>
                     </div>
+                    <div>
+                      <p style={{ color: "#68727D" }}>Gender</p>
+                      <p style={{ fontWeight: "700" }}>
+                        {adminDetails?.profileextra?.gender}
+                      </p>
+                    </div>
+                    <br/>
+                    <br/>
                   </div>
+                  <br/>
                 </div>
               </>
             )}

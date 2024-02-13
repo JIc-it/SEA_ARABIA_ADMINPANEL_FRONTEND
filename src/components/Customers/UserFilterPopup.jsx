@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Modal from "@mui/material/Modal";
 import { Box } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
-import {
-  getCategoryList,
-  getsubcategorylist,
-  getServiceListing,
-} from "../../services/service";
+
 import { getCompanyListing } from "../../services/offers";
 import { Visibility } from "@mui/icons-material";
-import { getCustomerSearch } from "../../services/CustomerHandle";
-import { toast } from "react-toastify";
+import {
+  getCategoryList,
+  getServiceListing,
+  getsubcategorylist,
+} from "../../services/service";
+import { AppContext } from "../../Context/AppContext";
 
-export default function FilterPopup({
+export default function UserFilterPopup({
   open,
   handleClose,
   setIsLoading,
@@ -22,12 +22,15 @@ export default function FilterPopup({
   filters,
   setListPageUrl,
   setServiceList,
-  checkfilterslength,
+  setIsRefetch,
+  isRefetch,
+  categorylist,
+  setCategoryList,
+  handleClearFilter,
 }) {
-  const [active, setActive] = useState("Category");
-  const [categorylist, setCategoryList] = useState([]);
+  const { gccCountriesList } = useContext(AppContext);
+  const [active, setActive] = useState("vendorStatus");
   const [subcategorylist, setSubcategoryList] = useState([]);
-  const [vendorlist, setVendorList] = useState([]);
   const [search, setSearch] = useState({
     category: "",
     sub_category: "",
@@ -39,187 +42,114 @@ export default function FilterPopup({
     left: "50%",
     transform: "translate(-50%, -50%)",
     width: "65%",
-    height: "95vh",
+    // height: "95vh",
     bgcolor: "background.paper",
     // border: '2px solid #000',
     boxShadow: 24,
     p: 3,
     overflowY: "scroll",
   };
-  useEffect(() => {
-    getCategoryList()
-      .then((data) => setCategoryList(data))
-      .catch((error) => console.error(error));
-  }, []);
 
   useEffect(() => {
     getsubcategorylist()
       .then((data) => setSubcategoryList(data))
       .catch((error) => console.error(error));
   }, []);
-  const [listDiscount, setListDiscount] = useState([]);
-  useEffect(() => {
-    getCustomerSearch({ search: "", status: "", role: "User" })
-      .then((data) => {
-        console.log("customer-list", data.results);
-        setListDiscount(data.results);
-        setListPageUrl({
-          next: data.next,
-          previous: data.previous,
-        });
-      })
-      .catch((error) => {
-        toast.error(error.message);
-        console.error("Error fetching Customer List data:", error);
-      });
-  }, []);
 
-  const handleFilterOnBoard = (e) => {
-    const { name, value } = e.target;
-
+  const handleFilterCategory = (e, id) => {
+    const { checked } = e.target;
+    setCategoryList((prev) =>
+      prev.map((category) =>
+        category.id === id ? { ...category, status: checked } : category
+      )
+    );
     setFilters((prevFilters) => {
-      // Check if category already has data
-      const onBoardedArray =
-        prevFilters.category.length > 0 ? prevFilters.category : [];
-
-      // Check if the value already exists in the category array
-      const existingonBoarded_on = onBoardedArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedOnBoarded_on =
-        existingonBoarded_on !== -1
-          ? [
-              ...onBoardedArray.slice(0, existingonBoarded_on),
-              ...onBoardedArray.slice(existingonBoarded_on + 1),
-            ]
-          : [...onBoardedArray, { id: value, name }];
-
       return {
         ...prevFilters,
-        category: updatedOnBoarded_on,
+        vendorStatus: categorylist.map((category) =>
+          category.id === id ? { ...category, status: checked } : category
+        ),
       };
     });
   };
 
-  const handleFilterLocation = (e) => {
+  const handleFilterSubCategory = (e) => {
     const { name, value } = e.target;
 
     setFilters((prevFilters) => {
       // Check if sub_category already has data
-      const locationArray =
+      const subCategoryArray =
         prevFilters.location.length > 0 ? prevFilters.location : [];
 
       // Check if the value already exists in the sub_category array
-      const existingLocationIndex = locationArray.findIndex(
+      const existingSubCategoryIndex = subCategoryArray.findIndex(
         (item) => item.id === value
       );
 
       // If the value exists, remove it; otherwise, add or update it
       const updatedSubCategory =
-        existingLocationIndex !== -1
+        existingSubCategoryIndex !== -1
           ? [
-              ...locationArray.slice(0, existingLocationIndex),
-              ...locationArray.slice(existingLocationIndex + 1),
+              ...subCategoryArray.slice(0, existingSubCategoryIndex),
+              ...subCategoryArray.slice(existingSubCategoryIndex + 1),
             ]
-          : [...locationArray, { id: value, name }];
+          : [...subCategoryArray, { id: value, name }];
 
       return {
         ...prevFilters,
-        sub_category: updatedSubCategory,
+        location: updatedSubCategory,
       };
     });
   };
 
-  const handleFilterCustomer = (e) => {
-    const { name, value } = e.target;
-
-    setFilters((prevFilters) => {
-      // Check if vendor already has data
-      const customerArray =
-        prevFilters.vendor.length > 0 ? prevFilters.customer : [];
-
-      // Check if the value already exists in the vendor array
-      const existingVendorIndex = customerArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedCustomer =
-        existingVendorIndex !== -1
-          ? [
-              ...customerArray.slice(0, existingVendorIndex),
-              ...customerArray.slice(existingVendorIndex + 1),
-            ]
-          : [...customerArray, { id: value, name }];
-
-      return {
-        ...prevFilters,
-        customer: updatedCustomer,
-      };
-    });
-  };
-
-  const findAndRemoveCategory = (field, data) => {
-    if (field === "Customer") {
+  const findAndRemoveCategory = (field, id, dateType) => {
+    if (field === "vendorStatus") {
       setFilters((prevFilters) => {
-        const updatedCategory = prevFilters.category.filter(
-          (item) => item.id !== data
+        return {
+          ...prevFilters,
+          vendorStatus: [
+            { id: 1, name: "Active", status: false },
+            { id: 2, name: "Inactive", status: false },
+          ],
+        };
+      });
+      setCategoryList([
+        { id: 1, name: "Active", status: false },
+        { id: 2, name: "Inactive", status: false },
+      ]);
+    }
+    if (field === "locationList") {
+      setFilters((prevFilters) => {
+        const updatedCategory = prevFilters.location.filter(
+          (item) => item.id !== id
         );
-        return { ...prevFilters, category: updatedCategory };
+        return { ...prevFilters, location: updatedCategory };
       });
     }
-    if (field === "Location") {
-      setFilters((prevFilters) => {
-        const updatedCategory = prevFilters.sub_category.filter(
-          (item) => item.id !== data
-        );
-        return { ...prevFilters, sub_category: updatedCategory };
-      });
-    }
-    if (field === "OnBoarded On") {
-      setFilters((prevFilters) => {
-        const updatedCategory = prevFilters.vendor.filter(
-          (item) => item.id !== data
-        );
-        return { ...prevFilters, vendor: updatedCategory };
-      });
+    if (field === "onboardDate") {
+      if (dateType === "from") {
+        setFilters((prevFilters) => {
+          return {
+            ...prevFilters,
+            OnBoardOn: { from: "", to: filters.OnBoardOn.to },
+          };
+        });
+      }
+      if (dateType === "to") {
+        setFilters((prevFilters) => {
+          return {
+            ...prevFilters,
+            OnBoardOn: { from: filters.OnBoardOn.from, to: "" },
+          };
+        });
+      }
     }
   };
 
   const handleApplyFilter = async () => {
-    setIsLoading(true);
-    const customerMapped = filters.customer.map((data) => data.id);
-    const customerSplitted = customerMapped.join(",");
-
-    const locationmapped = filters.vendor.map((data) => data.id);
-    const locationSplitted = locationmapped.join(",");
-
-    const checkstatus =
-      filters.status.active && filters.status.inactive
-        ? ""
-        : filters.status.active
-        ? true
-        : filters.status.inactive && false;
-    const getFiltereddata = await getCustomerSearch(
-      null,
-      null,
-      customerSplitted,
-
-      locationSplitted,
-      checkstatus
-    );
-
-    if (getFiltereddata) {
-      setIsLoading(false);
-      setServiceList(getFiltereddata.results);
-      setListPageUrl({
-        next: getFiltereddata.next,
-        previous: getFiltereddata.previous,
-      });
-      handleClose();
-    }
+    console.log(filters, "active test");
+    setIsRefetch(!isRefetch);
+    handleClose();
   };
 
   return (
@@ -239,258 +169,533 @@ export default function FilterPopup({
             color="inherit"
             onClick={() => {
               handleClose();
+              handleClearFilter();
             }}
             aria-label="close"
             sx={{ position: "absolute", top: 8, right: 14 }}
           >
             <CloseIcon />
           </IconButton>
-          <div class="frame-427319784 mt-3">
-            {filters.category.length > 0 && (
-              <div class="components-selection-item">
+          <div class="filtered-list mt-3">
+            {
+              <div class="components-selection-item mt-1">
                 <div class="frame-427319782">
-                  <div class="frame-427319783">
-                    <div class="category">Category</div>
-                    <div class="div">:</div>
-                  </div>
-                  <div
-                    style={{
-                      width: "50vw",
-                      display: "flex",
-                      flexWrap: filters.category.length > 5 ? "wrap" : "",
-                    }}
-                  >
-                    <div
-                      class="yacht-boat-heli-tour "
-                      style={{
-                        display: "flex",
-                        flexWrap: filters.category.length > 5 ? "wrap" : "",
-                      }}
-                    >
-                      {filters.category.map((data) => (
-                        <div key={data.id} className="mx-1">
-                          <span>{data.name}</span>
-                          <span
-                            className="mx-1"
-                            onClick={() =>
-                              findAndRemoveCategory("Category", data.id)
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={10}
-                              height={10}
-                              viewBox="0 0 10 10"
-                              fill="none"
-                            >
-                              <g clipPath="url(#clip0_5512_51442)">
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_5512_51442">
-                                  <rect width={10} height={10} fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+                  {filters.vendorStatus[0]?.status |
+                  filters.vendorStatus[1]?.status ? (
+                    <>
+                      <div class="frame-427319783">
+                        <div class="vendor">Customer Status</div>
+                        <div class="div">:</div>
+                      </div>
+                      <div
+                        style={{
+                          // width: "50vw",
+                          display: "flex",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          class="yacht-boat-heli-tour "
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <div className="mx-1">
+                            <span>
+                              {filters.vendorStatus[0]?.status &&
+                              filters.vendorStatus[1]?.status
+                                ? "All"
+                                : filters.vendorStatus[0]?.status &&
+                                  !filters.vendorStatus[1]?.status
+                                ? "Active"
+                                : !filters.vendorStatus[0]?.status &&
+                                  filters.vendorStatus[1]?.status
+                                ? "Inactive"
+                                : ""}
+                            </span>
 
-            {filters.sub_category.length > 0 && (
-              <div class="components-selection-item mt-1">
-                <div class="frame-427319782">
-                  <div class="frame-427319783">
-                    <div class="vendor">Sub Category</div>
-                    <div class="div">:</div>
-                  </div>
-                  <div
-                    style={{
-                      width: "50vw",
-                      display: "flex",
-                      flexWrap: filters.sub_category.length > 5 ? "wrap" : "",
-                    }}
-                  >
-                    <div
-                      class="yacht-boat-heli-tour "
-                      style={{
-                        display: "flex",
-                        flexWrap: filters.sub_category.length > 5 ? "wrap" : "",
-                      }}
-                    >
-                      {filters.sub_category.map((data) => (
-                        <div key={data.id} className="mx-1">
-                          <span>{data.name}</span>
-                          <span
-                            className="mx-1"
-                            onClick={() =>
-                              findAndRemoveCategory("Sub-Category", data.id)
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={10}
-                              height={10}
-                              viewBox="0 0 10 10"
-                              fill="none"
+                            <span
+                              className="mx-1"
+                              onClick={() =>
+                                findAndRemoveCategory("vendorStatus")
+                              }
                             >
-                              <g clipPath="url(#clip0_5512_51442)">
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_5512_51442">
-                                  <rect width={10} height={10} fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </span>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={10}
+                                height={10}
+                                viewBox="0 0 10 10"
+                                fill="none"
+                              >
+                                <g clipPath="url(#clip0_5512_51442)">
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_5512_51442">
+                                    <rect width={10} height={10} fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </span>
+                          </div>
                         </div>
-                      ))}
-                    </div>
-                  </div>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                  {filters.location.length ? (
+                    <>
+                      <div class="frame-427319783">
+                        <div class="vendor">Location</div>
+                        <div class="div">:</div>
+                      </div>
+                      <div
+                        style={{
+                          // width: "50vw",
+                          display: "flex",
+                          flexWrap: filters.location.length > 5 ? "wrap" : "",
+                        }}
+                      >
+                        <div
+                          class="yacht-boat-heli-tour "
+                          style={{
+                            display: "flex",
+                            flexWrap: filters.location.length > 5 ? "wrap" : "",
+                          }}
+                        >
+                          {filters.location.map((data) => (
+                            <div key={data.id} className="mx-1">
+                              <span>{data.name}</span>
+                              <span
+                                className="mx-1"
+                                onClick={() =>
+                                  findAndRemoveCategory("locationList", data.id)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width={10}
+                                  height={10}
+                                  viewBox="0 0 10 10"
+                                  fill="none"
+                                >
+                                  <g clipPath="url(#clip0_5512_51442)">
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                      fill="#212529"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                      fill="#212529"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                      stroke="#212529"
+                                      strokeWidth="0.8"
+                                    />
+                                    <path
+                                      fillRule="evenodd"
+                                      clipRule="evenodd"
+                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                      stroke="#212529"
+                                      strokeWidth="0.8"
+                                    />
+                                  </g>
+                                  <defs>
+                                    <clipPath id="clip0_5512_51442">
+                                      <rect
+                                        width={10}
+                                        height={10}
+                                        fill="white"
+                                      />
+                                    </clipPath>
+                                  </defs>
+                                </svg>
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
+                  {filters.OnBoardOn.from != "" ||
+                  filters.OnBoardOn.to != "" ? (
+                    <>
+                      <div class="frame-427319783">
+                        <div class="vendor">Onboarded On</div>
+                        <div class="div">:</div>
+                      </div>
+                      <div
+                        style={{
+                          // width: "50vw",
+                          display: "flex",
+                          flexWrap: "wrap",
+                        }}
+                      >
+                        <div
+                          class="yacht-boat-heli-tour "
+                          style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                          }}
+                        >
+                          <div className="mx-1">
+                            {filters.OnBoardOn.from && filters.OnBoardOn.to ? (
+                              <>
+                                <span>
+                                  {`From :${filters.OnBoardOn.from} `}
+
+                                  <span
+                                    className="mx-1"
+                                    onClick={() =>
+                                      findAndRemoveCategory(
+                                        "onboardDate",
+                                        "",
+                                        "from"
+                                      )
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={10}
+                                      height={10}
+                                      viewBox="0 0 10 10"
+                                      fill="none"
+                                    >
+                                      <g clipPath="url(#clip0_5512_51442)">
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                          fill="#212529"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                          fill="#212529"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                          stroke="#212529"
+                                          strokeWidth="0.8"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                          stroke="#212529"
+                                          strokeWidth="0.8"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_5512_51442">
+                                          <rect
+                                            width={10}
+                                            height={10}
+                                            fill="white"
+                                          />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </span>
+                                </span>
+                                <span>
+                                  {` To :${filters.OnBoardOn.to} `}
+
+                                  <span
+                                    className="mx-1"
+                                    onClick={() =>
+                                      findAndRemoveCategory(
+                                        "onboardDate",
+                                        "",
+                                        "to"
+                                      )
+                                    }
+                                  >
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width={10}
+                                      height={10}
+                                      viewBox="0 0 10 10"
+                                      fill="none"
+                                    >
+                                      <g clipPath="url(#clip0_5512_51442)">
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                          fill="#212529"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                          fill="#212529"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                          stroke="#212529"
+                                          strokeWidth="0.8"
+                                        />
+                                        <path
+                                          fillRule="evenodd"
+                                          clipRule="evenodd"
+                                          d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                          stroke="#212529"
+                                          strokeWidth="0.8"
+                                        />
+                                      </g>
+                                      <defs>
+                                        <clipPath id="clip0_5512_51442">
+                                          <rect
+                                            width={10}
+                                            height={10}
+                                            fill="white"
+                                          />
+                                        </clipPath>
+                                      </defs>
+                                    </svg>
+                                  </span>
+                                </span>
+                              </>
+                            ) : filters.OnBoardOn.from ? (
+                              <>
+                                <span>{`From :${filters.OnBoardOn.from}`}</span>
+                                <span
+                                  className="mx-1"
+                                  onClick={() =>
+                                    findAndRemoveCategory(
+                                      "onboardDate",
+                                      "",
+                                      "from"
+                                    )
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width={10}
+                                    height={10}
+                                    viewBox="0 0 10 10"
+                                    fill="none"
+                                  >
+                                    <g clipPath="url(#clip0_5512_51442)">
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                        fill="#212529"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                        fill="#212529"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                        stroke="#212529"
+                                        strokeWidth="0.8"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                        stroke="#212529"
+                                        strokeWidth="0.8"
+                                      />
+                                    </g>
+                                    <defs>
+                                      <clipPath id="clip0_5512_51442">
+                                        <rect
+                                          width={10}
+                                          height={10}
+                                          fill="white"
+                                        />
+                                      </clipPath>
+                                    </defs>
+                                  </svg>
+                                </span>
+                              </>
+                            ) : filters.OnBoardOn.to ? (
+                              <>
+                                {" "}
+                                <span>{`To :${filters.OnBoardOn.to}`}</span>
+                                <span
+                                  className="mx-1"
+                                  onClick={() =>
+                                    findAndRemoveCategory(
+                                      "onboardDate",
+                                      "",
+                                      "to"
+                                    )
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width={10}
+                                    height={10}
+                                    viewBox="0 0 10 10"
+                                    fill="none"
+                                  >
+                                    <g clipPath="url(#clip0_5512_51442)">
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                        fill="#212529"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                        fill="#212529"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                        stroke="#212529"
+                                        strokeWidth="0.8"
+                                      />
+                                      <path
+                                        fillRule="evenodd"
+                                        clipRule="evenodd"
+                                        d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                        stroke="#212529"
+                                        strokeWidth="0.8"
+                                      />
+                                    </g>
+                                    <defs>
+                                      <clipPath id="clip0_5512_51442">
+                                        <rect
+                                          width={10}
+                                          height={10}
+                                          fill="white"
+                                        />
+                                      </clipPath>
+                                    </defs>
+                                  </svg>
+                                </span>
+                              </>
+                            ) : (
+                              ""
+                            )}
+                            {/* <span>
+                              {filters.OnBoardOn.from && filters.OnBoardOn.to
+                                ? `From :${filters.OnBoardOn.from} , To :${filters.OnBoardOn.to}`
+                                : filters.OnBoardOn.from
+                                ? `From :${filters.OnBoardOn.from}`
+                                : filters.OnBoardOn.to
+                                ? `To: ${filters.OnBoardOn.to}`
+                                : ""}
+                            </span>
+
+                            <span
+                              className="mx-1"
+                              // onClick={() =>
+                              //   findAndRemoveCategory("Sub-Category", data.id)
+                              // }
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width={10}
+                                height={10}
+                                viewBox="0 0 10 10"
+                                fill="none"
+                              >
+                                <g clipPath="url(#clip0_5512_51442)">
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    fill="#212529"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                  <path
+                                    fillRule="evenodd"
+                                    clipRule="evenodd"
+                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
+                                    stroke="#212529"
+                                    strokeWidth="0.8"
+                                  />
+                                </g>
+                                <defs>
+                                  <clipPath id="clip0_5512_51442">
+                                    <rect width={10} height={10} fill="white" />
+                                  </clipPath>
+                                </defs>
+                              </svg>
+                            </span> */}
+                          </div>
+                        </div>
+                      </div>
+                    </>
+                  ) : (
+                    ""
+                  )}
                 </div>
               </div>
-            )}
-            {filters.vendor.length > 0 && (
-              <div class="components-selection-item mt-1">
-                <div class="frame-427319782">
-                  <div class="frame-427319783">
-                    <div class="vendor">Vendor</div>
-                    <div class="div">:</div>
-                  </div>
-                  <div
-                    style={{
-                      width: "50vw",
-                      display: "flex",
-                      flexWrap: filters.vendor.length > 5 ? "wrap" : "",
-                    }}
-                  >
-                    <div
-                      class="yacht-boat-heli-tour "
-                      style={{
-                        display: "flex",
-                        flexWrap: filters.vendor.length > 5 ? "wrap" : "",
-                      }}
-                    >
-                      {filters.vendor.map((data) => (
-                        <div key={data.id} className="mx-1">
-                          <span>{data.name}</span>
-                          <span
-                            className="mx-1"
-                            onClick={() =>
-                              findAndRemoveCategory("Vendor", data.id)
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width={10}
-                              height={10}
-                              viewBox="0 0 10 10"
-                              fill="none"
-                            >
-                              <g clipPath="url(#clip0_5512_51442)">
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  fill="#212529"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                                <path
-                                  fillRule="evenodd"
-                                  clipRule="evenodd"
-                                  d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                  stroke="#212529"
-                                  strokeWidth="0.8"
-                                />
-                              </g>
-                              <defs>
-                                <clipPath id="clip0_5512_51442">
-                                  <rect width={10} height={10} fill="white" />
-                                </clipPath>
-                              </defs>
-                            </svg>
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            }
           </div>
           <br />
-          <br />
-          <div class="d-flex align-items-start">
+          <div class="d-flex align-items-start row">
             <div
-              class="frame-427319790"
-              style={{ height: "50vh", width: "30%" }}
+              class="filter-category col-md-3"
+              // style={{ height: "50vh", width: "30%" }}
             >
               <div
                 class="nav flex-column nav-pills me-3"
@@ -498,13 +703,14 @@ export default function FilterPopup({
                 role="tablist"
                 aria-orientation="vertical"
               >
-                <small>Service</small>
+                <small>Vendor</small>
                 <button
-                  onClick={() => setActive("Category")}
+                  onClick={() => setActive("")}
                   style={{
-                    width: "12vw",
+                    // width: "12vw",
                     backgroundColor: "white",
-                    border: active === "Category" ? "1px solid #2176FF" : "",
+                    border:
+                      active === "vendorStatus" ? "1px solid #2176FF" : "",
                   }}
                   class="nav-link active mt-2 d-flex justify-content-between"
                   id="v-pills-home-tab"
@@ -515,8 +721,8 @@ export default function FilterPopup({
                   aria-controls="v-pills-home"
                   aria-selected="true"
                 >
-                  <span> Category</span>
-                  <span
+                  <span> Customer Status</span>
+                  {/* <span
                     className="py-1"
                     style={{
                       color: "white",
@@ -529,7 +735,7 @@ export default function FilterPopup({
                     }}
                   >
                     {filters.category.length}
-                  </span>
+                  </span> */}
                   <span>
                     <svg
                       width={18}
@@ -540,7 +746,7 @@ export default function FilterPopup({
                     >
                       <path
                         d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                        stroke={active === "Category" ? "#2176FF" : "gray"}
+                        stroke={active === "vendorStatus" ? "#2176FF" : "gray"}
                         strokeWidth={2}
                         strokeLinecap="round"
                         strokeLinejoin="round"
@@ -551,7 +757,7 @@ export default function FilterPopup({
                 <button
                   onClick={() => setActive("Sub-Category")}
                   style={{
-                    width: "12vw",
+                    // width: "12vw",
                     backgroundColor: "white",
                     border:
                       active === "Sub-Category" ? "1px solid #2176FF" : "",
@@ -565,7 +771,7 @@ export default function FilterPopup({
                   aria-controls="v-pills-home2"
                   aria-selected="true"
                 >
-                  <span> Sub Category</span>
+                  <span> Location</span>
                   <span
                     className="py-1"
                     style={{
@@ -578,7 +784,7 @@ export default function FilterPopup({
                       borderRadius: "33px",
                     }}
                   >
-                    {filters.sub_category.length}
+                    {filters.location.length}
                   </span>
                   <span>
                     <svg
@@ -598,10 +804,11 @@ export default function FilterPopup({
                     </svg>
                   </span>
                 </button>
+                <small className="mt-2">Date</small>
                 <button
                   onClick={() => setActive("Vendor")}
                   style={{
-                    width: "12vw",
+                    // width: "12vw",
                     backgroundColor: "white",
                     border: active === "Vendor" ? "1px solid #2176FF" : "",
                   }}
@@ -614,8 +821,8 @@ export default function FilterPopup({
                   aria-controls="v-pills-profile"
                   aria-selected="false"
                 >
-                  <span>Vendor</span>
-                  <span
+                  <span>Onboarded On</span>
+                  {/* <span
                     className="py-1"
                     style={{
                       color: "white",
@@ -627,7 +834,7 @@ export default function FilterPopup({
                     }}
                   >
                     {filters.vendor.length}
-                  </span>
+                  </span> */}
                   <span>
                     <svg
                       width={18}
@@ -646,74 +853,13 @@ export default function FilterPopup({
                     </svg>
                   </span>
                 </button>
-
-                <button
-                  onClick={() => setActive("Service-Status")}
-                  style={{
-                    width: "12vw",
-                    backgroundColor: "white",
-                    border:
-                      active === "Service-Status" ? "1px solid #2176FF" : "",
-                  }}
-                  class="nav-link  mt-2 d-flex justify-content-between"
-                  id="v-pills-messages-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#v-pills-messages"
-                  type="button"
-                  role="tab"
-                  aria-controls="v-pills-messages"
-                  aria-selected="false"
-                >
-                  <span>Service Status</span>
-                  {console.log(filters)}
-                  <span
-                    className="py-1"
-                    style={{
-                      color: "white",
-                      fontSize: "12px",
-                      backgroundColor:
-                        active === "Service-Status" ? "#2176FF" : "gray",
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "33px",
-                    }}
-                  >
-                    {filters.status.active === true &&
-                    filters.status.inactive === true
-                      ? "2"
-                      : filters.status.active
-                      ? "1"
-                      : filters.status.inactive
-                      ? "1"
-                      : "0"}
-                  </span>
-                  <span>
-                    <svg
-                      width={18}
-                      height={18}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                        stroke={
-                          active === "Service-Status" ? "#2176FF" : "gray"
-                        }
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </button>
               </div>
             </div>
 
             <div
-              class="tab-content"
+              className="tab-content col-md-9 "
               id="v-pills-tabContent"
-              style={{ position: "relative", left: 20 }}
+              // style={{ position: "relative", left: 20 }}
             >
               <div
                 class="tab-pane fade show active"
@@ -721,7 +867,7 @@ export default function FilterPopup({
                 role="tabpanel"
                 aria-labelledby="v-pills-home-tab"
               >
-                <h4>Customer</h4>
+                <h4>Customer Status</h4>
                 <input
                   type="text"
                   className="form-control"
@@ -731,17 +877,17 @@ export default function FilterPopup({
                       return { ...prev, category: e.target.value };
                     })
                   }
+                  // style={{ width: 320 }}
                 />
                 <br />
                 <div
+                  className="filter-checkbox-section"
                   style={{
-                    height: "400px",
-                    overflow: "scroll",
-                    width: "500px",
+                    height: categorylist.length > 14 ? "50vh" : "",
+                    overflowY: categorylist.length > 14 ? "scroll" : "",
                   }}
-                  className="mx-2 p-2"
                 >
-                  {listDiscount
+                  {categorylist
                     .filter((dat) =>
                       dat["name"]
                         .toLowerCase()
@@ -755,10 +901,8 @@ export default function FilterPopup({
                           value={data.id}
                           name={data.name}
                           id={data.name}
-                          checked={filters.category.find(
-                            (items) => items.id === data.id
-                          )}
-                          onChange={(e) => handleFilterCustomer(e)}
+                          checked={data.status}
+                          onChange={(e) => handleFilterCategory(e, data.id)}
                           style={{ width: 20, height: 20 }}
                         />
                         <label class="form-check-label" for="Boat">
@@ -768,128 +912,135 @@ export default function FilterPopup({
                     ))}
                 </div>
               </div>
+
               <div
                 class="tab-pane fade"
                 id="v-pills-profile"
                 role="tabpanel"
                 aria-labelledby="v-pills-profile-tab"
               >
-                <h4>Vendor</h4>
+                <h4>Onboarded On</h4>
+
+                <div className="row filter-checkbox-date-section ">
+                  <div className="col-md-6">
+                    <label htmlFor="" className="form-label">
+                      From
+                    </label>
+                    <input
+                      type="date"
+                      id=""
+                      className="form-control"
+                      name="siteVisitDate"
+                      value={filters.OnBoardOn.from || ""}
+                      onChange={(e) => {
+                        setFilters({
+                          ...filters,
+                          OnBoardOn: {
+                            from: e.target.value,
+                            to: filters.OnBoardOn.to,
+                          },
+                        });
+                      }}
+                      pattern="\d{4}-\d{2}-\d{2}" // Enforce yyyy-mm-dd format
+                      min="1000-01-01" // Set your minimum date
+                      max="9999-12-31"
+                    />
+                  </div>
+                  <div className="col-md-6">
+                    <label htmlFor="" className="form-label">
+                      To
+                    </label>
+                    <input
+                      type="date"
+                      id=""
+                      className="form-control"
+                      name="siteVisitDate"
+                      value={filters.OnBoardOn.to || ""}
+                      onChange={(e) => {
+                        setFilters({
+                          ...filters,
+                          OnBoardOn: {
+                            from: filters.OnBoardOn.from,
+                            to: e.target.value,
+                          },
+                        });
+                      }}
+                      pattern="\d{4}-\d{2}-\d{2}" // Enforce yyyy-mm-dd format
+                      min="1000-01-01" // Set your minimum date
+                      max="9999-12-31"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="tab-pane fade"
+                id="v-pills-home2"
+                role="tabpanel"
+                aria-labelledby="v-pills-home-tab"
+              >
+                <h4>Location</h4>
                 <input
                   type="text"
                   className="form-control"
                   placeholder="search"
                   onChange={(e) =>
                     setSearch((prev) => {
-                      return { ...prev, vendor: e.target.value };
+                      return { ...prev, sub_category: e.target.value };
                     })
                   }
+                  // style={{ width: 320 }}
                 />
                 <br />
                 <div
+                  className="filter-checkbox-section"
                   style={{
-                    height: "400px",
-                    overflow: "scroll",
-                    width: "500px",
+                    height: subcategorylist.length > 14 ? "50vh" : "",
+                    overflowY: subcategorylist.length > 14 ? "scroll" : "",
                   }}
-                  className="mx-2 p-2"
                 >
-                  {listDiscount
+                  {gccCountriesList
                     .filter((dat) =>
                       dat["name"]
                         .toLowerCase()
-                        .includes(search?.vendor.toLowerCase())
+                        .includes(search.sub_category.toLowerCase())
                     )
-                    .map((data) => (
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value={data.id}
-                          name={data.name}
-                          checked={filters.vendor.find(
-                            (items) => items.id === data.id
-                          )}
-                          onChange={(e) => handleFilterLocation(e)}
-                          id={data?.profileextra?.location?.country}
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat">
-                          {data?.profileextra?.location?.country}
-                        </label>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
-              <div
-                class="tab-pane fade"
-                id="v-pills-messages"
-                role="tabpanel"
-                aria-labelledby="v-pills-messages-tab"
-              >
-                <h4>Service Status</h4>
-
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id=""
-                    defaultChecked={filters.status.active}
-                    onChange={(e) => {
-                      setFilters((prev) => {
-                        return {
-                          ...prev,
-                          status: {
-                            active: !filters.status.active,
-                            inactive: filters.status.inactive,
-                          },
-                        };
-                      });
-                    }}
-                    style={{ width: 20, height: 20 }}
-                  />
-                  <label class="form-check-label" for="Boat">
-                    {"Active"}
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    value=""
-                    id=""
-                    defaultChecked={filters.status.inactive}
-                    onChange={(e) => {
-                      setFilters((prev) => {
-                        return {
-                          ...prev,
-                          status: {
-                            inactive: !filters.status.inactive,
-                            active: filters.status.active,
-                          },
-                        };
-                      });
-                    }}
-                    style={{ width: 20, height: 20 }}
-                  />
-                  <label class="form-check-label" for="Boat">
-                    {"Inactive"}
-                  </label>
+                    .map((data) => {
+                      console.log(data.code, "country");
+                      return (
+                        <div class="form-check ">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            value={data.id}
+                            name={data.label}
+                            checked={filters.location.find(
+                              (items) => items.id === data.id
+                            )}
+                            onChange={(e) => handleFilterSubCategory(e)}
+                            id={data.name}
+                            style={{ width: 20, height: 20 }}
+                          />
+                          <div className="location-flag-list">
+                            <img
+                              src={`https://flagcdn.com/16x12/${data.code.toLowerCase()}.png`}
+                            />
+                            <label class="form-check-label mx-1" for="Boat">
+                              {data?.name}
+                            </label>
+                          </div>
+                        </div>
+                      );
+                    })}
                 </div>
               </div>
             </div>
           </div>
+          <hr />
           <div className="d-flex justify-content-end mt-3">
             <button
               type="reset"
               className="m-1 btn btn-small btn-white"
-              onClick={() => {
-                if (checkfilterslength) {
-                  window.location.reload();
-                }
-              }}
+              onClick={handleClearFilter}
             >
               Clear Filter
             </button>

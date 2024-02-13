@@ -34,6 +34,37 @@ function CustomerPasswordReset({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
+  //change
+  const [valuesChange, setValuesChange] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordChange = () => {
+    setValuesChange({
+      ...valuesChange,
+      showPassword: !valuesChange.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordChange = (event) => {
+    event.preventDefault();
+  };
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
+  //current
   const [values, setValues] = useState({
     showPassword: false,
   });
@@ -49,6 +80,10 @@ function CustomerPasswordReset({ show, close }) {
     password: Yup.string()
       .min(6, "Password should be at least 6 characters")
       .required("Password is required"),
+    newPassword: Yup.string().min(
+      6,
+      "Password should be at least 6 characters"
+    ),
     confirmPassword: Yup.string()
       .max(50)
       .required("Confirm Password is required")
@@ -136,7 +171,6 @@ function CustomerPasswordReset({ show, close }) {
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
-          {" "}
           <div className="mt-2">
             <label
               htmlFor=""
@@ -146,15 +180,15 @@ function CustomerPasswordReset({ show, close }) {
                 fontSize: "13px",
               }}
             >
-              Password <span style={{ color: "red" }}>*</span>
+              Current Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
               type={values.showPassword ? "text" : "password"}
-              name="password"
+              name="changePassword"
               className="form-control"
               placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
+              value={formik.values.currentPassword}
+              onChange={formik.handleChange} // Use the modified handleChange function
               onBlur={formik.handleBlur}
               InputProps={{
                 endAdornment: (
@@ -174,8 +208,54 @@ function CustomerPasswordReset({ show, close }) {
                 ),
               }}
             />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
+
+            {formik.touched.currentPassword && formik.errors.currentPassword ? (
+              <div className="error">{formik.errors.currentPassword}</div>
+            ) : null}
+          </div>
+        </div>
+
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              New Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <TextField
+              type={valuesChange.showPassword ? "text" : "password"}
+              name="newPassword"
+              className="form-control"
+              placeholder="Password"
+              value={formik.values.newPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPasswordChange}
+                      onMouseDown={handleMouseDownPasswordChange}
+                      edge="end"
+                    >
+                      {valuesChange.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {formik.touched.ChangePassword && formik.errors.ChangePassword ? (
+              <div className="error">{formik.errors.ChangePassword}</div>
             ) : null}
           </div>
         </div>
@@ -193,7 +273,7 @@ function CustomerPasswordReset({ show, close }) {
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
-              type={values.showPassword ? "text" : "password"}
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
@@ -204,11 +284,11 @@ function CustomerPasswordReset({ show, close }) {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
                       edge="end"
                     >
-                      {values.showPassword ? (
+                      {valuesConfirm.showPassword ? (
                         <VisibilityIcon />
                       ) : (
                         <VisibilityOffIcon />
@@ -234,6 +314,18 @@ function CustomerPasswordReset({ show, close }) {
         <br />
         <br />
         <br />
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+
+
+
+
+
+
+
 
         <div
           style={{

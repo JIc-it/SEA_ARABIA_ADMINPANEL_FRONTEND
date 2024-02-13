@@ -32,6 +32,7 @@ function UpdateAdmin({ show, close }) {
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
+        console.log("dta admin", data);
         setAdminDetails(data);
       })
       .catch((error) => {
@@ -88,7 +89,7 @@ function UpdateAdmin({ show, close }) {
       first_name: adminDetails?.first_name || "",
       last_name: adminDetails?.last_name || "",
       email: adminDetails?.email || "",
-
+      gender: adminDetails?.gender?.label || "",
       mobile: adminDetails?.mobile || "",
       location: adminDetails?.profileextra?.location?.country || "",
 
@@ -110,7 +111,7 @@ function UpdateAdmin({ show, close }) {
             //   location: values.location.id,
             // },
             location: values.location.id,
-            gender: values.gender,
+            gender: values.gender?.label,
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
@@ -378,7 +379,10 @@ function UpdateAdmin({ show, close }) {
             </svg>
           </div>
         </div>
-
+        <br />
+        <br />
+        <br />
+        <br />
         <div
           style={{
             display: "flex",

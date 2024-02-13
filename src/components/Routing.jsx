@@ -37,7 +37,7 @@ import UserVendorAddService from "../components/UserVendor/UserVendorAddService"
 import UserVendorCardDetails from "./UserVendor/UserVendorCardDetails";
 import DashBoard from "../pages/DashBoard";
 import VenderIndivitualEdit from "./Vendor_tabs/VenderDetailsEdit/VenderIndivitualEdit";
-import GuestUser from "../pages/Users/GuestUser";
+import GuestUser from "../pages/Users/Guests/GuestUser";
 import ServiceEdit from "./Service/ServiceEdit";
 import AdminView from "../pages/Users/Admin/AdminView";
 import SalesRepView from "../pages/Users/sales/SalesRepView";
@@ -68,6 +68,7 @@ import SalesActivityLog from "../pages/Users/sales/salesActivityLog";
 import ProfileActivityLogs from "./Profile/ProfileActivityLogs";
 
 import CustomerBookingList from "./Booking/CustomerBookingList";
+import Guest from "../pages/Users/Guests/Guest";
 
 function AllRouting() {
   return (
@@ -158,7 +159,7 @@ function AllRouting() {
       <Route path="/service-add/:id" element={<ServiceAdd />} />
       <Route path="/service-view/:id" element={<ServiceView />} />
       <Route path="/service-edit/:id" element={<ServiceEdit />} />
-      <Route path="/guest-user" element={<GuestUser />} />
+      <Route path="/guest-user" element={<Guest />} />
       <Route path="/cancellation-booking" element={<CancellationBooking />} />
       <Route path="/cancellation-history" element={<CancellationHistory />} />
       <Route path="/booking-view/:id" element={<BookingView />} />

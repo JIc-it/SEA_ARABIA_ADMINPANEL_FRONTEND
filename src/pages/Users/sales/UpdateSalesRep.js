@@ -174,7 +174,7 @@ function UpdateSalesRep({ show, close }) {
           }}
         >
           {" "}
-          Edit Details{" "}
+          Reset Password
         </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
