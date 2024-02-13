@@ -587,7 +587,7 @@ const ServiceView = () => {
                   <div className="d-flex">
                     <div className="col-12 px-2">
                       <div>
-                        <p style={{ color: "#68727D" }}>Return Policy</p>
+                        <p style={{ color: "#68727D" }}>Refund Policy</p>
                         <p style={{fontWeight:"550",wordBreak:"break-word"}}>{oneservice?.refund_policy}</p>
                       </div>
                     </div>

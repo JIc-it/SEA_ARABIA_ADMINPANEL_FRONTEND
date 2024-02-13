@@ -18,7 +18,6 @@ function EventEdit({ show, close }) {
   const params = useParams()
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
-  const [validateeditor, setValidateEditor] = useState("")
   const [open, setOpen] = useState(false)
 
   const handleClose = () => {
@@ -29,6 +28,7 @@ function EventEdit({ show, close }) {
     name: Yup.string()
       .required("Name is required")
       .max(20, "Name must be at most 20 characters"),
+      description: Yup.string().required("Description is required"),
     short_description: Yup.string()
       .required("Short Description is required")
       .max(50, "Short Description must be at most 50 characters"),
@@ -38,8 +38,8 @@ function EventEdit({ show, close }) {
       .required("Cancellation Policy is required"),
     refund_policy: Yup.string()
       .required("Refund Policy is required"),
-    price: Yup.number().notOneOf([0], 'Price cannot be zero').min(1, 'Must be greater than zero'),
-    capacity: Yup.number().required("Capacity is required").notOneOf([0], 'Capacity cannot be zero').min(1, 'Must be greater than zero') 
+      price: Yup.number().required("Price is required").notOneOf([0], 'Price cannot be zero').min(1, 'Must be greater than zero'),
+      capacity: Yup.number().required("Capacity is required").notOneOf([0], 'Capacity cannot be zero').min(1, 'Must be greater than zero').max(10, 'Not greater than 10'),
   });
 
 
@@ -50,13 +50,13 @@ function EventEdit({ show, close }) {
       type: "Package",
       description: "",
       short_description: "",
-      capacity: 0,
+      capacity: "",
       refund_policy: "",
       cancellation_policy: "",
-      price: 0,
+      price: "",
       image: null,
       imageURL: null,
-      is_active: false,
+      is_active: true,
 
     },
     validationSchema,
@@ -83,6 +83,7 @@ function EventEdit({ show, close }) {
             const adminData = await updateEvent(params.id, datas);
             if (adminData) {
               setIsLoading(false);
+              navigate(-1)
               toast.success("Updated Successfully")
             } else {
               console.error("Error while creating Admin:", adminData.error);
@@ -107,6 +108,7 @@ function EventEdit({ show, close }) {
             const adminData = await updateEvent(params.id, formData);
             if (adminData) {
               setIsLoading(false);
+              navigate(-1);
               toast.success("Updated Successfully")
             } else {
               console.error("Error while creating Admin:", adminData.error);
@@ -149,16 +151,6 @@ function EventEdit({ show, close }) {
       })
   }, [params.id])
 
-  function submit(e) {
-    e.preventDefault();
-    if (formik.values.description.replace("<p><br></p>", "").trim() === "") {
-        return setValidateEditor("Description Required")
-    }
-    else if (formik.values.description.trim() !== "") {
-        return formik.handleSubmit()
-    }
-}
-
   return (
     <>
       {!isLoading &&
@@ -170,7 +162,7 @@ function EventEdit({ show, close }) {
                   <div className="col-12">
                     <div className="row row-cards">
                       <div className="breadcrumbs">
-                        <p>Events and Packages</p>
+                        <p style={{ color: "#006875" }}>Events and Packages</p>
                         <span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -187,7 +179,7 @@ function EventEdit({ show, close }) {
                             />
                           </svg>
                         </span>
-                        <p>{formik.values.name}</p>
+                        <p style={{ color: "#006875" }}>{formik.values.name}</p>
                         <span>
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
@@ -205,7 +197,7 @@ function EventEdit({ show, close }) {
                           </svg>
                         </span>
 
-                        <p>Edit Event</p>
+                        <p style={{ color: "#006875" }}>Edit Event</p>
                       </div>
                     </div>
                   </div>
@@ -232,7 +224,7 @@ function EventEdit({ show, close }) {
                   </svg>{" "}
                   &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
                 </div>
-                <form onSubmit={submit}>
+                <form onSubmit={formik.handleSubmit}>
                   <div
                     className={
                       isMobileView ? "d-flex flex-column" : "d-flex flex-row"
@@ -358,7 +350,7 @@ function EventEdit({ show, close }) {
                           >
                             Description 
                           </label>
-                          <TextEditor formik={formik} validateeditor={validateeditor} setValidateEditor={setValidateEditor} />
+                          <TextEditor {...formik}/>
                         </div>
                         <br></br>
                         <div className="mt-2"></div>
@@ -481,7 +473,7 @@ function EventEdit({ show, close }) {
                               <div style={{ position: "relative" }}>
                                 <input
                                   type="number"
-                                  placeholder=""
+                                  placeholder="0"
                                   className="form-control"
                                   name="price"
                                   value={formik.values.price}
