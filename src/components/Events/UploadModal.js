@@ -80,8 +80,6 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
         }
       };
 
-
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
        {<div >
@@ -113,7 +111,6 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
                                     elevation={3}
                                     style={{
                                         cursor: 'pointer',
-                                        padding: '8px',
                                         width: "100%",
                                         border: '1px dashed lightgray',
                                         boxShadow: "none",
@@ -147,7 +144,7 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
                                 <div className="error">{formik.errors.image}</div>
                             ) : null} 
                             {formik?.values?.image?.name && <span className='my-3'>File Name : {formik.values?.image?.name}</span>}
-                            <Typography variant="p" component="p" sx={{ fontWeight: 800, textAlign: "left", marginTop: "3px" }}>
+                            {/* <Typography variant="p" component="p" sx={{ fontWeight: 800, textAlign: "left", marginTop: "3px" }}>
                                 Preview Image
                             </Typography>
                             <div className="d-flex  mt-2">
@@ -155,7 +152,7 @@ export default function UploadPopup({ handleClose, open,image,formikset,imageURL
                         src={imageURL===null ? image : imageURL  }
                         className="me-3 w-25 h-25 rounded"
                       />
-                            </div>
+                            </div> */}
                         </Box>
                         <hr></hr>
                         <div className='d-flex justify-content-end'>

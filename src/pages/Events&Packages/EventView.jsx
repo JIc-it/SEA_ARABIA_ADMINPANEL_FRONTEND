@@ -71,21 +71,12 @@ const EventView = () => {
           <div className="container">
             <Breadcrumb style={{ marginLeft: "5px" }}>
               <Breadcrumb.Item href="#">
-                Events and Packages
-                <svg
-                  width={20}
-                  height={20}
-                  viewBox="0 0 20 20"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <pathR
-                    d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15"
-                    stroke="#68727D"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                  />
-                </svg>
+                <span style={{ color: "#006875" }}>Events and Packages</span>
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
+                    <path d="M8.33301 5L12.7438 9.41074C13.0692 9.73618 13.0692 10.2638 12.7438 10.5893L8.33301 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
+                  </svg>
+                </span>
                 <span style={{ color: "#006875" }}>{oneservice?.name}</span>
               </Breadcrumb.Item>
             </Breadcrumb>
@@ -112,12 +103,19 @@ const EventView = () => {
                 <div
                   class="px-3 py-2 mx-2 rounded"
                   style={{
-                    textAlign: "center",
-                    color: oneservice.is_active === true ? "#13b370" : "red",
-                    background:
-                      oneservice.is_active === true
-                        ? "rgba(19, 179, 112, 0.2)"
-                        : "#ff9999",
+                    fontSize: "14px",
+                    padding: "6px 10px",
+                    borderRadius: "4px",
+                    color: oneservice?.is_active ? "#40C77E" : "red",
+                    borderRadius:
+                      "var(--Roundness-Round-Inside, 6px)",
+                    background: oneservice?.is_active
+                      ? "rgba(19, 179, 112, 0.20)"
+                      : "#ffb3b3",
+
+                    /* Shadow/XSM */
+                    boxShadow:
+                      "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
                   }}
                 >
                   {oneservice.is_active === true ? "Active" : "Inactive"}
@@ -175,9 +173,8 @@ const EventView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Short Description</p>
-                        <p>
-                          {oneservice?.short_description &&
-                            HTMLParse(oneservice?.short_description)}
+                        <p style={{ fontWeight: "700" }}>
+                          {oneservice?.short_description}
                         </p>
                       </div>
                     </div>
@@ -186,7 +183,7 @@ const EventView = () => {
                     <div className="col-12 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Description</p>
-                        <p>
+                        <p style={{ fontWeight: "700" }}>
                           {oneservice?.description &&
                             HTMLParse(oneservice?.description)}
                         </p>
@@ -213,7 +210,7 @@ const EventView = () => {
                     <div className="col-4 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Location</p>
-                        <p style={{ textTransform: "capitalize" }}>
+                        <p style={{ textTransform: "capitalize",fontWeight: "700" }}>
                           {oneservice?.location}
                         </p>
                       </div>
@@ -231,16 +228,16 @@ const EventView = () => {
                   <div className="d-flex">
                     <div className="col-12 px-2">
                       <div>
-                        <p style={{ color: "#68727D" }}>Privacy Policy</p>
-                        <p>{oneservice?.cancellation_policy}</p>
+                        <p style={{ color: "#68727D" }}>Cancellation Policy</p>
+                        <p style={{ fontWeight: "700" }}>{oneservice?.cancellation_policy}</p>
                       </div>
                     </div>
                   </div>
                   <div className="d-flex">
                     <div className="col-12 px-2">
                       <div>
-                        <p style={{ color: "#68727D" }}>Return Policy</p>
-                        <p>{oneservice?.refund_policy}</p>
+                        <p style={{ color: "#68727D" }}>Refund Policy</p>
+                        <p style={{ fontWeight: "700" }}>{oneservice?.refund_policy}</p>
                       </div>
                     </div>
                   </div>
@@ -262,7 +259,7 @@ const EventView = () => {
                           src={oneservice.image}
                           alt={"image"}
                           className="rounded"
-                          style={{ width: "200px", height: "125px" }}
+                          style={{ width: "200px", height: "100px" }}
                         />
                       </div>
                     </div>
