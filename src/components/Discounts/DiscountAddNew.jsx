@@ -105,15 +105,15 @@ export default function DiscountAddNew() {
       }
     ),
 
-    end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
-      if (is_lifetime === false) {
+    end_date: Yup.string().when("expiration", ([expiration], schema) => {
+      if (expiration === "Limited-Time") {
         return schema.required("Date is Required");
       } else {
         return schema.notRequired();
       }
     }),
-    end_time: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
-      if (is_lifetime === false) {
+    end_time: Yup.string().when("expiration", ([expiration], schema) => {
+      if (expiration === "Limited-Time") {
         return schema.required("Time is Required");
       } else {
         return schema.notRequired();
@@ -164,7 +164,7 @@ export default function DiscountAddNew() {
       multiple_redeem_specify_no: 1,
       start_date: "",
       start_time: "",
-      is_lifetime: false,
+      expiration: "Limited-Time",
       end_date: "",
       end_time: "",
       on_home_screen: true,
@@ -222,18 +222,9 @@ export default function DiscountAddNew() {
           formdata.append("specify_no", values.specify_no);
           { formdata.append("allow_multiple_redeem", values.allow_multiple_redeem !== "" ? values.allow_multiple_redeem : "") }
           { formdata.append("multiple_redeem_specify_no", values.multiple_redeem_specify_no !== "" ? values.multiple_redeem_specify_no : "") }
-          formdata.append(
-            "start_date",
-            startDateTime()
-          );
-          formdata.append("is_lifetime", checktrue(values.is_lifetime));
-          {
-            values.end_date.trim() !== "" &&
-              formdata.append(
-                "end_date",
-                endDateTime()
-              );
-          }
+          formdata.append("start_date",startDateTime());
+          formdata.append("expiration", values.expiration);
+          {values.end_date!=="" ? formdata.append("end_date", endDateTime()):formdata.append("end_date","")}
           formdata.append("on_home_screen", checktrue(values.on_home_screen));
           formdata.append("on_checkout", checktrue(values.on_checkout));
           formdata.append("apply_global", checktrue(values.apply_global));
@@ -953,16 +944,16 @@ export default function DiscountAddNew() {
                         fontSize: "15px",
                         textTransform: "capitalize",
                         backgroundColor:
-                          formik.values.is_lifetime === true ? "black" : "",
+                          formik.values.expiration === "No-Expiry" ? "black" : "",
                         color:
-                          formik.values.is_lifetime === true ? "white" : "",
+                          formik.values.expiration === "No-Expiry" ? "white" : "",
                         padding: "3px 30px",
                         textAlign: "center",
                       }}
                       onClick={() =>
                         updateFormValues({
                           ...formik.values,
-                          is_lifetime: !formik.values.is_lifetime,
+                          expiration: "No-Expiry",
                           end_date: "",
                           end_time:""
                         })
@@ -976,16 +967,16 @@ export default function DiscountAddNew() {
                         fontSize: "15px",
                         textTransform: "capitalize",
                         backgroundColor:
-                          formik.values.is_lifetime === false ? "black" : "",
+                          formik.values.expiration === "Limited-Time" ? "black" : "",
                         color:
-                          formik.values.is_lifetime === false ? "white" : "",
+                          formik.values.expiration === "Limited-Time" ? "white" : "",
                         padding: "3px 30px",
                         textAlign: "center",
                       }}
                       onClick={() =>
                         updateFormValues({
                           ...formik.values,
-                          is_lifetime: !formik.values.is_lifetime,
+                          expiration: "Limited-Time",
                         })
                       }
                     >
@@ -1001,7 +992,7 @@ export default function DiscountAddNew() {
                   >
                     <p style={{ fontWeight: 550, fontSize: "14px" }}>
                       Validity Date{" "}
-                      {formik.values.is_lifetime === false && (
+                      {formik.values.expiration === "Limited-Time" && (
                         <span style={{ color: "red" }}>*</span>
                       )}
                     </p>
@@ -1010,7 +1001,7 @@ export default function DiscountAddNew() {
                       value={formik.values?.end_date}
                       name="end_date"
                       min={newDate}
-                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
+                      disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
                       className="discount-input"
                       style={{ padding: "5px",width:"100%" }}
                       onChange={formik.handleChange}
@@ -1026,7 +1017,7 @@ export default function DiscountAddNew() {
                   >
                     <p style={{ fontWeight: 550, fontSize: "14px" }}>
                       Validity Time{" "}
-                      {formik.values.is_lifetime === false && (
+                      {formik.values.expiration === "Limited-Time" && (
                         <span style={{ color: "red" }}>*</span>
                       )}
                     </p>
@@ -1034,7 +1025,7 @@ export default function DiscountAddNew() {
                       type="time"
                       value={formik.values?.end_time}
                       name="end_time"
-                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
+                      disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
                       className="discount-input"
                       style={{ padding: "5px",width:"100%" }}
                       onChange={formik.handleChange}
@@ -1073,12 +1064,15 @@ export default function DiscountAddNew() {
                         checked={formik.values.apply_global}
                         name="apply_global"
                         value={formik.values.apply_global}
-                        onChange={formik.handleChange}
+                        onChange={()=>{
+                          formik.setValues((prev)=>{
+                            return {...prev,apply_global:!formik.values.apply_global,companies:[],services:[]}
+                          })
+                        }}
                         onBlur={formik.handleBlur}
                       />
                       <span class="slider round"></span>
                     </label>
-                    {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                   </div>
                   <AddMorePopup
                     check={formik?.values?.apply_global}
@@ -1093,15 +1087,9 @@ export default function DiscountAddNew() {
                   />
                 </div>
               </div>
-              {formik.values.apply_global &&
+              {formik.values.apply_global && formik.values.companies.length===0 &&
             <p style={{textAlign:"center",fontWeight: "700", fontSize: "14px" }}>Applied to All Services / Vendors </p>
             }
-              {!formik.values.apply_global && (
-                <div style={{ fontWeight: 550, textAlign: "center" }}>
-                  {" "}
-                  No Service/Vendor Found
-                </div>
-              )}
               {formik.touched.companies && formik.errors.companies ? (
                 <div className="error text-center">
                   {formik.errors.companies}
