@@ -985,11 +985,8 @@ export default function DiscountAddNew() {
                   </ButtonGroup>
                 </div>
 
-                <div className="d-flex justify-content-between">
-                  <div
-
-                    style={{ marginTop: "8px",width:"50%" }}
-                  >
+                <div className="d-flex justify-content-between align-items-center">
+                  <div className="mx-2">
                     <p style={{ fontWeight: 550, fontSize: "14px" }}>
                       Validity Date{" "}
                       {formik.values.expiration === "Limited-Time" && (
@@ -1011,10 +1008,7 @@ export default function DiscountAddNew() {
                       <div className="error">{formik.errors.end_date}</div>
                     ) : null}
                   </div>
-                  <div
-                    className="mx-4"
-                    style={{ marginTop: "8px" }}
-                  >
+                  <div className="mx-2">
                     <p style={{ fontWeight: 550, fontSize: "14px" }}>
                       Validity Time{" "}
                       {formik.values.expiration === "Limited-Time" && (

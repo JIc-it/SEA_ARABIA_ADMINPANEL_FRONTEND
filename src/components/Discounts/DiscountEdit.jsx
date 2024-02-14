@@ -23,7 +23,6 @@ export default function DiscountEdit() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [isupdated,setIsUpdated]=useState(false)
 
     const serviceObjectSchema = Yup.object({
         id: Yup.string().required(),
@@ -229,7 +228,6 @@ export default function DiscountEdit() {
               setIsLoading(false);
               navigate(-1)
               toast.success("Updated Successfully")
-              setIsUpdated(true)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -250,12 +248,7 @@ export default function DiscountEdit() {
 
       //first load
       useEffect(() => {
-        if(isupdated){
-            setIsLoading(false)
-        }
-        else{
-            setIsLoading(true)
-        }
+        setIsLoading(true)
         getDiscountOfferView(params.id)
           .then((data) => {
             setIsLoading(false)
@@ -282,14 +275,13 @@ export default function DiscountEdit() {
             formik.setFieldValue("companies",data.companies);
             formik.setFieldValue("purchase_requirement",data.purchase_requirement);
             formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
-            setIsUpdated(false)
           })
           .catch((error) => {
             setIsLoading(false)
             toast.error(error.message);
           });
     
-      }, [params.id,isupdated]);
+      }, [params.id]);
 
 
     const updateFormValues = (fields) => {
@@ -736,58 +728,52 @@ if(!isLoading){
                             </div>
 
 
-                            <div className="d-flex justify-content-between">
-                  <div
-
-                    style={{ marginTop: "8px",width:"50%" }}
-                  >
-                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                      Validity Date{" "}
-                      {formik.values.expiration === "Limited-Time" && (
-                        <span style={{ color: "red" }}>*</span>
-                      )}
-                    </p>
-                    <input
-                      type="date"
-                      value={formik.values?.end_date}
-                      name="end_date"
-                      min={newDate}
-                      disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
-                      className="discount-input"
-                      style={{ padding: "5px",width:"100%" }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.end_date && formik.errors.end_date ? (
-                      <div className="error">{formik.errors.end_date}</div>
-                    ) : null}
-                  </div>
-                  <div
-                    className="mx-4"
-                    style={{ marginTop: "8px" }}
-                  >
-                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                      Validity Time{" "}
-                      {formik.values.expiration === "Limited-Time" && (
-                        <span style={{ color: "red" }}>*</span>
-                      )}
-                    </p>
-                    <input
-                      type="time"
-                      value={formik.values?.end_time}
-                      name="end_time"
-                      disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
-                      className="discount-input"
-                      style={{ padding: "5px",width:"100%" }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      min={formik.values.start_date}
-                    />
-                    {formik.touched.end_time && formik.errors.end_time ? (
-                      <div className="error">{formik.errors.end_time}</div>
-                    ) : null}
-                  </div>
-                </div>
+                            <div className="d-flex justify-content-between align-items-center">
+                            <div className="mx-2">
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                                        Validity Date{" "}
+                                        {formik.values.expiration === "Limited-Time" && (
+                                            <span style={{ color: "red" }}>*</span>
+                                        )}
+                                    </p>
+                                    <input
+                                        type="date"
+                                        value={formik.values?.end_date}
+                                        name="end_date"
+                                        min={newDate}
+                                        disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
+                                        className="discount-input"
+                                        style={{ padding: "5px", width: "100%" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.end_date && formik.errors.end_date ? (
+                                        <div className="error">{formik.errors.end_date}</div>
+                                    ) : null}
+                                </div>
+                                <div className="mx-2">
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                                        Validity Time{" "}
+                                        {formik.values.expiration === "Limited-Time" && (
+                                            <span style={{ color: "red" }}>*</span>
+                                        )}
+                                    </p>
+                                    <input
+                                        type="time"
+                                        value={formik.values?.end_time}
+                                        name="end_time"
+                                        disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
+                                        className="discount-input"
+                                        style={{ padding: "5px", width: "100%" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        min={formik.values.start_date}
+                                    />
+                                    {formik.touched.end_time && formik.errors.end_time ? (
+                                        <div className="error">{formik.errors.end_time}</div>
+                                    ) : null}
+                                </div>
+                            </div>
 
                         </div>
                     </div>
