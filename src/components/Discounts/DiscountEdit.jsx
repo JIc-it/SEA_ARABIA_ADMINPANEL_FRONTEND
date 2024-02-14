@@ -23,6 +23,7 @@ export default function DiscountEdit() {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isupdated,setIsUpdated]=useState(false)
 
     const serviceObjectSchema = Yup.object({
         id: Yup.string().required(),
@@ -163,7 +164,7 @@ export default function DiscountEdit() {
             apply_global: true,
             services: [],
             companies: [],
-            purchase_requirement: true,
+            purchase_requirement: false,
             min_purchase_amount: "",
         },
         validationSchema,
@@ -228,6 +229,7 @@ export default function DiscountEdit() {
               setIsLoading(false);
               navigate(-1)
               toast.success("Updated Successfully")
+              setIsUpdated(true)
             } else {
               console.error("Error while creating Admin:", adminData.error);
               setIsLoading(false);
@@ -248,7 +250,12 @@ export default function DiscountEdit() {
 
       //first load
       useEffect(() => {
-        setIsLoading(true)
+        if(isupdated){
+            setIsLoading(false)
+        }
+        else{
+            setIsLoading(true)
+        }
         getDiscountOfferView(params.id)
           .then((data) => {
             setIsLoading(false)
@@ -275,13 +282,14 @@ export default function DiscountEdit() {
             formik.setFieldValue("companies",data.companies);
             formik.setFieldValue("purchase_requirement",data.purchase_requirement);
             formik.setFieldValue("min_purchase_amount",data.min_purchase_amount);
+            setIsUpdated(false)
           })
           .catch((error) => {
             setIsLoading(false)
             toast.error(error.message);
           });
     
-      }, [params.id]);
+      }, [params.id,isupdated]);
 
 
     const updateFormValues = (fields) => {
