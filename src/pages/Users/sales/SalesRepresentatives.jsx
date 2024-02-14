@@ -268,7 +268,7 @@ const SalesRepresentatives = () => {
                       style={{ fontSize: "18px", fontWeight: "700" }}
                     >
                       {count?.sales_rep_count}
-                      {/* {totalGuestUser} */}
+                      
                     </div>
                   </div>
                 </div>

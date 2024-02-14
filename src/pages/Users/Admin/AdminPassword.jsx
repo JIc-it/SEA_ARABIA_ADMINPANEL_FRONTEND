@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
   UpdateAdminListById,
   getAdminListById,
 } from "../../../services/GuestHandle";
 import { useParams } from "react-router-dom";
 import { passwordRegex } from "../../../helpers";
+import { IconButton, InputAdornment, TextField } from "@mui/material";
 
 function AdminPassword({ show, close }) {
   const adminId = useParams()?.adminId;
@@ -32,7 +34,10 @@ function AdminPassword({ show, close }) {
   }, [adminId]);
 
   const validationSchema = Yup.object({
-    password: Yup.string().min(6, "Password should be at least 6 characters"),
+    newPassword: Yup.string().min(
+      6,
+      "Password should be at least 6 characters"
+    ),
     // .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
@@ -43,10 +48,51 @@ function AdminPassword({ show, close }) {
       )
       .oneOf([Yup.ref("password")], "Passwords must match"),
   });
+  //change
+  const [valuesChange, setValuesChange] = useState({
+    showPassword: false,
+  });
 
+  const handleClickShowPasswordChange = () => {
+    setValuesChange({
+      ...valuesChange,
+      showPassword: !valuesChange.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordChange = (event) => {
+    event.preventDefault();
+  };
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
+  //current
+  const [values, setValues] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
   const formik = useFormik({
     initialValues: {
-      password: adminDetails?.password || "",
+      newPassword: adminDetails?.password || "",
       confirmPassword: adminDetails?.confirmPassword || "",
 
       // Add other fields as needed
@@ -58,12 +104,12 @@ function AdminPassword({ show, close }) {
       if (!isLoading) {
         try {
           const data = {
-            password: values.password,
+            newPassword: values.password,
             confirmPassword: values.confirmPassword,
           };
 
           const adminData = await UpdateAdminListById(adminId, data);
-          
+
           if (adminData) {
             setIsLoading(false);
             window.location.reload();
@@ -110,7 +156,7 @@ function AdminPassword({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Details </Offcanvas.Title>
+        <Offcanvas.Title>Reset Password </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -124,19 +170,79 @@ function AdminPassword({ show, close }) {
                 fontSize: "13px",
               }}
             >
-              Password <span style={{ color: "red" }}>*</span>
+              Current Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="password"
-              name="password"
+            <TextField
+              type={values.showPassword ? "text" : "password"}
+              name="Password"
               className="form-control"
               placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
+              value={formik.values.currentPassword}
+              onChange={formik.handleChange} // Use the modified handleChange function
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                    >
+                      {values.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
+
+            {formik.touched.currentPassword && formik.errors.currentPassword ? (
+              <div className="error">{formik.errors.currentPassword}</div>
+            ) : null}
+          </div>
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              New Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <TextField
+              type={valuesChange.showPassword ? "text" : "password"}
+              name="newPassword"
+              className="form-control"
+              placeholder="Password"
+              value={formik.values.newPassword}
+              onChange={formik.handleChange} // Use the modified handleChange function
+              onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPasswordChange}
+                      onMouseDown={handleMouseDownPasswordChange}
+                      edge="end"
+                    >
+                      {valuesChange.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+
+            {formik.touched.newPassword && formik.errors.newPassword ? (
+              <div className="error">{formik.errors.newPassword}</div>
             ) : null}
           </div>
         </div>
@@ -153,14 +259,31 @@ function AdminPassword({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <input
-              type="Password"
+            <TextField
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
               value={formik.values.confirmPassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
+                      edge="end"
+                    >
+                      {valuesConfirm.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>

@@ -25,6 +25,7 @@ function SalesPassword({ show, close }) {
   useEffect(() => {
     getSalesRepListById(salesRepId)
       .then((data) => {
+        console.log("sales password", data);
         setSalesRepDetails(data);
       })
       .catch((error) => {
@@ -33,7 +34,10 @@ function SalesPassword({ show, close }) {
   }, [salesRepId]);
 
   const validationSchema = Yup.object({
-    password: Yup.string()
+    currentPassword: Yup.string()
+      .min(6, "Password should be at least 6 characters")
+      .required("Password is required"),
+    newPassword: Yup.string()
       .min(6, "Password should be at least 6 characters")
       .required("Password is required"),
     confirmPassword: Yup.string()
@@ -43,8 +47,40 @@ function SalesPassword({ show, close }) {
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
-      .oneOf([Yup.ref("password")], "Passwords must match"),
+      .oneOf([Yup.ref("newPassword")], "Passwords must match"),
   });
+
+  //change
+  const [valuesChange, setValuesChange] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordChange = () => {
+    setValuesChange({
+      ...valuesChange,
+      showPassword: !valuesChange.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordChange = (event) => {
+    event.preventDefault();
+  };
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
+  //current
   const [values, setValues] = useState({
     showPassword: false,
   });
@@ -58,7 +94,8 @@ function SalesPassword({ show, close }) {
   };
   const formik = useFormik({
     initialValues: {
-      password: salesRepDetails?.password || "",
+      currentPassword: salesRepDetails?.password || "",
+      newPassword: salesRepDetails?.password || "",
       confirmPassword: salesRepDetails?.confirmPassword || "",
 
       // Add other fields as needed
@@ -106,6 +143,7 @@ function SalesPassword({ show, close }) {
     formik.setValues({
       first_name: salesRepDetails?.first_name || "",
       last_name: salesRepDetails?.last_name || "",
+      current_password: salesRepDetails?.password || "",
       password: salesRepDetails?.password || "",
 
       email: salesRepDetails?.email || "",
@@ -128,7 +166,9 @@ function SalesPassword({ show, close }) {
         closeButton
         style={{ border: "0px", paddingBottom: "0px" }}
       >
-        <Offcanvas.Title>Edit Details </Offcanvas.Title>
+        <Offcanvas.Title style={{ fontWeight: "600" }}>
+          Reset Password{" "}
+        </Offcanvas.Title>
       </Offcanvas.Header>
       <form action="" onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
@@ -142,15 +182,15 @@ function SalesPassword({ show, close }) {
                 fontSize: "13px",
               }}
             >
-              Password <span style={{ color: "red" }}>*</span>
+              Current Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
-              type="password"
-              name="password"
+              type={values.showPassword ? "text" : "password"}
+              name="currentPassword"
               className="form-control"
               placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
+              value={formik.values.currentPassword}
+              onChange={formik.handleChange} // Use the modified handleChange function
               onBlur={formik.handleBlur}
               InputProps={{
                 endAdornment: (
@@ -170,8 +210,53 @@ function SalesPassword({ show, close }) {
                 ),
               }}
             />
-            {formik.touched.password && formik.errors.password ? (
-              <div className="error">{formik.errors.password}</div>
+
+            {formik.touched.currentPassword && formik.errors.currentPassword ? (
+              <div className="error">{formik.errors.currentPassword}</div>
+            ) : null}
+          </div>
+        </div>
+        <div style={{ margin: "20px" }}>
+          {" "}
+          <div className="mt-2">
+            <label
+              htmlFor=""
+              style={{
+                paddingBottom: "10px",
+                fontWeight: "600",
+                fontSize: "13px",
+              }}
+            >
+              New Password <span style={{ color: "red" }}>*</span>
+            </label>
+            <TextField
+              type={valuesChange.showPassword ? "text" : "password"}
+              name="newPassword"
+              className="form-control"
+              placeholder="Password"
+              value={formik.values.newPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={handleClickShowPasswordChange}
+                      onMouseDown={handleMouseDownPasswordChange}
+                      edge="end"
+                    >
+                      {valuesChange.showPassword ? (
+                        <VisibilityIcon />
+                      ) : (
+                        <VisibilityOffIcon />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+            {formik.touched.newPassword && formik.errors.newPassword ? (
+              <div className="error">{formik.errors.newPassword}</div>
             ) : null}
           </div>
         </div>
@@ -189,7 +274,7 @@ function SalesPassword({ show, close }) {
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
-              type="Password"
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
@@ -200,11 +285,11 @@ function SalesPassword({ show, close }) {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
                       edge="end"
                     >
-                      {values.showPassword ? (
+                      {valuesConfirm.showPassword ? (
                         <VisibilityIcon />
                       ) : (
                         <VisibilityOffIcon />

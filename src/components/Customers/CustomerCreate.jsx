@@ -39,6 +39,22 @@ function CustomerCreate({ show, close }) {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
   useEffect(() => {
     getLocation()
       .then((data) => {
@@ -80,9 +96,7 @@ function CustomerCreate({ show, close }) {
       .test("custom-email-format", "Invalid email format", (value) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ),
-    password: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
+    password: Yup.string().max(50).required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
       .required("Confirm Password is required")
@@ -335,7 +349,11 @@ function CustomerCreate({ show, close }) {
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
-            style={{ paddingBottom: "10px", fontWeight: "500" }}
+            style={{
+              paddingBottom: "10px",
+              fontWeight: "600",
+              fontSize: "13px",
+            }}
           >
             DOB
           </label>
@@ -364,7 +382,6 @@ function CustomerCreate({ show, close }) {
             Gender <span style={{ color: "red" }}>*</span>
           </label>
           <div style={{ position: "relative" }}>
-            <label htmlFor="gender">Gender</label>
             <select
               className="form-select"
               id="gender"
@@ -406,14 +423,12 @@ function CustomerCreate({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
+
             <TextField
               type={values.showPassword ? "text" : "password"}
               name="password"
               className="form-control"
-              placeholder="Password"
-              style={{
-                lineHeight: "1px",
-              }}
+              placeholder="password"
               value={formik.values.password}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
@@ -454,7 +469,7 @@ function CustomerCreate({ show, close }) {
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
-              type="Password"
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
@@ -465,11 +480,11 @@ function CustomerCreate({ show, close }) {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
                       edge="end"
                     >
-                      {values.showPassword ? (
+                      {valuesConfirm.showPassword ? (
                         <VisibilityIcon />
                       ) : (
                         <VisibilityOffIcon />

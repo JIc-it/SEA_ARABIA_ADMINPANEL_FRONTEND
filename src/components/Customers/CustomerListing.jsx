@@ -52,16 +52,15 @@ export default function CustomerListing() {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const [filters, setFilters] = useState({
-    customer_status: [],
+    customerStatus: [],
     location: [],
-    onboarded_on: {
+    OnBoardOn: {
       from: "",
       to: "",
     },
   });
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+
+  const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
   useEffect(() => {
     getCustomerSearch({ search: "", status: "", role: "User" })
       .then((data) => {
@@ -118,15 +117,21 @@ export default function CustomerListing() {
       });
   };
 
-  let checkfilterslength =
-    filters.customer_status?.length > 0 ||
-    filters.location?.length > 0 ||
-    filters.onboarded_on?.length > 0;
-    // filters.status.active ||
-    // filters.status.inactive;
-
-
-
+  
+  
+  useEffect(() => {
+    getCustomerListData();
+    const isCustomerStatusFiltered = filters?.customerStatus?.length > 0 ? 1 : 0;
+    const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
+    const countNonEmpty =
+      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
+      0
+        ? 1
+        : 0;
+    setFilterCriteriaCount(
+      isCustomerStatusFiltered + isLocationFiltered + countNonEmpty
+    );
+  }, [isRefetch, search]);
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -134,19 +139,44 @@ export default function CustomerListing() {
 
   const getCustomerListData = async () => {
     setIsLoading(true);
-    getCustomerSearch()
+    let locationName =
+      filters.location &&
+      filters.location.map((item, i) => {
+        return item.name;
+      });
+    let commaSeparatedLocationsNames =
+      (locationName && locationName.length > 0 && locationName.join(",")) || "";
+
+    getCustomerSearch({
+      is_active:
+        filters.vendorStatus &&
+        filters.vendorStatus.length > 0 &&
+        filters.vendorStatus[0].status &&
+        filters.vendorStatus[1].status
+          ? ""
+          : filters.vendorStatus &&
+            filters.vendorStatus.length > 0 &&
+            filters.vendorStatus[0].status
+          ? true
+          : filters.vendorStatus &&
+            filters.vendorStatus.length > 0 &&
+            filters.vendorStatus[1].status
+          ? false
+          : "",
+      location: commaSeparatedLocationsNames,
+      onboard_date_before:
+        (filters.OnBoardOn.to != "" && filters.OnBoardOn.to) || "",
+      onboard_date_after:
+        (filters.OnBoardOn.from != "" && filters.OnBoardOn.from) || "",
+    })
       .then((data) => {
+        setIsLoading(false);
+        setListPageUrl({ next: data.next, previous: data.previous });
         // console.log("Search ---:", data);
-        if (data) {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setListDiscount(data?.results);
-        } else {
-          refreshPage();
-          setIsLoading(true);
-          setSearch("");
-          setListDiscount(data?.results);
-        }
+        const customerList = data.results.filter(
+          (item) => item.role === "User"
+        );
+        setListDiscount(customerList);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -239,7 +269,31 @@ export default function CustomerListing() {
       };
     });
   };
+  const [filterCriteriaCount, setFilterCriteriaCount] = useState(0);
 
+
+
+  const handleClearFilter = async () => {
+    setIsRefetch(!isRefetch);
+    setCategoryList([
+      { id: 1, name: "Active", status: false },
+      { id: 2, name: "Inactive", status: false },
+    ]);
+    setFilters({
+      vendorStatus: [],
+      location: [],
+      OnBoardOn: { from: "", to: "" },
+    });
+  };
+
+  const handleOpenFilter = () => {
+    setIsOpenFilterPopUp(!isOpenFilterPopUp);
+    handleClearFilter();
+  };
+
+  const handleCloseFilter = () => {
+    setIsOpenFilterPopUp(false);
+  };
   return (
     <div style={{ height: "100vh" }}>
       <div className="col-12 actions_menu my-2 px-3">
@@ -285,58 +339,54 @@ export default function CustomerListing() {
                     Search
                   </button> */}
                 </div>
-                {/* <button
-                  onClick={handleOpen}
+                <button
+                  onClick={handleOpenFilter}
                   className="bg-black"
                   style={{ borderRadius: "5px", marginLeft: "5px" }}
                 >
-                  <img src={filterIcon} alt="filter" width={25} />
-                </button> */}
-                <button
-                  className="bg-black"
-                  style={{
-                    borderRadius: "5px",
-                    marginLeft: "5px",
-                    position: "relative",
-                  }}
-                  onClick={() => setOpen(true)}
-                >
-                  <img src={filterIcon} alt="filter" width={25} />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M15.8332 2.5H4.1665C2.98799 2.5 2.39874 2.5 2.03262 2.8435C1.6665 3.187 1.6665 3.73985 1.6665 4.84555V5.4204C1.6665 6.28527 1.6665 6.7177 1.88284 7.07618C2.09917 7.43466 2.4944 7.65715 3.28485 8.10212L5.71237 9.46865C6.24272 9.7672 6.5079 9.91648 6.69776 10.0813C7.09316 10.4246 7.33657 10.8279 7.44687 11.3226C7.49984 11.5602 7.49984 11.8382 7.49984 12.3941L7.49984 14.6187C7.49984 15.3766 7.49984 15.7556 7.70977 16.0511C7.91971 16.3465 8.29257 16.4923 9.0383 16.7838C10.6038 17.3958 11.3866 17.7018 11.9432 17.3537C12.4998 17.0055 12.4998 16.2099 12.4998 14.6187V12.3941C12.4998 11.8382 12.4998 11.5602 12.5528 11.3226C12.6631 10.8279 12.9065 10.4246 13.3019 10.0813C13.4918 9.91648 13.757 9.7672 14.2873 9.46865L16.7148 8.10212C17.5053 7.65715 17.9005 7.43466 18.1168 7.07618C18.3332 6.7177 18.3332 6.28527 18.3332 5.4204V4.84555C18.3332 3.73985 18.3332 3.187 17.9671 2.8435C17.6009 2.5 17.0117 2.5 15.8332 2.5Z"
+                      stroke="white"
+                      stroke-width="1.5"
+                    />
+                  </svg>
+                </button>
+                {filterCriteriaCount > 0 && (
                   <span
                     className="py-1"
                     style={{
-                      position: "absolute",
-                      top: -10,
+                      position: "relative",
+                      right: "22px",
+                      bottom: "11px",
                       color: "white",
                       fontSize: "10px",
+                      textAlign: "center",
                       backgroundColor: "#2176FF",
                       width: "22px",
                       height: "22px",
                       borderRadius: "33px",
                     }}
                   >
-                    {filters.category.length +
-                      filters.sub_category.length +
-                      filters.vendor.length +
-                      (filters.status.active === true &&
-                      filters.status.inactive === true
-                        ? 2
-                        : filters.status.active === true
-                        ? 1
-                        : filters.status.inactive === true
-                        ? 1
-                        : 0)}
+                    {filterCriteriaCount}
                   </span>
-                </button>
-                {checkfilterslength && (
+                )}
+                {filterCriteriaCount > 0 && (
                   <button
-                    className="mx-3 px-3 py-2 btn"
-                    style={{ color: "#ffff", backgroundColor: "#2176FF" }}
-                    onClick={() => {
-                      if (checkfilterslength) {
-                        window.location.reload();
-                      }
+                    className=" px-3 py-2 btn"
+                    style={{
+                      color: "#ffff",
+                      backgroundColor: "#2176FF",
+                      position: "relative",
+                      right: "18px",
                     }}
+                    onClick={handleClearFilter}
                   >
                     Clear Filter
                   </button>
@@ -347,16 +397,20 @@ export default function CustomerListing() {
           </div>
 
           {/* Modal */}
-          {open && (
+          {isOpenFilterPopUp && (
             <UserFilterPopup
-              checkfilterslength={checkfilterslength}
-              open={open}
+              open={isOpenFilterPopUp}
+              handleClose={handleCloseFilter}
               setIsLoading={setIsLoading}
-              setListDiscount={setListDiscount}
+              // setServiceList={setServiceList}
               setListPageUrl={setListPageUrl}
-              handleClose={handleClose}
               setFilters={setFilters}
               filters={filters}
+              isRefetch={isRefetch}
+              setIsRefetch={setIsRefetch}
+              setCategoryList={setCategoryList}
+              categorylist={categorylist}
+              handleClearFilter={handleClearFilter}
             />
           )}
         </div>

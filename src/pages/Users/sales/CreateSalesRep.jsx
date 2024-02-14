@@ -78,6 +78,21 @@ function CreateSalesRep({ show, close }) {
     }).required("Location is required"),
     // location: Yup.mixed().required("Location is required"),
   });
+  //confirm
+  const [valuesConfirm, setValuesConfirm] = useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPasswordConfirm = () => {
+    setValuesConfirm({
+      ...valuesConfirm,
+      showPassword: !valuesConfirm.showPassword,
+    });
+  };
+
+  const handleMouseDownPasswordConfirm = (event) => {
+    event.preventDefault();
+  };
   const [gender, setGender] = useState([
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
@@ -431,7 +446,7 @@ function CreateSalesRep({ show, close }) {
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
             <TextField
-              type={values.showPassword ? "text" : "password"}
+              type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"
@@ -442,11 +457,11 @@ function CreateSalesRep({ show, close }) {
                 endAdornment: (
                   <InputAdornment position="end">
                     <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
+                      onClick={handleClickShowPasswordConfirm}
+                      onMouseDown={handleMouseDownPasswordConfirm}
                       edge="end"
                     >
-                      {values.showPassword ? (
+                      {valuesConfirm.showPassword ? (
                         <VisibilityIcon />
                       ) : (
                         <VisibilityOffIcon />
