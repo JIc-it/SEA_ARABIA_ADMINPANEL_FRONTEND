@@ -42,8 +42,6 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
         }
       };
 
-      const check=data?.some((data)=>!data.location)  
-
     return (
         <div className="">
             <div className="table-responsive">
@@ -54,7 +52,10 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                                 <span>Name</span>
                             </th>
                             <th>
-                                <span>Duration</span>
+                                <span>Hours</span>
+                            </th>
+                            <th>
+                                <span>Minutes</span>
                             </th>
                             <th>
                                 <span>Price</span>
@@ -66,7 +67,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {check===true && data?.map((dat,i)=>
+                        {data?.map((dat,i)=>
                         <tr>
                         <td>
                             <span className="text-secondary">
@@ -74,7 +75,10 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                             </span>
                         </td>
                         <td>
-                            <span className="text-secondary"> {dat.duration_hour} Hours</span>
+                            <span className="text-secondary"> {dat.duration_hour}</span>
+                        </td>
+                        <td>
+                            <span className="text-secondary"> {dat.duration_minute}</span>
                         </td>
                         <td>
                           <span className="text-secondary">{dat.price} KWD</span>
@@ -120,7 +124,7 @@ export default function PerDurationTable({data,formik,setIsUpdated}) {
                     </tr>
                         )
                         }
-                        {data?.length===0 || check===false ?
+                        {data?.length===0?
                         <tr>
                             <td>No Data</td>
                         </tr>

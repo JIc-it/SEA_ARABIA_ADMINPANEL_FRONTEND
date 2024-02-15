@@ -187,6 +187,7 @@ const ServiceEdit = () => {
       per_head_booking: false,
       purchase_limit_min: "",
       purchase_limit_max: "",
+      service_price_service:[]
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -370,6 +371,7 @@ const ServiceEdit = () => {
       });
   }, [params.id, isupdated]);
 
+  console.log(formik.values)
   useEffect(() => {
     getProfitMethod()
       .then((data) => setProfitMethods(data?.results))

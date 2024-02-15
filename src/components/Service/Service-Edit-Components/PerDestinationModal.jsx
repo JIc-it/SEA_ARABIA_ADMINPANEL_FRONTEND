@@ -70,7 +70,10 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                 }
               ),
           
-        location: Yup.string().required("Location is required"),
+              location: Yup.object({
+                id: Yup.string().required("Location is required"),
+                name: Yup.string().required("Location is required")
+            }),
     });
 
     const formik = useFormik({
@@ -78,7 +81,10 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
             // id:uuidv4(),
             // service: Params.id,
             is_active: false,
-            location: "",
+            location: {
+                id: "",
+                name: ""
+            },
             name: "",
             price:null,
             duration_hour: null,
@@ -93,7 +99,10 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                     // id:values.id,
                     // service: Params.id,
                     is_active: values.is_active,
-                    location: values.location,
+                    location: {
+                        id: values.location.id,
+                        name: values.location.name
+                    },
                     name: values.name,
                     price: values.price,
                     duration_hour:values.duration_hour,
@@ -212,8 +221,22 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                                     name="location"
                                     className="form-control"
                                     placeholder=""
-                                    value={formik.values.location}
-                                    onChange={(e) => formik.setFieldValue('location', e.target.value)}
+                                    value={formik.values.location.id}
+                                    onChange={(e) => {
+                                        const selectedOption = locationlist.find((data) => data?.id == e.target.value)
+                                        if (selectedOption) {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: selectedOption ? { id: selectedOption?.id, name: selectedOption?.name } : undefined,
+                                            }));
+                                        }
+                                        if (e.target.value === "Choose") {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: { id: prev.location.id, name: prev.location.name },
+                                            }));
+                                        }
+                                    }}
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value={null}>Choose</option>
@@ -221,8 +244,8 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                                     <option key={i} value={dat.id}>{dat.name}</option>
                                     )}
                                 </select>
-                                {formik.touched.location && formik.errors.location ? (
-                                    <div className="error">{formik.errors.location}</div>
+                                {formik.touched.location?.name && formik.errors.location?.name ? (
+                                    <div className="error">{formik.errors.location?.name}</div>
                                 ) : null}
                             </div>        
                             <div className='d-flex  align-items-center mt-2'>

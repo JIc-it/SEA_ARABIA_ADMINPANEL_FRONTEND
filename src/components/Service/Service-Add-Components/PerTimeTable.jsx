@@ -52,7 +52,6 @@ const convertTo12HourFormat = (time24) => {
     return `${formattedHours.toString().padStart(2, '0')}:${minutes} ${period}`;
   };
 
-  const check=data?.some((data)=>data.time)  
     return (
         <div className="">
             <div className="table-responsive">
@@ -78,7 +77,7 @@ const convertTo12HourFormat = (time24) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {check && data?.map((dat,i)=>
+                        {data?.map((dat,i)=>
                         <tr>
                         <td>
                             <span className="text-secondary">
@@ -129,7 +128,7 @@ const convertTo12HourFormat = (time24) => {
                     </tr>
                         )
                         }
-                       {data?.length===0 || !check ?
+                       {data?.length===0?
                         <tr>
                             <td>No Data</td>
                         </tr>

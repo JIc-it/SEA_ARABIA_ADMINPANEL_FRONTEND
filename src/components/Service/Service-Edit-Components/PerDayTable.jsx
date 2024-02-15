@@ -40,7 +40,7 @@ export default function PerDayTable({data,formik,setIsUpdated}) {
                 toast.error(error.message))
         }
       };
-      const check=data?.find((data)=>data.day)  
+    
     return (
         <div className="">
             <div className="table-responsive">
@@ -66,7 +66,7 @@ export default function PerDayTable({data,formik,setIsUpdated}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {check && data?.map((dat,i)=>
+                        {data?.map((dat,i)=>
                         <tr>
                         <td>
                             <span className="text-secondary">
@@ -117,7 +117,7 @@ export default function PerDayTable({data,formik,setIsUpdated}) {
                     </tr>
                         )
                         }
-                        {data?.length===0 || !check ?
+                        {data?.length===0 ?
                         <tr>
                             <td>No Data</td>
                         </tr>

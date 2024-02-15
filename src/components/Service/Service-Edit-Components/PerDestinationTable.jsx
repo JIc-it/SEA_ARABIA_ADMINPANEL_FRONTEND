@@ -54,7 +54,13 @@ export default function PerDestinationTable({data,formik,setIsUpdated}) {
                                 <span>Name</span>
                             </th>
                             <th>
-                                <span>Duration</span>
+                                <span>Hours</span>
+                            </th>
+                            <th>
+                                <span>Minutes</span>
+                            </th>
+                            <th>
+                                <span>Location</span>
                             </th>
                             <th>
                                 <span>Price</span>
@@ -74,7 +80,13 @@ export default function PerDestinationTable({data,formik,setIsUpdated}) {
                             </span>
                         </td>
                         <td>
-                            <span className="text-secondary"> {dat.duration_hour} Hours</span>
+                            <span className="text-secondary"> {dat.duration_hour}</span>
+                        </td>
+                        <td>
+                            <span className="text-secondary"> {dat.duration_minute}</span>
+                        </td>
+                        <td>
+                            <span className="text-secondary"> {dat.location.name? dat.location.name : dat.location}</span>
                         </td>
                         <td>
                           <span className="text-secondary">{dat.price} KWD</span>
@@ -120,7 +132,7 @@ export default function PerDestinationTable({data,formik,setIsUpdated}) {
                     </tr>
                         )
                         }
-                        {data?.length===0 || !check ?
+                        {data?.length===0 ?
                         <tr>
                             <td>No Data</td>
                         </tr>
