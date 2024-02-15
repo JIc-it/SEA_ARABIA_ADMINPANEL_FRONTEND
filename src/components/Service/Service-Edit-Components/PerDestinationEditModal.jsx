@@ -36,18 +36,30 @@ export default function PerDestinationEditModal({ handleClose, handleOpen, open,
         setSearch(searchTerm);
     };
 
-const validationSchema = Yup.object({
-    name: Yup.string()
-        .required("Name is required")
-        .max(20, "Name must be at most 20 characters"),
-    price: Yup.number()
-        .required("Price is required"),
+    const validationSchema = Yup.object({
+        name: Yup.string()
+            .required("Name is required")
+            .max(20, "Name must be at most 20 characters"),
+        price: Yup.number()
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
         duration_hour: Yup.number()
-        .required("Duration is required"),
-        duration_minute: Yup.number()
-        .required("Minute is required"),
-    location: Yup.string().required("Location is required"),
-});
+            .required("Duration is required"),
+        duration_minute: Yup.number().when(
+                "duration_hour",
+                ([duration_hour], schema) => {
+                  if (duration_hour === 0) {
+                    return schema
+                    .min(1, 'Must be greater than zero')
+                  } else {
+                    return schema.required("Minute is Required");
+                  }
+                }
+              ),
+          
+        location: Yup.string().required("Location is required"),
+    });
 
 
     useEffect(() => {
@@ -64,7 +76,7 @@ const validationSchema = Yup.object({
             service: data.service,
             is_active: data.is_active,
             is_range: data.is_range,
-            location: data.location,
+            location: data.location.id ? data.location.id : data.location,
             name: data.name,
             price: data.price,
             duration_hour: data.duration_hour,

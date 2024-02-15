@@ -98,17 +98,17 @@ const ServiceEdit = () => {
 
     lounge: Yup.number()
       .notOneOf([0], "Lounge cannot be zero")
-      .max(10, "Lounge must be less than or equal to 10"),
+      .max(10, "less than or equal to 10"),
     bedroom: Yup.number()
       .notOneOf([0], "Bedroom cannot be zero")
-      .max(10, "Bedroom must be less than or equal to 10"),
+      .max(10, "less than or equal to 10"),
     toilet: Yup.number()
       .notOneOf([0], "Toilet cannot be zero")
-      .max(10, "Toilet must be less than or equal to 10"),
+      .max(10, "less than or equal to 10"),
     capacity: Yup.number()
       .notOneOf([0], "Capacity cannot be zero")
       .min(1, 'Must be greater than zero')
-      .max(10, "Capacity must be less than or equal to 10"),
+      .max(10, "less than or equal to 10"),
     markup_fee: Yup.number().when(
       "profit_method",
       ([profit_method], schema) => {

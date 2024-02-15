@@ -34,11 +34,22 @@ export default function PerDurationEditModal ({ handleClose, handleOpen, open,da
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
-            .required("Price is required"),
-            duration_hour: Yup.number()
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
+        duration_hour: Yup.number()
             .required("Duration is required"),
-            duration_minute: Yup.number()
-            .required("Minute is required"),
+        duration_minute: Yup.number().when(
+                "duration_hour",
+                ([duration_hour], schema) => {
+                  if (duration_hour === 0) {
+                    return schema
+                    .min(1, 'Must be greater than zero')
+                  } else {
+                    return schema.required("Minute is Required");
+                  }
+                }
+              ),
     });
 
     const formik = useFormik({
