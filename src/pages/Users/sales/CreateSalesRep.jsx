@@ -70,13 +70,8 @@ function CreateSalesRep({ show, close }) {
         }
       ),
     gender: Yup.string().required("Gender is required"),
-    location: Yup.object({
-      id: Yup.string().required("Location ID is required"),
-      name: Yup.string().required("Location name is required"),
-      label: Yup.string().required("Location label is required"),
-      code: Yup.string().required("Location code is required"),
-    }).required("Location is required"),
-    // location: Yup.mixed().required("Location is required"),
+
+    location: Yup.mixed().required("Location is required"),
   });
   //confirm
   const [valuesConfirm, setValuesConfirm] = useState({
@@ -329,9 +324,7 @@ function CreateSalesRep({ show, close }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
+            
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"

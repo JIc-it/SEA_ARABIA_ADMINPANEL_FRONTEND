@@ -77,29 +77,28 @@ function CustomerPasswordReset({ show, close }) {
     event.preventDefault();
   };
   const validationSchema = Yup.object({
-    password: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
-    newPassword: Yup.string().min(
-      6,
-      "Password should be at least 6 characters"
-    ),
-    confirmPassword: Yup.string()
-      .max(50)
-      .required("Confirm Password is required")
+    currentpassword: Yup.string()
+      .required("Current Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
+      ),
+    password: Yup.string()
+      .required("Password is required")
+      .matches(
+        passwordRegex,
+        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+      ),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
       .oneOf([Yup.ref("password")], "Passwords must match"),
   });
 
   const formik = useFormik({
     initialValues: {
-      password: customerDetails?.password || "",
-      confirmPassword: customerDetails?.confirmPassword || "",
-
-      // Add other fields as needed
+      currentpassword: "",
+      password: "",
+      confirmPassword: "",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -108,8 +107,9 @@ function CustomerPasswordReset({ show, close }) {
       if (!isLoading) {
         try {
           const data = {
-            password: values.password,
-            confirmPassword: values.confirmPassword,
+            current_password: values.currentpassword,
+            new_password: values.password,
+            confirm_password: values.confirmPassword,
           };
 
           const salesUpdateData = await UpdateSalesRepListById(
@@ -169,7 +169,7 @@ function CustomerPasswordReset({ show, close }) {
       >
         <Offcanvas.Title>Edit Details </Offcanvas.Title>
       </Offcanvas.Header>
-      <form action="" onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
           <div className="mt-2">
             <label
@@ -182,12 +182,12 @@ function CustomerPasswordReset({ show, close }) {
             >
               Current Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
+            {/* <TextField
               type={values.showPassword ? "text" : "password"}
-              name="changePassword"
+              name="password"
               className="form-control"
               placeholder="Password"
-              value={formik.values.currentPassword}
+              value={formik.values.password}
               onChange={formik.handleChange} // Use the modified handleChange function
               onBlur={formik.handleBlur}
               InputProps={{
@@ -207,11 +207,26 @@ function CustomerPasswordReset({ show, close }) {
                   </InputAdornment>
                 ),
               }}
-            />
+            /> */}
 
-            {formik.touched.currentPassword && formik.errors.currentPassword ? (
-              <div className="error">{formik.errors.currentPassword}</div>
-            ) : null}
+            {/* {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
+            ) : null} */}
+            <div style={{ marginTop: 10 }}>
+              <input
+                type="text"
+                placeholder="Current Password"
+                name="currentpassword"
+                className="form-control"
+                value={formik.values.currentpassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              {formik.touched.currentpassword &&
+              formik.errors.currentpassword ? (
+                <div className="error">{formik.errors.currentpassword}</div>
+              ) : null}
+            </div>
           </div>
         </div>
 
@@ -228,7 +243,7 @@ function CustomerPasswordReset({ show, close }) {
             >
               New Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
+            {/* <TextField
               type={valuesChange.showPassword ? "text" : "password"}
               name="newPassword"
               className="form-control"
@@ -254,8 +269,20 @@ function CustomerPasswordReset({ show, close }) {
                 ),
               }}
             />
-            {formik.touched.ChangePassword && formik.errors.ChangePassword ? (
-              <div className="error">{formik.errors.ChangePassword}</div>
+            {formik.touched.newPassword && formik.errors.newPassword ? (
+              <div className="error">{formik.errors.newPassword}</div>
+            ) : null} */}
+            <input
+              type="text"
+              placeholder="New Password"
+              name="password"
+              className="form-control"
+              value={formik.values.password}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
             ) : null}
           </div>
         </div>
@@ -272,7 +299,7 @@ function CustomerPasswordReset({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
+            {/* <TextField
               type={valuesConfirm.showPassword ? "text" : "password"}
               name="confirmPassword"
               className="form-control"
@@ -300,6 +327,18 @@ function CustomerPasswordReset({ show, close }) {
             />
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>
+            ) : null} */}
+            <input
+              type="text"
+              name="confirmPassword"
+              placeholder="Confirm Password"
+              className="form-control "
+              value={formik.values.confirmPassword}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+            />
+            {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
+              <div className="error">{formik.errors.confirmPassword}</div>
             ) : null}
           </div>
         </div>
@@ -314,18 +353,10 @@ function CustomerPasswordReset({ show, close }) {
         <br />
         <br />
         <br />
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-
-
-
-
-
-
-
-
+        <br />
+        <br />
+        <br />
+        <br />
 
         <div
           style={{

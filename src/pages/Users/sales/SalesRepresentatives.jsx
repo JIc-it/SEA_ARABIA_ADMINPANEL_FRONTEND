@@ -22,6 +22,7 @@ import {
   menuIdConstant,
   permissionCategory,
 } from "../../../components/Permissions/PermissionConstants";
+import { CircularProgress } from "@mui/material";
 
 const SalesRepresentatives = () => {
   const { userPermissionList } = useContext(MainPageContext);
@@ -268,7 +269,6 @@ const SalesRepresentatives = () => {
                       style={{ fontSize: "18px", fontWeight: "700" }}
                     >
                       {count?.sales_rep_count}
-                      
                     </div>
                   </div>
                 </div>
@@ -450,81 +450,91 @@ const SalesRepresentatives = () => {
                   </th>
                 </tr>
               </thead>
-              {salesRep && salesRep.length > 0 ? (
-                <>
-                  {salesRep &&
-                    salesRep?.map((item) => {
-                      return (
-                        <tbody>
-                          {console.log("sles map", salesRep)}
-                          <tr>
-                            <td>
-                              <span className="text-secondary">
-                                {item?.first_name}
-                                {item?.last_name}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {item?.email}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {item?.mobile}
-                              </span>
-                            </td>
-                            <td>
-                              <span className="text-secondary">
-                                {item?.location}
-                                {item?.profileextra?.location?.country}
-                              </span>
-                            </td>
+              <tbody>
+                {!isLoading ? (
+                  <>
+                    {salesRep && salesRep.length > 0 ? (
+                      <>
+                        {salesRep &&
+                          salesRep?.map((item) => {
+                            return (
+                              // {console.log("sles map", salesRep)}
+                              <tr>
+                                <td>
+                                  <span className="text-secondary">
+                                    {item?.first_name}
+                                    {item?.last_name}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {item?.email}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {item?.mobile}
+                                  </span>
+                                </td>
+                                <td>
+                                  <span className="text-secondary">
+                                    {item?.location}
+                                    {item?.profileextra?.location?.country}
+                                  </span>
+                                </td>
 
-                            <td
-                              style={{
-                                display: "flex",
-                                gap: "10px",
-                                alignItems: "baseline",
-                              }}
-                            >
-                              <Link
-                                to={`/sales-representatives/${item?.id}`}
-                                // to={`/customers/${item.id}`}
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "6px 10px",
-                                  borderRadius: "4px",
-                                }}
-                              >
-                                View &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
+                                <td
+                                  style={{
+                                    display: "flex",
+                                    gap: "10px",
+                                    alignItems: "baseline",
+                                  }}
                                 >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </Link>
-                            </td>
-                          </tr>
-                        </tbody>
-                      );
-                    })}
-                </>
-              ) : (
-                <tr>
-                  <td className="error">No Records Found</td>
-                </tr>
-              )}
+                                  <Link
+                                    to={`/sales-representatives/${item?.id}`}
+                                    // to={`/customers/${item.id}`}
+                                    className="btn btn-sm btn-info"
+                                    style={{
+                                      padding: "6px 10px",
+                                      borderRadius: "4px",
+                                    }}
+                                  >
+                                    View &nbsp;
+                                    <svg
+                                      xmlns="http://www.w3.org/2000/svg"
+                                      width="16"
+                                      height="16"
+                                      viewBox="0 0 16 16"
+                                      fill="none"
+                                    >
+                                      <path
+                                        d="M4 12L12 4M12 4H6M12 4V10"
+                                        stroke="white"
+                                        strokeWidth="1.5"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                      />
+                                    </svg>
+                                  </Link>
+                                </td>
+                              </tr>
+                            );
+                          })}
+                      </>
+                    ) : (
+                      <tr>
+                        <td className="error">No Records Found</td>
+                      </tr>
+                    )}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan={"8"} align="center">
+                      <CircularProgress />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
           <div className="card-footer d-flex align-items-center">

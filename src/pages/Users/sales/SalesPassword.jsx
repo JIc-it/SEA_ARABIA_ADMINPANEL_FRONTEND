@@ -39,7 +39,7 @@ function SalesPassword({ show, close }) {
       .required("Password is required"),
     newPassword: Yup.string()
       .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
+      .required("newPassword is required"),
     confirmPassword: Yup.string()
       .max(50)
       .required("Confirm Password is required")
@@ -94,20 +94,22 @@ function SalesPassword({ show, close }) {
   };
   const formik = useFormik({
     initialValues: {
-      currentPassword: salesRepDetails?.password || "",
-      newPassword: salesRepDetails?.password || "",
+      currentPassword: salesRepDetails?.currentPassword || "",
+      newPassword: salesRepDetails?.newPassword || "",
       confirmPassword: salesRepDetails?.confirmPassword || "",
 
       // Add other fields as needed
     },
+
     validationSchema,
     onSubmit: async (values) => {
       setIsLoading(true);
-
+      console.log("validation", formik.errors);
       if (!isLoading) {
         try {
           const data = {
-            password: values.password,
+            currentPassword: values.currentPassword,
+            newPassword: values.newPassword,
             confirmPassword: values.confirmPassword,
           };
 

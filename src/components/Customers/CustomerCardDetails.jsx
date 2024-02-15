@@ -16,6 +16,7 @@ import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForP
 import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
 import { getMenuPermissions } from "../../helpers";
 import { MainPageContext } from "../../Context/MainPageContext";
+import ChangePasword from "../Profile/ChangePassword";
 
 function CustomerCardDetails() {
   const { userPermissionList } = useContext(MainPageContext);
@@ -25,14 +26,14 @@ function CustomerCardDetails() {
   const [active, setActive] = useState("Details");
   const [customerDetails, setCustomerDetails] = useState([]);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
-
+  const [open, setOpen] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
-  const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
-  const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
+  const handleCloseOffcanvasPassword = () => setOpen(false);
+  const handleOpenOffcanvasPassword = () => setOpen(true);
 
   const customerId = useParams()?.customerId;
   console.log("customer id", customerId);
@@ -380,10 +381,7 @@ function CustomerCardDetails() {
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
-                <CustomerPasswordReset
-                  show={showOffcanvas1}
-                  close={handleCloseOffcanvasPassword}
-                />
+                <ChangePasword open={open} setOpen={setOpen} />
                 <EditCustomerWithPermission />
                 <ResetCustomerPasswordWithPermission />
 

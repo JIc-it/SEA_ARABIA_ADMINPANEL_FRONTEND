@@ -33,21 +33,30 @@ function AdminPassword({ show, close }) {
       });
   }, [adminId]);
 
-  const validationSchema = Yup.object({
-    newPassword: Yup.string().min(
-      6,
-      "Password should be at least 6 characters"
-    ),
-    // .required("Password is required"),
-    confirmPassword: Yup.string()
-      .max(50)
-      // .required("Confirm Password is required")
-      .matches(
-        passwordRegex,
-        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
-      .oneOf([Yup.ref("password")], "Passwords must match"),
-  });
+  // const validationSchema = Yup.object({
+  //   password: Yup.string()
+  //     .min(8, "Password should be at least 8 characters")
+  //     .matches(
+  //       passwordRegex,
+  //       "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+  //     ),
+
+  //   newPassword: Yup.string()
+  //     .max(50)
+  //     .matches(
+  //       passwordRegex,
+  //       "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+  //     )
+  //     .required("New Password is required"),
+  //   confirmPassword: Yup.string()
+  //     .max(50)
+  //     .required("Confirm Password is required")
+  //     .matches(
+  //       passwordRegex,
+  //       "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+  //     )
+  //     .oneOf([Yup.ref("newPassword")], "Passwords must match"),
+  // });
   //change
   const [valuesChange, setValuesChange] = useState({
     showPassword: false,
@@ -92,19 +101,45 @@ function AdminPassword({ show, close }) {
   };
   const formik = useFormik({
     initialValues: {
-      newPassword: adminDetails?.password || "",
-      confirmPassword: adminDetails?.confirmPassword || "",
+      password: "",
+      newPassword: "",
+      confirmPassword: "",
 
       // Add other fields as needed
     },
-    validationSchema,
-    onSubmit: async (values) => {
-      setIsLoading(true);
+    validationSchema: Yup.object({
+      password: Yup.string()
+        .min(8, "Password should be at least 8 characters")
+        .matches(
+          passwordRegex,
+          "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        ),
 
+      newPassword: Yup.string()
+        .max(50)
+        .matches(
+          passwordRegex,
+          "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        )
+        .required("New Password is required"),
+
+      confirmPassword: Yup.string()
+        .max(50)
+        .required("Confirm Password is required")
+        .matches(
+          passwordRegex,
+          "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        )
+        .oneOf([Yup.ref("newPassword")], "Passwords must match"),
+    }),
+
+    onSubmit: async (values, helpers) => {
+      setIsLoading(true);
       if (!isLoading) {
         try {
           const data = {
-            newPassword: values.password,
+            password: values.password,
+            newPassword: values.newPassword,
             confirmPassword: values.confirmPassword,
           };
 
@@ -144,7 +179,7 @@ function AdminPassword({ show, close }) {
       // Add other fields as needed
     });
   }, [adminDetails]);
-
+  console.log("formik", formik);
   return (
     <Offcanvas
       show={show}
@@ -158,7 +193,7 @@ function AdminPassword({ show, close }) {
       >
         <Offcanvas.Title>Reset Password </Offcanvas.Title>
       </Offcanvas.Header>
-      <form action="" onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit}>
         <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
@@ -174,10 +209,11 @@ function AdminPassword({ show, close }) {
             </label>
             <TextField
               type={values.showPassword ? "text" : "password"}
-              name="Password"
+              error={!!(formik.touched.password && formik.errors.password)}
+              name="password"
               className="form-control"
               placeholder="Password"
-              value={formik.values.currentPassword}
+              value={formik.values.password}
               onChange={formik.handleChange} // Use the modified handleChange function
               onBlur={formik.handleBlur}
               InputProps={{
@@ -199,8 +235,8 @@ function AdminPassword({ show, close }) {
               }}
             />
 
-            {formik.touched.currentPassword && formik.errors.currentPassword ? (
-              <div className="error">{formik.errors.currentPassword}</div>
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
             ) : null}
           </div>
           <div className="mt-2">
@@ -216,6 +252,9 @@ function AdminPassword({ show, close }) {
             </label>
             <TextField
               type={valuesChange.showPassword ? "text" : "password"}
+              error={
+                !!(formik.touched.newPassword && formik.errors.newPassword)
+              }
               name="newPassword"
               className="form-control"
               placeholder="Password"
@@ -261,6 +300,12 @@ function AdminPassword({ show, close }) {
             </label>
             <TextField
               type={valuesConfirm.showPassword ? "text" : "password"}
+              error={
+                !!(
+                  formik.touched.confirmPassword &&
+                  formik.errors.confirmPassword
+                )
+              }
               name="confirmPassword"
               className="form-control"
               placeholder="confirmPassword"

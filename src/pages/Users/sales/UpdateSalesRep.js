@@ -95,7 +95,7 @@ function UpdateSalesRep({ show, close }) {
       dob: salesDetails?.profileextra?.dob || "",
       mobile: salesDetails?.mobile || "",
       location: salesDetails?.profileextra?.location || "",
-      gender: salesDetails?.profileextra?.gender || "",
+      gender: salesDetails?.profileextra?.gender?.id || "",
 
       // Add other fields as needed
     },
@@ -115,12 +115,12 @@ function UpdateSalesRep({ show, close }) {
             confirmPassword: values.confirmPassword,
             mobile: values.mobile,
             location: values.location.id,
-            gender: values.gender,
+            gender: values.gender.id,
             dob: values.dob,
           };
 
           const salesData = await UpdateSalesRepListById(salesRepId, data);
-          // console.log("Sales Rep updated detail is ---", salesData);
+          console.log("Sales Rep updated detail is ---", salesData);
           if (salesData) {
             setIsLoading(false);
             window.location.reload();
@@ -140,7 +140,7 @@ function UpdateSalesRep({ show, close }) {
       }
     },
   });
-  console.log("sales edit formik update data", formik);
+  console.log("sales edit formik update data", formik.values);
 
   useEffect(() => {
     formik.setValues({
@@ -151,7 +151,7 @@ function UpdateSalesRep({ show, close }) {
       email: salesDetails?.email || "",
       mobile: salesDetails?.mobile || "",
       location: salesDetails?.profileextra?.location || "",
-
+      gender: salesDetails?.profileextra?.gender?.id || "",
       // defineservice: salesDetails?.useridentificationdata?.,
       // Add other fields as needed
     });
@@ -319,18 +319,18 @@ function UpdateSalesRep({ show, close }) {
             >
               <option value="" label="Select a gender" />
               {gender.map((item) => (
-                <option key={item.id} value={item.id} label={item.label}>
+                <option key={item.id} value={item.label} label={item.label}>
                   {item.label}
+                  {console.log("item==", item)}
                 </option>
               ))}
-              {/* Add more options as needed */}
             </select>
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}
           </div>
         </div>
-       
+
         <div style={{ margin: "20px" }}>
           <label
             htmlFor=""
@@ -384,7 +384,6 @@ function UpdateSalesRep({ show, close }) {
           </div>
         </div>
 
-        
         <div
           style={{
             display: "flex",

@@ -340,9 +340,9 @@ function CustomerCreate({ show, close }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            {formik.touched.location && formik.errors.location ? (
+            {/* {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
-            ) : null}
+            ) : null} */}
             {/* </div> */}
           </div>
         </div>
@@ -405,9 +405,7 @@ function CustomerCreate({ show, close }) {
               <div className="error">{formik.errors.gender}</div>
             ) : null}
           </div>
-          {formik.touched.gender && formik.errors.gender ? (
-            <div className="error">{formik.errors.gender}</div>
-          ) : null}
+         
         </div>
 
         <div style={{ margin: "20px" }}>
