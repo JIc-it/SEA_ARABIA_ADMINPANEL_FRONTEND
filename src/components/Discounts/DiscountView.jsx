@@ -192,9 +192,7 @@ function companywithservice(companyid) {
                     Expiration
                   </p>
                   <p style={{ fontWeight: "700", fontSize: "14px" }}>
-                    {offerview?.end_date!== null
-                      ? "Limited Time"
-                      : "No Expiry"}
+                    {offerview?.expiration}
                   </p>
                 </div>
               </div>
@@ -342,7 +340,7 @@ function companywithservice(companyid) {
                   Minimum Purchase Amount
                 </p>
                 <p style={{ fontWeight: "700", fontSize: "14px" }}>
-                  {offerview?.min_purchase_amount}
+                  {offerview?.min_purchase_amount!==null? offerview?.min_purchase_amount:"None"}
                 </p>
               </div>
             </div>

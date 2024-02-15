@@ -4,12 +4,12 @@ import Modal from '@mui/material/Modal';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import 'react-toastify/dist/ReactToastify.css'
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
-import {getLocationListing} from "../../../services/service"
+import { getLocationListing } from "../../../services/service"
 import { v4 as uuidv4 } from 'uuid';
 import { useParams } from 'react-router-dom';
 
@@ -29,7 +29,7 @@ const style = {
 };
 
 
-export default function PerDestinationModal({ handleClose, handleOpen, open,formiks }) {
+export default function PerDestinationModal({ handleClose, handleOpen, open, formiks }) {
     const [locationlist, setLocationList] = useState([])
     const [isLoading, setIsLoading] = useState(false);
     const [search, setSearch] = useState("")
@@ -38,7 +38,7 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
         const searchTerm = e.target.value;
         setSearch(searchTerm);
     };
-    const Params=useParams()
+    const Params = useParams()
 
     useEffect(() => {
         getLocationListing()
@@ -53,12 +53,27 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
-            .required("Price is required"),
-            duration_hour: Yup.number()
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
+        duration_hour: Yup.number()
             .required("Duration is required"),
-            duration_minute: Yup.number()
-            .required("Minute is required"),
-        location: Yup.string().required("Location is required"),
+        duration_minute: Yup.number().when(
+            "duration_hour",
+            ([duration_hour], schema) => {
+                if (duration_hour === 0) {
+                    return schema
+                        .min(1, 'Must be greater than zero')
+                } else {
+                    return schema.required("Minute is Required");
+                }
+            }
+        ),
+
+        location: Yup.object({
+            id: Yup.string().required("Location is required"),
+            name: Yup.string().required("Location is required")
+        }),
     });
 
     const formik = useFormik({
@@ -66,28 +81,34 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
             // id:uuidv4(),
             // service: Params.id,
             is_active: false,
-            location: "",
+            location: {
+                id: "",
+                name: ""
+            },
             name: "",
-            price:null,
+            price: null,
             duration_hour: null,
             duration_minute: null
-           
+
         },
         validationSchema,
         onSubmit: async (values) => {
-        
-            formiks((prev)=>{
-                const datas={
+
+            formiks((prev) => {
+                const datas = {
                     // id:values.id,
                     // service: Params.id,
                     is_active: values.is_active,
-                    location: values.location,
+                    location: {
+                        id: values.location.id,
+                        name: values.location.name
+                    },
                     name: values.name,
                     price: values.price,
-                    duration_hour:values.duration_hour,
-                    duration_minute:values.duration_minute
+                    duration_hour: values.duration_hour,
+                    duration_minute: values.duration_minute
                 }
-               
+
                 if (prev.service_price_service) {
                     return {
                         ...prev, service_price_service: [...prev.service_price_service, datas]
@@ -97,97 +118,97 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                     return { ...prev, service_price_service: [datas] }
                 }
 
-            
+
             })
             handleClose()
-    
-       
+
+
 
         },
     });
 
-    let duration=[]
-    for(let i=0;i<=23;i++){
+    let duration = []
+    for (let i = 0; i <= 23; i++) {
         duration.push(i)
     }
-        let minutes=[]
-    for(let i=0;i<=59;i++){
+    let minutes = []
+    for (let i = 0; i <= 59; i++) {
         minutes.push(i)
     }
 
     const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
     return (
         <>
-       {!isLoading &&  <div >
-            
-            <Modal style={{width:"100vw"}}
-                keepMounted
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-            >
-               <Box sx={style}>
-                    <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                        Add Price
-                    </Typography>
-                    <IconButton
-                        edge="end"
-                        color="inherit"
-                        onClick={handleClose}
-                        aria-label="close"
-                        sx={{ position: 'absolute', top: 8, right: 14 }}
-                    >
-                        <CloseIcon />
-                    </IconButton>
-                    <form onSubmit={formik.handleSubmit}>
-                    
-                        <div className='d-flex  align-items-center mt-2'>
-                                    
-                                    <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Name <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <input
-                                                type="text"
-                                                name="name"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.name}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                            {formik.touched.name && formik.errors.name ? (
-                                                <div className="error">{formik.errors.name}</div>
-                                            ) : null}
-                                        </div>
+            {!isLoading && <div >
 
-                                        <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Price <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <input
-                                                type="number"
-                                                name="price"
-                                                className="form-control"
-                                                placeholder="Price"
-                                                value={formik.values.price}
-                                                onChange={formik.handleChange}
-                                                onBlur={formik.handleBlur}
-                                            />
-                                            {formik.touched.price && formik.errors.price ? (
-                                                <div className="error">{formik.errors.price}</div>
-                                            ) : null}
-                                        </div>
+                <Modal style={{ width: "100vw" }}
+                    keepMounted
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="keep-mounted-modal-title"
+                    aria-describedby="keep-mounted-modal-description"
+                >
+                    <Box sx={style}>
+                        <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
+                            Add Price
+                        </Typography>
+                        <IconButton
+                            edge="end"
+                            color="inherit"
+                            onClick={handleClose}
+                            aria-label="close"
+                            sx={{ position: 'absolute', top: 8, right: 14 }}
+                        >
+                            <CloseIcon />
+                        </IconButton>
+                        <form onSubmit={formik.handleSubmit}>
 
-                                   
-                        </div>          
+                            <div className='d-flex  align-items-center mt-2'>
+
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Name <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.name}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.name && formik.errors.name ? (
+                                        <div className="error">{formik.errors.name}</div>
+                                    ) : null}
+                                </div>
+
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Price <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        className="form-control"
+                                        placeholder="Price"
+                                        value={formik.values.price}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.price && formik.errors.price ? (
+                                        <div className="error">{formik.errors.price}</div>
+                                    ) : null}
+                                </div>
+
+
+                            </div>
                             <div className='w-50 mx-1 mt-2'>
                                 <label
                                     htmlFor=""
@@ -196,95 +217,109 @@ export default function PerDestinationModal({ handleClose, handleOpen, open,form
                                     Destination <span style={{ color: "red" }}>*</span>
                                 </label>
                                 <select
-                                    
+
                                     name="location"
                                     className="form-control"
                                     placeholder=""
-                                    value={formik.values.location}
-                                    onChange={(e) => formik.setFieldValue('location', e.target.value)}
+                                    value={formik?.values?.location?.id}
+                                    onChange={(e) => {
+                                        const selectedOption = locationlist?.find((data) => data?.id == e.target.value)
+                                        if (selectedOption) {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: selectedOption ? { id: selectedOption?.id, name: selectedOption?.name } : undefined,
+                                            }));
+                                        }
+                                        if (e.target.value === "Choose") {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: { id: prev.location?.id, name: prev.location?.name },
+                                            }));
+                                        }
+                                    }}
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value={null}>Choose</option>
-                                    {locationlist.map((dat,i)=>
-                                    <option key={i} value={dat.id}>{dat.name}</option>
+                                    {locationlist?.map((dat, i) =>
+                                        <option key={i} value={dat.id}>{dat.name}</option>
                                     )}
                                 </select>
-                                {formik.touched.location && formik.errors.location ? (
-                                    <div className="error">{formik.errors.location}</div>
+                                {formik.touched.location?.name && formik.errors.location?.name ? (
+                                    <div className="error">{formik.errors.location?.name}</div>
                                 ) : null}
-                            </div>        
+                            </div>
                             <div className='d-flex  align-items-center mt-2'>
-                                    
-                                    <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                Duration <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="duration_hour"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.duration_hour}
-                                                onChange={(e) => formik.setFieldValue('duration_hour', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                            {duration.map((dat,i)=>
+
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        Duration <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <select
+
+                                        name="duration_hour"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.duration_hour}
+                                        onChange={(e) => formik.setFieldValue('duration_hour', e.target.value)}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        {duration.map((dat, i) =>
                                             <option key={i} value={dat}>{dat}</option>
-                                            )}
+                                        )}
 
-                                            </select>
-                                            {formik.touched.duration_hour && formik.errors.duration_hour ? (
-                                                <div className="error">{formik.errors.duration_hour}</div>
-                                            ) : null}
-                                        </div>
+                                    </select>
+                                    {formik.touched.duration_hour && formik.errors.duration_hour ? (
+                                        <div className="error">{formik.errors.duration_hour}</div>
+                                    ) : null}
+                                </div>
 
-                                        <div className='w-50 mx-1'>
-                                            <label
-                                                htmlFor=""
-                                                style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
-                                            >
-                                                 <span style={{ color: "red" }}>*</span>
-                                            </label>
-                                            <select
-                                                
-                                                name="duration_minute"
-                                                className="form-control"
-                                                placeholder="Name"
-                                                value={formik.values.duration_minute}
-                                                onChange={(e) => formik.setFieldValue('duration_minute', e.target.value)}
-                                                onBlur={formik.handleBlur}
-                                            >
-                                                <option value={null}>Choose</option>
-                                             {minutes.map((dat,i)=>
+                                <div className='w-50 mx-1'>
+                                    <label
+                                        htmlFor=""
+                                        style={{ paddingBottom: "10px", fontWeight: "600", fontSize: "13px" }}
+                                    >
+                                        <span style={{ color: "red" }}>*</span>
+                                    </label>
+                                    <select
+
+                                        name="duration_minute"
+                                        className="form-control"
+                                        placeholder="Name"
+                                        value={formik.values.duration_minute}
+                                        onChange={(e) => formik.setFieldValue('duration_minute', e.target.value)}
+                                        onBlur={formik.handleBlur}
+                                    >
+                                        <option value={null}>Choose</option>
+                                        {minutes.map((dat, i) =>
                                             <option key={i} value={dat}>{dat}</option>
-                                            )}
-                                            </select>
-                                            {formik.touched.duration_minute && formik.errors.duration_minute ? (
-                                                <div className="error">{formik.errors.duration_minute}</div>
-                                            ) : null}
-                                        </div>
+                                        )}
+                                    </select>
+                                    {formik.touched.duration_minute && formik.errors.duration_minute ? (
+                                        <div className="error">{formik.errors.duration_minute}</div>
+                                    ) : null}
+                                </div>
 
-                                   
-                        </div>
-                      
-                        <div className='d-flex justify-content-end mt-3'>
-                            <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>
-                            <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Confirm</button>
-                        </div>
-                    </form>
-                </Box>
-                
-            </Modal>
-        </div>}
-        {isLoading && 
-            <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-            <CircularProgress />
-          </div>
-           }
-           </>
+
+                            </div>
+
+                            <div className='d-flex justify-content-end mt-3'>
+                                <button type='reset' className='m-1 btn btn-small btn-white' onClick={handleClose}>cancel</button>
+                                <button type='submit' className='m-1 btn btn-small' style={{ backgroundColor: "#006875", color: "white" }}>Confirm</button>
+                            </div>
+                        </form>
+                    </Box>
+
+                </Modal>
+            </div>}
+            {isLoading &&
+                <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                    <CircularProgress />
+                </div>
+            }
+        </>
     );
 }

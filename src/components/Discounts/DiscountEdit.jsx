@@ -10,7 +10,6 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import {getDiscountOfferView,UpdateOffer} from "../../services/offers"
 import CircularProgress from "@mui/material/CircularProgress";
-import moment from 'moment-timezone';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -95,8 +94,8 @@ export default function DiscountEdit() {
         }
       ),
 
-    end_date: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
-        if (is_lifetime === false) {
+    end_date: Yup.string().when("expiration", ([expiration], schema) => {
+        if (expiration === "Limited-Time") {
             return schema
                 .required("Date is Required")
         }
@@ -104,8 +103,8 @@ export default function DiscountEdit() {
             return schema.notRequired();
         }
     }),
-    end_time: Yup.string().when("is_lifetime", ([is_lifetime], schema) => {
-        if (is_lifetime === false) {
+    end_time: Yup.string().when("expiration", ([expiration], schema) => {
+        if (expiration === "Limited-Time") {
           return schema.required("Time is Required");
         } else {
           return schema.notRequired();
@@ -157,7 +156,7 @@ export default function DiscountEdit() {
             multiple_redeem_specify_no: "",
             start_date: "",
             start_time: "",
-            is_lifetime: false,
+            expiration: "Limited-Time",
             end_date: "",
             end_time: "",
             on_home_screen: true,
@@ -165,7 +164,7 @@ export default function DiscountEdit() {
             apply_global: true,
             services: [],
             companies: [],
-            purchase_requirement: true,
+            purchase_requirement: false,
             min_purchase_amount: "",
         },
         validationSchema,
@@ -213,8 +212,8 @@ export default function DiscountEdit() {
                 {formdata.append("allow_multiple_redeem",values.allow_multiple_redeem !=="" ? values.allow_multiple_redeem :"")}
                 {formdata.append("multiple_redeem_specify_no",values.multiple_redeem_specify_no!=="" ? values.multiple_redeem_specify_no : "")}
                 formdata.append("start_date",startDateTime());
-                formdata.append("is_lifetime",checktrue(values.is_lifetime));
-                {values.end_date!=="" && formdata.append("end_date", endDateTime())}
+                formdata.append("expiration",values.expiration);
+                {values.end_date!=="" ? formdata.append("end_date", endDateTime()):formdata.append("end_date","")}
                 formdata.append("on_home_screen",checktrue(values.on_home_screen));
                 formdata.append("on_checkout",checktrue(values.on_checkout));
                 formdata.append("apply_global",checktrue(values.apply_global));
@@ -273,7 +272,7 @@ export default function DiscountEdit() {
             formik.setFieldValue("multiple_redeem_specify_no",data.multiple_redeem_specify_no);
             formik.setFieldValue("start_date",data.start_date.split("T")[0]);
             formik.setFieldValue("start_time",data.start_date?.split("T")[1]?.slice(0,-9));
-            formik.setFieldValue("is_lifetime",data.is_lifetime);
+            formik.setFieldValue("expiration",data.expiration);
             formik.setFieldValue("end_date",data.end_date.split("T")[0]);
             formik.setFieldValue("end_time",data.end_date?.split("T")[1]?.slice(0,-9));
             formik.setFieldValue("on_home_screen",data.on_home_screen);
@@ -710,12 +709,12 @@ if(!isLoading){
                                             fontWeight: "500",
                                             fontSize: "15px",
                                             textTransform:"capitalize",
-                                            backgroundColor: formik.values.is_lifetime === true ? "black" : "",
-                                            color: formik.values.is_lifetime === true ? "white" : "",
+                                            backgroundColor: formik.values.expiration === "No-Expiry" ? "black" : "",
+                                            color: formik.values.expiration === "No-Expiry" ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, is_lifetime: !formik.values.is_lifetime,end_date:"",end_time:"" })}
+                                        onClick={() => updateFormValues({ ...formik.values, expiration:"No-Expiry",end_date:"",end_time:"" })}
                                     >
                                         No Expiry
                                     </Button>
@@ -724,12 +723,12 @@ if(!isLoading){
                                             fontWeight: "500",
                                             fontSize: "15px",
                                             textTransform:"capitalize",
-                                            backgroundColor: formik.values.is_lifetime === false ? "black" : "",
-                                            color: formik.values.is_lifetime === false ? "white" : "",
+                                            backgroundColor: formik.values.expiration === "Limited-Time" ? "black" : "",
+                                            color: formik.values.expiration === "Limited-Time" ? "white" : "",
                                             padding: "3px 30px",
                                             textAlign: "center",
                                         }}
-                                        onClick={() => updateFormValues({ ...formik.values, is_lifetime: !formik.values.is_lifetime })}
+                                        onClick={() => updateFormValues({ ...formik.values, expiration: "Limited-Time" })}
                                     >
                                         Limited Time
                                     </Button>
@@ -737,58 +736,52 @@ if(!isLoading){
                             </div>
 
 
-                            <div className="d-flex justify-content-between">
-                  <div
-
-                    style={{ marginTop: "8px",width:"50%" }}
-                  >
-                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                      Validity Date{" "}
-                      {formik.values.is_lifetime === false && (
-                        <span style={{ color: "red" }}>*</span>
-                      )}
-                    </p>
-                    <input
-                      type="date"
-                      value={formik.values?.end_date}
-                      name="end_date"
-                      min={newDate}
-                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
-                      className="discount-input"
-                      style={{ padding: "5px",width:"100%" }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                    />
-                    {formik.touched.end_date && formik.errors.end_date ? (
-                      <div className="error">{formik.errors.end_date}</div>
-                    ) : null}
-                  </div>
-                  <div
-                    className="mx-4"
-                    style={{ marginTop: "8px" }}
-                  >
-                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
-                      Validity Time{" "}
-                      {formik.values.is_lifetime === false && (
-                        <span style={{ color: "red" }}>*</span>
-                      )}
-                    </p>
-                    <input
-                      type="time"
-                      value={formik.values?.end_time}
-                      name="end_time"
-                      disabled={formik.values.is_lifetime === true || formik.values.start_date === ""}
-                      className="discount-input"
-                      style={{ padding: "5px",width:"100%" }}
-                      onChange={formik.handleChange}
-                      onBlur={formik.handleBlur}
-                      min={formik.values.start_date}
-                    />
-                    {formik.touched.end_time && formik.errors.end_time ? (
-                      <div className="error">{formik.errors.end_time}</div>
-                    ) : null}
-                  </div>
-                </div>
+                            <div className="d-flex justify-content-between align-items-center">
+                            <div className="mx-2">
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                                        Validity Date{" "}
+                                        {formik.values.expiration === "Limited-Time" && (
+                                            <span style={{ color: "red" }}>*</span>
+                                        )}
+                                    </p>
+                                    <input
+                                        type="date"
+                                        value={formik.values?.end_date}
+                                        name="end_date"
+                                        min={newDate}
+                                        disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
+                                        className="discount-input"
+                                        style={{ padding: "5px", width: "100%" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    {formik.touched.end_date && formik.errors.end_date ? (
+                                        <div className="error">{formik.errors.end_date}</div>
+                                    ) : null}
+                                </div>
+                                <div className="mx-2">
+                                    <p style={{ fontWeight: 550, fontSize: "14px" }}>
+                                        Validity Time{" "}
+                                        {formik.values.expiration === "Limited-Time" && (
+                                            <span style={{ color: "red" }}>*</span>
+                                        )}
+                                    </p>
+                                    <input
+                                        type="time"
+                                        value={formik.values?.end_time}
+                                        name="end_time"
+                                        disabled={formik.values.expiration === "No-Expiry" || formik.values.start_date === ""}
+                                        className="discount-input"
+                                        style={{ padding: "5px", width: "100%" }}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                        min={formik.values.start_date}
+                                    />
+                                    {formik.touched.end_time && formik.errors.end_time ? (
+                                        <div className="error">{formik.errors.end_time}</div>
+                                    ) : null}
+                                </div>
+                            </div>
 
                         </div>
                     </div>
@@ -806,24 +799,21 @@ if(!isLoading){
                                             checked={formik.values.apply_global}
                                             name="apply_global"
                                             value={formik.values.apply_global}
-                                            onChange={formik.handleChange}
+                                            onChange={()=>{
+                                                formik.setValues((prev)=>{
+                                                  return {...prev,apply_global:!formik.values.apply_global,companies:[],services:[]}
+                                                })
+                                              }}
                                             onBlur={formik.handleBlur} />
                                         <span class="slider round"></span>
                                     </label>
-                                    {/* <div>{item?.is_enable === true ? "ACTIVE" : "INACTIVE"}</div> */}
                                 </div>
                                 <AddMorePopup  check={formik?.values?.apply_global} service={formik.values.services} companies={formik.values.companies} setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} updateOneServiceIndex={updateOneServiceIndex} handleServiceAdd={updateServiceIndex}/>                            </div>
                         </div>
 
-                        {formik.values.apply_global &&
+                        {formik.values.apply_global && formik.values.companies.length === 0 &&
                             <p style={{ textAlign: "center", fontWeight: "700", fontSize: "14px" }}>Applied to All Services / Vendors </p>
                         }
-                        {!formik.values.apply_global && (
-                            <div style={{ fontWeight: 550, textAlign: "center" }}>
-                                {" "}
-                                No Service/Vendor Found
-                            </div>
-                        )}
                              {formik.touched.companies && formik.errors.companies ? (
                                             <div className="error text-center">{formik.errors.companies}</div>
                                         ) : null}
@@ -834,14 +824,6 @@ if(!isLoading){
                             <div className='d-flex justify-content-between'>
                                 <p style={{ fontWeight: "550", fontSize: "14px" }}>{company.name}</p>
                                 <div className='d-flex align-items-center justify-content-between'>
-                                    {/* <Button variant="outlined" size="small" style={{ width: "20px", height: "20px", border: "none" }}>
-                                        <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
-                                            <path fillRule="evenodd" clipRule="evenodd" d="M2.70837 18.334C2.70837 17.9888 2.9882 17.709 3.33337 17.709H16.6667C17.0119 17.709 17.2917 17.9888 17.2917 18.334C17.2917 18.6792 17.0119 18.959 16.6667 18.959H3.33337C2.9882 18.959 2.70837 18.6792 2.70837 18.334Z" fill="#2684FC" />
-                                            <path d="M8.81082 13.1827C9.02294 13.0173 9.21535 12.8249 9.60011 12.4401L14.5307 7.50956C13.8596 7.23026 13.0648 6.77148 12.3131 6.0198C11.5613 5.268 11.1025 4.47307 10.8233 3.80195L5.89259 8.73261L5.89257 8.73264C5.50782 9.11739 5.31542 9.30978 5.14997 9.52191C4.9548 9.77214 4.78746 10.0429 4.65094 10.3294C4.5352 10.5722 4.44916 10.8303 4.27708 11.3466L3.36967 14.0688C3.28499 14.3228 3.35111 14.6029 3.54046 14.7923C3.72981 14.9816 4.00989 15.0477 4.26393 14.963L6.98616 14.0556C7.50238 13.8836 7.76051 13.7975 8.00336 13.6818C8.28983 13.5453 8.56059 13.3779 8.81082 13.1827Z" fill="#2684FC" />
-                                            <path d="M15.8989 6.14139C16.9227 5.11758 16.9227 3.45767 15.8989 2.43387C14.8751 1.41006 13.2151 1.41006 12.1913 2.43387L11.6 3.02523C11.6081 3.04968 11.6165 3.07447 11.6252 3.09959C11.8419 3.72435 12.2509 4.54335 13.0203 5.3127C13.7896 6.08204 14.6086 6.49101 15.2334 6.70776C15.2584 6.71643 15.283 6.72479 15.3074 6.73286L15.8989 6.14139Z" fill="#2684FC" />
-                                        </svg>
-                                        Edit
-                                    </Button> */}
                                     <svg style={{cursor:"pointer"}} onClick={()=>deletecompany(company.id)} xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 20 20" fill="none">
                                         <path d="M2.5 5.43586C2.5 5.10712 2.77226 4.84062 3.10811 4.84062H7.09823C7.10364 4.1396 7.17962 3.17855 7.87531 2.51325C8.4228 1.98967 9.1734 1.66602 9.99999 1.66602C10.8266 1.66602 11.5772 1.98967 12.1247 2.51325C12.8204 3.17855 12.8963 4.1396 12.9018 4.84062H16.8919C17.2277 4.84062 17.5 5.10712 17.5 5.43586C17.5 5.7646 17.2277 6.0311 16.8919 6.0311H3.10811C2.77226 6.0311 2.5 5.7646 2.5 5.43586Z" fill="#F6513B" />
                                         <path fillRule="evenodd" clipRule="evenodd" d="M9.663 18.3327H10.337C12.6559 18.3327 13.8154 18.3327 14.5693 17.5944C15.3231 16.8561 15.4003 15.6451 15.5545 13.2231L15.7768 9.73318C15.8605 8.41902 15.9023 7.76194 15.5241 7.34556C15.1459 6.92917 14.5073 6.92917 13.23 6.92917H6.77004C5.49272 6.92917 4.85407 6.92917 4.47588 7.34556C4.09769 7.76194 4.13953 8.41902 4.22323 9.73319L4.44549 13.2231C4.59975 15.6451 4.67687 16.8561 5.43074 17.5944C6.18461 18.3327 7.34407 18.3327 9.663 18.3327ZM8.53856 10.1564C8.50422 9.79487 8.19794 9.53109 7.85448 9.56725C7.51101 9.6034 7.26042 9.9258 7.29477 10.2873L7.71143 14.6733C7.74578 15.0348 8.05206 15.2986 8.39552 15.2625C8.73899 15.2263 8.98958 14.9039 8.95523 14.5424L8.53856 10.1564ZM12.1455 9.56725C12.489 9.6034 12.7396 9.9258 12.7052 10.2873L12.2886 14.6733C12.2542 15.0348 11.9479 15.2986 11.6045 15.2625C11.261 15.2263 11.0104 14.9039 11.0448 14.5424L11.4614 10.1564C11.4958 9.79487 11.8021 9.53109 12.1455 9.56725Z" fill="#F6513B" />

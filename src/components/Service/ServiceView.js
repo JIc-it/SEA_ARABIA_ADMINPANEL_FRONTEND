@@ -309,14 +309,20 @@ const ServiceView = () => {
                     <p style={{ color: "#68727D" }}>Price </p>
                     {oneservice?.is_destination && (
                       <div className="table-responsive ">
-                        <table className="table card-table table-vcenter text-nowrap datatable">
+                        <table className="table  table-vcenter text-nowrap datatable">
                           <thead>
                             <tr>
                               <th className="w-1">
                                 <span>Name</span>
                               </th>
                               <th>
-                                <span>Duration</span>
+                                <span>Hours</span>
+                              </th>
+                              <th>
+                                <span>Minutes</span>
+                              </th>
+                              <th>
+                                <span>Location</span>
                               </th>
                               <th>
                                 <span>Price</span>
@@ -328,7 +334,7 @@ const ServiceView = () => {
                               oneservice?.service_price_service?.map(
                                 (dat, i) => (
                                   <tr>
-                                    <td>
+                                    <td className="text-secondary">
                                       <span className="text-secondary">
                                         {dat.name}
                                       </span>
@@ -336,7 +342,19 @@ const ServiceView = () => {
                                     <td>
                                       <span className="text-secondary">
                                         {" "}
-                                        {dat.duration_hour} Hours
+                                        {dat.duration_hour}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className="text-secondary">
+                                        {" "}
+                                        {dat.duration_minute} 
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className="text-secondary">
+                                        {" "}
+                                        {dat.location.name} 
                                       </span>
                                     </td>
                                     <td>
@@ -360,7 +378,10 @@ const ServiceView = () => {
                                 <span>Name</span>
                               </th>
                               <th>
-                                <span>Duration</span>
+                                <span>Hours</span>
+                              </th>
+                              <th>
+                                <span>Minutes</span>
                               </th>
                               <th>
                                 <span>Price</span>
@@ -380,7 +401,13 @@ const ServiceView = () => {
                                     <td>
                                       <span className="text-secondary">
                                         {" "}
-                                        {dat.duration_hour} Hours
+                                        {dat.duration_hour}
+                                      </span>
+                                    </td>
+                                    <td>
+                                      <span className="text-secondary">
+                                        {" "}
+                                        {dat.duration_minute}
                                       </span>
                                     </td>
                                     <td>
@@ -432,7 +459,7 @@ const ServiceView = () => {
                                     </td>
                                     <td>
                                       <span className="text-secondary">
-                                        {dat.is_range === false
+                                        {dat.end_day !== null
                                           ? dat.end_day
                                           : "-"}
                                       </span>
@@ -487,10 +514,9 @@ const ServiceView = () => {
                                     <td>
                                       <span className="text-secondary">
                                         {" "}
-                                        {dat.is_range === false
+                                        {dat.end_time !==null
                                           ? dat.end_time
                                           : "-"}{" "}
-                                        Hours
                                       </span>
                                     </td>
                                     <td>
@@ -542,7 +568,7 @@ const ServiceView = () => {
                                     </td>
                                     <td>
                                       <span className="text-secondary">
-                                        {dat.is_range === false
+                                        {dat.end_date !==null
                                           ? dat.end_date
                                           : "-"}
                                       </span>

@@ -44,7 +44,7 @@ export default function PerDateTable({data,formik,setIsUpdated}) {
                 toast.error(error.message))
         }
       };
-      const check=data?.some((data)=>data.date)  
+       
     return (
         <div className="">
             <div className="table-responsive">
@@ -70,7 +70,7 @@ export default function PerDateTable({data,formik,setIsUpdated}) {
                         </tr>
                     </thead>
                     <tbody>
-                        {check && data?.map((dat,i)=>
+                        {data?.map((dat,i)=>
                         <tr>
                         <td>
                             <span className="text-secondary">
@@ -121,7 +121,7 @@ export default function PerDateTable({data,formik,setIsUpdated}) {
                     </tr>
                         )
                         }
-                       {data?.length===0 || !check ?
+                       {data?.length===0 ?
                         <tr>
                             <td>No Data</td>
                         </tr>

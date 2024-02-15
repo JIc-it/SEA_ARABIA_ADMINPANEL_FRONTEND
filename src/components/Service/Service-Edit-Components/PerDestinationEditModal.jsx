@@ -36,18 +36,33 @@ export default function PerDestinationEditModal({ handleClose, handleOpen, open,
         setSearch(searchTerm);
     };
 
-const validationSchema = Yup.object({
-    name: Yup.string()
-        .required("Name is required")
-        .max(20, "Name must be at most 20 characters"),
-    price: Yup.number()
-        .required("Price is required"),
+    const validationSchema = Yup.object({
+        name: Yup.string()
+            .required("Name is required")
+            .max(20, "Name must be at most 20 characters"),
+        price: Yup.number()
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
         duration_hour: Yup.number()
-        .required("Duration is required"),
-        duration_minute: Yup.number()
-        .required("Minute is required"),
-    location: Yup.string().required("Location is required"),
-});
+            .required("Duration is required"),
+        duration_minute: Yup.number().when(
+                "duration_hour",
+                ([duration_hour], schema) => {
+                  if (duration_hour === 0) {
+                    return schema
+                    .min(1, 'Must be greater than zero')
+                  } else {
+                    return schema.required("Minute is Required");
+                  }
+                }
+              ),
+          
+              location: Yup.object({
+                id: Yup.string().required("Location is required"),
+                name: Yup.string().required("Location is required")
+            }),
+    });
 
 
     useEffect(() => {
@@ -64,7 +79,10 @@ const validationSchema = Yup.object({
             service: data.service,
             is_active: data.is_active,
             is_range: data.is_range,
-            location: data.location,
+            location: {
+                id: data.location.id,
+                name: data.location.name
+            },
             name: data.name,
             price: data.price,
             duration_hour: data.duration_hour,
@@ -79,7 +97,10 @@ const validationSchema = Yup.object({
                     id: values.id,
                     service: values.service,
                     is_active: values.is_active,
-                    location: values.location,
+                    location: {
+                        id: values.location.id,
+                        name: values.location.name
+                    },
                     name: values.name,
                     price: values.price,
                     duration_hour:values.duration_hour,
@@ -203,8 +224,22 @@ for(let i=0;i<=59;i++){
                                     name="location"
                                     className="form-control"
                                     placeholder="Name"
-                                    value={formik.values.location}
-                                    onChange={(e) => formik.setFieldValue('location', e.target.value)}
+                                    value={formik.values.location.id}
+                                    onChange={(e) => {
+                                        const selectedOption = locationlist.find((data) => data?.id == e.target.value)
+                                        if (selectedOption) {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: selectedOption ? { id: selectedOption?.id, name: selectedOption?.name } : undefined,
+                                            }));
+                                        }
+                                        if (e.target.value === "Choose") {
+                                            formik.setValues((prev) => ({
+                                                ...prev,
+                                                location: { id: prev.location.id, name: prev.location.name },
+                                            }));
+                                        }
+                                    }}
                                     onBlur={formik.handleBlur}
                                 >
                                     <option value={null}>Choose</option>
@@ -212,8 +247,8 @@ for(let i=0;i<=59;i++){
                                     <option key={i} value={dat.id}>{dat.name}</option>
                                     )}
                                 </select>
-                                {formik.touched.location && formik.errors.location ? (
-                                    <div className="error">{formik.errors.location}</div>
+                                {formik.touched.location?.name && formik.errors.location?.name ? (
+                                    <div className="error">{formik.errors.location?.name}</div>
                                 ) : null}
                             </div>        
                             <div className='d-flex  align-items-center mt-2'>
