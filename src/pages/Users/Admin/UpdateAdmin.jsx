@@ -113,9 +113,10 @@ function UpdateAdmin({ show, close }) {
             location: values.location.id,
             gender: values.gender?.label,
           };
+          console.log('Gender:', formik.values.gender);
 
           const adminData = await UpdateAdminListById(adminId, data);
-          // console.log("Admin updated detail is ---", adminData);
+          console.log("Admin updated detail is ---", adminData);
           if (adminData) {
             setIsLoading(false);
             window.location.reload();
@@ -141,7 +142,7 @@ function UpdateAdmin({ show, close }) {
       first_name: adminDetails?.first_name || "",
       last_name: adminDetails?.last_name || "",
       password: adminDetails?.password || "",
-
+      gender: adminDetails?.profileextra?.gender || "",
       email: adminDetails?.email || "",
       mobile: adminDetails?.mobile || "",
       location: adminDetails?.profileextra?.location?.country || "",
@@ -287,7 +288,7 @@ function UpdateAdmin({ show, close }) {
               {gender.map((option) => (
                 <option
                   key={option.id}
-                  value={option.label}
+                  value={option.id}
                   label={option.label}
                 >
                   {option.label}

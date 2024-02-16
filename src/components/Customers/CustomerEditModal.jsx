@@ -9,6 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import {
   UpdateCustomerListById,
   getCustomerListById,
+  getLocation,
 } from "../../services/CustomerHandle";
 import { useParams } from "react-router-dom";
 import CountryDropdown from "../SharedComponents/CountryDropDown";
@@ -76,7 +77,7 @@ function CustomerEditModal({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
-
+  console.log("customerDetails? ", customerDetails);
   const formik = useFormik({
     initialValues: {
       first_name: customerDetails?.first_name || "",
@@ -84,7 +85,11 @@ function CustomerEditModal({ show, close }) {
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
-      location: customerDetails?.profileextra?.location?.country || "",
+      location: {
+        country: customerDetails?.profileextra?.location?.country || "",
+        country_code:
+          customerDetails?.profileextra?.location?.country_code || "",
+      },
       gender: customerDetails?.profileextra?.gender || "",
 
       // Add other fields as needed
@@ -105,7 +110,7 @@ function CustomerEditModal({ show, close }) {
             email: values.email,
             mobile: values.mobile,
 
-            location: values.location,
+            location: values.location?.id,
             dob: values.dob,
             gender: values.gender,
           };
@@ -131,16 +136,18 @@ function CustomerEditModal({ show, close }) {
       }
     },
   });
+  console.log("cus forik", formik);
   useEffect(() => {
     formik.setValues({
       first_name: customerDetails?.first_name || "",
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profileextra?.location?.country?.code || "",
+      location: customerDetails?.profileextra?.location?.country?.id || "",
       gender: customerDetails?.profileextra?.gender || "",
       dob: customerDetails?.profileextra?.dob || "",
     });
+    console.log("formik", formik.setValues);
   }, [customerDetails]);
 
   return (
@@ -298,15 +305,13 @@ function CustomerEditModal({ show, close }) {
             <CountryDropdown
               gccCountries={locationContext?.gccCountriesList}
               formik={formik}
-              selected={formik.values.location}
+              selected={formik.values.location.country}
               onChange={(selectedCountry) => {
                 // Update the "location" field in the formik values
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
+
             {/* </div> */}
           </div>
         </div>

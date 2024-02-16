@@ -7,10 +7,7 @@ import {
 } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
 
-import {
-  getMenuPermissions,
-  removeBaseUrlFromPath,
-} from "../../../helpers";
+import { getMenuPermissions, removeBaseUrlFromPath } from "../../../helpers";
 import { adminExport, getCustomerlist } from "../../../services/CustomerHandle";
 
 import { getListDataInPagination } from "../../../services/commonServices";
@@ -21,6 +18,7 @@ import {
   menuIdConstant,
   permissionCategory,
 } from "../../../components/Permissions/PermissionConstants";
+import { CircularProgress } from "@mui/material";
 
 const Admin = () => {
   const { userPermissionList } = useContext(MainPageContext);
@@ -105,7 +103,6 @@ const Admin = () => {
         // Remove the link asynchronously after the download
         setTimeout(() => {
           document.body.removeChild(link);
-        
         }, 0);
       })
       .catch((error) => {
@@ -411,79 +408,89 @@ const Admin = () => {
                   </th>
                 </tr>
               </thead>
-              {admin && admin.length > 0 ? (
-                <>
-                  {admin.map((item) => {
-                    return (
-                      <tbody>
-                        <tr>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.first_name} {item?.last_name}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {item?.email}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {" "}
-                              {item?.mobile}
-                            </span>
-                          </td>
-                          <td>
-                            <span className="text-secondary">
-                              {" "}
-                              {item?.location}
-                              {item?.profileextra?.location?.country}
-                            </span>
-                          </td>
-                          <td
-                            style={{
-                              display: "flex",
-                              gap: "10px",
-                              alignItems: "baseline",
-                            }}
-                          >
-                            <Link
-                              to={`/admin/${item?.id}`}
-                              // to={`/customers/${item.id}`}
-                              className="btn btn-sm btn-info"
-                              style={{
-                                padding: "6px 10px",
-                                borderRadius: "4px",
-                              }}
-                            >
-                              View &nbsp;
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="16"
-                                height="16"
-                                viewBox="0 0 16 16"
-                                fill="none"
+              <tbody>
+                {!isLoading ? (
+                  <>
+                    {admin && admin.length > 0 ? (
+                      <>
+                        {admin.map((item) => {
+                          return (
+                            <tr>
+                              <td>
+                                <span className="text-secondary">
+                                  {item?.first_name} {item?.last_name}
+                                </span>
+                              </td>
+                              <td>
+                                <span className="text-secondary">
+                                  {item?.email}
+                                </span>
+                              </td>
+                              <td>
+                                <span className="text-secondary">
+                                  {" "}
+                                  {item?.mobile}
+                                </span>
+                              </td>
+                              <td>
+                                <span className="text-secondary">
+                                  {" "}
+                                  {item?.location}
+                                  {item?.profileextra?.location?.country}
+                                </span>
+                              </td>
+                              <td
+                                style={{
+                                  display: "flex",
+                                  gap: "10px",
+                                  alignItems: "baseline",
+                                }}
                               >
-                                <path
-                                  d="M4 12L12 4M12 4H6M12 4V10"
-                                  stroke="white"
-                                  strokeWidth="1.5"
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                />
-                              </svg>
-                            </Link>
-                          </td>
-                        </tr>
-                      </tbody>
-                    );
-                  })}
-                </>
-              ) : (
-                <tr>
-                  <td className="error">No Records Found</td>
-                </tr>
-              )}
+                                <Link
+                                  to={`/admin/${item?.id}`}
+                                  // to={`/customers/${item.id}`}
+                                  className="btn btn-sm btn-info"
+                                  style={{
+                                    padding: "6px 10px",
+                                    borderRadius: "4px",
+                                  }}
+                                >
+                                  View &nbsp;
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="16"
+                                    height="16"
+                                    viewBox="0 0 16 16"
+                                    fill="none"
+                                  >
+                                    <path
+                                      d="M4 12L12 4M12 4H6M12 4V10"
+                                      stroke="white"
+                                      strokeWidth="1.5"
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                    />
+                                  </svg>
+                                </Link>
+                              </td>
+                            </tr>
+                          );
+                        })}
+                      </>
+                    ) : (
+                      <tr>
+                        <td className="error">No Records Found</td>
+                      </tr>
+                    )}
+                  </>
+                ) : (
+                  <tr>
+                    <td colSpan={"8"} align="center">
+                      <CircularProgress />
+                    </td>
+                  </tr>
+                )}
+              </tbody>
             </table>
           </div>
           <div className="card-footer d-flex align-items-center">

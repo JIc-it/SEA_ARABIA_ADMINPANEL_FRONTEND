@@ -54,7 +54,7 @@ function CreateNewAdmin({ show, close, locationList }) {
       .test("custom-email-format", "Invalid email format", (value) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ),
-    password: Yup.string()
+    changePassword: Yup.string()
       .min(6, "Password should be at least 6 characters")
       .required("Password is required"),
     confirmPassword: Yup.string()
@@ -64,7 +64,7 @@ function CreateNewAdmin({ show, close, locationList }) {
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
       )
-      .oneOf([Yup.ref("password")], "Passwords must match"),
+      .oneOf([Yup.ref("changePassword")], "Passwords must match"),
     gender: Yup.string().required("Gender is required"),
     mobile: Yup.string()
       .required("Mobile is required")
@@ -128,7 +128,8 @@ function CreateNewAdmin({ show, close, locationList }) {
             last_name: values.last_name,
             role: "Admin",
             email: values.email,
-            password: values.password,
+            changePassword: values.changePassword,
+            confirmPassword: values.confirmPassword,
             mobile: values.mobile,
 
             location: values.location.id,
@@ -355,10 +356,7 @@ function CreateNewAdmin({ show, close, locationList }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null}
-            {/* </div> */}
+            
           </div>
         </div>
 
@@ -381,7 +379,7 @@ function CreateNewAdmin({ show, close, locationList }) {
               name="changePassword"
               className="form-control"
               placeholder="Password"
-              value={formik.values.ChangePassword}
+              value={formik.values.changePassword}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               InputProps={{

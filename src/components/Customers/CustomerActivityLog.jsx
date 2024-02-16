@@ -110,6 +110,36 @@ const CustomerActivityLog = () => {
             </span>
             <p>Activity Log</p>
           </div>
+          <div className="back_button col-2">
+            <a
+              href={`/customers/${customerId}`}
+              style={{ display: "flex", gap: "10px", textDecoration: "none" }}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <path
+                  d="M20 12H4M4 12L10 6M4 12L10 18"
+                  stroke="#252525"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <p
+                style={{
+                  color: "black",
+                  textDecoration: "none",
+                }}
+              >
+                Back
+              </p>
+            </a>
+          </div>
           <div className="card my-3 ">
             <div class="table-responsive">
               <table class="table card-table table-vcenter text-nowrap datatable">
