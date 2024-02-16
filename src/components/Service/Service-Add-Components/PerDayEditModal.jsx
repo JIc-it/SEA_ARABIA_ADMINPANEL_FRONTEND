@@ -39,7 +39,9 @@ export default function PerDayEditModal({handleClose, handleOpen, open,data,form
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
-            .required("Price is required"),
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
         day: Yup.string()
             .required("Day is required"),
         end_day: Yup.string().when("is_range", ([is_range], schema) => {

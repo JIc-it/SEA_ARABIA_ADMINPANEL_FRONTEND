@@ -38,7 +38,9 @@ export default function PerDateModal({ handleClose, handleOpen, open, formiks })
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
-            .required("Price is required"),
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
         date: Yup.string()
             .required("Date is required"),
         end_date: Yup.string().when("is_range", ([is_range], schema) => {

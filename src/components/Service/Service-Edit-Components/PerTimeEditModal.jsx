@@ -36,7 +36,9 @@ export default function PerTimeEditModal({ handleClose, handleOpen, open,data, f
             .required("Name is required")
             .max(20, "Name must be at most 20 characters"),
         price: Yup.number()
-            .required("Price is required"),
+            .required("Price is required")
+            .min(1, 'Must be greater than zero')
+            .max(100000, 'Not Greater Than 1 Lakh'),
         time: Yup.string()
             .required("Time is required"),
         end_time: Yup.string().when("is_range", ([is_range], schema) => {
