@@ -301,7 +301,7 @@ const ServiceAdd = () => {
             name: dat.name,
             price: dat.price,
             is_range: returnTrueFalse(dat.is_range),
-            location: dat.location.id,
+            location: dat?.location?.id,
             duration_hour: dat.duration_hour,
             duration_minute: dat.duration_minute,
             duration_day: dat.duration_day,
@@ -556,6 +556,7 @@ const ServiceAdd = () => {
         })
       : amenitieslist || [];
 
+      const isOptionEqualToValue = (option, value) => option.id === value.id;
   return (
     <>
       {!isLoading && (
@@ -1114,6 +1115,7 @@ const ServiceAdd = () => {
                             multiple
                             size="small"
                             id="multiple-limit-tags"
+                            isOptionEqualToValue={isOptionEqualToValue}
                             options={serviceListFilterData || []}
                             name="amenities"
                             getOptionLabel={(option) => `${option.name} `}
