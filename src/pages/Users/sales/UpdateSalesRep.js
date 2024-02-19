@@ -94,9 +94,11 @@ function UpdateSalesRep({ show, close }) {
       email: salesDetails?.email || "",
       dob: salesDetails?.profileextra?.dob || "",
       mobile: salesDetails?.mobile || "",
-      location: salesDetails?.profileextra?.location?.id || "",
-      gender: salesDetails?.profileextra?.gender || "",
 
+      location: {
+        country: salesDetails?.profileextra?.location?.id || "",
+      },
+      gender: salesDetails?.profileextra?.gender || "",
       // Add other fields as needed
     },
     validationSchema,
@@ -361,7 +363,6 @@ function UpdateSalesRep({ show, close }) {
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
-            
           </div>
         </div>
 

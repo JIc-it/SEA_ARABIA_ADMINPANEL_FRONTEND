@@ -37,7 +37,13 @@ function CustomerCreate({ show, close }) {
   };
 
   const handleMouseDownPassword = (event) => {
+    // Prevent default to avoid losing focus on the input field
     event.preventDefault();
+
+    // Toggle password visibility only if the input field is not focused
+    if (document.activeElement !== event.currentTarget.previousElementSibling) {
+      handleClickShowPassword();
+    }
   };
 
   //confirm
@@ -161,7 +167,7 @@ function CustomerCreate({ show, close }) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
             resetForm();
-            
+
             close();
             setIsLoading(false);
           } else {
@@ -432,6 +438,7 @@ function CustomerCreate({ show, close }) {
               <div
                 className="input-group-append"
                 onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
                 style={{ cursor: "pointer" }} // Add cursor style
               >
                 <span className="input-group-text">
