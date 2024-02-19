@@ -32,7 +32,7 @@ function UpdateSalesRep({ show, close }) {
     getSalesRepListById(salesRepId)
       .then((data) => {
         setSalesDetails(data);
-        // console.log(" Sales Rep by id------==", data);
+        console.log(" Sales Rep by id------==", data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -155,10 +155,10 @@ function UpdateSalesRep({ show, close }) {
 
       email: salesDetails?.email || "",
       mobile: salesDetails?.mobile || "",
-      profileextra: {
-        location: salesDetails?.profileextra?.location?.id || "",
-        gender: salesDetails?.profileextra?.gender || "",
-      },
+
+      location: salesDetails?.profileextra?.location?.id || "",
+      gender: salesDetails?.profileextra?.gender || "",
+
       // defineservice: salesDetails?.useridentificationdata?.,
       // Add other fields as needed
     });
