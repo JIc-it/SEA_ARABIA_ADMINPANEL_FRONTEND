@@ -96,16 +96,15 @@ function CustomerCreate({ show, close }) {
       .test("custom-email-format", "Invalid email format", (value) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ),
-    password: Yup.string().max(50).required("Password is required"),
-    confirmPassword: Yup.string()
-      .max(50)
-      .required("Confirm Password is required")
+    password: Yup.string()
+      .required("Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
+      ),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
       .oneOf([Yup.ref("password")], "Passwords must match"),
-
     dob: Yup.date()
       .required("Date of Birth is required")
       .max(new Date(), "Date of Birth cannot be in the future")
@@ -139,7 +138,7 @@ function CustomerCreate({ show, close }) {
       confirmPassword: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
       if (!isLoading) {
         try {
@@ -161,6 +160,8 @@ function CustomerCreate({ show, close }) {
           if (customerData) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
+            resetForm();
+            
             close();
             setIsLoading(false);
           } else {
@@ -333,6 +334,7 @@ function CustomerCreate({ show, close }) {
           </label>
           <div style={{ position: "relative" }}>
             <CountryDropdown
+              className="form-control"
               gccCountries={locationContext?.gccCountriesList}
               formik={formik}
               onChange={(selectedCountry) => {
@@ -340,10 +342,6 @@ function CustomerCreate({ show, close }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            {/* {formik.touched.location && formik.errors.location ? (
-              <div className="error">{formik.errors.location}</div>
-            ) : null} */}
-            {/* </div> */}
           </div>
         </div>
         <div style={{ margin: "20px" }}>
@@ -405,7 +403,6 @@ function CustomerCreate({ show, close }) {
               <div className="error">{formik.errors.gender}</div>
             ) : null}
           </div>
-         
         </div>
 
         <div style={{ margin: "20px" }}>
@@ -422,32 +419,30 @@ function CustomerCreate({ show, close }) {
               Password <span style={{ color: "red" }}>*</span>
             </label>
 
-            <TextField
-              type={values.showPassword ? "text" : "password"}
-              name="password"
-              className="form-control"
-              placeholder="password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <div className="input-group mb-3">
+              <input
+                type={values.showPassword ? "text" : "password"} // Corrected password type
+                placeholder=" Password"
+                name="password"
+                className="form-control"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPassword}
+                style={{ cursor: "pointer" }} // Add cursor style
+              >
+                <span className="input-group-text">
+                  {values.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
             ) : null}
@@ -466,32 +461,31 @@ function CustomerCreate({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
-              type={valuesConfirm.showPassword ? "text" : "password"}
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPasswordConfirm}
-                      onMouseDown={handleMouseDownPasswordConfirm}
-                      edge="end"
-                    >
-                      {valuesConfirm.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+
+            <div className="input-group mb-3">
+              <input
+                type={valuesConfirm.showPassword ? "text" : "password"} // Corrected password type
+                placeholder="confirmPassword"
+                name="confirmPassword"
+                className="form-control"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPasswordConfirm}
+                style={{ cursor: "pointer" }} // Add cursor style
+              >
+                <span className="input-group-text">
+                  {values.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>
             ) : null}

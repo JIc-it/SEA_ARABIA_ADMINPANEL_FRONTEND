@@ -70,7 +70,7 @@ function CustomerEditModal({ show, close }) {
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-        // console.log("cus detail is ---", data);
+        console.log("cus detail is ---", data);
         setCustomerDetails(data);
       })
       .catch((error) => {
@@ -85,10 +85,9 @@ function CustomerEditModal({ show, close }) {
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
+
       location: {
-        country: customerDetails?.profileextra?.location?.country || "",
-        country_code:
-          customerDetails?.profileextra?.location?.country_code || "",
+        country: customerDetails?.profileextra?.location?.id || "",
       },
       gender: customerDetails?.profileextra?.gender || "",
 
@@ -97,32 +96,34 @@ function CustomerEditModal({ show, close }) {
 
     enableReinitialize: true,
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
             role: "User",
             email: values.email,
+            password: values.password,
             mobile: values.mobile,
-
-            location: values.location?.id,
-            dob: values.dob,
-            gender: values.gender,
+            profileextra: {
+              location: values.location.id,
+              dob: values.dob, // Assuming you have dob in your form
+              gender: values.gender,
+            },
           };
 
           const customerData = await UpdateCustomerListById(customerId, data);
           console.log("customer updated detail is ---", customerData);
           if (customerData) {
             setIsLoading(false);
-            window.location.reload();
+            // window.location.reload();
             setIsRefetch(!isRefetch);
             toast.success("customer updated Successfully.");
             close();
+            resetForm();
           } else {
             console.error("Error while updating Vendor:", customerData.error);
             setIsLoading(false);
@@ -136,18 +137,18 @@ function CustomerEditModal({ show, close }) {
       }
     },
   });
-  console.log("cus forik", formik);
+  console.log("cus forik", formik.values);
   useEffect(() => {
     formik.setValues({
       first_name: customerDetails?.first_name || "",
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profileextra?.location?.country?.id || "",
+      location: customerDetails?.profileextra?.location?.id || "",
       gender: customerDetails?.profileextra?.gender || "",
       dob: customerDetails?.profileextra?.dob || "",
     });
-    console.log("formik", formik.setValues);
+    // console.log("formik", formik.setValues);
   }, [customerDetails]);
 
   return (
@@ -372,18 +373,14 @@ function CustomerEditModal({ show, close }) {
             className="form-select"
             value={formik?.values?.gender}
             onChange={formik.handleChange}
-            // onChange={(e) => {
-            //   formik.handleChange(e);
-            //   formik.setFieldValue("gender", e.target.value);
-            // }}
             onBlur={formik.handleBlur}
           >
             <option value="male">Male</option>
             <option value="female">Female</option>
-          </select> */}
+          </select>
           {formik.touched.gender && formik.errors.gender ? (
             <div className="error">{formik.errors.gender}</div>
-          ) : null}
+          ) : null} */}
         </div>
         <div
           style={{

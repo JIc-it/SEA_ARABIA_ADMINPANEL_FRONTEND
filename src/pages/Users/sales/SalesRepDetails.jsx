@@ -16,6 +16,7 @@ import {
 import { MainPageContext } from "../../../Context/MainPageContext";
 import WithPermission from "../../../components/HigherOrderComponents/PermissionCheck/WithPermission";
 import CommonButtonForPermission from "../../../components/HigherOrderComponents/CommonButtonForPermission";
+import { Formik } from "formik";
 function SalesRepDetails() {
   const { userPermissionList } = useContext(MainPageContext);
   const navigate = useNavigate();
@@ -28,9 +29,15 @@ function SalesRepDetails() {
 
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
-  const handleOpenOffcanvasPassword = () => setShowOffcanvas1(true);
+  const handleOpenOffcanvasPassword = () => {
+    Formik.resetForm();
+    setShowOffcanvas1(true);
+  };
 
-  const handleCloseOffcanvasPassword = () => setShowOffcanvas1(false);
+  const handleCloseOffcanvasPassword = () => {
+    setShowOffcanvas1(false);
+    // formik.resetForm();
+  };
 
   const salesRepId = useParams()?.salesRepId;
   const [salesRepDetails, setsalesRepDetails] = useState();
@@ -332,6 +339,7 @@ function SalesRepDetails() {
               </a>
             </div>
           </div>
+          <br />
         </div>
       </div>
       <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>
