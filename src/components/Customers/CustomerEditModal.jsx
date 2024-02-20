@@ -19,6 +19,7 @@ function CustomerEditModal({ show, close }) {
   const theme = useTheme();
   const customerId = useParams()?.customerId;
   const locationContext = useContext(AppContext);
+  console.log("location---", locationContext);
   const [isRefetch, setIsRefetch] = useState(false);
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
@@ -85,12 +86,12 @@ function CustomerEditModal({ show, close }) {
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
-
-      location: {
-        country: customerDetails?.profileextra?.location?.id || "",
+      profileextra: {
+        location: {
+          country: customerDetails?.profileextra?.location?.country || "",
+        },
+        gender: customerDetails?.profileextra?.gender || "",
       },
-      gender: customerDetails?.profileextra?.gender || "",
-
       // Add other fields as needed
     },
 
@@ -144,7 +145,7 @@ function CustomerEditModal({ show, close }) {
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profileextra?.location?.id || "",
+      location: customerDetails?.profileextra?.location?.label || "",
       gender: customerDetails?.profileextra?.gender || "",
       dob: customerDetails?.profileextra?.dob || "",
     });
@@ -306,7 +307,7 @@ function CustomerEditModal({ show, close }) {
             <CountryDropdown
               gccCountries={locationContext?.gccCountriesList}
               formik={formik}
-              selected={formik.values.location.country}
+              selected={formik.values.location}
               onChange={(selectedCountry) => {
                 // Update the "location" field in the formik values
                 formik.setFieldValue("location", selectedCountry);

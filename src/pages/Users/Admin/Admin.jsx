@@ -35,6 +35,7 @@ function Admin({ isRefetch, setIsRefetch }) {
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
+  const [tableData, setTableData] = useState(false);
 
   const [count, setCount] = useState();
   useEffect(() => {
@@ -58,11 +59,12 @@ function Admin({ isRefetch, setIsRefetch }) {
           previous: data.previous,
         });
         setAdmin(data.results);
+        setTableData(false);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
-  }, [isRefetch]);
+  }, [isRefetch, tableData]);
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -321,6 +323,7 @@ function Admin({ isRefetch, setIsRefetch }) {
           <CreateNewAdmin
             show={showOffcanvas}
             close={handleCloseOffcanvas}
+            tableData={setTableData}
             isRefetch={isRefetch}
             setIsRefetch={setIsRefetch}
           />

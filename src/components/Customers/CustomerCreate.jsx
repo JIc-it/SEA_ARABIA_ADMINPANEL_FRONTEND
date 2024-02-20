@@ -15,7 +15,7 @@ import { AppContext } from "../../Context/AppContext";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-function CustomerCreate({ show, close }) {
+function CustomerCreate({ show, close, tableData }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
 
@@ -167,7 +167,7 @@ function CustomerCreate({ show, close }) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
             resetForm();
-
+            tableData(true);
             close();
             setIsLoading(false);
           } else {

@@ -15,7 +15,7 @@ import { AppContext } from "../../../Context/AppContext";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
-function CreateNewAdmin({ show, close, locationList }) {
+function CreateNewAdmin({ show, close, locationList, tableData }) {
   const [isRefetch, setIsRefetch] = useState();
   const locationContext = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -139,6 +139,7 @@ function CreateNewAdmin({ show, close, locationList }) {
             setIsRefetch(!isRefetch);
             toast.success("Admin Added Successfully.");
             close();
+            tableData(true);
             resetForm();
             setIsLoading(false);
           } else {

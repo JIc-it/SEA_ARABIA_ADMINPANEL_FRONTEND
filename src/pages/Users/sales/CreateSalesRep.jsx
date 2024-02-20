@@ -14,7 +14,7 @@ import CountryDropdown from "../../../components/SharedComponents/CountryDropDow
 import { AppContext } from "../../../Context/AppContext";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
-function CreateSalesRep({ show, close }) {
+function CreateSalesRep({ show, close, tableData }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
   const [isRefetch, setIsRefetch] = useState();
@@ -129,12 +129,13 @@ function CreateSalesRep({ show, close }) {
         };
 
         const staffData = await createSalesRep(data);
-        console.log("sales rep -- console", staffData);
+        // console.log("sales rep -- console", staffData);
         if (staffData) {
           setIsRefetch(!isRefetch);
           toast.success("Sales Representative Added Successfully.");
           close();
           resetForm();
+          tableData(true);
         } else {
           console.error(
             "Error while creating Sales Representative:",

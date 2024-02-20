@@ -59,12 +59,7 @@ export default function CustomerListing() {
       to: "",
     },
   });
-  const [tableData, setTableData] = useState([]);
-
-  // Function to add new data
-  const addNewData = (newData) => {
-    setTableData([...tableData, newData]);
-  };
+  const [tableData, setTableData] = useState(false);
 
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
   useEffect(() => {
@@ -76,12 +71,13 @@ export default function CustomerListing() {
           next: data.next,
           previous: data.previous,
         });
+        setTableData(false);
       })
       .catch((error) => {
         toast.error(error.message);
         console.error("Error fetching Customer List data:", error);
       });
-  }, []);
+  }, [tableData]);
 
   // export
   const handleExportCustomerData = () => {
@@ -453,7 +449,11 @@ export default function CustomerListing() {
                 </svg>
               </button>
             )}
-          <CustomerCreate show={showOffcanvas} close={handleCloseOffcanvas} />
+          <CustomerCreate
+            show={showOffcanvas}
+            close={handleCloseOffcanvas}
+            tableData={setTableData}
+          />
           <AddCustomerWithPermission />
         </div>
       </div>
