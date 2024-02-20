@@ -16,7 +16,7 @@ const offcanvasStyle = {
   flexDirection: "column",
 };
 
-export default function ChangePasword({ open, setOpen, userid }) {
+export default function ChangePasword({ open, setOpen }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
@@ -29,23 +29,28 @@ export default function ChangePasword({ open, setOpen, userid }) {
             "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
         ),
     password: Yup.string()
-        .required("Password is required")
+        .required("New Password is required")
         .notOneOf(
-          [Yup.ref("currentpassword")],
-          "New Password cannot be the same as the Current Password"
-      )
+            [Yup.ref("currentpassword")],
+            "New Password cannot be the same as the Current Password"
+        )
         .matches(
             passwordRegex,
             "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-        ),
+        )
+        .min(8, "Password must be at least 8 characters long")
+        .max(10, "Password must be at less than or equal to 10 characters long"),
     confirmPassword: Yup.string()
         .required("Confirm Password is required")
         .notOneOf(
-          [Yup.ref("currentpassword")],
-          "Confirm Password cannot be the same as the Current Password"
-      )
-        .oneOf([Yup.ref("password")], "Passwords must match"),
+            [Yup.ref("currentpassword")],
+            "Confirm Password cannot be the same as the Current Password"
+        )
+        .oneOf([Yup.ref("password")], "Passwords must match")
+        .min(8, "Password must be at least 8 characters long")
+        .max(10, "Password must be at less than or equal to 10 characters long"),
 });
+
   //current
   const [values, setValues] = useState({
     showPassword: false,
@@ -132,11 +137,11 @@ export default function ChangePasword({ open, setOpen, userid }) {
   return (
     <Offcanvas
       show={open}
-      onHide={handleCloseOffcanvas}
+      onHide={()=>{handleCloseOffcanvas();formik.resetForm()}}
       placement="end"
       style={{ overflow: "auto" }}
     >
-      <Offcanvas.Header closeButton onClick={handleCloseOffcanvas}>
+      <Offcanvas.Header closeButton onClick={()=>{handleCloseOffcanvas();formik.resetForm()}}>
         <Offcanvas.Title>Change Password</Offcanvas.Title>
       </Offcanvas.Header>
       <form onSubmit={formik.handleSubmit}>
@@ -157,7 +162,7 @@ export default function ChangePasword({ open, setOpen, userid }) {
                 onClick={handleClickShowPassword}
                 style={{ cursor: "pointer" }} // Add cursor style
               >
-                <span className="input-group-text">
+                <span className="input-group-text" style={{cursor:"pointer"}}>
                   {values.showPassword ? (
                     <VisibilityIcon />
                   ) : (
@@ -187,7 +192,7 @@ export default function ChangePasword({ open, setOpen, userid }) {
                 onClick={handleClickShowNewPassword}
                 onMouseDown={handleMouseDownNewPassword}
               >
-                <span className="input-group-text">
+                <span className="input-group-text" style={{cursor:"pointer"}}>
                   {newValues.showPassword ? (
                     <VisibilityIcon />
                   ) : (
@@ -217,7 +222,7 @@ export default function ChangePasword({ open, setOpen, userid }) {
                 onClick={handleClickShowConfirmPassword}
                 onMouseDown={handleMouseDownPasswordConfirm}
               >
-                <span className="input-group-text">
+                <span className="input-group-text" style={{cursor:"pointer"}}>
                   {confirmValues.showPassword ? (
                     <VisibilityIcon />
                   ) : (
