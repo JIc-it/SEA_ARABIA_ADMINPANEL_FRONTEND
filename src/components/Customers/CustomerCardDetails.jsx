@@ -43,6 +43,7 @@ function CustomerCardDetails() {
 
   const handleCloseOffcanvas = () => {
     setShowOffcanvas(false);
+   
     // formik.resetForm(); // Reset Formik state
   };
 
@@ -631,8 +632,8 @@ function CustomerCardDetails() {
 
             </div>} */}
           </div>
-          <br/>
-          <br/>
+          <br />
+          <br />
         </div>
       </div>
     </div>

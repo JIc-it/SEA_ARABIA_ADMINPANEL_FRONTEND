@@ -215,6 +215,7 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="Last Name"
             className="form-control"
             name="last_name"

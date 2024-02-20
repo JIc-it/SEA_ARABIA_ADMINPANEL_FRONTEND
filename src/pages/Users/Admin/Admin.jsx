@@ -277,6 +277,18 @@ function Admin({ isRefetch, setIsRefetch }) {
                     >
                       Search
                     </button> */}
+                    {search && (
+                      <button
+                        className="btn search_button"
+                        style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                        onClick={() => {
+                          setSearch(""); // Clear the search state
+                          window.location.reload();
+                        }}
+                      >
+                        Clear Search
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

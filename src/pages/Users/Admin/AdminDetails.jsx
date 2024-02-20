@@ -327,7 +327,7 @@ function AdminDetails() {
           </div>
           <br />
           <br />
-          <br/>
+          <br />
         </div>
       </div>
       <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>
@@ -366,7 +366,7 @@ function AdminDetails() {
                   className="mt-4 w-100 px-2"
                 >
                   <p className="p-2" style={{ fontWeight: "700" }}>
-                    Details
+                    Personal Details
                   </p>
 
                   <div className="d-flex">
@@ -441,6 +441,8 @@ function AdminDetails() {
                   </div>
 
                   <br />
+                  <br />
+                  
                 </div>
               </>
             )}

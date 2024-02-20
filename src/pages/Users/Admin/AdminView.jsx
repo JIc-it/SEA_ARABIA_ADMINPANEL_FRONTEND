@@ -30,7 +30,7 @@ function AdminView() {
         console.error("Error fetching customer data:", error);
       });
   }, [adminId]);
-  
+
   return (
     <>
       <div className="page">
@@ -86,14 +86,19 @@ function AdminView() {
                         />
                       </svg>
                     </span>
-                    <p>{adminDetails?.first_name}
-                      {adminDetails?.last_name}</p>
+                    <p>
+                      {adminDetails?.first_name}
+                      {adminDetails?.last_name}
+                    </p>
                   </div>
                 </div>
               </div>
             </div>
             <div className="d-flex justify-content-between mt-5 ms-3">
-              <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
+              <div
+                style={{ cursor: "pointer", marginLeft: "-12px" }}
+                onClick={() => navigate(-1)}
+              >
                 <svg
                   width={20}
                   height={20}

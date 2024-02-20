@@ -21,6 +21,7 @@ import {
 } from "../Permissions/PermissionConstants";
 import UserFilterPopup from "./UserFilterPopup";
 import Modal from "@mui/material/Modal";
+import { Search } from "@mui/icons-material";
 const style = {
   position: "absolute",
   top: "50%",
@@ -52,18 +53,14 @@ export default function CustomerListing() {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const [filters, setFilters] = useState({
-    customerStatus: [],
     location: [],
-    OnBoardOn: {
-      from: "",
-      to: "",
-    },
+    OnBoardOn: { from: "", to: "" },
   });
   const [tableData, setTableData] = useState(false);
 
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
   useEffect(() => {
-    getCustomerSearch({ search: "", status: "", role: "User" })
+    getCustomerSearch({ search: search, status: "", role: "User" })
       .then((data) => {
         console.log("customer-list", data.results);
         setListDiscount(data.results);
@@ -77,7 +74,7 @@ export default function CustomerListing() {
         toast.error(error.message);
         console.error("Error fetching Customer List data:", error);
       });
-  }, [tableData]);
+  }, [tableData, search]);
 
   // export
   const handleExportCustomerData = () => {
@@ -149,21 +146,6 @@ export default function CustomerListing() {
       (locationName && locationName.length > 0 && locationName.join(",")) || "";
 
     getCustomerSearch({
-      is_active:
-        filters.vendorStatus &&
-        filters.vendorStatus.length > 0 &&
-        filters.vendorStatus[0].status &&
-        filters.vendorStatus[1].status
-          ? ""
-          : filters.vendorStatus &&
-            filters.vendorStatus.length > 0 &&
-            filters.vendorStatus[0].status
-          ? true
-          : filters.vendorStatus &&
-            filters.vendorStatus.length > 0 &&
-            filters.vendorStatus[1].status
-          ? false
-          : "",
       location: commaSeparatedLocationsNames,
       onboard_date_before:
         (filters.OnBoardOn.to != "" && filters.OnBoardOn.to) || "",
@@ -274,12 +256,11 @@ export default function CustomerListing() {
 
   const handleClearFilter = async () => {
     setIsRefetch(!isRefetch);
-    setCategoryList([
-      { id: 1, name: "Active", status: false },
-      { id: 2, name: "Inactive", status: false },
-    ]);
+    // setCategoryList([
+    //   { id: 1, name: "Active", status: false },
+    //   { id: 2, name: "Inactive", status: false },
+    // ]);
     setFilters({
-      vendorStatus: [],
       location: [],
       OnBoardOn: { from: "", to: "" },
     });
@@ -329,14 +310,18 @@ export default function CustomerListing() {
                       setSearch(e.target.value);
                     }}
                   />
-                  {/* <button
-                    type="button"
-                    className="btn search_button"
-                    style={{ background: "#006875" }}
-                    onClick={getCustomerListData}
-                  >
-                    Search
-                  </button> */}
+                  {search && (
+                    <button
+                      className="btn search_button"
+                      style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                      onClick={() => {
+                        setSearch(""); // Clear the search state
+                        window.location.reload();
+                      }}
+                    >
+                      Clear Search
+                    </button>
+                  )}
                 </div>
                 <button
                   onClick={handleOpenFilter}
@@ -407,7 +392,7 @@ export default function CustomerListing() {
               filters={filters}
               isRefetch={isRefetch}
               setIsRefetch={setIsRefetch}
-              setCategoryList={setCategoryList}
+              // setCategoryList={setCategoryList}
               categorylist={categorylist}
               handleClearFilter={handleClearFilter}
             />

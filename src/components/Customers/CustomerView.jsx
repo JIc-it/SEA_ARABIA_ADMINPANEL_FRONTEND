@@ -11,7 +11,6 @@ function CustomerView() {
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
-       
         setCustomerDetails(data);
       })
       .catch((error) => {
@@ -79,8 +78,11 @@ function CustomerView() {
                 </div>
               </div>
             </div>
-            <div className="d-flex justify-content-between mt-5 ms-3">
-              <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
+            <div className="d-flex justify-content-between mt-5 ms-3  ">
+              <div
+                style={{ cursor: "pointer", marginLeft: "-12px" }}
+                onClick={() => navigate(-1)}
+              >
                 <svg
                   width={20}
                   height={20}

@@ -184,6 +184,7 @@ function CustomerEditModal({ show, close }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="First Name"
             className="form-control"
             name="first_name" // Name attribute should match the schema field
@@ -208,6 +209,7 @@ function CustomerEditModal({ show, close }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="Last Name"
             className="form-control"
             name="last_name"
