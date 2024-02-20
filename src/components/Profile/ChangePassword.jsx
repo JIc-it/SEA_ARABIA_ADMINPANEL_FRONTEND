@@ -23,21 +23,29 @@ export default function ChangePasword({ open, setOpen, userid }) {
 
   const validationSchema = Yup.object({
     currentpassword: Yup.string()
-      .required("Current Password is required")
-      .matches(
-        passwordRegex,
-        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      ),
+        .required("Current Password is required")
+        .matches(
+            passwordRegex,
+            "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        ),
     password: Yup.string()
-      .required("Password is required")
-      .matches(
-        passwordRegex,
-        "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      ),
+        .required("Password is required")
+        .notOneOf(
+          [Yup.ref("currentpassword")],
+          "New Password cannot be the same as the Current Password"
+      )
+        .matches(
+            passwordRegex,
+            "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
+        ),
     confirmPassword: Yup.string()
-      .required("Confirm Password is required")
-      .oneOf([Yup.ref("password")], "Passwords must match"),
-  });
+        .required("Confirm Password is required")
+        .notOneOf(
+          [Yup.ref("currentpassword")],
+          "Confirm Password cannot be the same as the Current Password"
+      )
+        .oneOf([Yup.ref("password")], "Passwords must match"),
+});
   //current
   const [values, setValues] = useState({
     showPassword: false,
@@ -157,11 +165,11 @@ export default function ChangePasword({ open, setOpen, userid }) {
                   )}
                 </span>
               </div>
-              {formik.touched.currentpassword &&
+            </div>
+            {formik.touched.currentpassword &&
               formik.errors.currentpassword ? (
                 <div className="error">{formik.errors.currentpassword}</div>
               ) : null}
-            </div>
           </div>
           <div style={{ marginTop: 10 }}>
             <div className="input-group mb-3">
@@ -187,10 +195,10 @@ export default function ChangePasword({ open, setOpen, userid }) {
                   )}
                 </span>
               </div>
-              {formik.touched.password && formik.errors.password ? (
+            </div>
+            {formik.touched.password && formik.errors.password ? (
                 <div className="error">{formik.errors.password}</div>
               ) : null}
-            </div>
           </div>
 
           <div style={{ marginTop: 10 }}>
@@ -217,11 +225,11 @@ export default function ChangePasword({ open, setOpen, userid }) {
                   )}
                 </span>
               </div>
-              {formik.touched.confirmPassword &&
+            </div>
+            {formik.touched.confirmPassword &&
               formik.errors.confirmPassword ? (
                 <div className="error">{formik.errors.confirmPassword}</div>
               ) : null}
-            </div>
           </div>
 
           <button
