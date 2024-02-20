@@ -29,7 +29,7 @@ export default function ChangePasword({ open, setOpen, userid }) {
             "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
         ),
     password: Yup.string()
-        .required("Password is required")
+        .required("New Password is required")
         .notOneOf(
           [Yup.ref("currentpassword")],
           "New Password cannot be the same as the Current Password"
