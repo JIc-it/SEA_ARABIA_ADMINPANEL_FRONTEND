@@ -265,7 +265,7 @@ function UpdateAdmin({ show, close }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? (
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>

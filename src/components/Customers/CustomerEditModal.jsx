@@ -34,10 +34,9 @@ function CustomerEditModal({ show, close }) {
         "is-not-blank",
         "Name must not contain only blank spaces",
         (value) => {
-          return /\S/.test(value); // Checks if there is at least one non-whitespace character
+          return /\S/.test(value); // Checks for at least one non-whitespace character
         }
       ),
-
     last_name: Yup.string()
       .required("Last Name is required")
       .max(20, "Name must be at most 20 characters")
@@ -187,12 +186,12 @@ function CustomerEditModal({ show, close }) {
             type="text"
             placeholder="First Name"
             className="form-control"
-            name="first_name"
+            name="first_name" // Name attribute should match the schema field
             value={formik.values.first_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? ( // Check for touched.first_name
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>

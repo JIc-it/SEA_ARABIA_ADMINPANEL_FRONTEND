@@ -21011,7 +21011,6 @@ body {
   }
 }
 
-
 @media (min-width: 992px) and (prefers-reduced-motion: reduce) {
   .navbar-vertical.navbar-expand-lg {
     transition: none;
