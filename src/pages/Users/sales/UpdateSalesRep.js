@@ -32,7 +32,7 @@ function UpdateSalesRep({ show, close }) {
     getSalesRepListById(salesRepId)
       .then((data) => {
         setSalesDetails(data);
-        // console.log(" Sales Rep by id------==", data);
+        console.log(" Sales Rep by id------==", data);
       })
       .catch((error) => {
         toast.error(error.message);
@@ -94,13 +94,15 @@ function UpdateSalesRep({ show, close }) {
       email: salesDetails?.email || "",
       dob: salesDetails?.profileextra?.dob || "",
       mobile: salesDetails?.mobile || "",
-      location: salesDetails?.profileextra?.location || "",
-      gender: salesDetails?.profileextra?.gender?.id || "",
 
+      location: {
+        country: salesDetails?.profileextra?.location?.id || "",
+      },
+      gender: salesDetails?.profileextra?.gender || "",
       // Add other fields as needed
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
       if (!isLoading) {
@@ -109,14 +111,16 @@ function UpdateSalesRep({ show, close }) {
             // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
-
+            role: "Staff",
             email: values.email,
             password: values.password,
             confirmPassword: values.confirmPassword,
             mobile: values.mobile,
-            location: values.location.id,
-            gender: values.gender.id,
-            dob: values.dob,
+            profileextra: {
+              location: values.location.id,
+              dob: values.dob, // Assuming you have dob in your form
+              gender: values.gender,
+            },
           };
 
           const salesData = await UpdateSalesRepListById(salesRepId, data);
@@ -127,6 +131,7 @@ function UpdateSalesRep({ show, close }) {
             // setIsRefetch(!isRefetch);
             toast.success(" Sales Rep updated Successfully.");
             close();
+            resetForm();
           } else {
             console.error("Error while updating Sales Rep:", salesData.error);
             setIsLoading(false);
@@ -150,8 +155,10 @@ function UpdateSalesRep({ show, close }) {
 
       email: salesDetails?.email || "",
       mobile: salesDetails?.mobile || "",
-      location: salesDetails?.profileextra?.location || "",
-      gender: salesDetails?.profileextra?.gender?.id || "",
+
+      location: salesDetails?.profileextra?.location?.id || "",
+      gender: salesDetails?.profileextra?.gender || "",
+
       // defineservice: salesDetails?.useridentificationdata?.,
       // Add other fields as needed
     });
@@ -198,7 +205,7 @@ function UpdateSalesRep({ show, close }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? (
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>
@@ -250,6 +257,7 @@ function UpdateSalesRep({ show, close }) {
             </div>
             <div className="col-9">
               <input
+                maxLength={10}
                 type="number"
                 placeholder="Phone Number"
                 className="form-control"
@@ -355,32 +363,6 @@ function UpdateSalesRep({ show, close }) {
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-            </svg>
           </div>
         </div>
 

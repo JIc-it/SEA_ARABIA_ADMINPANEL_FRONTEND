@@ -14,7 +14,7 @@ import CountryDropdown from "../../../components/SharedComponents/CountryDropDow
 import { AppContext } from "../../../Context/AppContext";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
-function CreateSalesRep({ show, close }) {
+function CreateSalesRep({ show, close, tableData }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
   const [isRefetch, setIsRefetch] = useState();
@@ -50,7 +50,7 @@ function CreateSalesRep({ show, close }) {
       ),
 
     password: Yup.string()
-      .min(6, "Password should be at least 6 characters")
+      .min(6, "Password should be at least 8 characters")
       .required("Password is required"),
     confirmPassword: Yup.string()
       .max(50)
@@ -104,44 +104,54 @@ function CreateSalesRep({ show, close }) {
       confirmPassword: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
-      if (!isLoading) {
-        try {
-          const data = {
-            first_name: values.first_name,
-            last_name: values.last_name,
-            role: "Staff",
-            email: values.email,
-            dob: values.dob,
-            password: values.password,
-            mobile: values.mobile,
 
-            location: values.location.id,
-            gender: values.gender,
-          };
+      // Check if passwords match
+      if (values.password !== values.confirmPassword) {
+        // Handle case when passwords don't match
+        toast.error("Passwords do not match. Please check again.");
+        setIsLoading(false);
+        return; // Stop form submission
+      }
 
-          const staffData = await createSalesRep(data);
-          console.log("sales rep -- console", staffData);
-          if (staffData) {
-            setIsRefetch(!isRefetch);
-            toast.success("Customer Added Successfully.");
-            close();
-            setIsLoading(false);
-          } else {
-            console.error("Error while creating Customer:", staffData.error);
-            setIsLoading(false);
-          }
-          setIsLoading(false);
-        } catch (err) {
-          console.log(err);
-          err.response.data.email && toast.error(err.response.data.email[0]);
-          err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-          setIsLoading(false);
+      try {
+        const data = {
+          first_name: values.first_name,
+          last_name: values.last_name,
+          role: "Staff",
+          email: values.email,
+          dob: values.dob,
+          password: values.password,
+          mobile: values.mobile,
+          location: values.location.id,
+          gender: values.gender,
+        };
+
+        const staffData = await createSalesRep(data);
+        // console.log("sales rep -- console", staffData);
+        if (staffData) {
+          setIsRefetch(!isRefetch);
+          toast.success("Sales Representative Added Successfully.");
+          close();
+          resetForm();
+          tableData(true);
+        } else {
+          console.error(
+            "Error while creating Sales Representative:",
+            staffData.error
+          );
         }
+      } catch (err) {
+        console.log(err);
+        err.response.data.email && toast.error(err.response.data.email[0]);
+        err.response.data.mobile && toast.error(err.response.data.mobile[0]);
+      } finally {
+        setIsLoading(false);
       }
     },
   });
+
   console.log("formik", formik);
   const [values, setValues] = useState({
     showPassword: false,
@@ -324,7 +334,6 @@ function CreateSalesRep({ show, close }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -394,32 +403,31 @@ function CreateSalesRep({ show, close }) {
             >
               Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
-              type={values.showPassword ? "text" : "password"}
-              name="password"
-              className="form-control"
-              placeholder="Password"
-              value={formik.values.password}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+
+            <div className="input-group mb-3">
+              <input
+                type={values.showPassword ? "text" : "password"}
+                placeholder="Password"
+                name="password"
+                className="form-control"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPassword}
+                onMouseDown={handleMouseDownPassword}
+              >
+                <span className="input-group-text">
+                  {values.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
             {formik.touched.password && formik.errors.password ? (
               <div className="error">{formik.errors.password}</div>
             ) : null}
@@ -438,32 +446,32 @@ function CreateSalesRep({ show, close }) {
             >
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
-            <TextField
-              type={valuesConfirm.showPassword ? "text" : "password"}
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPasswordConfirm}
-                      onMouseDown={handleMouseDownPasswordConfirm}
-                      edge="end"
-                    >
-                      {valuesConfirm.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+
+            <div className="input-group mb-3">
+              <input
+                type={valuesConfirm.showPassword ? "text" : "password"} // Corrected password type
+                placeholder="Confirm Password"
+                name="confirmPassword"
+                className="form-control"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPasswordConfirm}
+                onMouseDown={handleMouseDownPasswordConfirm}
+                style={{ cursor: "pointer" }} // Add cursor style
+              >
+                <span className="input-group-text">
+                  {valuesConfirm.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>
             ) : null}

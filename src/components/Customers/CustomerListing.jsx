@@ -59,6 +59,7 @@ export default function CustomerListing() {
       to: "",
     },
   });
+  const [tableData, setTableData] = useState(false);
 
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
   useEffect(() => {
@@ -70,12 +71,13 @@ export default function CustomerListing() {
           next: data.next,
           previous: data.previous,
         });
+        setTableData(false);
       })
       .catch((error) => {
         toast.error(error.message);
         console.error("Error fetching Customer List data:", error);
       });
-  }, []);
+  }, [tableData]);
 
   // export
   const handleExportCustomerData = () => {
@@ -117,11 +119,10 @@ export default function CustomerListing() {
       });
   };
 
-  
-  
   useEffect(() => {
     getCustomerListData();
-    const isCustomerStatusFiltered = filters?.customerStatus?.length > 0 ? 1 : 0;
+    const isCustomerStatusFiltered =
+      filters?.customerStatus?.length > 0 ? 1 : 0;
     const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
     const countNonEmpty =
       Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
@@ -271,8 +272,6 @@ export default function CustomerListing() {
   };
   const [filterCriteriaCount, setFilterCriteriaCount] = useState(0);
 
-
-
   const handleClearFilter = async () => {
     setIsRefetch(!isRefetch);
     setCategoryList([
@@ -299,7 +298,7 @@ export default function CustomerListing() {
       <div className="col-12 actions_menu my-2 px-3">
         <div className="action_menu_left col-8">
           <div>
-            {/* <form action="" method="post" autocomplete="off"> */}
+            {/* <form action=""  autocomplete="off"> */}
             <div>
               <div style={{ display: "flex" }}>
                 <div className="input-icon">
@@ -450,7 +449,11 @@ export default function CustomerListing() {
                 </svg>
               </button>
             )}
-          <CustomerCreate show={showOffcanvas} close={handleCloseOffcanvas} />
+          <CustomerCreate
+            show={showOffcanvas}
+            close={handleCloseOffcanvas}
+            tableData={setTableData}
+          />
           <AddCustomerWithPermission />
         </div>
       </div>

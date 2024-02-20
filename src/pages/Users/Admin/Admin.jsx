@@ -20,7 +20,7 @@ import {
 } from "../../../components/Permissions/PermissionConstants";
 import { CircularProgress } from "@mui/material";
 
-const Admin = () => {
+function Admin({ isRefetch, setIsRefetch }) {
   const { userPermissionList } = useContext(MainPageContext);
 
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -31,10 +31,11 @@ const Admin = () => {
     next: null,
     previous: null,
   });
-  const [isRefetch, setIsRefetch] = useState(false);
+  // const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
+  const [tableData, setTableData] = useState(false);
 
   const [count, setCount] = useState();
   useEffect(() => {
@@ -58,11 +59,12 @@ const Admin = () => {
           previous: data.previous,
         });
         setAdmin(data.results);
+        setTableData(false);
       })
       .catch((error) => {
         console.error("Error fetching Customer List data:", error);
       });
-  }, []);
+  }, [isRefetch, tableData]);
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -318,7 +320,13 @@ const Admin = () => {
               )}
             <AddSaleRepWithPermission />
           </div>
-          <CreateNewAdmin show={showOffcanvas} close={handleCloseOffcanvas} />
+          <CreateNewAdmin
+            show={showOffcanvas}
+            close={handleCloseOffcanvas}
+            tableData={setTableData}
+            isRefetch={isRefetch}
+            setIsRefetch={setIsRefetch}
+          />
         </div>
         <div className="card">
           <div className="table-responsive">
@@ -570,6 +578,6 @@ const Admin = () => {
   )} */}
     </div>
   );
-};
+}
 
 export default Admin;

@@ -39,7 +39,7 @@ const SalesRepresentatives = () => {
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => setShowOffcanvas(false);
   const [search, setSearch] = useState("");
-
+  const [tableData, setTableData] = useState(false);
   useEffect(() => {
     const role = "Staff";
     getCustomerlist(role)
@@ -51,11 +51,12 @@ const SalesRepresentatives = () => {
           previous: data.previous,
         });
         setsalesRep(data?.results);
+        setTableData(false);
       })
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
-  }, []);
+  }, [tableData]);
 
   useEffect(() => {
     getsalesTotalCount()
@@ -360,7 +361,7 @@ const SalesRepresentatives = () => {
               )}
             <AddSaleRepWithPermission />
           </div>
-          <CreateSalesRep show={showOffcanvas} close={handleCloseOffcanvas} />
+          <CreateSalesRep show={showOffcanvas} close={handleCloseOffcanvas} tableData={setTableData}/>
         </div>
         <div className="card ">
           <div className="table-responsive">

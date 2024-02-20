@@ -14,41 +14,48 @@ import { useParams } from "react-router-dom";
 import { getLocation } from "../../../services/CustomerHandle";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { AppContext } from "../../../Context/AppContext";
+import { Select } from "@mui/material";
 
 function UpdateAdmin({ show, close }) {
   const theme = useTheme();
   const adminId = useParams()?.adminId;
   const locationContext = useContext(AppContext);
+
   const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [adminDetails, setAdminDetails] = useState();
-  const [location, setLocation] = useState([]);
-  const [gender, setGender] = useState([
-    { id: "1", label: "Male" },
-    { id: "2", label: "Female" },
-  ]);
+  const [location, setLocation] = useState(locationContext?.gccCountriesList);
 
+  const [selectedOption, setSelectedOption] = useState("none");
+  const options = [
+    { value: "Female", label: "Female" },
+    { value: "Male", label: "Male" },
+  ];
+
+  console.log("loc is", location);
   useEffect(() => {
     getAdminListById(adminId)
       .then((data) => {
-        console.log("dta admin", data);
+        console.log("data admin", data); // Corrected typo in "dta" to "data"
         setAdminDetails(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching customer data:", error);
-      });
-  }, [adminId]);
+        const selectedCountryObject =
+          location &&
+          location.length > 0 &&
+          data?.profileextra?.location?.country_code &&
+          location.find((country) => {
+            console.log("country", country);
+            return country.code === data?.profileextra?.location?.country_code;
+          });
 
-  useEffect(() => {
-    getLocation()
-      .then((data) => {
-        setLocation(data.results);
+        console.log(selectedCountryObject, "selectedCountryObject");
+        selectedCountryObject &&
+          formik.setFieldValue("location", selectedCountryObject);
       })
       .catch((error) => {
-        console.log("error while fetching location", error);
+        console.error("Error fetching admin data:", error); // Updated log message
       });
-  }, []);
+  }, [adminId, location]);
 
   const validationSchema = Yup.object({
     first_name: Yup.string()
@@ -91,38 +98,50 @@ function UpdateAdmin({ show, close }) {
       email: adminDetails?.email || "",
       gender: adminDetails?.gender?.label || "",
       mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location?.country || "",
+      location: adminDetails?.profileextra?.location?.id || "",
 
       // Add other fields as needed
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
       if (!isLoading) {
         try {
           const data = {
-            // Assuming vendorId is a constant or variable defined earlier
             first_name: values.first_name,
             last_name: values.last_name,
             email: values.email,
             mobile: values.mobile,
-            // profileextra: {
-            //   location: values.location.id,
-            // },
-            location: values.location.id,
-            gender: values.gender?.label,
+            profileextra: {
+              location: values.location.id,
+              gender: values.gender?.label,
+            },
           };
-          console.log('Gender:', formik.values.gender);
+
+          console.log("Gender:", values.gender);
 
           const adminData = await UpdateAdminListById(adminId, data);
           console.log("Admin updated detail is ---", adminData);
+
           if (adminData) {
             setIsLoading(false);
-            window.location.reload();
-            setIsRefetch(!isRefetch);
-            toast.success(" Admin updated Successfully.");
+            if (adminData?.profileextra?.gender) {
+              setSelectedOption(adminData?.profileextra?.gender);
+            }
+            // Update formik values if needed
+            formik.setValues({
+              ...formik.values,
+              first_name: adminData.first_name,
+              last_name: adminData.last_name,
+              email: adminData.email,
+              mobile: adminData.mobile,
+              location: adminData.profileextra?.location?.id || "",
+              gender: adminData.gender?.label || "",
+            });
+            toast.success("Admin updated Successfully.");
             close();
+            resetForm();
           } else {
             console.error("Error while updating Admin:", adminData.error);
             setIsLoading(false);
@@ -136,6 +155,60 @@ function UpdateAdmin({ show, close }) {
       }
     },
   });
+  // const formik = useFormik({
+  //   initialValues: {
+  //     first_name: adminDetails?.first_name || "",
+  //     last_name: adminDetails?.last_name || "",
+  //     email: adminDetails?.email || "",
+  //     gender: adminDetails?.gender?.label || "",
+  //     mobile: adminDetails?.mobile || "",
+  //     location: adminDetails?.profileextra?.location?.id || "",
+
+  //     // Add other fields as needed
+  //   },
+  //   validationSchema,
+  //   onSubmit: async (values) => {
+  //     setIsLoading(true);
+
+  //     if (!isLoading) {
+  //       try {
+  //         const data = {
+  //           // Assuming vendorId is a constant or variable defined earlier
+  //           first_name: values.first_name,
+  //           last_name: values.last_name,
+  //           email: values.email,
+  //           mobile: values.mobile,
+  //           // profileextra: {
+  //           //   location: values.location.id,
+  //           // },
+  //           location: formik.values.location.id,
+  //           gender: values.gender?.label,
+  //         };
+  //         console.log("Gender:", formik.values.gender);
+
+  //         const adminData = await UpdateAdminListById(adminId, data);
+  //         console.log("Admin updated detail is ---", adminData);
+  //         if (adminData) {
+  //           setIsLoading(false);
+  //           setGender(adminData?.gender?.label);
+  //           // window.location.reload();
+  //           setIsRefetch(!isRefetch);
+  //           toast.success(" Admin updated Successfully.");
+  //           close();
+  //         } else {
+  //           console.error("Error while updating Admin:", adminData.error);
+  //           setIsLoading(false);
+  //         }
+  //       } catch (err) {
+  //         console.log(err);
+  //         err.response.data.email && toast.error(err.response.data.email[0]);
+  //         err.response.data.mobile && toast.error(err.response.data.mobile[0]);
+  //         setIsLoading(false);
+  //       }
+  //     }
+  //   },
+  // });
+  console.log("formik", formik.values);
 
   useEffect(() => {
     formik.setValues({
@@ -145,7 +218,7 @@ function UpdateAdmin({ show, close }) {
       gender: adminDetails?.profileextra?.gender || "",
       email: adminDetails?.email || "",
       mobile: adminDetails?.mobile || "",
-      location: adminDetails?.profileextra?.location?.country || "",
+      location: adminDetails?.profileextra?.location?.id || "",
 
       // defineservice: adminDetails?.useridentificationdata?.,
       // Add other fields as needed
@@ -192,7 +265,7 @@ function UpdateAdmin({ show, close }) {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
-          {formik.touched.name && formik.errors.first_name ? (
+          {formik.touched.first_name && formik.errors.first_name ? (
             <div className="error">{formik.errors.first_name}</div>
           ) : null}
         </div>
@@ -248,6 +321,7 @@ function UpdateAdmin({ show, close }) {
                 placeholder="Phone Number"
                 className="form-control"
                 name="mobile"
+                maxLength={10}
                 value={formik.values.mobile}
                 onChange={(e) => {
                   const inputValue = e.target.value;
@@ -285,16 +359,18 @@ function UpdateAdmin({ show, close }) {
               value={formik.values.gender}
             >
               <option value="" label="Select a gender" />
-              {gender.map((option) => (
-                <option
-                  key={option.id}
-                  value={option.id}
-                  label={option.label}
-                >
-                  {option.label}
-                </option>
-              ))}
+              {options &&
+                options.map((option) => (
+                  <option
+                    key={option.id}
+                    value={option.label}
+                    label={option.label}
+                  >
+                    {option.label}
+                  </option>
+                ))}
             </select>
+
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}
@@ -352,32 +428,7 @@ function UpdateAdmin({ show, close }) {
             {formik.touched.location && formik.errors.location ? (
               <div className="error">{formik.errors.location}</div>
             ) : null}
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              style={{
-                top: "10px",
-                right: "5px",
-                position: "absolute",
-              }}
-            >
-              <path
-                d="M3.3335 8.45209C3.3335 4.70425 6.31826 1.66602 10.0002 1.66602C13.6821 1.66602 16.6668 4.70425 16.6668 8.45209C16.6668 12.1706 14.5391 16.5097 11.2193 18.0614C10.4454 18.4231 9.55495 18.4231 8.78105 18.0614C5.46127 16.5097 3.3335 12.1706 3.3335 8.45209Z"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-              <ellipse
-                cx="10"
-                cy="8.33398"
-                rx="2.5"
-                ry="2.5"
-                stroke="#68727D"
-                strokeWidth="1.5"
-              />
-            </svg>
+          
           </div>
         </div>
         <br />

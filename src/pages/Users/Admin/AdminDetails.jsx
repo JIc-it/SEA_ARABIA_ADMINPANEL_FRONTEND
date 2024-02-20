@@ -325,6 +325,9 @@ function AdminDetails() {
               </a>
             </div>
           </div>
+          <br />
+          <br />
+          <br/>
         </div>
       </div>
       <div className={isMobileView ? "col-12 my-2" : "col-7 my-2 mx-2"}>

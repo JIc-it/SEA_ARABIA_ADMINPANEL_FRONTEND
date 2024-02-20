@@ -8,6 +8,7 @@ import UploadFiles from "../Common/UploadFile";
 import { getCustomerListById } from "../../services/CustomerHandle";
 import CustomerEditModal from "./CustomerEditModal";
 import CustomerPasswordReset from "./CustomerPasswordReset";
+import { Formik, useFormik } from "formik";
 import {
   menuIdConstant,
   permissionCategory,
@@ -27,9 +28,6 @@ function CustomerCardDetails() {
   const [customerDetails, setCustomerDetails] = useState([]);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [open, setOpen] = useState(false);
-  const handleOpenOffcanvas = () => setShowOffcanvas(true);
-
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
 
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleCloseOffcanvasPassword = () => setOpen(false);
@@ -37,6 +35,16 @@ function CustomerCardDetails() {
 
   const customerId = useParams()?.customerId;
   console.log("customer id", customerId);
+
+  const handleOpenOffcanvas = () => {
+    // Formik.resetForm(); // Reset Formik state
+    setShowOffcanvas(true);
+  };
+
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+    // formik.resetForm(); // Reset Formik state
+  };
 
   const handleBookingButtonClick = () => {
     navigate(`/bookings/${customerId}`);
@@ -623,6 +631,8 @@ function CustomerCardDetails() {
 
             </div>} */}
           </div>
+          <br/>
+          <br/>
         </div>
       </div>
     </div>

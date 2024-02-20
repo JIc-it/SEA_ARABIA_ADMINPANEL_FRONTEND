@@ -15,7 +15,7 @@ import { AppContext } from "../../../Context/AppContext";
 import CountryDropdown from "../../../components/SharedComponents/CountryDropDown";
 import { IconButton, InputAdornment, TextField } from "@mui/material";
 
-function CreateNewAdmin({ show, close, locationList }) {
+function CreateNewAdmin({ show, close, locationList, tableData }) {
   const [isRefetch, setIsRefetch] = useState();
   const locationContext = useContext(AppContext);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,17 +54,15 @@ function CreateNewAdmin({ show, close, locationList }) {
       .test("custom-email-format", "Invalid email format", (value) =>
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)
       ),
-    changePassword: Yup.string()
-      .min(6, "Password should be at least 6 characters")
-      .required("Password is required"),
-    confirmPassword: Yup.string()
-      .max(50)
-      .required("Confirm Password is required")
+    password: Yup.string()
+      .required("Password is required")
       .matches(
         passwordRegex,
         "Password must contain at least 8 characters, at least one uppercase letter, lowercase letter, special character, and number"
-      )
-      .oneOf([Yup.ref("changePassword")], "Passwords must match"),
+      ),
+    confirmPassword: Yup.string()
+      .required("Confirm Password is required")
+      .oneOf([Yup.ref("password")], "Passwords must match"),
     gender: Yup.string().required("Gender is required"),
     mobile: Yup.string()
       .required("Mobile is required")
@@ -116,7 +114,7 @@ function CreateNewAdmin({ show, close, locationList }) {
       confirmPassword: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
       // const selectedCountry = locationContext && locationContext.length>0 && data.profile
@@ -128,8 +126,7 @@ function CreateNewAdmin({ show, close, locationList }) {
             last_name: values.last_name,
             role: "Admin",
             email: values.email,
-            changePassword: values.changePassword,
-            confirmPassword: values.confirmPassword,
+            password: values.password,
             mobile: values.mobile,
 
             location: values.location.id,
@@ -142,6 +139,8 @@ function CreateNewAdmin({ show, close, locationList }) {
             setIsRefetch(!isRefetch);
             toast.success("Admin Added Successfully.");
             close();
+            tableData(true);
+            resetForm();
             setIsLoading(false);
           } else {
             console.error("Error while creating Admin:", adminData.error);
@@ -243,6 +242,7 @@ function CreateNewAdmin({ show, close, locationList }) {
           <div style={{ display: "flex" }}>
             <div className="col-3">
               <input
+                max={10}
                 type="text"
                 value={"+965"}
                 className="form-control"
@@ -356,7 +356,6 @@ function CreateNewAdmin({ show, close, locationList }) {
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
-            
           </div>
         </div>
 
@@ -374,37 +373,36 @@ function CreateNewAdmin({ show, close, locationList }) {
               Password <span style={{ color: "red" }}>*</span>
             </label>
 
-            <TextField
-              type={values.showPassword ? "text" : "password"}
-              name="changePassword"
-              className="form-control"
-              placeholder="Password"
-              value={formik.values.changePassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                    >
-                      {values.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-            {formik.touched.ChangePassword && formik.errors.ChangePassword ? (
-              <div className="error">{formik.errors.ChangePassword}</div>
+            <div className="input-group mb-3">
+              <input
+                type={values.showPassword ? "text" : "password"} // Corrected password type
+                placeholder=" Password"
+                name="password"
+                className="form-control"
+                value={formik.values.password}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPassword}
+                style={{ cursor: "pointer" }} // Add cursor style
+              >
+                <span className="input-group-text">
+                  {values.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
+            {formik.touched.password && formik.errors.password ? (
+              <div className="error">{formik.errors.password}</div>
             ) : null}
           </div>
         </div>
+
         <div style={{ margin: "20px" }}>
           {" "}
           <div className="mt-2">
@@ -419,32 +417,30 @@ function CreateNewAdmin({ show, close, locationList }) {
               Confirm Password <span style={{ color: "red" }}>*</span>
             </label>
 
-            <TextField
-              type={valuesConfirm.showPassword ? "text" : "password"}
-              name="confirmPassword"
-              className="form-control"
-              placeholder="confirmPassword"
-              value={formik.values.confirmPassword}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={handleClickShowPasswordConfirm}
-                      onMouseDown={handleMouseDownPasswordConfirm}
-                      edge="end"
-                    >
-                      {valuesConfirm.showPassword ? (
-                        <VisibilityIcon />
-                      ) : (
-                        <VisibilityOffIcon />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
+            <div className="input-group mb-3">
+              <input
+                type={valuesConfirm.showPassword ? "text" : "password"} // Corrected password type
+                placeholder="confirmPassword"
+                name="confirmPassword"
+                className="form-control"
+                value={formik.values.confirmPassword}
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              />
+              <div
+                className="input-group-append"
+                onClick={handleClickShowPasswordConfirm}
+                style={{ cursor: "pointer" }} // Add cursor style
+              >
+                <span className="input-group-text">
+                  {valuesConfirm.showPassword ? (
+                    <VisibilityIcon />
+                  ) : (
+                    <VisibilityOffIcon />
+                  )}
+                </span>
+              </div>
+            </div>
             {formik.touched.confirmPassword && formik.errors.confirmPassword ? (
               <div className="error">{formik.errors.confirmPassword}</div>
             ) : null}
