@@ -12,7 +12,12 @@ import { passwordRegex } from "../../helpers";
 
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 import { AppContext } from "../../Context/AppContext";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  Autocomplete,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 function CustomerCreate({ show, close, tableData }) {
@@ -405,6 +410,28 @@ function CustomerCreate({ show, close, tableData }) {
                 </option>
               ))}
             </select>
+            {/* <Autocomplete
+              id="gender"
+              name="gender"
+              options={gender}
+              getOptionLabel={(option) => option.label}
+              onChange={(event, newValue) => {
+                formik.setFieldValue("gender", newValue ? newValue.label : ""); // Update the field value
+              }}
+              onBlur={formik.handleBlur}
+              value={
+                gender.find(
+                  (option) => option.label === formik.values.gender
+                ) || null
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select a gender"
+                  variant="outlined"
+                />
+              )}
+            /> */}
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}

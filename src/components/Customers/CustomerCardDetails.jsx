@@ -19,6 +19,7 @@ import { getMenuPermissions } from "../../helpers";
 import { MainPageContext } from "../../Context/MainPageContext";
 import ChangePasword from "../Profile/ChangePassword";
 
+
 function CustomerCardDetails() {
   const { userPermissionList } = useContext(MainPageContext);
   const theme = useTheme();
@@ -37,14 +38,13 @@ function CustomerCardDetails() {
   console.log("customer id", customerId);
 
   const handleOpenOffcanvas = () => {
-    // Formik.resetForm(); // Reset Formik state
+
     setShowOffcanvas(true);
   };
 
   const handleCloseOffcanvas = () => {
     setShowOffcanvas(false);
-   
-    // formik.resetForm(); // Reset Formik state
+    
   };
 
   const handleBookingButtonClick = () => {
@@ -389,6 +389,7 @@ function CustomerCardDetails() {
                 <CustomerEditModal
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
+                  
                 />
                 <ChangePasword open={open} setOpen={setOpen} />
                 <EditCustomerWithPermission />

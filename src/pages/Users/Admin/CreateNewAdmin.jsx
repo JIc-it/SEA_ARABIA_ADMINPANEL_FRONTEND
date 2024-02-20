@@ -24,7 +24,11 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
+  const [selectOpen, setSelectOpen] = useState(false);
 
+  const toggleSelect = () => {
+    setSelectOpen(!selectOpen);
+  };
   const validationSchema = Yup.object({
     first_name: Yup.string()
       .required("First name is required")
@@ -304,6 +308,7 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
                 </option>
               ))}
             </select>
+
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}

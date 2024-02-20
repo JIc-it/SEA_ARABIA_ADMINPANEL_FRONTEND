@@ -116,20 +116,6 @@ export default function CustomerListing() {
       });
   };
 
-  useEffect(() => {
-    getCustomerListData();
-    const isCustomerStatusFiltered =
-      filters?.customerStatus?.length > 0 ? 1 : 0;
-    const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
-    const countNonEmpty =
-      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
-      0
-        ? 1
-        : 0;
-    setFilterCriteriaCount(
-      isCustomerStatusFiltered + isLocationFiltered + countNonEmpty
-    );
-  }, [isRefetch, search]);
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -140,6 +126,7 @@ export default function CustomerListing() {
     let locationName =
       filters.location &&
       filters.location.map((item, i) => {
+        console.log("filter map", item);
         return item.name;
       });
     let commaSeparatedLocationsNames =
@@ -155,7 +142,7 @@ export default function CustomerListing() {
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
-        // console.log("Search ---:", data);
+        console.log("Search ---:", data);
         const customerList = data.results.filter(
           (item) => item.role === "User"
         );
@@ -167,7 +154,17 @@ export default function CustomerListing() {
         console.error("Error fetching  data:", error);
       });
   };
+  useEffect(() => {
+    getCustomerListData();
 
+    const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
+    const countNonEmpty =
+      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
+      0
+        ? 1
+        : 0;
+    setFilterCriteriaCount(isLocationFiltered + countNonEmpty);
+  }, [isRefetch]);
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -223,35 +220,7 @@ export default function CustomerListing() {
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
-  // new
-  const handleFilterCategory = (e) => {
-    const { name, value } = e.target;
 
-    setFilters((prevFilters) => {
-      // Check if category already has data
-      const categoryArray =
-        prevFilters.category.length > 0 ? prevFilters.category : [];
-
-      // Check if the value already exists in the category array
-      const existingCategoryIndex = categoryArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedCategory =
-        existingCategoryIndex !== -1
-          ? [
-              ...categoryArray.slice(0, existingCategoryIndex),
-              ...categoryArray.slice(existingCategoryIndex + 1),
-            ]
-          : [...categoryArray, { id: value, name }];
-
-      return {
-        ...prevFilters,
-        category: updatedCategory,
-      };
-    });
-  };
   const [filterCriteriaCount, setFilterCriteriaCount] = useState(0);
 
   const handleClearFilter = async () => {
@@ -392,7 +361,7 @@ export default function CustomerListing() {
               filters={filters}
               isRefetch={isRefetch}
               setIsRefetch={setIsRefetch}
-              // setCategoryList={setCategoryList}
+              setCategoryList={setCategoryList}
               categorylist={categorylist}
               handleClearFilter={handleClearFilter}
             />
