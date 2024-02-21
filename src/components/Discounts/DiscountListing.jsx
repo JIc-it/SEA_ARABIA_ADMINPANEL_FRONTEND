@@ -27,10 +27,12 @@ import {
 import { MainPageContext } from "../../Context/MainPageContext";
 import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
 import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
+import ReactPaginate from "react-paginate";
+import { Badge } from "react-bootstrap";
 
 function DiscountListing() {
   const { userPermissionList } = useContext(MainPageContext);
-  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+  const getPermission = userPermissionList?.filter((data) => data.id === "7")[0]?.permissionCategory.some((item) => item.item === "Action" && item.value === true)
 
   const [isRefetch, setIsRefetch] = useState(false);
   const theme = useTheme();
@@ -39,20 +41,19 @@ function DiscountListing() {
   const [offerslist, setOffersList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [search, setSearch] = useState("");
-  const [listPageUrl, setListPageUrl] = useState({
-    next: null,
-    previous: null,
-  });
   const [openfilter, setOpenfilter] = useState(false);
   const [csvData, setCSVData] = useState([])
   const [filters, setFilters] = useState({
     status: {
-      active: false,
-      inactive: false
+      active: "",
+      inactive: ""
     },
     startdate: "",
     enddate: ""
   })
+  const itemsPerPage = 10;
+
+  const [totalPages, setTotalPages] = useState(0);
 
   const handleclosefilter = () => {
     setOpenfilter(false);
@@ -98,7 +99,7 @@ function DiscountListing() {
     }
     getDiscountOfferList(search)
       .then((data) => {
-        setListPageUrl({ next: data?.next, previous: data?.previous });
+        setTotalPages(Math.ceil(data?.count / itemsPerPage))
         setOffersList(data?.results);
         setIsLoading(false);
       })
@@ -109,37 +110,32 @@ function DiscountListing() {
   }, [search]);
 
   useEffect(() => {
-    if(getPermission){
+    if (getPermission) {
       getExport()
-      .then((data) => {
-        setCSVData(data)
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+        .then((data) => {
+          setCSVData(data)
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
     }
   }, [getPermission])
 
-  const handlePagination = async (type) => {
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
     setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-          : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setOffersList(data?.results);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          toast.error(error.message);
-        });
+    getListDataInPagination(`${API_BASE_URL}offer/offers/admin?limit=${itemsPerPage}&offset=${newStartIndex}`)
+      .then((data) => {
+        setIsLoading(false);
+        setOffersList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
 
@@ -248,7 +244,8 @@ function DiscountListing() {
                 {checkfilterstate && <button className="mx-3 px-3 py-2 btn" style={{ color: "#ffff", backgroundColor: "#2176FF" }} onClick={ClearFilter}>Clear Filter</button>}
                 {openfilter && (
                   <PopupFilter
-                    setListPageUrl={setListPageUrl}
+                    setTotalPages={setTotalPages}
+                    itemsPerPage={itemsPerPage}
                     setOffersList={setOffersList}
                     open={openfilter}
                     handleOpen={handleopenfilter}
@@ -262,16 +259,16 @@ function DiscountListing() {
             </>
           </div>
         </div>
-        <div className="action_buttons col-4" style={{transform:"translateX(-1%)"}}>
+        <div className="action_buttons col-4" style={{ transform: "translateX(-1%)" }}>
           {userPermissionList &&
             getMenuPermissions(
               userPermissionList,
               menuIdConstant.offer,
               permissionCategory.action
             ) && (
-                <CSVLink data={csvData}  filename={"Offers_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
-                  Export
-                  <svg
+              <CSVLink data={csvData} filename={"Offers_List.csv"} style={{ textDecoration: "none", borderRadius: "6px" }} className="btn btn-outline">
+                Export
+                <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"
                   height="20"
@@ -292,7 +289,7 @@ function DiscountListing() {
                     strokeLinejoin="round"
                   />
                 </svg>
-                  </CSVLink>
+              </CSVLink>
             )}
           <AddOfferWithPermission />
         </div>
@@ -368,7 +365,8 @@ function DiscountListing() {
                                 year: "numeric",
                               }
                             ) : "-"}
-                          </span>
+                          </span> &nbsp;
+                          {item.end_date !==null && new Date(item.end_date)< new Date() && <Badge bg="danger" text="light">Expired</Badge>}
                         </td>
                         <td
                           style={{
@@ -447,64 +445,25 @@ function DiscountListing() {
             </tbody>
           </table>
         </div>
-        <div className="card-footer d-flex align-items-center">
-          <ul className="pagination m-0 ms-auto">
-            <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
-              <a
-                className="page-link"
-                href="#"
-                tabIndex="-1"
-                onClick={() => {
-                  handlePagination("prev");
-                }}
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M15 6l-6 6l6 6" />
-                </svg>
-                prev
-              </a>
-            </li>
-
-            <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-              <a
-                className="page-link"
-                href="#"
-                onClick={() => {
-                  handlePagination("next");
-                }}
-              >
-                next
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="icon"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  stroke="currentColor"
-                  fill="none"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M9 6l6 6l-6 6" />
-                </svg>
-              </a>
-            </li>
-          </ul>
-        </div>
+        {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next >"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={totalPages}
+            previousLabel="< Prev"
+            marginPagesDisplayed={1}
+            containerClassName="pagination"
+            activeClassName="active"
+            previousClassName="page-item previous"
+            nextClassName="page-item next"
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousLinkClassName="page-link"
+            nextLinkClassName="page-link"
+          />
+        </div>}
       </div>
     </div>
   );

@@ -127,7 +127,7 @@ export default function BookingView() {
                     &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
                   </div>
                 </div>
-                <CancelBookingWithPermission />
+                {booking?.status === "Upcoming" && <CancelBookingWithPermission />}
               </div>
 
               <div

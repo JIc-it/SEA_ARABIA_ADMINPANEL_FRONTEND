@@ -448,7 +448,7 @@ console.log(getPermission)
             <div className="col-12 actions_menu my-2">
               <div className="action_menu_left col-8">
                 <div>
-                  <form action="" method="post" autocomplete="off">
+                  <div>
                     <div style={{ display: "flex" }}>
                       <div className="input-icon">
                         <span className="input-icon-addon">
@@ -486,7 +486,7 @@ console.log(getPermission)
                         </button>
                       </div>
                     </div>
-                  </form>
+                  </div>
                 </div>
               </div>
               <div className="action_buttons col-4">

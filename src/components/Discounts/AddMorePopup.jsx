@@ -87,7 +87,7 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
             });
     }, [])
 
-    const lowercasedFilter = search.toLowerCase();
+    const lowercasedFilter = search?.toLowerCase();
     const filteredData = companylist?.filter(item => {
       return Object?.keys(item)?.some(key =>
         item[key]?.toLowerCase()?.includes(lowercasedFilter)
@@ -146,10 +146,11 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
                             ),
                         }}
                     />
+                    <div style={{height:"500px",overflowY:"scroll"}} className='my-3 px-2'>
                     {companylist.length > 0 &&
                         filteredData.map((data) =>
                             <>
-                                <Accordion sx={{ marginTop: "10px",marginBottom:"5px",border:"noneZ" }} onClick={()=>setIdSet(data.id)}>
+                                <Accordion sx={{ marginTop: "10px",marginBottom:"5px",border:"none" }} onClick={()=>setIdSet(data.id)}>
                                     <AccordionSummary
                                         expandIcon={<ExpandMoreIcon />}
                                         aria-controls="panel1a-content"
@@ -177,73 +178,18 @@ export default function AddMorePopup({service,companies, handleClose, handleOpen
                                     }
                                     
                                 </div>}
-
-                             {/* {isLoading &&
-                                    <div style={{ display: "flex", justifyContent: "center", alignItems: "center"}}>
-                                        <CircularProgress />
-                                    </div>} */}
                                 </AccordionDetails>
                                 </Accordion>
-                                {/* <hr style={{ border: "1px solid gray" }} /> */}
+                               
                             </>
                         )
-
                     }
+                    </div>
                    
                    <div className='d-flex justify-content-end'>
                         <button type='reset' className='m-1 btn btn-small btn-white'  onClick={handleClose}>cancel</button>
                         <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}  onClick={handleClose}>Add</button>
                     </div>
-                   {/* <>
-                  <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                       Spectre Company
-                    </Typography>
-                   </Box>
-                   <div style={{marginLeft:"20px"}}>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                    Spectre
-                    </Typography>
-                   </Box>
-                   </div>
-                   <hr style={{border:"1px solid gray"}}/>
-                   </> */}
-                   {/* <>
-                  <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p" sx={{ fontWeight: 800 }}>
-                       Fly World
-                    </Typography>
-                   </Box>
-                   <div style={{marginLeft:"20px"}}>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                    YACHT-AL KADI 
-                    </Typography>
-                   </Box>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                    YACHT- Q8 
-                    </Typography>
-                   </Box>
-                   <Box sx={{display:"flex",alignItems:"center"}}>
-                   <Checkbox {...label} defaultChecked size="small" />
-                    <Typography variant="p" component="p">
-                    YACHT-AQUARIUM 
-                    </Typography>
-                   </Box>
-                   </div>
-                   <hr style={{border:"1px solid gray"}}/>
-                   <div className='d-flex justify-content-end'>
-                        <button type='reset' className='m-1 btn btn-small btn-white'>cancel</button>
-                        <button type='submit'className='m-1 btn btn-small' style={{backgroundColor:"#006875",color:"white"}}>Add</button>
-                    </div>
-                   </> */}
                 </Box>
             </Modal>
         </div>

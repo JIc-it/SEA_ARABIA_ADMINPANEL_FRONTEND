@@ -10,7 +10,7 @@ import {
   getServiceListing,
 } from "../../services/service";
 import { getCompanyListing } from "../../services/offers";
-import { Visibility } from "@mui/icons-material";
+
 
 export default function FilterPopup({
   open,
@@ -18,7 +18,8 @@ export default function FilterPopup({
   setIsLoading,
   setFilters,
   filters,
-  setListPageUrl,
+  setTotalPages,
+  itemsPerPage,
   setServiceList,
   checkfilterslength
 }) {
@@ -187,7 +188,7 @@ export default function FilterPopup({
     const vendormapped = filters.vendor.map((data) => data.id);
     const vendorSplitted = vendormapped.join(",");
 
-    const checkstatus=(filters.status.active && filters.status.inactive) ? "": filters.status.active ? true : filters.status.inactive && false
+    const checkstatus=(filters.status.active && filters.status.inactive) ? "": filters.status.active ?  true :filters.status.inactive &&  false
     const getFiltereddata = await getServiceListing(
       null,
       null,
@@ -200,10 +201,7 @@ export default function FilterPopup({
     if (getFiltereddata) {
       setIsLoading(false);
       setServiceList(getFiltereddata.results);
-      setListPageUrl({
-        next: getFiltereddata.next,
-        previous: getFiltereddata.previous,
-      });
+      setTotalPages(Math.ceil(getFiltereddata?.count / itemsPerPage))
       handleClose();
     }
   };

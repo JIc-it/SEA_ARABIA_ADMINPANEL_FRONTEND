@@ -43,7 +43,7 @@ const EventView = () => {
     menuIdConstant.eventsPackages,
     () => navigate(`/event-edit/${oneservice?.id}`),
     "btn btn-info vendor_button",
-    "Edit Event",
+    "Edit Service",
     { borderRadius: "6px" },
     <svg
       width="20"
@@ -78,7 +78,7 @@ const EventView = () => {
                 <span style={{ color: "#006875" }}>{oneservice?.name}</span>
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="d-flex justify-content-between mt-5 ms-3">
+            <div className="d-flex justify-content-between align-items-center mt-5">
               <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
                 <svg
                   width={20}
@@ -200,7 +200,7 @@ const EventView = () => {
                     <div className="col-6 px-2">
                       <div>
                         <p style={{ color: "#68727D" }}>Price</p>
-                        <p style={{ fontWeight: "700" }}>{oneservice?.price}</p>
+                        <p style={{ fontWeight: "700" }}>{oneservice?.price}&nbsp;KWD</p>
                       </div>
                     </div>
                   </div>

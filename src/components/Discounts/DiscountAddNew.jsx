@@ -53,14 +53,16 @@ export default function DiscountAddNew() {
     start_time: Yup.string().required("Start Time is required"),
     discount_value: Yup.number()
       .required("Value is Required")
-      .min(1, "Must be greater than zero"),
+      .min(1, "Must be greater than zero")
+      .max(100000,"Maximum 1 Lakh"),
     up_to_amount: Yup.number().when(
       "discount_type",
       ([discount_type], schema) => {
         if (discount_type === "Percentage") {
           return schema
             .required("Upto is Required")
-            .min(1, "Must be greater than zero");
+            .min(1, "Must be greater than zero")
+            .max(100000,"Maximum 1 Lakh");
         } else {
           return schema.notRequired();
         }
@@ -75,7 +77,7 @@ export default function DiscountAddNew() {
             .typeError("Specify Number  must be a number")
             .required("Specify Number is Required")
             .min(1, "Must be greater than zero")
-            .typeError("Specify Number must be a number");
+            .max(9999,"Maximum 9999 Only")
         } else {
           return schema.notRequired();
         }
@@ -88,7 +90,8 @@ export default function DiscountAddNew() {
         if (purchase_requirement === true) {
           return schema
             .required("Minimum Amount is Required")
-            .min(1, "Must be greater than zero");
+            .min(1, "Must be greater than zero") 
+            .max(100000,"Maximum 1 Lakh");
         } else {
           return schema.notRequired();
         }
@@ -101,6 +104,7 @@ export default function DiscountAddNew() {
           ? schema
             .required("Specify Number is Required")
             .min(1, "Must be greater than zero")
+            .max(9999,"Maximum 9999 only")
           : schema.notRequired();
       }
     ),
@@ -554,6 +558,7 @@ export default function DiscountAddNew() {
                           updateFormValues({
                             ...formik.values,
                             discount_type: "Fixed",
+                            up_to_amount:""
                           })
                         }
                       >
