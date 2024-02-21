@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
@@ -7,6 +7,7 @@ import {
   customerExport,
   getCustomerSearch,
 } from "../../services/CustomerHandle";
+import { FormikProvider } from "../../Context/FormikContext";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Typography } from "@mui/material";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
@@ -39,6 +40,7 @@ const style = {
 export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
   const [search, setSearch] = useState("");
+  const formikRef = useRef(null);
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
@@ -53,9 +55,14 @@ export default function CustomerListing() {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const [filters, setFilters] = useState({
-    location: [],
     OnBoardOn: { from: "", to: "" },
+    sub_category: [],
   });
+
+  // Check if either OnBoardOn has values or sub_category has items
+  let checkfilterslength =
+    filters.OnBoardOn.from.length > 0 && filters.OnBoardOn.to.length > 0;
+
   const [tableData, setTableData] = useState(false);
 
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
@@ -142,11 +149,12 @@ export default function CustomerListing() {
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
-        console.log("Search ---:", data);
+        // console.log("Search ---:", data.results);
         const customerList = data.results.filter(
           (item) => item.role === "User"
         );
-        setListDiscount(customerList);
+        // console.log("search customer", customerList);
+        setListDiscount(data?.results);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -157,13 +165,12 @@ export default function CustomerListing() {
   useEffect(() => {
     getCustomerListData();
 
-    const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
     const countNonEmpty =
       Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
       0
         ? 1
         : 0;
-    setFilterCriteriaCount(isLocationFiltered + countNonEmpty);
+    setFilterCriteriaCount(countNonEmpty);
   }, [isRefetch]);
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -189,7 +196,12 @@ export default function CustomerListing() {
         });
   };
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+    if (formikRef.current) {
+      formikRef.current.resetForm(); // Reset the formik form
+    }
+  };
 
   useEffect(() => {
     const data = { search: search, status: selectedValue, role: "User" };
@@ -352,6 +364,7 @@ export default function CustomerListing() {
           {/* Modal */}
           {isOpenFilterPopUp && (
             <UserFilterPopup
+              checkFiltersLength={checkfilterslength}
               open={isOpenFilterPopUp}
               handleClose={handleCloseFilter}
               setIsLoading={setIsLoading}
@@ -403,11 +416,17 @@ export default function CustomerListing() {
                 </svg>
               </button>
             )}
-          <CustomerCreate
-            show={showOffcanvas}
-            close={handleCloseOffcanvas}
-            tableData={setTableData}
-          />
+          <FormikProvider formik={formikRef.current}>
+            <CustomerCreate
+              show={showOffcanvas}
+              close={handleCloseOffcanvas}
+              showOffcanvas={showOffcanvas}
+              setShowOffcanvas={setShowOffcanvas}
+              tableData={setTableData}
+              isRefetch={isRefetch}
+              setIsRefetch={setIsRefetch}
+            />
+          </FormikProvider>
           <AddCustomerWithPermission />
         </div>
       </div>

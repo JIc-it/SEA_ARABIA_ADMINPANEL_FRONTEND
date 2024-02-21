@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 import * as XLSX from "xlsx";
@@ -23,8 +23,10 @@ import {
   permissionCategory,
 } from "../../../components/Permissions/PermissionConstants";
 import { CircularProgress } from "@mui/material";
+import { FormikProvider } from "../../../Context/FormikContext";
 
 const SalesRepresentatives = () => {
+  const formikRef = useRef(null);
   const { userPermissionList } = useContext(MainPageContext);
   const [count, setCount] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
@@ -37,7 +39,13 @@ const SalesRepresentatives = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+    if (formikRef.current) {
+      formikRef.current.resetForm(); // Reset the formik form
+    }
+  };
+
   const [search, setSearch] = useState("");
   const [tableData, setTableData] = useState(false);
   useEffect(() => {
@@ -361,7 +369,13 @@ const SalesRepresentatives = () => {
               )}
             <AddSaleRepWithPermission />
           </div>
-          <CreateSalesRep show={showOffcanvas} close={handleCloseOffcanvas} tableData={setTableData}/>
+          <FormikProvider formik={formikRef.current}>
+            <CreateSalesRep
+              show={showOffcanvas}
+              close={handleCloseOffcanvas}
+              tableData={setTableData}
+            />
+          </FormikProvider>
         </div>
         <div className="card ">
           <div className="table-responsive">

@@ -13,6 +13,7 @@ import {
   getsubcategorylist,
 } from "../../services/service";
 import { AppContext } from "../../Context/AppContext";
+import { getCustomerSearch } from "../../services/CustomerHandle";
 
 export default function UserFilterPopup({
   open,
@@ -49,68 +50,23 @@ export default function UserFilterPopup({
     p: 3,
     overflowY: "scroll",
   };
-
+  const [listDiscount, setListDiscount] = useState([]);
   useEffect(() => {
-    getsubcategorylist()
-      .then((data) => setSubcategoryList(data))
-      .catch((error) => console.error(error));
+    getCustomerSearch({ search: search, status: "", role: "User" })
+      .then((data) => {
+        console.log("customer-list for ffff", data.results);
+        setListDiscount(data.results);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching Customer List data:", error);
+      });
   }, []);
 
-  const handleFilterCategory = (e, id) => {
-    const { checked } = e.target;
-    setCategoryList((prev) =>
-      prev.map((category) =>
-        category.id === id ? { ...category, status: checked } : category
-      )
-    );
-    setFilters((prevFilters) => {
-      return {
-        ...prevFilters,
-        vendorStatus: categorylist.map((category) =>
-          category.id === id ? { ...category, status: checked } : category
-        ),
-      };
-    });
-  };
-
-  const handleFilterSubCategory = (e) => {
-    const { name, value } = e.target;
-
-    setFilters((prevFilters) => {
-      // Check if sub_category already has data
-      const subCategoryArray =
-        prevFilters.location.length > 0 ? prevFilters.location : [];
-
-      // Check if the value already exists in the sub_category array
-      const existingSubCategoryIndex = subCategoryArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedSubCategory =
-        existingSubCategoryIndex !== -1
-          ? [
-              ...subCategoryArray.slice(0, existingSubCategoryIndex),
-              ...subCategoryArray.slice(existingSubCategoryIndex + 1),
-            ]
-          : [...subCategoryArray, { id: value, name }];
-
-      return {
-        ...prevFilters,
-        location: updatedSubCategory,
-      };
-    });
-  };
-
   const findAndRemoveCategory = (field, id, dateType) => {
-    if (field === "locationList") {
-      setFilters((prevFilters) => {
-        const updatedCategory = prevFilters.location.filter(
-          (item) => item.id !== id
-        );
-        return { ...prevFilters, location: updatedCategory };
-      });
-    }
     if (field === "onboardDate") {
       if (dateType === "from") {
         setFilters((prevFilters) => {
@@ -130,11 +86,33 @@ export default function UserFilterPopup({
       }
     }
   };
+  const getsubcategorylist = async (fromDate, toDate) => {
+    try {
+      // Add logic to fetch customers based on the date range
+      // This is just a placeholder, you need to replace it with your actual backend logic
+      const response = await getCustomerSearch({
+        params: { fromDate, toDate },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const handleApplyFilter = async () => {
-    console.log(filters, "apply filter===========");
-    setIsRefetch(!isRefetch);
-    handleClose();
+    try {
+      const data = await getsubcategorylist(fromDate, toDate);
+      console.log("Filtered data:", data);
+      setSubcategoryList(data);
+      setIsRefetch(!isRefetch);
+      handleClose();
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
   };
 
   return (

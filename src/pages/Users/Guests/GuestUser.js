@@ -17,7 +17,7 @@ import * as XLSX from "xlsx";
 const GuestUser = () => {
   const navigate = useNavigate();
   const [guestId, setGuestId] = useState();
-  console.log("guest id", guestId);
+
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const [reward_product_data, setGuestUsertData] = useState(null);
@@ -33,9 +33,9 @@ const GuestUser = () => {
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
   useEffect(() => {
-    getGuestUserRequest({ search: search, status: "" })
+    getGuestUserRequest(search,"")
       .then((data) => {
-        console.log("Fetched data:", data.results);
+        console.log("Fetched data:", data.results?.id);
         setGuestUsertData(data.results);
         setListPageUrl({
           next: data?.next,
@@ -43,12 +43,12 @@ const GuestUser = () => {
         });
 
         setGuestId(data.results?.id);
-        console.log("id==", guestId);
+        console.log("id==", guestId, data.results?.id);
       })
       .catch((error) => {
         console.error("Error fetching lead data:", error);
       });
-  }, []);
+  }, [search]);
 
   // const getGuestSearchData = async () => {
   //   getGuestUserRequest(search, selectedValue)
@@ -86,14 +86,17 @@ const GuestUser = () => {
   //       console.error("Error fetching  data:", error);
   //     });
   // }, [selectedValue, isRefetch, search]);
-  useEffect(() => {
-    const data = { search: search, status: selectedValue };
-    getGuestUserRequest(data).then((res) => setGuestUsertData(res?.results));
-  }, [selectedValue, isRefetch, search]);
+  // useEffect(() => {
+  //   const data = { search: search, status: selectedValue };
+  //   console.log("Search value:", search, "selected va", selectedValue);
+  //   getGuestUserRequest(data)
+  //     .then((res) => {
+  //       console.log("getGuestUserRequest", res);
+  //       setGuestUsertData(res?.results);
+  //     })
+  //     .catch((error) => console.error("Error fetching data:", error));
+  // }, [selectedValue, isRefetch, search]);
 
-  const handleBookingButtonClick = () => {
-    navigate(`/bookings/${guestId}`);
-  };
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =

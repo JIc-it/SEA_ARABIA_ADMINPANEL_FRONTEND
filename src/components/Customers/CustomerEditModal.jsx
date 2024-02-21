@@ -98,7 +98,7 @@ function CustomerEditModal({ show, close }) {
     enableReinitialize: true,
     validationSchema,
 
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
       if (!isLoading) {
@@ -125,12 +125,29 @@ function CustomerEditModal({ show, close }) {
             setIsRefetch(!isRefetch);
             toast.success("customer updated Successfully.");
             close();
+            resetForm();
+            formik.setValues(() => {
+              return {
+                first_name: "",
+                last_name: "",
+
+                email: "",
+                password: "",
+                mobile: "",
+                profileextra: {
+                  location: "",
+                  dob: "", // Assuming you have dob in your form
+                  gender: "",
+                },
+              };
+            });
           } else {
             console.error("Error while updating Vendor:", customerData.error);
             setIsLoading(false);
           }
         } catch (err) {
           // console.log(err);
+          // toast.error(customerData.error.message);
           err.response.data.email && toast.error(err.response.data.email[0]);
           err.response.data.mobile && toast.error(err.response.data.mobile[0]);
           setIsLoading(false);

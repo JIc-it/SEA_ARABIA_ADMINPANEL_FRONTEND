@@ -164,7 +164,10 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
   return (
     <Offcanvas
       show={show}
-      onHide={close}
+      onHide={() => {
+        close();
+        formik.resetForm(); // Reset the formik form
+      }}
       placement="end"
       style={{ overflow: "auto" }}
     >
