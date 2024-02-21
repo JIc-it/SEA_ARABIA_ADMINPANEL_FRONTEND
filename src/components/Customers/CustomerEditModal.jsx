@@ -86,12 +86,11 @@ function CustomerEditModal({ show, close }) {
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
-      profileextra: {
-        location: {
-          country: customerDetails?.profileextra?.location?.country || "",
-        },
-        gender: customerDetails?.profileextra?.gender || "",
-      },
+
+      location: customerDetails?.profileextra?.location?.id || "",
+
+      gender: customerDetails?.profileextra?.gender || "",
+
       // Add other fields as needed
     },
 
