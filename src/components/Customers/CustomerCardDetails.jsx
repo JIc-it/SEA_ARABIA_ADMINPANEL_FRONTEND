@@ -37,13 +37,11 @@ function CustomerCardDetails() {
   console.log("customer id", customerId);
 
   const handleOpenOffcanvas = () => {
-    // Formik.resetForm(); // Reset Formik state
     setShowOffcanvas(true);
   };
 
   const handleCloseOffcanvas = () => {
     setShowOffcanvas(false);
-    // formik.resetForm(); // Reset Formik state
   };
 
   const handleBookingButtonClick = () => {
@@ -388,6 +386,7 @@ function CustomerCardDetails() {
                 <CustomerEditModal
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
+               
                 />
                 <ChangePasword open={open} setOpen={setOpen} />
                 <EditCustomerWithPermission />
@@ -631,8 +630,8 @@ function CustomerCardDetails() {
 
             </div>} */}
           </div>
-          <br/>
-          <br/>
+          <br />
+          <br />
         </div>
       </div>
     </div>

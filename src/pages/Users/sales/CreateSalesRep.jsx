@@ -167,7 +167,10 @@ function CreateSalesRep({ show, close, tableData }) {
   return (
     <Offcanvas
       show={show}
-      onHide={close}
+      onHide={() => {
+        close();
+        formik.resetForm(); // Reset the formik form
+      }}
       placement="end"
       style={{ overflow: "auto" }}
     >
@@ -225,6 +228,7 @@ function CreateSalesRep({ show, close, tableData }) {
             placeholder="Last Name"
             className="form-control"
             name="last_name"
+            maxLength={20}
             value={formik.values.last_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
@@ -380,6 +384,7 @@ function CreateSalesRep({ show, close, tableData }) {
               name="email"
               className="form-control"
               placeholder="Email"
+              maxLength={50}
               value={formik.values.email}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}

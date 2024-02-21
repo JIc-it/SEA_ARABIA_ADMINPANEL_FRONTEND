@@ -12,14 +12,13 @@ import { passwordRegex } from "../../helpers";
 
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 import { AppContext } from "../../Context/AppContext";
-import { IconButton, InputAdornment, TextField } from "@mui/material";
+
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-function CustomerCreate({ show, close, tableData }) {
+function CustomerCreate({ show, close, tableData, setIsRefetch, isRefetch }) {
   const theme = useTheme();
   const locationContext = useContext(AppContext);
 
-  const [isRefetch, setIsRefetch] = useState();
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
 
@@ -162,14 +161,27 @@ function CustomerCreate({ show, close, tableData }) {
           };
 
           const customerData = await createCustomer(data);
-          console.log("create customer", createCustomer);
+          // console.log("create customer", createCustomer);
           if (customerData) {
             setIsRefetch(!isRefetch);
             toast.success("Customer Added Successfully.");
             resetForm();
             tableData(true);
             close();
+
             setIsLoading(false);
+            formik.setValues(() => {
+              return {
+                first_name: "",
+                last_name: "",
+                email: "",
+                password: "",
+                gender: "",
+                location: "",
+                mobile: "",
+                confirmPassword: "",
+              };
+            });
           } else {
             console.error("Error while creating Customer:", customerData.error);
             setIsLoading(false);
@@ -184,11 +196,14 @@ function CustomerCreate({ show, close, tableData }) {
       }
     },
   });
-  console.log("formik of admin", formik.values);
+
   return (
     <Offcanvas
       show={show}
-      onHide={close}
+      onHide={() => {
+        close();
+        formik.resetForm(); // Reset the formik form
+      }}
       placement="end"
       style={{ overflow: "auto" }}
     >
@@ -362,14 +377,15 @@ function CustomerCreate({ show, close, tableData }) {
             DOB
           </label>
           <input
-            max="9999-12-31"
+            max={new Date().toISOString().split("T")[0]} // Set max attribute in "YYYY-MM-DD" format
             type="date"
-            name="dob" // Make sure this matches the name used in initialValues and validationSchema
+            name="dob"
             className="form-control"
             value={formik.values.dob}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
           />
+
           {formik.touched.dob && formik.errors.dob && (
             <div className="error">{formik.errors.dob}</div>
           )}
@@ -405,6 +421,28 @@ function CustomerCreate({ show, close, tableData }) {
                 </option>
               ))}
             </select>
+            {/* <Autocomplete
+              id="gender"
+              name="gender"
+              options={gender}
+              getOptionLabel={(option) => option.label}
+              onChange={(event, newValue) => {
+                formik.setFieldValue("gender", newValue ? newValue.label : ""); // Update the field value
+              }}
+              onBlur={formik.handleBlur}
+              value={
+                gender.find(
+                  (option) => option.label === formik.values.gender
+                ) || null
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Select a gender"
+                  variant="outlined"
+                />
+              )}
+            /> */}
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}

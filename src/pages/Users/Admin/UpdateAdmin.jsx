@@ -155,61 +155,7 @@ function UpdateAdmin({ show, close }) {
       }
     },
   });
-  // const formik = useFormik({
-  //   initialValues: {
-  //     first_name: adminDetails?.first_name || "",
-  //     last_name: adminDetails?.last_name || "",
-  //     email: adminDetails?.email || "",
-  //     gender: adminDetails?.gender?.label || "",
-  //     mobile: adminDetails?.mobile || "",
-  //     location: adminDetails?.profileextra?.location?.id || "",
-
-  //     // Add other fields as needed
-  //   },
-  //   validationSchema,
-  //   onSubmit: async (values) => {
-  //     setIsLoading(true);
-
-  //     if (!isLoading) {
-  //       try {
-  //         const data = {
-  //           // Assuming vendorId is a constant or variable defined earlier
-  //           first_name: values.first_name,
-  //           last_name: values.last_name,
-  //           email: values.email,
-  //           mobile: values.mobile,
-  //           // profileextra: {
-  //           //   location: values.location.id,
-  //           // },
-  //           location: formik.values.location.id,
-  //           gender: values.gender?.label,
-  //         };
-  //         console.log("Gender:", formik.values.gender);
-
-  //         const adminData = await UpdateAdminListById(adminId, data);
-  //         console.log("Admin updated detail is ---", adminData);
-  //         if (adminData) {
-  //           setIsLoading(false);
-  //           setGender(adminData?.gender?.label);
-  //           // window.location.reload();
-  //           setIsRefetch(!isRefetch);
-  //           toast.success(" Admin updated Successfully.");
-  //           close();
-  //         } else {
-  //           console.error("Error while updating Admin:", adminData.error);
-  //           setIsLoading(false);
-  //         }
-  //       } catch (err) {
-  //         console.log(err);
-  //         err.response.data.email && toast.error(err.response.data.email[0]);
-  //         err.response.data.mobile && toast.error(err.response.data.mobile[0]);
-  //         setIsLoading(false);
-  //       }
-  //     }
-  //   },
-  // });
-  console.log("formik", formik.values);
-
+  
   useEffect(() => {
     formik.setValues({
       first_name: adminDetails?.first_name || "",

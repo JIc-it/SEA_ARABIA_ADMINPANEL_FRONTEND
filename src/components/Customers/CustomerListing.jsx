@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import { Link } from "react-router-dom";
 import filterIcon from "../../static/img/Filter.png";
 import CustomerCreate from "./CustomerCreate";
@@ -7,6 +7,7 @@ import {
   customerExport,
   getCustomerSearch,
 } from "../../services/CustomerHandle";
+import { FormikProvider } from "../../Context/FormikContext";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Typography } from "@mui/material";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
@@ -21,6 +22,7 @@ import {
 } from "../Permissions/PermissionConstants";
 import UserFilterPopup from "./UserFilterPopup";
 import Modal from "@mui/material/Modal";
+import { Search } from "@mui/icons-material";
 const style = {
   position: "absolute",
   top: "50%",
@@ -38,6 +40,7 @@ const style = {
 export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
   const [search, setSearch] = useState("");
+  const formikRef = useRef(null);
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
@@ -52,18 +55,19 @@ export default function CustomerListing() {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const [filters, setFilters] = useState({
-    customerStatus: [],
-    location: [],
-    OnBoardOn: {
-      from: "",
-      to: "",
-    },
+    OnBoardOn: { from: "", to: "" },
+    sub_category: [],
   });
+
+  // Check if either OnBoardOn has values or sub_category has items
+  let checkfilterslength =
+    filters.OnBoardOn.from.length > 0 && filters.OnBoardOn.to.length > 0;
+
   const [tableData, setTableData] = useState(false);
 
   const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
   useEffect(() => {
-    getCustomerSearch({ search: "", status: "", role: "User" })
+    getCustomerSearch({ search: search, status: "", role: "User" })
       .then((data) => {
         console.log("customer-list", data.results);
         setListDiscount(data.results);
@@ -77,7 +81,7 @@ export default function CustomerListing() {
         toast.error(error.message);
         console.error("Error fetching Customer List data:", error);
       });
-  }, [tableData]);
+  }, [tableData, search]);
 
   // export
   const handleExportCustomerData = () => {
@@ -119,20 +123,6 @@ export default function CustomerListing() {
       });
   };
 
-  useEffect(() => {
-    getCustomerListData();
-    const isCustomerStatusFiltered =
-      filters?.customerStatus?.length > 0 ? 1 : 0;
-    const isLocationFiltered = filters?.location?.length > 0 ? 1 : 0;
-    const countNonEmpty =
-      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
-      0
-        ? 1
-        : 0;
-    setFilterCriteriaCount(
-      isCustomerStatusFiltered + isLocationFiltered + countNonEmpty
-    );
-  }, [isRefetch, search]);
   const refreshPage = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
@@ -143,27 +133,13 @@ export default function CustomerListing() {
     let locationName =
       filters.location &&
       filters.location.map((item, i) => {
+        console.log("filter map", item);
         return item.name;
       });
     let commaSeparatedLocationsNames =
       (locationName && locationName.length > 0 && locationName.join(",")) || "";
 
     getCustomerSearch({
-      is_active:
-        filters.vendorStatus &&
-        filters.vendorStatus.length > 0 &&
-        filters.vendorStatus[0].status &&
-        filters.vendorStatus[1].status
-          ? ""
-          : filters.vendorStatus &&
-            filters.vendorStatus.length > 0 &&
-            filters.vendorStatus[0].status
-          ? true
-          : filters.vendorStatus &&
-            filters.vendorStatus.length > 0 &&
-            filters.vendorStatus[1].status
-          ? false
-          : "",
       location: commaSeparatedLocationsNames,
       onboard_date_before:
         (filters.OnBoardOn.to != "" && filters.OnBoardOn.to) || "",
@@ -173,11 +149,12 @@ export default function CustomerListing() {
       .then((data) => {
         setIsLoading(false);
         setListPageUrl({ next: data.next, previous: data.previous });
-        // console.log("Search ---:", data);
+        // console.log("Search ---:", data.results);
         const customerList = data.results.filter(
           (item) => item.role === "User"
         );
-        setListDiscount(customerList);
+        // console.log("search customer", customerList);
+        setListDiscount(data?.results);
       })
       .catch((error) => {
         setIsLoading(false);
@@ -185,7 +162,16 @@ export default function CustomerListing() {
         console.error("Error fetching  data:", error);
       });
   };
+  useEffect(() => {
+    getCustomerListData();
 
+    const countNonEmpty =
+      Object.values(filters.OnBoardOn).filter((value) => value !== "").length >
+      0
+        ? 1
+        : 0;
+    setFilterCriteriaCount(countNonEmpty);
+  }, [isRefetch]);
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -210,7 +196,12 @@ export default function CustomerListing() {
         });
   };
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+    if (formikRef.current) {
+      formikRef.current.resetForm(); // Reset the formik form
+    }
+  };
 
   useEffect(() => {
     const data = { search: search, status: selectedValue, role: "User" };
@@ -241,45 +232,16 @@ export default function CustomerListing() {
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
-  // new
-  const handleFilterCategory = (e) => {
-    const { name, value } = e.target;
 
-    setFilters((prevFilters) => {
-      // Check if category already has data
-      const categoryArray =
-        prevFilters.category.length > 0 ? prevFilters.category : [];
-
-      // Check if the value already exists in the category array
-      const existingCategoryIndex = categoryArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedCategory =
-        existingCategoryIndex !== -1
-          ? [
-              ...categoryArray.slice(0, existingCategoryIndex),
-              ...categoryArray.slice(existingCategoryIndex + 1),
-            ]
-          : [...categoryArray, { id: value, name }];
-
-      return {
-        ...prevFilters,
-        category: updatedCategory,
-      };
-    });
-  };
   const [filterCriteriaCount, setFilterCriteriaCount] = useState(0);
 
   const handleClearFilter = async () => {
     setIsRefetch(!isRefetch);
-    setCategoryList([
-      { id: 1, name: "Active", status: false },
-      { id: 2, name: "Inactive", status: false },
-    ]);
+    // setCategoryList([
+    //   { id: 1, name: "Active", status: false },
+    //   { id: 2, name: "Inactive", status: false },
+    // ]);
     setFilters({
-      vendorStatus: [],
       location: [],
       OnBoardOn: { from: "", to: "" },
     });
@@ -329,14 +291,18 @@ export default function CustomerListing() {
                       setSearch(e.target.value);
                     }}
                   />
-                  {/* <button
-                    type="button"
-                    className="btn search_button"
-                    style={{ background: "#006875" }}
-                    onClick={getCustomerListData}
-                  >
-                    Search
-                  </button> */}
+                  {search && (
+                    <button
+                      className="btn search_button"
+                      style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                      onClick={() => {
+                        setSearch(""); // Clear the search state
+                        window.location.reload();
+                      }}
+                    >
+                      Clear Search
+                    </button>
+                  )}
                 </div>
                 <button
                   onClick={handleOpenFilter}
@@ -398,6 +364,7 @@ export default function CustomerListing() {
           {/* Modal */}
           {isOpenFilterPopUp && (
             <UserFilterPopup
+              checkFiltersLength={checkfilterslength}
               open={isOpenFilterPopUp}
               handleClose={handleCloseFilter}
               setIsLoading={setIsLoading}
@@ -449,11 +416,17 @@ export default function CustomerListing() {
                 </svg>
               </button>
             )}
-          <CustomerCreate
-            show={showOffcanvas}
-            close={handleCloseOffcanvas}
-            tableData={setTableData}
-          />
+          <FormikProvider formik={formikRef.current}>
+            <CustomerCreate
+              show={showOffcanvas}
+              close={handleCloseOffcanvas}
+              showOffcanvas={showOffcanvas}
+              setShowOffcanvas={setShowOffcanvas}
+              tableData={setTableData}
+              isRefetch={isRefetch}
+              setIsRefetch={setIsRefetch}
+            />
+          </FormikProvider>
           <AddCustomerWithPermission />
         </div>
       </div>

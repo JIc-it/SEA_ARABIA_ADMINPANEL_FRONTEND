@@ -92,7 +92,7 @@ export default function ChangePasword({ open, setOpen }) {
       confirmPassword: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
       if (!isLoading) {
         try {
@@ -107,6 +107,7 @@ export default function ChangePasword({ open, setOpen }) {
             toast.success("Password Changed successfully!");
             setOpen(false);
             setIsLoading(false);
+            resetForm();
             formik.setValues(() => {
               return {
                 currentpassword: "",

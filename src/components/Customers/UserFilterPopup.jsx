@@ -13,6 +13,7 @@ import {
   getsubcategorylist,
 } from "../../services/service";
 import { AppContext } from "../../Context/AppContext";
+import { getCustomerSearch } from "../../services/CustomerHandle";
 
 export default function UserFilterPopup({
   open,
@@ -49,83 +50,23 @@ export default function UserFilterPopup({
     p: 3,
     overflowY: "scroll",
   };
-
+  const [listDiscount, setListDiscount] = useState([]);
   useEffect(() => {
-    getsubcategorylist()
-      .then((data) => setSubcategoryList(data))
-      .catch((error) => console.error(error));
+    getCustomerSearch({ search: search, status: "", role: "User" })
+      .then((data) => {
+        console.log("customer-list for ffff", data.results);
+        setListDiscount(data.results);
+        setListPageUrl({
+          next: data.next,
+          previous: data.previous,
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching Customer List data:", error);
+      });
   }, []);
 
-  const handleFilterCategory = (e, id) => {
-    const { checked } = e.target;
-    setCategoryList((prev) =>
-      prev.map((category) =>
-        category.id === id ? { ...category, status: checked } : category
-      )
-    );
-    setFilters((prevFilters) => {
-      return {
-        ...prevFilters,
-        vendorStatus: categorylist.map((category) =>
-          category.id === id ? { ...category, status: checked } : category
-        ),
-      };
-    });
-  };
-
-  const handleFilterSubCategory = (e) => {
-    const { name, value } = e.target;
-
-    setFilters((prevFilters) => {
-      // Check if sub_category already has data
-      const subCategoryArray =
-        prevFilters.location.length > 0 ? prevFilters.location : [];
-
-      // Check if the value already exists in the sub_category array
-      const existingSubCategoryIndex = subCategoryArray.findIndex(
-        (item) => item.id === value
-      );
-
-      // If the value exists, remove it; otherwise, add or update it
-      const updatedSubCategory =
-        existingSubCategoryIndex !== -1
-          ? [
-              ...subCategoryArray.slice(0, existingSubCategoryIndex),
-              ...subCategoryArray.slice(existingSubCategoryIndex + 1),
-            ]
-          : [...subCategoryArray, { id: value, name }];
-
-      return {
-        ...prevFilters,
-        location: updatedSubCategory,
-      };
-    });
-  };
-
   const findAndRemoveCategory = (field, id, dateType) => {
-    if (field === "vendorStatus") {
-      setFilters((prevFilters) => {
-        return {
-          ...prevFilters,
-          vendorStatus: [
-            { id: 1, name: "Active", status: false },
-            { id: 2, name: "Inactive", status: false },
-          ],
-        };
-      });
-      setCategoryList([
-        { id: 1, name: "Active", status: false },
-        { id: 2, name: "Inactive", status: false },
-      ]);
-    }
-    if (field === "locationList") {
-      setFilters((prevFilters) => {
-        const updatedCategory = prevFilters.location.filter(
-          (item) => item.id !== id
-        );
-        return { ...prevFilters, location: updatedCategory };
-      });
-    }
     if (field === "onboardDate") {
       if (dateType === "from") {
         setFilters((prevFilters) => {
@@ -145,11 +86,33 @@ export default function UserFilterPopup({
       }
     }
   };
+  const getsubcategorylist = async (fromDate, toDate) => {
+    try {
+      // Add logic to fetch customers based on the date range
+      // This is just a placeholder, you need to replace it with your actual backend logic
+      const response = await getCustomerSearch({
+        params: { fromDate, toDate },
+      });
+
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
 
   const handleApplyFilter = async () => {
-    console.log(filters, "active test");
-    setIsRefetch(!isRefetch);
-    handleClose();
+    try {
+      const data = await getsubcategorylist(fromDate, toDate);
+      console.log("Filtered data:", data);
+      setSubcategoryList(data);
+      setIsRefetch(!isRefetch);
+      handleClose();
+    } catch (error) {
+      console.error("Error fetching filtered data:", error);
+    }
   };
 
   return (
@@ -180,179 +143,6 @@ export default function UserFilterPopup({
             {
               <div class="components-selection-item mt-1">
                 <div class="frame-427319782">
-                  {filters.vendorStatus[0]?.status |
-                  filters.vendorStatus[1]?.status ? (
-                    <>
-                      <div class="frame-427319783">
-                        <div class="vendor">Customer Status</div>
-                        <div class="div">:</div>
-                      </div>
-                      <div
-                        style={{
-                          // width: "50vw",
-                          display: "flex",
-                          flexWrap: "wrap",
-                        }}
-                      >
-                        <div
-                          class="yacht-boat-heli-tour "
-                          style={{
-                            display: "flex",
-                            flexWrap: "wrap",
-                          }}
-                        >
-                          <div className="mx-1">
-                            <span>
-                              {filters.vendorStatus[0]?.status &&
-                              filters.vendorStatus[1]?.status
-                                ? "All"
-                                : filters.vendorStatus[0]?.status &&
-                                  !filters.vendorStatus[1]?.status
-                                ? "Active"
-                                : !filters.vendorStatus[0]?.status &&
-                                  filters.vendorStatus[1]?.status
-                                ? "Inactive"
-                                : ""}
-                            </span>
-
-                            <span
-                              className="mx-1"
-                              onClick={() =>
-                                findAndRemoveCategory("vendorStatus")
-                              }
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width={10}
-                                height={10}
-                                viewBox="0 0 10 10"
-                                fill="none"
-                              >
-                                <g clipPath="url(#clip0_5512_51442)">
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                    fill="#212529"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                    fill="#212529"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                    stroke="#212529"
-                                    strokeWidth="0.8"
-                                  />
-                                  <path
-                                    fillRule="evenodd"
-                                    clipRule="evenodd"
-                                    d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                    stroke="#212529"
-                                    strokeWidth="0.8"
-                                  />
-                                </g>
-                                <defs>
-                                  <clipPath id="clip0_5512_51442">
-                                    <rect width={10} height={10} fill="white" />
-                                  </clipPath>
-                                </defs>
-                              </svg>
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
-                  {filters.location.length ? (
-                    <>
-                      <div class="frame-427319783">
-                        <div class="vendor">Location</div>
-                        <div class="div">:</div>
-                      </div>
-                      <div
-                        style={{
-                          // width: "50vw",
-                          display: "flex",
-                          flexWrap: filters.location.length > 5 ? "wrap" : "",
-                        }}
-                      >
-                        <div
-                          class="yacht-boat-heli-tour "
-                          style={{
-                            display: "flex",
-                            flexWrap: filters.location.length > 5 ? "wrap" : "",
-                          }}
-                        >
-                          {filters.location.map((data) => (
-                            <div key={data.id} className="mx-1">
-                              <span>{data.name}</span>
-                              <span
-                                className="mx-1"
-                                onClick={() =>
-                                  findAndRemoveCategory("locationList", data.id)
-                                }
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width={10}
-                                  height={10}
-                                  viewBox="0 0 10 10"
-                                  fill="none"
-                                >
-                                  <g clipPath="url(#clip0_5512_51442)">
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                      fill="#212529"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                      fill="#212529"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M8.65833 1.34181C8.68743 1.37084 8.71052 1.40532 8.72628 1.44329C8.74203 1.48125 8.75014 1.52195 8.75014 1.56306C8.75014 1.60416 8.74203 1.64486 8.72628 1.68283C8.71052 1.7208 8.68743 1.75528 8.65833 1.78431L1.78333 8.65931C1.72465 8.71799 1.64507 8.75095 1.56208 8.75095C1.4791 8.75095 1.39951 8.71799 1.34083 8.65931C1.28215 8.60063 1.24919 8.52104 1.24919 8.43806C1.24919 8.35507 1.28215 8.27549 1.34083 8.21681L8.21583 1.34181C8.24486 1.31271 8.27935 1.28962 8.31731 1.27386C8.35528 1.25811 8.39598 1.25 8.43708 1.25C8.47819 1.25 8.51889 1.25811 8.55685 1.27386C8.59482 1.28962 8.6293 1.31271 8.65833 1.34181Z"
-                                      stroke="#212529"
-                                      strokeWidth="0.8"
-                                    />
-                                    <path
-                                      fillRule="evenodd"
-                                      clipRule="evenodd"
-                                      d="M1.34083 1.34181C1.31173 1.37084 1.28864 1.40532 1.27289 1.44329C1.25713 1.48125 1.24902 1.52195 1.24902 1.56306C1.24902 1.60416 1.25713 1.64486 1.27289 1.68283C1.28864 1.7208 1.31173 1.75528 1.34083 1.78431L8.21583 8.65931C8.27451 8.71799 8.3541 8.75095 8.43708 8.75095C8.52007 8.75095 8.59965 8.71799 8.65833 8.65931C8.71701 8.60063 8.74998 8.52104 8.74998 8.43806C8.74998 8.35507 8.71701 8.27549 8.65833 8.21681L1.78333 1.34181C1.7543 1.31271 1.71982 1.28962 1.68185 1.27386C1.64389 1.25811 1.60319 1.25 1.56208 1.25C1.52098 1.25 1.48028 1.25811 1.44231 1.27386C1.40435 1.28962 1.36986 1.31271 1.34083 1.34181Z"
-                                      stroke="#212529"
-                                      strokeWidth="0.8"
-                                    />
-                                  </g>
-                                  <defs>
-                                    <clipPath id="clip0_5512_51442">
-                                      <rect
-                                        width={10}
-                                        height={10}
-                                        fill="white"
-                                      />
-                                    </clipPath>
-                                  </defs>
-                                </svg>
-                              </span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </>
-                  ) : (
-                    ""
-                  )}
                   {filters.OnBoardOn.from != "" ||
                   filters.OnBoardOn.to != "" ? (
                     <>
@@ -703,107 +493,8 @@ export default function UserFilterPopup({
                 role="tablist"
                 aria-orientation="vertical"
               >
-                <small>Vendor</small>
-                <button
-                  onClick={() => setActive("")}
-                  style={{
-                    // width: "12vw",
-                    backgroundColor: "white",
-                    border:
-                      active === "vendorStatus" ? "1px solid #2176FF" : "",
-                  }}
-                  class="nav-link active mt-2 d-flex justify-content-between"
-                  id="v-pills-home-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#v-pills-home"
-                  type="button"
-                  role="tab"
-                  aria-controls="v-pills-home"
-                  aria-selected="true"
-                >
-                  <span> Customer Status</span>
-                  {/* <span
-                    className="py-1"
-                    style={{
-                      color: "white",
-                      fontSize: "12px",
-                      backgroundColor:
-                        active === "Category" ? "#2176FF" : "gray",
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "33px",
-                    }}
-                  >
-                    {filters.category.length}
-                  </span> */}
-                  <span>
-                    <svg
-                      width={18}
-                      height={18}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                        stroke={active === "vendorStatus" ? "#2176FF" : "gray"}
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </button>
-                <button
-                  onClick={() => setActive("Sub-Category")}
-                  style={{
-                    // width: "12vw",
-                    backgroundColor: "white",
-                    border:
-                      active === "Sub-Category" ? "1px solid #2176FF" : "",
-                  }}
-                  class="nav-link mt-2 d-flex justify-content-between"
-                  id="v-pills-home-tab"
-                  data-bs-toggle="pill"
-                  data-bs-target="#v-pills-home2"
-                  type="button"
-                  role="tab"
-                  aria-controls="v-pills-home2"
-                  aria-selected="true"
-                >
-                  <span> Location</span>
-                  <span
-                    className="py-1"
-                    style={{
-                      color: "white",
-                      fontSize: "12px",
-                      backgroundColor:
-                        active === "Sub-Category" ? "#2176FF" : "gray",
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "33px",
-                    }}
-                  >
-                    {filters.location.length}
-                  </span>
-                  <span>
-                    <svg
-                      width={18}
-                      height={18}
-                      viewBox="0 0 20 20"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        d="M7.5 4.16797L12.5 10.0013L7.5 15.8346"
-                        stroke={active === "Sub-Category" ? "#2176FF" : "gray"}
-                        strokeWidth={2}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                </button>
+                <small>Customer</small>
+
                 <small className="mt-2">Date</small>
                 <button
                   onClick={() => setActive("Vendor")}
@@ -822,19 +513,7 @@ export default function UserFilterPopup({
                   aria-selected="false"
                 >
                   <span>Onboarded On</span>
-                  {/* <span
-                    className="py-1"
-                    style={{
-                      color: "white",
-                      fontSize: "12px",
-                      backgroundColor: active === "Vendor" ? "#2176FF" : "gray",
-                      width: "22px",
-                      height: "22px",
-                      borderRadius: "33px",
-                    }}
-                  >
-                    {filters.vendor.length}
-                  </span> */}
+
                   <span>
                     <svg
                       width={18}
@@ -861,58 +540,6 @@ export default function UserFilterPopup({
               id="v-pills-tabContent"
               // style={{ position: "relative", left: 20 }}
             >
-              <div
-                class="tab-pane fade show active"
-                id="v-pills-home"
-                role="tabpanel"
-                aria-labelledby="v-pills-home-tab"
-              >
-                <h4>Customer Status</h4>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="search"
-                  onChange={(e) =>
-                    setSearch((prev) => {
-                      return { ...prev, category: e.target.value };
-                    })
-                  }
-                  // style={{ width: 320 }}
-                />
-                <br />
-                <div
-                  className="filter-checkbox-section"
-                  style={{
-                    height: categorylist.length > 14 ? "50vh" : "",
-                    overflowY: categorylist.length > 14 ? "scroll" : "",
-                  }}
-                >
-                  {categorylist
-                    .filter((dat) =>
-                      dat["name"]
-                        .toLowerCase()
-                        .includes(search.category.toLowerCase())
-                    )
-                    .map((data) => (
-                      <div class="form-check">
-                        <input
-                          class="form-check-input"
-                          type="checkbox"
-                          value={data.id}
-                          name={data.name}
-                          id={data.name}
-                          checked={data.status}
-                          onChange={(e) => handleFilterCategory(e, data.id)}
-                          style={{ width: 20, height: 20 }}
-                        />
-                        <label class="form-check-label" for="Boat">
-                          {data?.name}
-                        </label>
-                      </div>
-                    ))}
-                </div>
-              </div>
-
               <div
                 class="tab-pane fade"
                 id="v-pills-profile"
@@ -970,67 +597,6 @@ export default function UserFilterPopup({
                       max="9999-12-31"
                     />
                   </div>
-                </div>
-              </div>
-              <div
-                class="tab-pane fade"
-                id="v-pills-home2"
-                role="tabpanel"
-                aria-labelledby="v-pills-home-tab"
-              >
-                <h4>Location</h4>
-                <input
-                  type="text"
-                  className="form-control"
-                  placeholder="search"
-                  onChange={(e) =>
-                    setSearch((prev) => {
-                      return { ...prev, sub_category: e.target.value };
-                    })
-                  }
-                  // style={{ width: 320 }}
-                />
-                <br />
-                <div
-                  className="filter-checkbox-section"
-                  style={{
-                    height: subcategorylist.length > 14 ? "50vh" : "",
-                    overflowY: subcategorylist.length > 14 ? "scroll" : "",
-                  }}
-                >
-                  {gccCountriesList
-                    .filter((dat) =>
-                      dat["name"]
-                        .toLowerCase()
-                        .includes(search.sub_category.toLowerCase())
-                    )
-                    .map((data) => {
-                      console.log(data.code, "country");
-                      return (
-                        <div class="form-check ">
-                          <input
-                            class="form-check-input"
-                            type="checkbox"
-                            value={data.id}
-                            name={data.label}
-                            checked={filters.location.find(
-                              (items) => items.id === data.id
-                            )}
-                            onChange={(e) => handleFilterSubCategory(e)}
-                            id={data.name}
-                            style={{ width: 20, height: 20 }}
-                          />
-                          <div className="location-flag-list">
-                            <img
-                              src={`https://flagcdn.com/16x12/${data.code.toLowerCase()}.png`}
-                            />
-                            <label class="form-check-label mx-1" for="Boat">
-                              {data?.name}
-                            </label>
-                          </div>
-                        </div>
-                      );
-                    })}
                 </div>
               </div>
             </div>

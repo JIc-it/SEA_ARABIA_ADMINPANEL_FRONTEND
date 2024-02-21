@@ -14,6 +14,7 @@ import {
 import { useParams } from "react-router-dom";
 import CountryDropdown from "../SharedComponents/CountryDropDown";
 import { AppContext } from "../../Context/AppContext";
+import { Autocomplete, TextField } from "@mui/material";
 
 function CustomerEditModal({ show, close }) {
   const theme = useTheme();
@@ -85,17 +86,17 @@ function CustomerEditModal({ show, close }) {
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
-      profileextra: {
-        location: {
-          country: customerDetails?.profileextra?.location?.country || "",
-        },
-        gender: customerDetails?.profileextra?.gender || "",
-      },
+
+      location: customerDetails?.profileextra?.location?.id || "",
+
+      gender: customerDetails?.profileextra?.gender || "",
+
       // Add other fields as needed
     },
 
     enableReinitialize: true,
     validationSchema,
+
     onSubmit: async (values, { resetForm }) => {
       setIsLoading(true);
 
@@ -124,12 +125,28 @@ function CustomerEditModal({ show, close }) {
             toast.success("customer updated Successfully.");
             close();
             resetForm();
+            formik.setValues(() => {
+              return {
+                first_name: "",
+                last_name: "",
+
+                email: "",
+                password: "",
+                mobile: "",
+                profileextra: {
+                  location: "",
+                  dob: "", // Assuming you have dob in your form
+                  gender: "",
+                },
+              };
+            });
           } else {
             console.error("Error while updating Vendor:", customerData.error);
             setIsLoading(false);
           }
         } catch (err) {
           // console.log(err);
+          // toast.error(customerData.error.message);
           err.response.data.email && toast.error(err.response.data.email[0]);
           err.response.data.mobile && toast.error(err.response.data.mobile[0]);
           setIsLoading(false);
@@ -137,6 +154,14 @@ function CustomerEditModal({ show, close }) {
       }
     },
   });
+
+  useEffect(() => {
+    // Reset the form when the modal opens
+    if (show) {
+      formik.resetForm();
+    }
+  }, [show]);
+
   console.log("cus forik", formik.values);
   useEffect(() => {
     formik.setValues({
@@ -144,9 +169,13 @@ function CustomerEditModal({ show, close }) {
       last_name: customerDetails?.last_name || "",
       email: customerDetails?.email || "",
       mobile: customerDetails?.mobile || "",
-      location: customerDetails?.profileextra?.location?.label || "",
-      gender: customerDetails?.profileextra?.gender || "",
-      dob: customerDetails?.profileextra?.dob || "",
+      profileextra: {
+        location: {
+          country: customerDetails?.profileextra?.location?.country || "",
+        },
+        gender: customerDetails?.profileextra?.gender || "",
+        dob: customerDetails?.profileextra?.dob || "",
+      },
     });
     // console.log("formik", formik.setValues);
   }, [customerDetails]);
@@ -184,6 +213,7 @@ function CustomerEditModal({ show, close }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="First Name"
             className="form-control"
             name="first_name" // Name attribute should match the schema field
@@ -208,6 +238,7 @@ function CustomerEditModal({ show, close }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="Last Name"
             className="form-control"
             name="last_name"
@@ -353,6 +384,30 @@ function CustomerEditModal({ show, close }) {
           >
             Gender
           </label>
+          {/* <Autocomplete
+            id="gender"
+            name="gender"
+            value={formik.values.gender}
+            options={gender}
+            getOptionLabel={(option) => option.label}
+            onChange={(event, newValue) => {
+              formik.setFieldValue("gender", newValue ? newValue.label : ""); // Update the field value
+            }}
+            onBlur={formik.handleBlur}
+            defaultValue={
+              gender.find((option) => option.label === formik.values.gender) ||
+              null
+            }
+            renderInput={(params) => (
+              <TextField
+                value={formik.values.gender}
+                {...params}
+                label="Select a gender"
+                variant="outlined"
+              />
+            )}
+          /> */}
+
           <select
             className="form-select"
             id="gender"
@@ -368,19 +423,6 @@ function CustomerEditModal({ show, close }) {
               </option>
             ))}
           </select>
-          {/* <select
-            name="gender"
-            className="form-select"
-            value={formik?.values?.gender}
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-          >
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-          </select>
-          {formik.touched.gender && formik.errors.gender ? (
-            <div className="error">{formik.errors.gender}</div>
-          ) : null} */}
         </div>
         <div
           style={{

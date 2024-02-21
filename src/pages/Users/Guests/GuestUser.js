@@ -17,7 +17,7 @@ import * as XLSX from "xlsx";
 const GuestUser = () => {
   const navigate = useNavigate();
   const [guestId, setGuestId] = useState();
-  console.log("guest id", guestId);
+
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const [reward_product_data, setGuestUsertData] = useState(null);
@@ -33,21 +33,22 @@ const GuestUser = () => {
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
   useEffect(() => {
-    getGuestUserRequest()
+    getGuestUserRequest(search,"")
       .then((data) => {
-        console.log("Fetched data:", data.results);
+        console.log("Fetched data:", data.results?.id);
+        setGuestUsertData(data.results);
         setListPageUrl({
           next: data?.next,
           previous: data?.previous,
         });
-        setGuestUsertData(data.results);
+
         setGuestId(data.results?.id);
-        console.log("id==", guestId);
+        console.log("id==", guestId, data.results?.id);
       })
       .catch((error) => {
         console.error("Error fetching lead data:", error);
       });
-  }, []);
+  }, [search]);
 
   // const getGuestSearchData = async () => {
   //   getGuestUserRequest(search, selectedValue)
@@ -63,33 +64,39 @@ const GuestUser = () => {
   //       console.error("failed to search error", error);
   //     });
   // };
-  const refreshPage = () => {
-    window.location.reload();
-  };
-  useEffect(() => {
-    const data = { search: search, status: selectedValue};
-    setIsLoading(true);
-    getGuestUserRequest(data)
-      .then((data) => {
-        if (data) {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setGuestUsertData(data?.results);
-        } else {
-          refreshPage();
-          setIsLoading(true);
-          setSearch("");
-          setGuestUsertData(data?.results);
-        }
-      })
-      .catch((error) => {
-        setIsLoading(false);
-        console.error("Error fetching  data:", error);
-      });
-  }, [selectedValue, isRefetch, search]);
-  const handleBookingButtonClick = () => {
-    navigate(`/bookings/${guestId}`);
-  };
+
+  // useEffect(() => {
+  //   const data = { search: search, status: selectedValue, role: "Guest" };
+  //   setIsLoading(true);
+  //   getGuestUserRequest(data)
+  //     .then((data) => {
+  //       if (data) {
+  //         setIsLoading(false);
+  //         setListPageUrl({ next: data.next, previous: data.previous });
+  //         setGuestUsertData(data?.results);
+  //       } else {
+  //         refreshPage();
+  //         setIsLoading(true);
+  //         setSearch("");
+  //         setGuestUsertData(data?.results);
+  //       }
+  //     })
+  //     .catch((error) => {
+  //       setIsLoading(false);
+  //       console.error("Error fetching  data:", error);
+  //     });
+  // }, [selectedValue, isRefetch, search]);
+  // useEffect(() => {
+  //   const data = { search: search, status: selectedValue };
+  //   console.log("Search value:", search, "selected va", selectedValue);
+  //   getGuestUserRequest(data)
+  //     .then((res) => {
+  //       console.log("getGuestUserRequest", res);
+  //       setGuestUsertData(res?.results);
+  //     })
+  //     .catch((error) => console.error("Error fetching data:", error));
+  // }, [selectedValue, isRefetch, search]);
+
   const handlePagination = async (type) => {
     setIsLoading(true);
     let convertedUrl =
@@ -133,28 +140,22 @@ const GuestUser = () => {
   const handleExportGuestData = () => {
     guestExport()
       .then((response) => {
-        // Assuming the response.data is the CSV content
         const csvData = response;
         console.log("csv data--", csvData);
 
-        // Convert the CSV data to a Blob
         const blob = new Blob([csvData], { type: "text/csv;charset=utf-8" });
         console.log("blob--", blob);
 
-        // Parse the CSV data into an Excel workbook
         const workbook = XLSX.read(csvData, { type: "string" });
-        // Display the workbook data or perform further processing
+
         console.log("Workbook:", workbook);
 
-        // Create a download link
         const link = document.createElement("a");
         link.href = URL.createObjectURL(blob);
         link.download = "exported_data.csv";
 
-        // Append the link to the document
         document.body.appendChild(link);
 
-        // Trigger the download
         link.click();
 
         // Remove the link asynchronously after the download
@@ -205,6 +206,18 @@ const GuestUser = () => {
                         setSearch(e.target.value);
                       }}
                     />
+                    {search && (
+                      <button
+                        className="btn search_button"
+                        style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                        onClick={() => {
+                          setSearch(""); // Clear the search state
+                          window.location.reload();
+                        }}
+                      >
+                        Clear Search
+                      </button>
+                    )}
                     {/* <button
                       type="button"
                       className="btn search_button"

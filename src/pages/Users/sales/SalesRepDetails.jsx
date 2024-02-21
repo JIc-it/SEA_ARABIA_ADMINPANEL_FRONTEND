@@ -21,13 +21,17 @@ function SalesRepDetails() {
   const { userPermissionList } = useContext(MainPageContext);
   const navigate = useNavigate();
   const theme = useTheme();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [active, setActive] = useState("Details");
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [showOffcanvas1, setShowOffcanvas1] = useState(false);
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
 
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+  };
 
   const handleOpenOffcanvasPassword = () => {
     Formik.resetForm();
@@ -36,6 +40,7 @@ function SalesRepDetails() {
 
   const handleCloseOffcanvasPassword = () => {
     setShowOffcanvas1(false);
+    Formik.resetForm();
     // formik.resetForm();
   };
 
@@ -357,7 +362,7 @@ function SalesRepDetails() {
                 }}
                 onClick={() => setActive("Details")}
               >
-                Details
+                Personal Details
               </Button>
               {/* <Button style={{ color: active === "Bookings" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Bookings")}>Bookings</Button>
               <Button style={{ color: active === "Incident Log" ? "#006875" : "black", textTransform: "capitalize" }} onClick={() => setActive("Incident Log")}>Incident Log</Button> */}
@@ -369,6 +374,7 @@ function SalesRepDetails() {
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
                 />
+
                 <SalesPassword
                   show={showOffcanvas1}
                   close={handleCloseOffcanvasPassword}

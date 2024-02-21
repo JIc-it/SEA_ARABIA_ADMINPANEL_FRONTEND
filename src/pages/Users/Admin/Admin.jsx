@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import * as XLSX from "xlsx";
 import {
@@ -6,7 +6,7 @@ import {
   getAdminTotalCount,
 } from "../../../services/GuestHandle";
 import CreateNewAdmin from "./CreateNewAdmin";
-
+import { FormikProvider } from "../../../Context/FormikContext";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../../helpers";
 import { adminExport, getCustomerlist } from "../../../services/CustomerHandle";
 
@@ -22,11 +22,17 @@ import { CircularProgress } from "@mui/material";
 
 function Admin({ isRefetch, setIsRefetch }) {
   const { userPermissionList } = useContext(MainPageContext);
-
+  const formikRef = useRef(null);
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [admin, setAdmin] = useState();
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
-  const handleCloseOffcanvas = () => setShowOffcanvas(false);
+  const handleCloseOffcanvas = () => {
+    setShowOffcanvas(false);
+    if (formikRef.current) {
+      formikRef.current.resetForm(); // Reset the formik form
+    }
+  };
+
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
@@ -277,6 +283,18 @@ function Admin({ isRefetch, setIsRefetch }) {
                     >
                       Search
                     </button> */}
+                    {search && (
+                      <button
+                        className="btn search_button"
+                        style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                        onClick={() => {
+                          setSearch(""); // Clear the search state
+                          window.location.reload();
+                        }}
+                      >
+                        Clear Search
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>
@@ -320,13 +338,15 @@ function Admin({ isRefetch, setIsRefetch }) {
               )}
             <AddSaleRepWithPermission />
           </div>
-          <CreateNewAdmin
-            show={showOffcanvas}
-            close={handleCloseOffcanvas}
-            tableData={setTableData}
-            isRefetch={isRefetch}
-            setIsRefetch={setIsRefetch}
-          />
+          <FormikProvider formik={formikRef.current}>
+            <CreateNewAdmin
+              show={showOffcanvas}
+              close={handleCloseOffcanvas}
+              tableData={setTableData}
+              isRefetch={isRefetch}
+              setIsRefetch={setIsRefetch}
+            />
+          </FormikProvider>
         </div>
         <div className="card">
           <div className="table-responsive">

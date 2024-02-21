@@ -24,7 +24,11 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
+  const [selectOpen, setSelectOpen] = useState(false);
 
+  const toggleSelect = () => {
+    setSelectOpen(!selectOpen);
+  };
   const validationSchema = Yup.object({
     first_name: Yup.string()
       .required("First name is required")
@@ -160,7 +164,10 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
   return (
     <Offcanvas
       show={show}
-      onHide={close}
+      onHide={() => {
+        close();
+        formik.resetForm(); // Reset the formik form
+      }}
       placement="end"
       style={{ overflow: "auto" }}
     >
@@ -215,6 +222,7 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="Last Name"
             className="form-control"
             name="last_name"
@@ -303,6 +311,7 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
                 </option>
               ))}
             </select>
+
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}

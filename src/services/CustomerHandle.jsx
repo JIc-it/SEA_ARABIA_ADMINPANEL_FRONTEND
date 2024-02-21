@@ -12,7 +12,6 @@ const guestexportData = "/account/guests-list-export/";
 const adminExportData = "/account/admin-list-export/";
 const salesExportData = "/account/sales-list-export/";
 
-
 export const getCustomerlist = (role) => {
   return axiosInstance
     .get("account/user-list", { params: { role: role } })
@@ -139,10 +138,11 @@ export const getCustomerTotalCount = () => {
     });
 };
 
-export const getGuestUserRequest = (search, status, role) => {
+export const getGuestUserRequest = (search, status) => {
   return axiosInstance
     .get(guestUserURL, {
-      params: { search: search, status: status, role: role },
+      headers: { "Content-Type": "application/json", Accept: "*/*" },
+      params: { search: search, status: status },
     })
     .then((response) => {
       console.log("Reward Products Response:", response.data);

@@ -198,6 +198,7 @@ function UpdateSalesRep({ show, close }) {
           </label>
           <input
             type="text"
+            maxLength={20}
             placeholder="First Name"
             className="form-control"
             name="first_name"
@@ -225,6 +226,7 @@ function UpdateSalesRep({ show, close }) {
             placeholder="Last Name"
             className="form-control"
             name="last_name"
+            maxLength={20}
             value={formik.values.last_name}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
