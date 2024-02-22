@@ -71,7 +71,7 @@ const CustomerBookingList = () => {
       id: customerId,
       search: search,
       status: selectedValue,
-      role: "User",
+      // role: "User",
     };
 
     if (Pass) {
