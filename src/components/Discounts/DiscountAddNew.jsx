@@ -22,6 +22,7 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function DiscountAddNew() {
+  const navigate = useNavigate();
   const [servicelisting, setServiceListing] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const theme = useTheme();
@@ -29,12 +30,6 @@ export default function DiscountAddNew() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
-  const serviceObjectSchema = Yup.object({
-    id: Yup.string().required(),
-    name: Yup.string().required(),
-    company_id: Yup.string().required(),
-  });
 
   const companyObjectSchema = Yup.object({
     id: Yup.string().required(),
@@ -137,15 +132,9 @@ export default function DiscountAddNew() {
         }
         return /^image\/(jpeg|png|gif)$/i.test(value.type);
       }),
-    services: Yup.array().when("apply_global", ([apply_global], schema) => {
-      if (apply_global === false) {
-        return schema.of(serviceObjectSchema).min(1, "Services/Vendors is required")
-      } else {
-        return schema.notRequired();
-      }
-    }),
+  
     companies: Yup.array().when("apply_global", ([apply_global], schema) => {
-      if (apply_global === false) {
+      if (apply_global===false) {
         return schema.of(companyObjectSchema).min(1, "Services/Vendors is required")
       } else {
         return schema.notRequired();
@@ -294,10 +283,6 @@ export default function DiscountAddNew() {
     });
   };
 
-  const navigate = useNavigate();
-  const label = { inputProps: { "aria-label": "Checkbox demo" } };
-
-
   const deletecompany = (id) => {
     formik.setValues((prev) => ({
       ...prev,
@@ -306,95 +291,6 @@ export default function DiscountAddNew() {
         (service) => service.company_id !== id
       ),
     }));
-  };
-
-  const updateServiceIndex = (id, name, servid, companyData) => {
-    formik.setValues((prev) => {
-      const existingCompanyIndex = (prev?.companies || []).findIndex(
-        (company) => company.id === id
-      );
-      const existingServiceIndex = (prev?.services || []).findIndex(
-        (service) => service.id === servid && service.company_id === id
-      );
-
-      // Update companies list
-      const updatedCompanyList =
-        existingCompanyIndex !== -1
-          ? [
-            ...prev.companies.slice(0, existingCompanyIndex),
-            { id: id, name: name },
-            ...prev.companies.slice(existingCompanyIndex + 1),
-          ]
-          : [...prev.companies, { id: id, name: name }];
-
-      // Update services list
-      const updatedList =
-        existingServiceIndex !== -1
-          ? [
-            ...prev.services.slice(0, existingServiceIndex),
-            ...companyData
-              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
-              .map((dat) => ({
-                id: dat.id,
-                name: dat.name,
-                company_id: id,
-              })),
-            ...prev.services.slice(existingServiceIndex + 1),
-          ]
-          : [
-            ...prev.services,
-            ...companyData
-              .filter((dat) => !prev.services.some((service) => service.id === dat.id))
-              .map((dat) => ({
-                id: dat.id,
-                name: dat.name,
-                company_id: id,
-              })),
-          ];
-
-      if (existingCompanyIndex !== -1) {
-        return {
-          ...prev,
-          services: prev.services.filter((service) => service.company_id !== id),
-          companies: prev.companies.filter((service) => service.id !== id),
-        };
-      }
-
-      return {
-        ...prev,
-        services: updatedList,
-        companies: updatedCompanyList,
-      };
-    });
-  };
-
-  const updateOneServiceIndex = (id, name, companyid, companyName) => {
-    formik.setValues((prev) => {
-      const existingServiceIndex = (prev?.services || []).findIndex(
-        (service) => service.id === id && service.company_id === companyid
-      );
-      const existingCompanyIndex = (prev?.companies || []).findIndex(
-        (company) => company.id === companyid
-      );
-
-      // Update companies list
-      const updatedCompanyList =
-        existingCompanyIndex === -1
-          ? [...(prev.companies || []), { id: companyid, name: companyName }]
-          : prev.companies;
-
-      // Update services list
-      const updatedList =
-        existingServiceIndex === -1
-          ? [...prev.services, { id: id, name: name, company_id: companyid }]
-          : prev.services.filter((service) => service.id !== id);
-
-      return {
-        ...prev,
-        services: updatedList,
-        companies: updatedCompanyList,
-      };
-    });
   };
 
   function companywithservice(companyid) {
@@ -1081,8 +977,7 @@ export default function DiscountAddNew() {
                     handleClose={handleClose}
                     handleOpen={handleOpen}
                     open={open}
-                    updateOneServiceIndex={updateOneServiceIndex}
-                    handleServiceAdd={updateServiceIndex}
+                    setValues={formik.setValues}
                   />
                 </div>
               </div>

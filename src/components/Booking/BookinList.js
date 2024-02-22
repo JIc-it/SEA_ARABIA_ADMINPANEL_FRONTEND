@@ -15,10 +15,14 @@ import {
 } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
 import BookingFilter from "./BookingFilter";
+import ReactPaginate from "react-paginate";
+import { API_BASE_URL } from "../../services/authHandle";
 
 const BookinList = () => {
   const { userPermissionList } = useContext(MainPageContext);
-
+  const itemsPerPage=10;
+  const [totalPages,setTotalPages] = useState(0);
+  const [currentPage,setCurrentPage]=useState(0)
   const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
 
   const [open, setOpen] = React.useState(false);
@@ -61,6 +65,7 @@ const BookinList = () => {
     getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
+        setTotalPages(Math.ceil(data?.count/itemsPerPage))
         setListPageUrl({ next: data.next, previous: data.previous });
         setBookingList(data?.results);
       })
@@ -119,6 +124,25 @@ const BookinList = () => {
           setIsLoading(false);
           console.error("Error fetching  data:", error);
         });
+  };
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected)
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(`${API_BASE_URL}booking/bookings/admin?limit=${itemsPerPage}&offset=${newStartIndex}`)
+      .then((data) => {
+        setIsLoading(false);
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
   let checkfilterslength =
@@ -556,72 +580,26 @@ const BookinList = () => {
                     </tbody>
                   </table>
                 </div>
-                <div className="card-footer d-flex align-items-center">
-                  <ul className="pagination m-0 ms-auto">
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.previous && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        tabIndex="-1"
-                        onClick={() => {
-                          handlePagination("prev");
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M15 6l-6 6l6 6" />
-                        </svg>
-                        prev
-                      </a>
-                    </li>
-
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.next && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        onClick={() => {
-                          handlePagination("next");
-                        }}
-                      >
-                        next
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M9 6l6 6l-6 6" />
-                        </svg>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next >"
+            onPageChange={handlePageClick}
+            forcePage={currentPage} 
+            pageRangeDisplayed={5}
+            pageCount={totalPages}
+            previousLabel="< Prev"
+            marginPagesDisplayed={1}
+            containerClassName="pagination"
+            activeClassName="active"
+            previousClassName="page-item previous"
+            nextClassName="page-item next"
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousLinkClassName="page-link"
+            nextLinkClassName="page-link"
+          />
+          </div>}
               </div>
             </div>
             {open && (

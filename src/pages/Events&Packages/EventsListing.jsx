@@ -15,22 +15,19 @@ import {
   permissionCategory,
 } from "../../components/Permissions/PermissionConstants";
 import CommonButtonForPermission from "../../components/HigherOrderComponents/CommonButtonForPermission";
-
+import ReactPaginate from "react-paginate";
+import { API_BASE_URL } from "../../services/authHandle";
 export default function EventListing() {
   const { userPermissionList } = useContext(MainPageContext);
-  
-  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
 
-console.log(getPermission)
+  const getPermission = userPermissionList?.filter((data) => data.id === "7")[0]?.permissionCategory.some((item) => item.item === "Action" && item.value === true)
   const [search, setSearch] = useState("");
-  const [Events, setEventList] = useState();
+  const [Events, setEventList] = useState([]);
+  const [currentPage,setCurrentPage]=useState(0)
+  const itemsPerPage = 10;
+  const [totalPages, setTotalPages] = useState(0);
   const [count, setCount] = useState({});
   const [csvData, setCSVData] = useState([])
-  const [listPageUrl, setListPageUrl] = useState({
-    next: null,
-    previous: null,
-  });
-  const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -41,11 +38,8 @@ console.log(getPermission)
     getEventList(search)
       .then((data) => {
         setIsLoading(false);
-        setListPageUrl({
-          next: data.next,
-          previous: data.previous,
-        });
         setEventList(data.results);
+        setTotalPages(Math.ceil(data?.count / itemsPerPage))
       })
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
@@ -62,46 +56,27 @@ console.log(getPermission)
           active_packages_count: data?.active_packages_count,
         });
       })
+      
       .catch((error) => {
         console.error("Error fetching sales rep List data:", error);
       });
   }, []);
 
-  useEffect(()=>{
-   if(getPermission){
-    getExport()
-    .then((data) => {
-      setCSVData(data)
-      setIsLoading(false);
-    })
-    .catch((error) => {
-      toast.error(error.message);
-    });
-  
-   }
-     
-  },[getPermission])
-
-  const handlePagination = async (type) => {
-    setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
+  useEffect(() => {
+    if (getPermission) {
+      getExport()
         .then((data) => {
+          setCSVData(data)
           setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setEventList(data.results);
         })
         .catch((error) => {
-          setIsLoading(false);
-          console.error("Error fetching  data:", error);
+          toast.error(error.message);
         });
-  };
+
+    }
+
+  }, [getPermission])
+
 
   const AddEventWithPermission = WithPermission(
     CommonButtonForPermission,
@@ -127,6 +102,24 @@ console.log(getPermission)
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected)
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    getListDataInPagination(`${API_BASE_URL}service/package-list?limit=${itemsPerPage}&offset=${newStartIndex}`)
+      .then((data) => {
+        setIsLoading(false);
+        setTotalPages(Math.ceil(data?.count/itemsPerPage))
+        setEventList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
+  };
 
   return (
     <>
@@ -497,30 +490,30 @@ console.log(getPermission)
                     menuIdConstant.eventsPackages,
                     permissionCategory.action
                   ) && (
-                    <CSVLink data={csvData}  filename={"Events_Packages_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
-                Export
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-                </CSVLink>
+                    <CSVLink data={csvData} filename={"Events_Packages_List.csv"} style={{ textDecoration: "none", borderRadius: "6px" }} className="btn btn-outline">
+                      Export
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 20 20"
+                        fill="none"
+                      >
+                        <path
+                          d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                          stroke="#252525"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                        />
+                        <path
+                          d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                          stroke="#252525"
+                          strokeWidth="1.5"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
+                    </CSVLink>
                   )}
               </div>
             </div>
@@ -635,90 +628,29 @@ console.log(getPermission)
                     </>
                   )}
                 </table>
-                {Events?.length === 0 && (
-                  <div style={{ height: "5vh", marginTop: "50px" }}>
-                    <p style={{ textAlign: "center", fontWeight: 550 }}>
-                      No Record Found
-                    </p>
-                  </div>
-                )}
-              </div>
-              <div className="d-flex align-items-center">
-                <ul className="pagination m-0 ms-auto">
-                  <li
-                    className={`page-item  ${
-                      !listPageUrl.previous && "disabled"
-                    }`}
-                  >
-                    <a
-                      className="page-link"
-                      href="#"
-                      tabIndex="-1"
-                      onClick={() => {
-                        handlePagination("prev");
-                      }}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="icon"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M15 6l-6 6l6 6" />
-                      </svg>
-                      prev
-                    </a>
-                  </li>
-
-                  <li
-                    className={`page-item  ${!listPageUrl.next && "disabled"}`}
-                  >
-                    <a
-                      className="page-link"
-                      href="#"
-                      onClick={() => {
-                        handlePagination("next");
-                      }}
-                    >
-                      next
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="icon"
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        strokeWidth="2"
-                        stroke="currentColor"
-                        fill="none"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
-                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                        <path d="M9 6l6 6l-6 6" />
-                      </svg>
-                    </a>
-                  </li>
-                </ul>
+                {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
+                <ReactPaginate
+                  breakLabel="..."
+                  nextLabel="Next >"
+                  onPageChange={handlePageClick} 
+                  forcePage={currentPage}  
+                  pageRangeDisplayed={5}
+                  pageCount={totalPages}
+                  previousLabel="< Prev"
+                  marginPagesDisplayed={1}
+                  containerClassName="pagination"
+                  activeClassName="active"
+                  previousClassName="page-item previous"
+                  nextClassName="page-item next"
+                  pageClassName="page-item"
+                  pageLinkClassName="page-link"
+                  previousLinkClassName="page-link"
+                  nextLinkClassName="page-link"
+                />
+                </div>}
               </div>
             </div>
-            {/* //modal */}
           </div>
-          {/* {showOffcanvas && (
-
-      <AddNewService
-          show={showOffcanvas}
-          close={handleCloseOffcanvas}
-          isRefetch={isRefetch}
-          setIsRefetch={setIsRefetch}
-      />
-  )} */}
         </div>
       )}
     </>

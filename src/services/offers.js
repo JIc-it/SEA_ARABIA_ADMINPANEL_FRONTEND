@@ -4,6 +4,7 @@ const getOfferLists="offer/offers/admin";
 const getOfferViews="offer/offers";
 const getOfferCounts="offer/offer-count/";
 const UpdateOffers="offer/offers";
+const UpdateOfferNew="offer/offers-update"
 const companylisting="company/company-cms-list"
 const serviceOnelisting="service/service-filter-list-cms"
 const getcompanylist="offer/offer-service-info"
@@ -69,7 +70,7 @@ export const UpdateStatus = (id,data) => {
 export const UpdateOffer = (id,data) => {
   console.log(data)
     return axiosInstance
-      .put(`${UpdateOffers}/${id}/update/`,data, {
+      .put(`${UpdateOfferNew}/${id}/`,data, {
         headers: {
             'Content-Type': 'multipart/form-data', // Important for sending form data
         }})

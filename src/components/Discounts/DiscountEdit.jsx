@@ -25,11 +25,6 @@ export default function DiscountEdit() {
     const handleClose = () => setOpen(false);
     const [isupdated, setIsUpdated] = useState(false)
 
-    const serviceObjectSchema = Yup.object({
-        id: Yup.string().required(),
-        name: Yup.string().required(),
-        company_id: Yup.string().required(),
-    });
 
     const companyObjectSchema = Yup.object({
         id: Yup.string().required(),
@@ -135,20 +130,14 @@ export default function DiscountEdit() {
                 }
                 return value && /^image\/(jpeg|png|gif)$/i.test(value.type);
             }),
-        services: Yup.array().when("apply_global", ([apply_global], schema) => {
-            if (apply_global === false) {
-                return schema.of(serviceObjectSchema).min(1, "Services/Vendors is required")
-            } else {
-                return schema.notRequired();
-            }
-        }),
-        companies: Yup.array().when("apply_global", ([apply_global], schema) => {
-            if (apply_global === false) {
-                return schema.of(companyObjectSchema).min(1, "Services/Vendors is required")
-            } else {
-                return schema.notRequired();
-            }
-        }),
+       
+            companies: Yup.array().when("apply_global", ([apply_global], schema) => {
+                if (!apply_global) {
+                  return schema.of(companyObjectSchema).min(1, "Services/Vendors is required")
+                } else {
+                  return schema.notRequired();
+                }
+              }),
     })
 
     const formik = useFormik({
@@ -171,7 +160,7 @@ export default function DiscountEdit() {
             end_time: "",
             on_home_screen: true,
             on_checkout: true,
-            apply_global: true,
+            apply_global: false,
             services: [],
             companies: [],
             purchase_requirement: false,
@@ -189,7 +178,7 @@ export default function DiscountEdit() {
                         if (values === true) {
                             return "True"
                         }
-                        else {
+                        else if(values === false) {
                             return "False"
                         }
                     }
@@ -226,7 +215,7 @@ export default function DiscountEdit() {
                     { values.end_date !== "" ? formdata.append("end_date", endDateTime()) : formdata.append("end_date", "") }
                     formdata.append("on_home_screen", checktrue(values.on_home_screen));
                     formdata.append("on_checkout", checktrue(values.on_checkout));
-                    formdata.append("apply_global", checktrue(values.apply_global));
+                    formdata.append("apply_global", values.apply_global);
                     formdata.append(`companies`, companiesId);
                     formdata.append(`services`, servicesId);
 
@@ -280,16 +269,16 @@ export default function DiscountEdit() {
                 formik.setFieldValue("redemption_type", data.redemption_type);
                 formik.setFieldValue("allow_multiple_redeem", data.allow_multiple_redeem);
                 formik.setFieldValue("multiple_redeem_specify_no", data.multiple_redeem_specify_no);
-                formik.setFieldValue("start_date", data.start_date.split("T")[0]);
+                formik.setFieldValue("start_date", data.start_date?.split("T")[0]);
                 formik.setFieldValue("start_time", data.start_date?.split("T")[1]?.slice(0, -9));
                 formik.setFieldValue("expiration", data.expiration);
-                formik.setFieldValue("end_date", data.end_date.split("T")[0]);
+                formik.setFieldValue("end_date", data.end_date?.split("T")[0]);
                 formik.setFieldValue("end_time", data.end_date?.split("T")[1]?.slice(0, -9));
                 formik.setFieldValue("on_home_screen", data.on_home_screen);
                 formik.setFieldValue("on_checkout", data.on_checkout);
                 formik.setFieldValue("apply_global", data.apply_global);
-                formik.setFieldValue("services", data.services);
-                formik.setFieldValue("companies", data.companies);
+                formik.setFieldValue("services", data?.services);
+                formik.setFieldValue("companies", data?.companies);
                 formik.setFieldValue("purchase_requirement", data.purchase_requirement);
                 formik.setFieldValue("min_purchase_amount", data.min_purchase_amount);
                 setIsUpdated(false)
@@ -305,9 +294,7 @@ export default function DiscountEdit() {
     const updateFormValues = (fields) => {
         formik.setValues((prev) => { return { ...prev, ...fields } });
     };
-    const label = { inputProps: { 'aria-label': 'Checkbox demo' } };
-
-
+    
     const deletecompany = (id) => {
         formik.setValues((prev) => ({
             ...prev,
@@ -323,97 +310,7 @@ export default function DiscountEdit() {
         }));
     };
 
-    const updateServiceIndex = (id, name, servid, companyData) => {
-        formik.setValues((prev) => {
-            const existingCompanyIndex = (prev?.companies || []).findIndex(
-                (company) => company.id === id
-            );
-            const existingServiceIndex = (prev?.services || []).findIndex(
-                (service) => service.id === servid && service.company_id === id
-            );
-
-            // Update companies list
-            const updatedCompanyList =
-                existingCompanyIndex !== -1
-                    ? [
-                        ...prev.companies.slice(0, existingCompanyIndex),
-                        { id: id, name: name },
-                        ...prev.companies.slice(existingCompanyIndex + 1),
-                    ]
-                    : [...prev.companies, { id: id, name: name }];
-
-            // Update services list
-            const updatedList =
-                existingServiceIndex !== -1
-                    ? [
-                        ...prev.services.slice(0, existingServiceIndex),
-                        ...companyData
-                            .filter((dat) => !prev.services.some((service) => service.id === dat.id))
-                            .map((dat) => ({
-                                id: dat.id,
-                                name: dat.name,
-                                company_id: id,
-                            })),
-                        ...prev.services.slice(existingServiceIndex + 1),
-                    ]
-                    : [
-                        ...prev.services,
-                        ...companyData
-                            .filter((dat) => !prev.services.some((service) => service.id === dat.id))
-                            .map((dat) => ({
-                                id: dat.id,
-                                name: dat.name,
-                                company_id: id,
-                            })),
-                    ];
-
-            if (existingCompanyIndex !== -1) {
-                return {
-                    ...prev,
-                    services: prev.services.filter((service) => service.company_id !== id),
-                    companies: prev.companies.filter((service) => service.id !== id),
-                };
-            }
-
-            return {
-                ...prev,
-                services: updatedList,
-                companies: updatedCompanyList,
-            };
-        });
-    };
-
-    const updateOneServiceIndex = (id, name, companyid, companyName) => {
-        formik.setValues((prev) => {
-            const existingServiceIndex = (prev?.services || []).findIndex(
-                (service) => service.id === id && service.company_id === companyid
-            );
-            const existingCompanyIndex = (prev?.companies || []).findIndex(
-                (company) => company.id === companyid
-            );
-
-            // Update companies list
-            const updatedCompanyList =
-                existingCompanyIndex === -1
-                    ? [...(prev.companies || []), { id: companyid, name: companyName }]
-                    : prev.companies;
-
-            // Update services list
-            const updatedList =
-                existingServiceIndex === -1
-                    ? [...prev.services, { id: id, name: name, company_id: companyid }]
-                    : prev.services.filter((service) => service.id !== id);
-
-            return {
-                ...prev,
-                services: updatedList,
-                companies: updatedCompanyList,
-            };
-        });
-    };
-
-
-
+console.log(formik.values)
     const CouponCode = (data) => {
         formik.setValues((prev) => { return { ...prev, coupon_code: data.toUpperCase() } });
     };
@@ -681,7 +578,7 @@ export default function DiscountEdit() {
                                         style={{ padding: "5px" }}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        min={new Date()?.toISOString().split('T')[0]}
+                                        min={formik?.values?.start_date}
                                     />
                                     {formik.touched.start_date && formik.errors.start_date ? (
                                         <div className="error">{formik.errors.start_date}</div>
@@ -818,7 +715,7 @@ export default function DiscountEdit() {
                                             <span class="slider round"></span>
                                         </label>
                                     </div>
-                                    <AddMorePopup check={formik?.values?.apply_global} service={formik.values.services} companies={formik.values.companies} setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} updateOneServiceIndex={updateOneServiceIndex} handleServiceAdd={updateServiceIndex} />                            </div>
+                                    <AddMorePopup check={formik?.values?.apply_global} service={formik.values.services} companies={formik.values.companies} setServiceListing={setServiceListing} handleClose={handleClose} handleOpen={handleOpen} open={open} setValues={formik.setValues} />                            </div>
                             </div>
 
                             {formik.values.apply_global && formik.values.companies.length === 0 &&
