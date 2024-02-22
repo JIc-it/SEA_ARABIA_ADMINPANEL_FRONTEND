@@ -20,13 +20,13 @@ function CustomerEditModal({ show, close }) {
   const theme = useTheme();
   const customerId = useParams()?.customerId;
   const locationContext = useContext(AppContext);
-  // console.log("location---", locationContext);
+  console.log("location---", locationContext);
   const [isRefetch, setIsRefetch] = useState(false);
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
   const [customerDetails, setCustomerDetails] = useState([]);
-  const [location, setLocation] = useState([]);
-
+  const [location, setLocation] = useState(locationContext.gccCountriesList);
+  console.log("location state", location);
   const validationSchema = Yup.object({
     first_name: Yup.string()
       .required("First Name is required")
@@ -89,6 +89,24 @@ function CustomerEditModal({ show, close }) {
       .then((data) => {
         console.log("cus detail is ---", data);
         setCustomerDetails(data);
+        formik.setFieldValue("fullName", data.first_name);
+        // formik.setFieldValue("last_name", data.last_name);
+        formik.setFieldValue("email", data.email);
+        const formattedPhoneNumber = data.mobile
+          .replace(/\D/g, "")
+          .replace(/^965/, "");
+        formik.setFieldValue("phone", formattedPhoneNumber);
+        const selectedCountryObject =
+          location &&
+          location.length > 0 &&
+          data?.profileextra?.location?.country_code &&
+          location.find(
+            (country) =>
+              country.code === data?.profileextra?.location?.country_code
+          );
+        console.log(selectedCountryObject, "selectedCountryObject");
+        selectedCountryObject &&
+          formik.setFieldValue("location", selectedCountryObject);
       })
       .catch((error) => {
         console.error("Error fetching customer data:", error);
@@ -105,7 +123,7 @@ function CustomerEditModal({ show, close }) {
       mobile: customerDetails?.mobile || "",
       dob: customerDetails?.profileextra?.dob || "",
 
-      location: customerDetails?.profileextra?.location?.id || "",
+      location: customerDetails?.profileextra?.location?.country_code || "",
 
       gender: customerDetails?.profileextra?.gender || "",
 
@@ -143,21 +161,6 @@ function CustomerEditModal({ show, close }) {
             toast.success("customer updated Successfully.");
             close();
             resetForm();
-            formik.setValues(() => {
-              return {
-                first_name: "",
-                last_name: "",
-
-                email: "",
-                password: "",
-                mobile: "",
-                profileextra: {
-                  location: "",
-                  dob: "", // Assuming you have dob in your form
-                  gender: "",
-                },
-              };
-            });
           } else {
             console.error("Error while updating Vendor:", customerData.error);
             setIsLoading(false);
@@ -180,7 +183,6 @@ function CustomerEditModal({ show, close }) {
     }
   }, [show]);
 
-
   useEffect(() => {
     formik.setValues({
       first_name: customerDetails?.first_name || "",
@@ -189,8 +191,9 @@ function CustomerEditModal({ show, close }) {
       mobile: customerDetails?.mobile || "",
       profileextra: {
         location: {
-          country: customerDetails?.profileextra?.location?.country || "",
+          country: customerDetails?.profileextra?.location?.country_code || "",
         },
+
         gender: customerDetails?.profileextra?.gender || "",
         dob: customerDetails?.profileextra?.dob || "",
       },
@@ -401,7 +404,6 @@ function CustomerEditModal({ show, close }) {
           >
             Gender
           </label>
-          
 
           <select
             className="form-select"
