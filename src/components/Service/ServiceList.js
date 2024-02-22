@@ -52,7 +52,7 @@ function ServiceList() {
 
 
   const itemsPerPage=10;
-
+  const [currentPage,setCurrentPage]=useState(0)
   const [totalPages,setTotalPages] = useState(0);
 
 
@@ -95,6 +95,7 @@ function ServiceList() {
 
 
   const handlePageClick = (data) => {
+    setCurrentPage(data.selected)
     const newPage = data.selected;
     const newStartIndex = newPage * itemsPerPage;
 
@@ -498,6 +499,7 @@ function ServiceList() {
             breakLabel="..."
             nextLabel="Next >"
             onPageChange={handlePageClick}
+            forcePage={currentPage} 
             pageRangeDisplayed={5}
             pageCount={totalPages}
             previousLabel="< Prev"
