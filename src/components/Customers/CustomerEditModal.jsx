@@ -20,7 +20,7 @@ function CustomerEditModal({ show, close }) {
   const theme = useTheme();
   const customerId = useParams()?.customerId;
   const locationContext = useContext(AppContext);
-  console.log("location---", locationContext);
+  // console.log("location---", locationContext);
   const [isRefetch, setIsRefetch] = useState(false);
   const isMobileView = useMediaQuery(theme.breakpoints.down("sm"));
   const [isLoading, setIsLoading] = useState(false);
@@ -83,6 +83,7 @@ function CustomerEditModal({ show, close }) {
     transition: "transform 0.3s",
     transform: isOpen ? "rotate(0deg)" : "rotate(180deg)",
   };
+
   useEffect(() => {
     getCustomerListById(customerId)
       .then((data) => {
@@ -93,7 +94,9 @@ function CustomerEditModal({ show, close }) {
         console.error("Error fetching customer data:", error);
       });
   }, [customerId]);
+
   console.log("customerDetails? ", customerDetails);
+
   const formik = useFormik({
     initialValues: {
       first_name: customerDetails?.first_name || "",
@@ -177,7 +180,7 @@ function CustomerEditModal({ show, close }) {
     }
   }, [show]);
 
-  console.log("cus forik", formik.values);
+
   useEffect(() => {
     formik.setValues({
       first_name: customerDetails?.first_name || "",
@@ -192,7 +195,7 @@ function CustomerEditModal({ show, close }) {
         dob: customerDetails?.profileextra?.dob || "",
       },
     });
-    // console.log("formik", formik.setValues);
+    console.log("formik", formik.setValues);
   }, [customerDetails]);
 
   return (
@@ -354,7 +357,6 @@ function CustomerEditModal({ show, close }) {
               formik={formik}
               selected={formik.values.location}
               onChange={(selectedCountry) => {
-                // Update the "location" field in the formik values
                 formik.setFieldValue("location", selectedCountry);
               }}
             />
@@ -399,29 +401,7 @@ function CustomerEditModal({ show, close }) {
           >
             Gender
           </label>
-          {/* <Autocomplete
-            id="gender"
-            name="gender"
-            value={formik.values.gender}
-            options={gender}
-            getOptionLabel={(option) => option.label}
-            onChange={(event, newValue) => {
-              formik.setFieldValue("gender", newValue ? newValue.label : ""); // Update the field value
-            }}
-            onBlur={formik.handleBlur}
-            defaultValue={
-              gender.find((option) => option.label === formik.values.gender) ||
-              null
-            }
-            renderInput={(params) => (
-              <TextField
-                value={formik.values.gender}
-                {...params}
-                label="Select a gender"
-                variant="outlined"
-              />
-            )}
-          /> */}
+          
 
           <select
             className="form-select"
@@ -437,7 +417,7 @@ function CustomerEditModal({ show, close }) {
             <option value="" label="Select a gender" />
             {gender.map((option) => (
               <option key={option.id} value={option.label} label={option.label}>
-                {console.log("options", option)} {option.label}
+                {/* {console.log("options", option)} {option.label} */}
               </option>
             ))}
           </select>
