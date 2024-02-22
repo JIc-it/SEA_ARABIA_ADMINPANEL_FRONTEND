@@ -14,7 +14,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 import { getDiscountOfferList } from '../../services/offers';
 
-export default function PopupFilter({ open, handleClose,setListPageUrl,setOffersList,setFilters,filters,ClearFilter}) {
+export default function PopupFilter({ open, handleClose,setTotalPages,itemsPerPage,setOffersList,setFilters,filters,ClearFilter}) {
     const style = {
         position: 'absolute',
         top: '50%',
@@ -37,18 +37,18 @@ export default function PopupFilter({ open, handleClose,setListPageUrl,setOffers
             setIsLoading(true);
             if (!isLoading) {
                 try {
-                    const statuscheck=
-                    (filters.status.active === true && filters.status.inactive===true) ? 
-                    { status:"",startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""} 
-                    : filters.status.active===true ? { status:true,startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""} :filters.status.inactive===true  && { status:false,startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""}
-
-                    const adminData = await getDiscountOfferList(null,statuscheck);
+                    const checkstatus=(filters.status.active && filters.status.inactive) ? "": filters.status.active ?  true :filters.status.inactive &&  false
+                    const statuscheck={ 
+                        status:checkstatus,
+                        startdate: filters.startdate!=="" ? PassingformatDate(filters.startdate):"",
+                        enddate: filters.enddate !=="" ? PassingformatDate(filters.enddate):""}
+                    const adminData = await getDiscountOfferList("",statuscheck);
 
                     if (adminData) {
                         setIsLoading(false);
                         handleClose()
+                        setTotalPages(Math.ceil(adminData?.count / itemsPerPage))
                         setOffersList(adminData.results);
-                        setListPageUrl({ next: adminData.next, previous: adminData.previous });
                     } else {
                         setIsLoading(false);
                         toast.error(adminData.error.response.data)

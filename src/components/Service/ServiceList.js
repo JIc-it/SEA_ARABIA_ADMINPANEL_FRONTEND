@@ -15,7 +15,6 @@ import {
 import CircularProgress from "@mui/material/CircularProgress";
 import {
   getMenuPermissions,
-  removeBaseUrlFromPath,
 } from "../../helpers";
 
 import { getListDataInPagination } from "../../services/commonServices";
@@ -27,17 +26,16 @@ import {
   permissionCategory,
 } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
+import ReactPaginate from "react-paginate";
+import { API_BASE_URL } from "../../services/authHandle";
 
 function ServiceList() {
   const { userPermissionList } = useContext(MainPageContext);
-  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+  const getPermission = userPermissionList?.filter((data) => data.id === "7")[0]?.permissionCategory.some((item) => item.item === "Action" && item.value === true)
 
   const [search, setSearch] = useState(null);
   const [csvData, setCSVData] = useState([])
-  const [listPageUrl, setListPageUrl] = useState({
-    next: null,
-    previous: null,
-  });
+
   const [servicelist, setServiceList] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [count, setCount] = useState(null);
@@ -47,10 +45,16 @@ function ServiceList() {
     sub_category: [],
     vendor: [],
     status: {
-      active: false,
-      inactive: false
+      active: "",
+      inactive: ""
     },
   });
+
+
+  const itemsPerPage=10;
+
+  const [totalPages,setTotalPages] = useState(0);
+
 
   let checkfilterslength = filters.category.length > 0 || filters.sub_category.length > 0 || filters.vendor.length > 0 || filters.status.active || filters.status.inactive
 
@@ -65,7 +69,6 @@ function ServiceList() {
     getServiceListing(search)
       .then((data) => {
         setServiceList(data?.results);
-        setListPageUrl({ next: data?.next, previous: data?.previous });
         setIsLoading(false);
       })
       .catch((error) => {
@@ -76,38 +79,37 @@ function ServiceList() {
       });
   }, [search]);
 
-  useEffect(()=>{
-    if(getPermission){
+  useEffect(() => {
+    if (getPermission) {
       getExport()
-      .then((data) => {
-        setCSVData(data)
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
-    }
-  },[getPermission])
-
-  const handlePagination = async (type) => {
-    setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-          ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-          : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
         .then((data) => {
+          setCSVData(data)
           setIsLoading(false);
-          setListPageUrl({ next: data?.next, previous: data?.previous });
-          setServiceList(data?.results);
         })
         .catch((error) => {
-          setIsLoading(false);
           toast.error(error.message);
         });
+    }
+  }, [getPermission])
+
+
+
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(`${API_BASE_URL}service/service-list?limit=${itemsPerPage}&offset=${newStartIndex}`)
+      .then((data) => {
+        setIsLoading(false);
+        setServiceList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
   useEffect(() => {
@@ -119,6 +121,7 @@ function ServiceList() {
           inactive_machine_count: data?.inactive_machine_count,
           total_vendor_count: data?.total_vendor_count,
         });
+        setTotalPages(Math.ceil(data?.total_machines / itemsPerPage))
       })
       .catch((error) => {
         {
@@ -310,7 +313,7 @@ function ServiceList() {
                   >
                     <img src={filterIcon} alt="filter" width={25} />
                     <span className='py-1' style={{ position: "absolute", top: -10, color: "white", fontSize: "10px", backgroundColor: "#2176FF", width: "22px", height: "22px", borderRadius: "33px" }}>
-                      {filters.category.length + filters.sub_category.length + filters.vendor.length + (filters.status.active===true && filters.status.inactive === true ? 2 : filters.status.active ===true ? 1 : filters.status.inactive ===true ? 1 : 0)}
+                      {filters.category.length + filters.sub_category.length + filters.vendor.length + (filters.status.active === true && filters.status.inactive === true ? 2 : filters.status.active === true ? 1 : filters.status.inactive === true ? 1 : 0)}
                     </span>
                   </button>
                   {checkfilterslength && <button className="mx-3 px-3 py-2 btn" style={{ color: "#ffff", backgroundColor: "#2176FF" }} onClick={() => {
@@ -329,29 +332,29 @@ function ServiceList() {
                 menuIdConstant.serviceManagement,
                 permissionCategory.action
               ) && (
-                <CSVLink data={csvData}  filename={"Service_List.csv"} style={{textDecoration:"none",borderRadius: "6px"}}  className="btn btn-outline">
-                Export
-                <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 20 20"
-                fill="none"
-              >
-                <path
-                  d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                  stroke="#252525"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+                <CSVLink data={csvData} filename={"Service_List.csv"} style={{ textDecoration: "none", borderRadius: "6px" }} className="btn btn-outline">
+                  Export
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 20 20"
+                    fill="none"
+                  >
+                    <path
+                      d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
+                    <path
+                      d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
                 </CSVLink>
               )}
           </div>
@@ -391,7 +394,7 @@ function ServiceList() {
                   servicelist?.map((data) => (
                     <tr>
                       <td>
-                        <span className="text-secondary" style={{textTransform:"capitalize",wordBreak:"break-word"}}>{data?.name}</span>
+                        <span className="text-secondary" style={{ textTransform: "capitalize", wordBreak: "break-word" }}>{data?.name}</span>
                       </td>
 
                       <td>
@@ -489,66 +492,27 @@ function ServiceList() {
               </tbody>
             </table>
           </div>
-          <div className="d-flex align-items-center">
-            <ul className="pagination m-0 ms-auto">
-              <li
-                className={`page-item  ${!listPageUrl.previous && "disabled"}`}
-              >
-                <a
-                  className="page-link"
-                  href="#"
-                  tabIndex="-1"
-                  onClick={() => {
-                    handlePagination("prev");
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M15 6l-6 6l6 6" />
-                  </svg>
-                  prev
-                </a>
-              </li>
 
-              <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-                <a
-                  className="page-link"
-                  href="#"
-                  onClick={() => {
-                    handlePagination("next");
-                  }}
-                >
-                  next
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M9 6l6 6l-6 6" />
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </div>
+          {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel="Next >"
+            onPageChange={handlePageClick}
+            pageRangeDisplayed={5}
+            pageCount={totalPages}
+            previousLabel="< Prev"
+            marginPagesDisplayed={1}
+            containerClassName="pagination"
+            activeClassName="active"
+            previousClassName="page-item previous"
+            nextClassName="page-item next"
+            pageClassName="page-item"
+            pageLinkClassName="page-link"
+            previousLinkClassName="page-link"
+            nextLinkClassName="page-link"
+          />
+          </div>}
+         
         </div>
       </div>
       {open && (
@@ -557,7 +521,8 @@ function ServiceList() {
           open={open}
           setIsLoading={setIsLoading}
           setServiceList={setServiceList}
-          setListPageUrl={setListPageUrl}
+          setTotalPages={setTotalPages}
+          itemsPerPage={itemsPerPage}
           handleClose={handleClose}
           setFilters={setFilters}
           filters={filters}

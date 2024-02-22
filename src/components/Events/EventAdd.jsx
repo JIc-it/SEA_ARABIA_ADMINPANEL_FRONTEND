@@ -25,19 +25,27 @@ function EventAdd({ show, close }) {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required")
-      .max(20, "Name must be at most 20 characters"),
-    description: Yup.string().required("Description is required"),
-    short_description: Yup.string()
-      .required("Short Description is required")
-      .max(50, "Short Description must be at most 50 characters"),
-    location: Yup.string()
-      .required("Location is required"),
-    cancellation_policy: Yup.string()
-      .required("Cancellation Policy is required"),
-    refund_policy: Yup.string()
-      .required("Refund Policy is required"),
-    price: Yup.number().required("Price is required").notOneOf([0], 'Price cannot be zero').min(1, 'Must be greater than zero'),
+    .trim()
+    .required("Name is required")
+    .max(20, "Name must be at most 20 characters"),
+  description: Yup.string()
+    .trim()
+    .required("Description is required"),
+  short_description: Yup.string()
+    .trim()
+    .required("Short Description is required")
+    .max(50, "Short Description must be at most 50 characters"),
+  location: Yup.string()
+    .trim()
+    .required("Location is required")
+    .max(200,"Maximum 200 Characters"),
+  cancellation_policy: Yup.string()
+    .trim()
+    .required("Cancellation Policy is required"),
+  refund_policy: Yup.string()
+    .trim()
+    .required("Refund Policy is required"),
+    price: Yup.number().required("Price is required").notOneOf([0], 'Price cannot be zero').min(1, 'Must be greater than zero').max(100000,'Maximum 1 Lakh'),
     capacity: Yup.number().required("Capacity is required").notOneOf([0], 'Capacity cannot be zero').min(1, 'Must be greater than zero').max(10, 'Not greater than 10'),
     image: Yup.mixed()
             .test('fileSize', 'File size is too large', (value) => {

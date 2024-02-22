@@ -108,7 +108,7 @@ const ServiceView = () => {
                 <span style={{ color: "#006875" }}>{oneservice?.name}</span>
               </Breadcrumb.Item>
             </Breadcrumb>
-            <div className="d-flex justify-content-between mt-5 ms-3">
+            <div className="d-flex justify-content-between mt-5">
               <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
                 <svg
                   width={20}
@@ -262,25 +262,25 @@ const ServiceView = () => {
                   </p>
                   <div className="d-flex">
                     <div className="col-6 px-2">
-                      <div>
+                      
                         <p style={{ color: "#68727D" }}>Profit Method</p>
                         <p style={{ fontWeight: "550" }}>
                           {oneservice?.profit_method?.name}
                         </p>
-                      </div>
+                      
                     </div>
                   </div>
 
-                  <div className="col-6 px-2">
-                    <div>
-                      <p style={{ color: "#68727D" }}>
+                  {oneservice?.profit_method?.name !=="OwnerShip" && <div className="col-6 px-2">
+                      <div style={{ color: "#68727D" }}>
                         {oneservice?.profit_method?.name ===
                         "Upselling With Markup"
                           ? "Markup Fee"
                           : oneservice?.profit_method?.name ===
                             "Revenue Sharing"
-                            ? (<div className="d-flex">
-                              <div className="">
+                            && (
+                            <div className="d-flex">
+                              <div>
                                 <p>Sea Arabia Percentage</p>
                                 <p style={{ fontWeight: "550",color:"black" }}>{oneservice.sea_arabia_percentage}</p>
                               </div>
@@ -290,29 +290,29 @@ const ServiceView = () => {
                               </div>
                             </div>
                           )
-                          : null}
-                      </p>
+                          }
+                      </div>
                       <p style={{ fontWeight: "550" }}>
                         {oneservice?.profit_method?.name ===
                           "Upselling With Markup" && oneservice?.markup_fee}
                       </p>
-                    </div>
-                  </div>
+                  </div>}
+
                   <div className="col-6 px-2">
-                    <div>
+                    
                       <p style={{ color: "#68727D" }}>Price Criterion</p>
                       <p style={{ fontWeight: "550" }}>{price_cretrion()}</p>
-                    </div>
+                    
                   </div>
 
-                  <div className="col-12 px-2 py-3">
+                  <div className="col-12 px-2 pb-3">
                     <p style={{ color: "#68727D" }}>Price </p>
                     {oneservice?.is_destination && (
                       <div className="table-responsive ">
                         <table className="table  table-vcenter text-nowrap datatable">
                           <thead>
                             <tr>
-                              <th className="w-1">
+                              <th className="">
                                 <span>Name</span>
                               </th>
                               <th>
@@ -655,179 +655,11 @@ const ServiceView = () => {
                         No Image Found
                       </p>
                     )}
-                    {/* <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div>
-                                <div className="col-6 mb-3">
-                                    <div style={{ position: "relative" }} onMouseEnter={handleHoverEffectTrue} onMouseLeave={handleHoverEffectFalse}>
-                                        <img src={Thumbnail_1} />
-                                        {hovereffect &&
-                                            <div style={{ position: "absolute", bottom: "50px", left: "20px" }}>
-                                                <button className="btn btn-blue px-1 py-1 me-1" style={{ fontSize: "10px", cursor: "pointer" }}>setThumbnail</button>
-                                                <button className="btn btn-danger px-1 py-1" style={{ fontSize: "10px", cursor: "pointer" }}>Remove</button>
-                                            </div>
-                                        }
-                                    </div>
-                                </div> */}
+
                   </div>
                 </div>
               </div>
-              {/* <div className='col-lg-4' style={{position:"absolute",top:"400px",right:"0%",display:isMobileView?"none":""}}>
-                        <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
-                            <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "550" }}>Add on services</p>
-                            
-                            </div>
-                           
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='col-lg-4' style={{display:isMobileView?"block":"none"}}>
-                        <div style={{ backgroundColor: "#FFFF", borderRadius: "5px" }} className="mt-4 w-100 px-2 py-2">
-                        <div className='d-flex justify-content-between align-items-center'>
-                            <p className="p-2" style={{ fontWeight: "550" }}>Add on services</p>
-                            
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                            <div style={{border:"1px solid lightgray",borderRadius:"5px"}} className='d-flex justify-content-between align-items-center p-2 my-3'>
-                                <div>
-                                <img src={Food} width={50} height={40}/>
-                                </div>
-                                <div>
-                                    <div className='d-flex align-items-center justify-content-between mx-2'>
-                                        <div style={{fontWeight:"550"}}>Food | 50 KWD</div>
-                                        <div style={{display:"flex",alignItems:"center",justifyContent:"flex-end"}}>
-                                            <div style={{ display: "flex", alignItems: "center",padding:"5px" }}>
-                                                <div style={{ fontSize: "12px" }}>{"ACTIVE"}</div>
-                                               
-                                            </div> 
-                                           
-                                        </div>
-                                    </div>
-                                    <div style={{color:"#68727D"}} className='mx-2'>
-                                    Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been.
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
+              
             </div>
           </div>
           <br />
