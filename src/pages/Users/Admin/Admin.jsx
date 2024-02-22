@@ -5,6 +5,8 @@ import {
   getAdminSearch,
   getAdminTotalCount,
 } from "../../../services/GuestHandle";
+import { toast } from "react-toastify";
+import ReactPaginate from "react-paginate";
 import CreateNewAdmin from "./CreateNewAdmin";
 import { FormikProvider } from "../../../Context/FormikContext";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../../helpers";
@@ -19,6 +21,7 @@ import {
   permissionCategory,
 } from "../../../components/Permissions/PermissionConstants";
 import { CircularProgress } from "@mui/material";
+import { API_BASE_URL } from "../../../services/authHandle";
 
 function Admin({ isRefetch, setIsRefetch }) {
   const { userPermissionList } = useContext(MainPageContext);
@@ -42,13 +45,14 @@ function Admin({ isRefetch, setIsRefetch }) {
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
   const [tableData, setTableData] = useState(false);
-
+  const [totalPages, setTotalPages] = useState(0);
   const [count, setCount] = useState();
   useEffect(() => {
     getAdminTotalCount()
       .then((data) => {
         // console.log("admin count", data);
         setCount(data);
+        setTotalPages(Math.ceil(data?.admin_count / itemsPerPage));
       })
       .catch((error) => {
         console.error("Error fetching admin count data:", error);
@@ -59,7 +63,7 @@ function Admin({ isRefetch, setIsRefetch }) {
     const role = "Admin";
     getCustomerlist(role)
       .then((data) => {
-        console.log("admin list ==", data?.results);
+        // console.log("admin list ==", data?.results);
         setListPageUrl({
           next: data.next,
           previous: data.previous,
@@ -166,6 +170,26 @@ function Admin({ isRefetch, setIsRefetch }) {
       <path d="M3 10H17" stroke="white" strokeWidth="2" strokeLinecap="round" />
     </svg>
   );
+  const itemsPerPage = 10;
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(
+      `${API_BASE_URL}account/user-list?limit=${itemsPerPage}&offset=${newStartIndex}`
+    )
+      .then((data) => {
+        setIsLoading(false);
+        setAdmin(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
+  };
 
   return (
     <div className="page" style={{ height: "100vh", top: 20 }}>
@@ -521,70 +545,27 @@ function Admin({ isRefetch, setIsRefetch }) {
               </tbody>
             </table>
           </div>
-          <div className="card-footer d-flex align-items-center">
-            {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
-            <ul className="pagination m-0 ms-auto">
-              <li
-                className={`page-item  ${!listPageUrl.previous && "disabled"}`}
-              >
-                <a
-                  className="page-link"
-                  href="#"
-                  tabIndex="-1"
-                  onClick={() => {
-                    handlePagination("prev");
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M15 6l-6 6l6 6" />
-                  </svg>
-                  prev
-                </a>
-              </li>
-
-              <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-                <a
-                  className="page-link"
-                  href="#"
-                  onClick={() => {
-                    handlePagination("next");
-                  }}
-                >
-                  next
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M9 6l6 6l-6 6" />
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </div>
+          {totalPages > 0 && (
+            <div className="d-flex justify-content-center align-items-center mt-5">
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="Next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={totalPages}
+                previousLabel="< Prev"
+                marginPagesDisplayed={1}
+                containerClassName="pagination"
+                activeClassName="active"
+                previousClassName="page-item previous"
+                nextClassName="page-item next"
+                pageClassName="page-item"
+                pageLinkClassName="page-link"
+                previousLinkClassName="page-link"
+                nextLinkClassName="page-link"
+              />
+            </div>
+          )}
         </div>
         {/* //modal */}
       </div>

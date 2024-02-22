@@ -30898,3 +30898,18 @@ img {
   -webkit-font-smoothing: auto;
   -moz-osx-font-smoothing: auto;
 }
+
+.custom-select {
+  position: relative;
+  width: 100%; /* Set the desired width */
+}
+
+.custom-arrow {
+  position: absolute;
+  top: 33%;
+  right: 12px; /* Adjust the position as needed */
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 12px;
+  color: #808080; /* Increase the font-size value as needed */
+}

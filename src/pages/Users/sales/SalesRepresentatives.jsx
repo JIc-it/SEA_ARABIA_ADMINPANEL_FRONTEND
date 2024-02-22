@@ -24,17 +24,21 @@ import {
 } from "../../../components/Permissions/PermissionConstants";
 import { CircularProgress } from "@mui/material";
 import { FormikProvider } from "../../../Context/FormikContext";
+import ReactPaginate from "react-paginate";
+import { API_BASE_URL } from "../../../services/authHandle";
+import { toast } from "react-toastify";
 
 const SalesRepresentatives = () => {
   const formikRef = useRef(null);
   const { userPermissionList } = useContext(MainPageContext);
-  const [count, setCount] = useState();
+  // const [count, setCount] = useState();
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const [salesRep, setsalesRep] = useState();
   const [listPageUrl, setListPageUrl] = useState({
     next: null,
     previous: null,
   });
+  const [totalPages, setTotalPages] = useState(0);
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
@@ -45,9 +49,11 @@ const SalesRepresentatives = () => {
       formikRef.current.resetForm(); // Reset the formik form
     }
   };
-
+  const itemsPerPage = 10;
+  const [count, setCount] = useState();
   const [search, setSearch] = useState("");
   const [tableData, setTableData] = useState(false);
+
   useEffect(() => {
     const role = "Staff";
     getCustomerlist(role)
@@ -71,6 +77,7 @@ const SalesRepresentatives = () => {
       .then((data) => {
         console.log("sales count", data);
         setCount(data);
+        setTotalPages(Math.ceil(data?.sales_rep_count / itemsPerPage));
       })
       .catch((error) => {
         console.error("Error fetching sales rep count data:", error);
@@ -80,27 +87,6 @@ const SalesRepresentatives = () => {
   const refreshPage = () => {
     window.location.reload();
   };
-
-  // const getCustomerListData = async () => {
-  //   setIsLoading(true);
-  //   getCustomerSearch()
-  //     .then((data) => {
-  //       if (data) {
-  //         setIsLoading(false);
-  //         setListPageUrl({ next: data.next, previous: data.previous });
-  //         setsalesRep(data?.results);
-  //       } else {
-  //         refreshPage();
-  //         setIsLoading(true);
-  //         setSearch("");
-  //         setsalesRep(data?.results);
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       console.error("Error fetching  data:", error);
-  //     });
-  // };
 
   useEffect(() => {
     const data = { search: search, status: selectedValue, role: "Staff" };
@@ -124,28 +110,24 @@ const SalesRepresentatives = () => {
       });
   }, [selectedValue, isRefetch, search]);
 
-  const handlePagination = async (type) => {
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
     setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          const filteredResults = data.results.filter(
-            (item) => item?.role === "Staff"
-          );
-          setsalesRep(filteredResults);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error("Error fetching  data:", error);
-        });
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(
+      `${API_BASE_URL}account/user-list?limit=${itemsPerPage}&offset=${newStartIndex}`
+    )
+      .then((data) => {
+        setIsLoading(false);
+        setsalesRep(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
   const handleExportCustomerData = () => {
@@ -552,66 +534,27 @@ const SalesRepresentatives = () => {
               </tbody>
             </table>
           </div>
-          <div className="card-footer d-flex align-items-center">
-            <ul className="pagination m-0 ms-auto">
-              <li
-                className={`page-item  ${!listPageUrl.previous && "disabled"}`}
-              >
-                <a
-                  className="page-link"
-                  href="#"
-                  tabIndex="-1"
-                  onClick={() => {
-                    handlePagination("prev");
-                  }}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M15 6l-6 6l6 6" />
-                  </svg>
-                  prev
-                </a>
-              </li>
-
-              <li className={`page-item  ${!listPageUrl.next && "disabled"}`}>
-                <a
-                  className="page-link"
-                  href="#"
-                  onClick={() => {
-                    handlePagination("next");
-                  }}
-                >
-                  next
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon"
-                    width="24"
-                    height="24"
-                    viewBox="0 0 24 24"
-                    strokeWidth="2"
-                    stroke="currentColor"
-                    fill="none"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M9 6l6 6l-6 6" />
-                  </svg>
-                </a>
-              </li>
-            </ul>
-          </div>
+          {totalPages > 0 && (
+            <div className="d-flex justify-content-center align-items-center mt-5">
+              <ReactPaginate
+                breakLabel="..."
+                nextLabel="Next >"
+                onPageChange={handlePageClick}
+                pageRangeDisplayed={5}
+                pageCount={totalPages}
+                previousLabel="< Prev"
+                marginPagesDisplayed={1}
+                containerClassName="pagination"
+                activeClassName="active"
+                previousClassName="page-item previous"
+                nextClassName="page-item next"
+                pageClassName="page-item"
+                pageLinkClassName="page-link"
+                previousLinkClassName="page-link"
+                nextLinkClassName="page-link"
+              />
+            </div>
+          )}
         </div>
         {/* //modal */}
       </div>

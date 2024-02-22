@@ -4,9 +4,13 @@ import Footer from "../Common/Footer";
 import ListCards from "../ListCards";
 import { getListDataInPagination } from "../../services/commonServices";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../helpers";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
-import { getBookingList, getBookingCount, getBookingExport } from "../../services/booking";
+import {
+  getBookingList,
+  getBookingCount,
+  getBookingExport,
+} from "../../services/booking";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -19,11 +23,17 @@ import ReactPaginate from "react-paginate";
 import { API_BASE_URL } from "../../services/authHandle";
 
 const BookinList = () => {
+  const navigate = useNavigate();
   const { userPermissionList } = useContext(MainPageContext);
   const itemsPerPage=10;
   const [totalPages,setTotalPages] = useState(0);
   const [currentPage,setCurrentPage]=useState(0)
-  const getPermission=userPermissionList?.filter((data)=>data.id==="7")[0]?.permissionCategory.some((item)=>item.item==="Action" && item.value===true)
+
+  const getPermission = userPermissionList
+    ?.filter((data) => data.id === "7")[0]
+    ?.permissionCategory.some(
+      (item) => item.item === "Action" && item.value === true
+    );
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -55,7 +65,7 @@ const BookinList = () => {
 
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
-  const [csvData, setCSVData] = useState([])
+  const [csvData, setCSVData] = useState([]);
 
   useEffect(() => {
     {
@@ -92,18 +102,18 @@ const BookinList = () => {
       });
   }, []);
 
-  useEffect(()=>{
-    if(getPermission){
+  useEffect(() => {
+    if (getPermission) {
       getBookingExport()
-      .then((data) => {
-        setCSVData(data)
-        setIsLoading(false);
-      })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+        .then((data) => {
+          setCSVData(data);
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          toast.error(error.message);
+        });
     }
-  },[getPermission])
+  }, [getPermission]);
 
   const handlePagination = async (type) => {
     setIsLoading(true);
@@ -383,7 +393,9 @@ const BookinList = () => {
                       )}
                     </div>
                   </div>
+                  
                 </div>
+
                 <div className="action_buttons col-4">
                   {userPermissionList &&
                     getMenuPermissions(
@@ -391,30 +403,35 @@ const BookinList = () => {
                       menuIdConstant.booking,
                       permissionCategory.action
                     ) && (
-                    <CSVLink data={csvData} filename={"Booking_List.csv"} style={{ textDecoration: "none", borderRadius: "6px" }} className="btn btn-outline">
-                      Export
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 20 20"
-                        fill="none"
+                      <CSVLink
+                        data={csvData}
+                        filename={"Booking_List.csv"}
+                        style={{ textDecoration: "none", borderRadius: "6px" }}
+                        className="btn btn-outline"
                       >
-                        <path
-                          d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
-                          stroke="#252525"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                        <path
-                          d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
-                          stroke="#252525"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </CSVLink>
+                        Export
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="20"
+                          height="20"
+                          viewBox="0 0 20 20"
+                          fill="none"
+                        >
+                          <path
+                            d="M3.33317 10C3.33317 13.6819 6.31794 16.6667 9.99984 16.6667C13.6817 16.6667 16.6665 13.6819 16.6665 10"
+                            stroke="#252525"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                          <path
+                            d="M10 11.6673L10 3.33398M10 3.33398L12.5 5.83398M10 3.33398L7.5 5.83398"
+                            stroke="#252525"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </CSVLink>
                     )}
                 </div>
               </div>
@@ -517,16 +534,28 @@ const BookinList = () => {
                                       padding: "7px 9px 5px 9px ",
                                       borderRadius: "4px",
                                       background:
-                                        data?.status === "Completed" || data?.status === "Confirmed"
+                                        data?.status === "Completed" ||
+                                        data?.status === "Confirmed"
                                           ? "#13B370"
-                                          : data?.status === "Unsuccessful" || data?.status === "Failed"
+                                          : data?.status === "Unsuccessful" ||
+                                            data?.status === "Failed"
                                           ? "#DC7932"
-                                          : data?.status === "Cancelled" ?
-                                           "#DE4E21"
-                                          :data?.status==="Upcoming" && "#2684FC",
+                                          : data?.status === "Cancelled"
+                                          ? "#DE4E21"
+                                          : data?.status === "Upcoming" &&
+                                            "#2684FC",
                                     }}
                                   >
-                                    {data?.status==="Completed" || data?.status === "Confirmed"?  "Completed": data?.status === "Unsuccessful" || data?.status === "Failed" ? "Unsuccessful" :data?.status === "Cancelled"? "Cancelled":data?.status==="Upcoming"  && "Upcoming"}
+                                    {data?.status === "Completed" ||
+                                    data?.status === "Confirmed"
+                                      ? "Completed"
+                                      : data?.status === "Unsuccessful" ||
+                                        data?.status === "Failed"
+                                      ? "Unsuccessful"
+                                      : data?.status === "Cancelled"
+                                      ? "Cancelled"
+                                      : data?.status === "Upcoming" &&
+                                        "Upcoming"}
                                   </span>
                                 </td>
                                 <td

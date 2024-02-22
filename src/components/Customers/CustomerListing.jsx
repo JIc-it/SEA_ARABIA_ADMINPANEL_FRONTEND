@@ -6,7 +6,9 @@ import * as XLSX from "xlsx";
 import {
   customerExport,
   getCustomerSearch,
+  getCustomerTotalCount,
 } from "../../services/CustomerHandle";
+import ReactPaginate from "react-paginate";
 import { FormikProvider } from "../../Context/FormikContext";
 import CloseIcon from "@mui/icons-material/Close";
 import { Box, IconButton, Typography } from "@mui/material";
@@ -23,6 +25,7 @@ import {
 import UserFilterPopup from "./UserFilterPopup";
 import Modal from "@mui/material/Modal";
 import { Search } from "@mui/icons-material";
+import { API_BASE_URL } from "../../services/authHandle";
 const style = {
   position: "absolute",
   top: "50%",
@@ -41,6 +44,7 @@ export default function CustomerListing() {
   const [listDiscount, setListDiscount] = useState([]);
   const [search, setSearch] = useState("");
   const formikRef = useRef(null);
+  const [totalPages, setTotalPages] = useState(0);
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedValue, setSelectedValue] = useState("");
@@ -53,6 +57,7 @@ export default function CustomerListing() {
   const [showOffcanvas, setShowOffcanvas] = useState(false);
   const { userPermissionList } = useContext(MainPageContext);
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+  const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
 
   const [filters, setFilters] = useState({
     OnBoardOn: { from: "", to: "" },
@@ -62,10 +67,21 @@ export default function CustomerListing() {
   // Check if either OnBoardOn has values or sub_category has items
   let checkfilterslength =
     filters.OnBoardOn.from.length > 0 && filters.OnBoardOn.to.length > 0;
-
+  const [count, setCount] = useState();
   const [tableData, setTableData] = useState(false);
 
-  const [isOpenFilterPopUp, setIsOpenFilterPopUp] = useState(false);
+  useEffect(() => {
+    getCustomerTotalCount()
+      .then((data) => {
+        // console.log("customer-Count", data);
+        setCount(data);
+        setTotalPages(Math.ceil(data?.user_count / itemsPerPage));
+      })
+      .catch((error) => {
+        console.error("Error fetching Customer List data:", error);
+      });
+  }, []);
+
   useEffect(() => {
     getCustomerSearch({ search: search, status: "", role: "User" })
       .then((data) => {
@@ -123,11 +139,6 @@ export default function CustomerListing() {
       });
   };
 
-  const refreshPage = () => {
-    // You can use window.location.reload() to refresh the page
-    window.location.reload();
-  };
-
   const getCustomerListData = async () => {
     setIsLoading(true);
     let locationName =
@@ -172,29 +183,7 @@ export default function CustomerListing() {
         : 0;
     setFilterCriteriaCount(countNonEmpty);
   }, [isRefetch]);
-  const handlePagination = async (type) => {
-    setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          const filteredResults = data.results.filter(
-            (item) => item.role === "User"
-          );
-          setListDiscount(filteredResults);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error("Error fetching  data:", error);
-        });
-  };
+
   const handleOpenOffcanvas = () => setShowOffcanvas(true);
   const handleCloseOffcanvas = () => {
     setShowOffcanvas(false);
@@ -255,6 +244,27 @@ export default function CustomerListing() {
   const handleCloseFilter = () => {
     setIsOpenFilterPopUp(false);
   };
+  const itemsPerPage = 10;
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(
+      `${API_BASE_URL}account/user-list?limit=${itemsPerPage}&offset=${newStartIndex}`
+    )
+      .then((data) => {
+        setIsLoading(false);
+        setListDiscount(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
+  };
+
   return (
     <div style={{ height: "100vh" }}>
       <div className="col-12 actions_menu my-2 px-3">
@@ -633,7 +643,28 @@ export default function CustomerListing() {
             </tbody>
           </table>
         </div>
-        <div className="card-footer d-flex align-items-center">
+        {totalPages > 0 && (
+          <div className="d-flex justify-content-center align-items-center mt-5">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel="Next >"
+              onPageChange={handlePageClick}
+              pageRangeDisplayed={5}
+              pageCount={totalPages}
+              previousLabel="< Prev"
+              marginPagesDisplayed={1}
+              containerClassName="pagination"
+              activeClassName="active"
+              previousClassName="page-item previous"
+              nextClassName="page-item next"
+              pageClassName="page-item"
+              pageLinkClassName="page-link"
+              previousLinkClassName="page-link"
+              nextLinkClassName="page-link"
+            />
+          </div>
+        )}
+        {/* <div className="card-footer d-flex align-items-center">
           <ul className="pagination m-0 ms-auto">
             <li className={`page-item  ${!listPageUrl.previous && "disabled"}`}>
               <a
@@ -690,7 +721,7 @@ export default function CustomerListing() {
               </a>
             </li>
           </ul>
-        </div>
+        </div> */}
       </div>
     </div>
   );

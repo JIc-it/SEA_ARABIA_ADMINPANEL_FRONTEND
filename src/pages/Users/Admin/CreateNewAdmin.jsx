@@ -24,6 +24,21 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
     { id: "1", label: "Male" },
     { id: "2", label: "Female" },
   ]);
+  const [isOpen, setIsOpen] = useState(false);
+  const selectStyles = {
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none",
+    background: `url(${
+      isOpen ? "path/to/down-arrow.png" : "path/to/up-arrow.png"
+    }) no-repeat right center`,
+    paddingRight: "20px", // Adjust padding if needed
+  };
+
+  const arrowStyles = {
+    transition: "transform 0.3s",
+    transform: isOpen ? "rotate(0deg)" : "rotate(180deg)",
+  };
   const [selectOpen, setSelectOpen] = useState(false);
 
   const toggleSelect = () => {
@@ -296,9 +311,13 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
               className="form-select"
               id="gender"
               name="gender"
+              
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               value={formik.values.gender}
+              style={selectStyles}
+              onClick={() => setIsOpen(!isOpen)}
+              onMouseLeave={() => setIsOpen(false)}
             >
               <option value="" label="Select a gender" />
               {gender.map((option) => (
@@ -311,7 +330,9 @@ function CreateNewAdmin({ show, close, locationList, tableData }) {
                 </option>
               ))}
             </select>
-
+            <div className="custom-arrow" style={arrowStyles}>
+              &#9650; {/* Unicode arrow character */}
+            </div>
             {formik.touched.gender && formik.errors.gender ? (
               <div className="error">{formik.errors.gender}</div>
             ) : null}

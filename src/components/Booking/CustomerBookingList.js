@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import Footer from "../Common/Footer";
 
 import ListCards from "../ListCards";
-
+import ReactPaginate from "react-paginate";
 import { removeBaseUrlFromPath } from "../../helpers";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 import Box from "@mui/material/Box";
 
@@ -32,6 +32,7 @@ const style = {
 
 const CustomerBookingList = () => {
   const customerId = useParams()?.id;
+  const navigate = useNavigate();
   console.log("cus id", customerId);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -45,10 +46,11 @@ const CustomerBookingList = () => {
   });
   const [isRefetch, setIsRefetch] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [currentPage, setCurrentPage] = useState(0);
   const [bookingList, setBookingList] = useState([]);
   const [count, setCount] = useState({});
   const [selectedValue, setSelectedValue] = useState("");
+  const [totalPages, setTotalPages] = useState(0);
   const [filters, setFilters] = useState({
     category: [],
     vendor: [],
@@ -65,13 +67,14 @@ const CustomerBookingList = () => {
       to: "",
     },
   });
+  const itemsPerPage = 10;
   // new api
   useEffect(() => {
     const Pass = {
       id: customerId,
       search: search,
       status: selectedValue,
-      role: "User",
+      // role: "User",
     };
 
     if (Pass) {
@@ -84,8 +87,10 @@ const CustomerBookingList = () => {
               booking?.user?.id === customerId ||
               booking?.guest?.id === customerId
           );
+          setListPageUrl({ next: data.next, previous: data.previous });
           // console.log("filtered bookk------", filteredBooking);
           setBookingList(filteredBooking);
+          setTotalPages(Math.ceil(filteredBooking.length / itemsPerPage));
           console.log("filtered bookk------", bookingList);
           console.log("filtered bookk------", filteredBooking);
         })
@@ -94,6 +99,40 @@ const CustomerBookingList = () => {
         });
     }
   }, [customerId, search, selectedValue]);
+  const offset = currentPage * itemsPerPage;
+  const paginatedBookingList = bookingList.slice(offset, offset + itemsPerPage);
+
+  console.log(
+    "paginatedBookingList",
+    paginatedBookingList,
+    "currentpage",
+    currentPage
+  );
+
+  const handlePageClick = (data) => {
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
+    setIsLoading(true);
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(
+      `${API_BASE_URL}booking/bookings/admin?limit=${itemsPerPage}&offset=${newStartIndex}`
+    )
+      .then((data) => {
+        const filteredBooking = data?.results?.filter(
+          (booking) =>
+            booking?.user?.id === customerId ||
+            booking?.guest?.id === customerId
+        );
+        setIsLoading(false);
+        setBookingList(filteredBooking);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
+  };
 
   useEffect(() => {
     getBookingCount()
@@ -179,25 +218,7 @@ const CustomerBookingList = () => {
     // You can use window.location.reload() to refresh the page
     window.location.reload();
   };
-  // const getBookingSearchData = () => {
-  //   const Pass = { status: "", search: search, refund_status: "" };
-  //   getBookingList(Pass)
-  //     .then((data) => {
-  //       if (data) {
-  //         setIsLoading(false);
-  //         setListPageUrl({ next: data.next, previous: data.previous });
-  //         setBookingList(data?.results);
-  //       } else {
-  //         refreshPage();
-  //         setIsLoading(true);
-  //         setBookingList("");
-  //       }
-  //     })
-  //     .catch((error) => {
-  //       setIsLoading(false);
-  //       toast.error(error.message);
-  //     });
-  // };
+
   let checkfilterslength =
     filters.category.length > 0 ||
     filters.vendor.length > 0 ||
@@ -434,6 +455,7 @@ const CustomerBookingList = () => {
                     </div>
                   </div>
                 </div>
+
                 <div className="action_buttons col-4">
                   <button
                     className="btn btn-outline"
@@ -463,6 +485,29 @@ const CustomerBookingList = () => {
                       />
                     </svg>
                   </button>
+                </div>
+              </div>
+              <div className="d-flex justify-content-between mt-4 mb-4 ms-3  ">
+                <div
+                  style={{ cursor: "pointer", marginLeft: "-12px" }}
+                  onClick={() => navigate(-1)}
+                >
+                  <svg
+                    width={20}
+                    height={20}
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M20 12H4M4 12L10 6M4 12L10 18"
+                      stroke="#252525"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>{" "}
+                  &nbsp;<span style={{ fontWeight: "800" }}>Back</span>
                 </div>
               </div>
               <div className="card">
@@ -505,9 +550,12 @@ const CustomerBookingList = () => {
                     <tbody>
                       {!isLoading ? (
                         <>
-                          {bookingList &&
+                          {/* {bookingList &&
                             bookingList.length > 0 &&
-                            bookingList.map((data) => (
+                            bookingList.map((data) => ( */}
+                          {paginatedBookingList &&
+                            paginatedBookingList.length > 0 &&
+                            paginatedBookingList.map((data) => (
                               <tr>
                                 <td>
                                   {console.log("item --book", bookingList)}
@@ -633,72 +681,27 @@ const CustomerBookingList = () => {
                       </p>
                     </div>
                   )}
-                </div>
-                <div className="card-footer d-flex align-items-center">
-                  <ul className="pagination m-0 ms-auto">
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.previous && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        tabIndex="-1"
-                        onClick={() => {
-                          handlePagination("prev");
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M15 6l-6 6l6 6" />
-                        </svg>
-                        prev
-                      </a>
-                    </li>
-
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.next && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        onClick={() => {
-                          handlePagination("next");
-                        }}
-                      >
-                        next
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M9 6l6 6l-6 6" />
-                        </svg>
-                      </a>
-                    </li>
-                  </ul>
+                  {totalPages > 0 && (
+                    <div className="d-flex justify-content-center align-items-center mt-5">
+                      <ReactPaginate
+                        breakLabel="..."
+                        nextLabel="Next >"
+                        onPageChange={handlePageClick}
+                        pageRangeDisplayed={5}
+                        pageCount={totalPages}
+                        previousLabel="< Prev"
+                        marginPagesDisplayed={1}
+                        containerClassName="pagination"
+                        activeClassName="active"
+                        previousClassName="page-item previous"
+                        nextClassName="page-item next"
+                        pageClassName="page-item"
+                        pageLinkClassName="page-link"
+                        previousLinkClassName="page-link"
+                        nextLinkClassName="page-link"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
               {open && (
