@@ -12,6 +12,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import { menuIdConstant, permissionCategory } from "../Permissions/PermissionConstants";
 import { MainPageContext } from "../../Context/MainPageContext";
 import RefundHistoryFilter from "./RefundHistoryFilter";
+import ReactPaginate from "react-paginate";
+import { API_BASE_URL } from "../../services/authHandle";
 
 
 const RefundHistoryList  = () => {
@@ -38,7 +40,9 @@ const RefundHistoryList  = () => {
     to:""
    }
   });
-
+  const itemsPerPage=10;
+  const [totalPages,setTotalPages] = useState(0);
+  const [currentPage,setCurrentPage]=useState(0)
   const [search, setSearch] = useState("");
 
   const [listPageUrl, setListPageUrl] = useState({
@@ -57,6 +61,7 @@ const RefundHistoryList  = () => {
     getBookingList(statuspass)
       .then((data) => {
         setIsLoading(false);
+        setTotalPages(Math.ceil(data?.count/itemsPerPage))
         setListPageUrl({ next: data.next, previous: data.previous });
         setBookingList(data?.results);
       })
@@ -95,25 +100,23 @@ const RefundHistoryList  = () => {
     }
   },[getPermission])
   
-  const handlePagination = async (type) => {
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected)
+    const newPage = data.selected;
+    const newStartIndex = newPage * itemsPerPage;
+
     setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setBookingList(data?.results);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error("Error fetching  data:", error);
-        });
+    // setCurrentPage(newPage);
+
+    getListDataInPagination(`${API_BASE_URL}booking/bookings/admin/?status=Cancelled&refund_status=Completed?limit=${itemsPerPage}&offset=${newStartIndex}`)
+      .then((data) => {
+        setIsLoading(false);
+        setBookingList(data?.results);
+      })
+      .catch((error) => {
+        setIsLoading(false);
+        toast.error(error.message);
+      });
   };
 
   let checkfilterslength=filters.category?.length >0 || filters.vendor?.length > 0 || filters.customer?.length>0 || filters.guest?.length >0 || filters.customer_type?.length > 0 || filters.role?.length >0 || filters.creation_date.from !=="" || filters.creation_date.to !=="" || filters.cancelled_on.from !=="" || filters.cancelled_on.to !==""
@@ -439,7 +442,7 @@ const RefundHistoryList  = () => {
                                   }}
                                 >
                                   <Link
-                                    to={`/refunds-request/${data?.id}/`}
+                                    to={`/refunds-history/${data?.id}/`}
                                     className="btn btn-sm btn-info"
                                     style={{
                                       padding: "7px 10px 5px 10px",
@@ -479,81 +482,49 @@ const RefundHistoryList  = () => {
                           </td>
                         </tr>
                       )}
+                      {bookingList.length === 0 && (
+                        <tr>
+                          <td colSpan={"8"} align="center" style={{fontWeight:550}}>
+                            No Data
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
-                <div className="card-footer d-flex align-items-center">
-                  {/* <p className="m-0 text-secondary">
-            Showing <span>1</span> to <span>8</span> of
-            <span>16</span> entries
-          </p> */}
-                  <ul className="pagination m-0 ms-auto">
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.previous && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        tabIndex="-1"
-                        onClick={() => {
-                          handlePagination("prev");
-                        }}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M15 6l-6 6l6 6" />
-                        </svg>
-                        prev
-                      </a>
-                    </li>
-
-                    <li
-                      className={`page-item  ${
-                        !listPageUrl.next && "disabled"
-                      }`}
-                    >
-                      <a
-                        className="page-link"
-                        href="#"
-                        onClick={() => {
-                          handlePagination("next");
-                        }}
-                      >
-                        next
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="icon"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          strokeWidth="2"
-                          stroke="currentColor"
-                          fill="none"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M9 6l6 6l-6 6" />
-                        </svg>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+                {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
+                  <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="Next >"
+                    onPageChange={handlePageClick}
+                    forcePage={currentPage}
+                    pageRangeDisplayed={5}
+                    pageCount={totalPages}
+                    previousLabel="< Prev"
+                    marginPagesDisplayed={1}
+                    containerClassName="pagination"
+                    activeClassName="active"
+                    previousClassName="page-item previous"
+                    nextClassName="page-item next"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousLinkClassName="page-link"
+                    nextLinkClassName="page-link"
+                  />
+                </div>}
               </div>
-              {open && <RefundHistoryFilter open={open} handleClose={handleClose} setIsLoading={setIsLoading} isLoading={isLoading} setFilters={setFilters} filters={filters} setBookingList={setBookingList} firstsetListPageUrl={setListPageUrl}  checkfilterslength={checkfilterslength}/>}
+              {open && 
+              <RefundHistoryFilter
+               open={open} 
+               handleClose={handleClose} 
+               setIsLoading={setIsLoading} 
+               isLoading={isLoading} 
+               setFilters={setFilters} 
+               filters={filters} 
+               setBookingList={setBookingList} 
+               setTotalPages={setTotalPages}  
+               itemsPerPage={itemsPerPage}
+               checkfilterslength={checkfilterslength}/>}
             </div>
           </div>
           <Footer />

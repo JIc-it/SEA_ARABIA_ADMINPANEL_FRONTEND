@@ -365,7 +365,7 @@ function DiscountListing() {
                                 month: "short",
                                 year: "numeric",
                               }
-                            ) : "-"}
+                            ) : "No Expiry"}
                           </span> &nbsp;
                           {item.end_date !==null && new Date(item.end_date)< new Date() && <Badge bg="danger" text="light">Expired</Badge>}
                         </td>

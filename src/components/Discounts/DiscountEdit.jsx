@@ -339,7 +339,7 @@ console.log(formik.values)
         return (
             <>
                 <div className="page" style={{ backgroundColor: "#DDECEE" }}>
-                    <Breadcrumb style={{ marginLeft: "5px" }}>
+                    <Breadcrumb className="px-5 mt-3 ms-2">
                         <Breadcrumb.Item href="#">Discount / Offer
                             <svg width={20} height={20} viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15" stroke="#68727D" strokeWidth="1.5" strokeLinecap="round" />
@@ -349,7 +349,7 @@ console.log(formik.values)
                         </Breadcrumb.Item>
                     </Breadcrumb>
 
-                    <div className='d-flex justify-content-between mt-5 ms-3'>
+                    <div className="d-flex justify-content-between align-items-center px-5 mx-1 mt-3">
                         <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
                             <svg width={20} height={20} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <path d="M20 12H4M4 12L10 6M4 12L10 18" stroke="#252525" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

@@ -316,7 +316,7 @@ export default function DiscountAddNew() {
     return (
       <>
         <div className="page" style={{ backgroundColor: "#DDECEE" }}>
-          <Breadcrumb style={{ marginLeft: "5px" }}>
+          <Breadcrumb className="px-5 mt-3 ms-2">
             <Breadcrumb.Item href="#">
               Discount / Offer
               <svg
@@ -337,7 +337,7 @@ export default function DiscountAddNew() {
             </Breadcrumb.Item>
           </Breadcrumb>
 
-          <div className="d-flex justify-content-between mt-5 ms-3">
+          <div className="d-flex justify-content-between align-items-center px-5 mx-1 mt-3">
             <div style={{ cursor: "pointer" }} onClick={() => navigate(-1)}>
               <svg
                 width={20}

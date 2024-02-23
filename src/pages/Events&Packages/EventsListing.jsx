@@ -625,6 +625,13 @@ export default function EventListing() {
                           </tbody>
                         );
                       })}
+                      {Events.length === 0 && (
+                        <tr>
+                          <td colSpan={"8"} align="center" style={{fontWeight:550}}>
+                            No Data
+                          </td>
+                        </tr>
+                      )}
                     </>
                   )}
                 </table>

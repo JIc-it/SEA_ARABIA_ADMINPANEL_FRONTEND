@@ -2,14 +2,11 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { toast } from "react-toastify";
-import tick from "../../assets/images/uil_check.png";
 import { useParams } from "react-router-dom";
-import { getBooking, updateCancellation } from "../../services/booking";
+import { getBooking } from "../../services/booking";
 import { CircularProgress } from "@mui/material";
-import RefundModal from "./RefundModal";
+import { Breadcrumb } from "react-bootstrap";
 import CancellationModal from "./CancellationModal";
-import { cleanDigitSectionValue } from "@mui/x-date-pickers/internals/hooks/useField/useField.utils";
 import WithPermission from "../HigherOrderComponents/PermissionCheck/WithPermission";
 import CommonButtonForPermission from "../HigherOrderComponents/CommonButtonForPermission";
 import {
@@ -41,7 +38,7 @@ export default function BookingView() {
   }, [params.id]);
 
   const statusCheck = () => {
-   
+
     if (booking?.status === "Completed" || booking.status === "Confirmed") {
       return "Completed";
     }
@@ -51,7 +48,10 @@ export default function BookingView() {
     if (booking?.status === "Cancelled") {
       return "Cancelled";
     }
-   
+
+    if (booking?.status === "Opened") {
+      return "Opened";
+    }
     if (booking?.status === "Upcoming") {
       return "Upcoming";
     }
@@ -65,7 +65,7 @@ export default function BookingView() {
     "btn btn-danger",
     "Cancel Booking",
     { borderRadius: "6px" },
-    <svg
+    <svg className="mx-2"
       xmlns="http://www.w3.org/2000/svg"
       width={20}
       height={20}
@@ -100,11 +100,46 @@ export default function BookingView() {
         </div>
       )}
       {!isLoading && (
-        <div className="page">
+        <div className="page" style={{overflowX:"hidden"}}>
           <div className="page-body">
+            <Breadcrumb className="mb-3  ms-5">
+              <Breadcrumb.Item href="#">
+                <span style={{ color: "#006875" }}> Bookings Management</span>
+                <svg
+                  width={20}
+                  height={20}
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15"
+                    stroke="#68727D"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span style={{ color: "#006875" }}>Bookings</span>
+                <svg
+                  width={20}
+                  height={20}
+                  viewBox="0 0 20 20"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M8.33333 5L12.7441 9.41074C13.0695 9.73618 13.0695 10.2638 12.7441 10.5893L8.33333 15"
+                    stroke="#68727D"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                  />
+                </svg>
+                <span style={{ color: "#006875" }}>{booking?.booking_id}</span>
+              </Breadcrumb.Item>
+            </Breadcrumb>
             <div className="container-xl">
-              <div className="d-flex justify-content-between align-items-center">
-                <div className="d-flex justify-content-between mt-1 ms-3">
+              <div className="d-flex justify-content-between align-items-center  my-2 ms-1">
+                <div className="d-flex justify-content-between">
                   <div
                     style={{ cursor: "pointer" }}
                     onClick={() => navigate(-1)}
@@ -164,7 +199,7 @@ export default function BookingView() {
                         />
                       </svg>
                     )}
-                    {booking?.status === "Upcoming" && (
+                    {booking?.status === "Upcoming" || booking?.status === "Opened" && (
                       <svg
                         width={48}
                         height={48}
@@ -244,13 +279,13 @@ export default function BookingView() {
                       style={{
                         color:
                           booking.status === "Opened" ||
-                          booking.status === "Upcoming"
+                            booking.status === "Upcoming"
                             ? "#2684FC"
                             : booking.status === "Unsuccessful" || booking.status === "Failed"
-                            ? "#DC7932"
-                            : booking?.status === "Completed" || booking?.status ==="Confirmed"
-                            ? "#08A747"
-                            : "#DE4E21",
+                              ? "#DC7932"
+                              : booking?.status === "Completed" || booking?.status === "Confirmed"
+                                ? "#08A747"
+                                : "#DE4E21",
                       }}
                     >
                       {statusCheck()}
@@ -266,7 +301,7 @@ export default function BookingView() {
                             ? "call_vendor_button btn my-2"
                             : "call_vendor_button btn me-2"
                         }
-                        onClick={() => window.location.href = `tel:+91${booking?.service?.vendor_contact_number}`}
+                        onClick={() => window.location.href = `tel:+965${booking?.service?.vendor_contact_number}`}
                       >
                         Call Vendor &nbsp;
                         <svg
@@ -296,9 +331,9 @@ export default function BookingView() {
                         className="call_customer_button btn "
                         onClick={() => {
                           if (booking?.booking_for === "My Self") {
-                            window.location.href = `tel:+91${booking?.phone_number}`;
+                            window.location.href = `tel:+965${booking?.phone_number}`;
                           } else {
-                            window.location.href = `tel:${booking?.user?.mobile}`;
+                            window.location.href = `tel:+965${booking?.user?.mobile}`;
                           }
                         }}
                       >
@@ -368,7 +403,7 @@ export default function BookingView() {
                     className={
                       isMobileView ? "col-12 card mt-2" : "col-7 card mt-2 h-50"
                     }
-                    style={{ borderRadius: "8px" }}
+                    style={{ borderRadius: "8px", overflowX: "auto" }}
                   >
                     <span style={{ fontWeight: "600" }} className="p-3">
                       Booking Details
@@ -446,7 +481,7 @@ export default function BookingView() {
                     className={
                       isMobileView ? "col-12 card mt-2" : "col-7 card mt-2 h-50"
                     }
-                    style={{ borderRadius: "8px" }}
+                    style={{ borderRadius: "8px", overflowX: "auto" }}
                   >
                     <span style={{ fontWeight: "600" }} className="p-3">
                       Registered Details
@@ -459,8 +494,8 @@ export default function BookingView() {
                             {booking?.user_type !== "Guest"
                               ? booking?.user?.account_id
                               : booking?.user_type === "Registered"
-                              ? booking?.guest?.account_id
-                              : "None"}
+                                ? booking?.guest?.account_id
+                                : "None"}
                           </p>
                         </div>
                       </div>
@@ -471,8 +506,8 @@ export default function BookingView() {
                             {booking?.user_type !== "Guest"
                               ? booking?.user?.first_name
                               : booking?.user_type === "Registered"
-                              ? booking?.guest?.first_name
-                              : "None"}
+                                ? booking?.guest?.first_name
+                                : "None"}
                           </p>
                         </div>
                       </div>
@@ -483,8 +518,8 @@ export default function BookingView() {
                             {booking?.user_type !== "Guest"
                               ? booking?.user?.email
                               : booking?.user_type === "Registered"
-                              ? booking?.guest?.email
-                              : "None"}
+                                ? booking?.guest?.email
+                                : "None"}
                           </p>
                         </div>
                       </div>
@@ -580,7 +615,7 @@ export default function BookingView() {
                   <div className="d-flex justify-content-between align-items-center p-3">
                     <div>
                       <p style={{ color: "#68727D" }}>
-                        {booking?.slot_start_time && booking?.slot_start_time}
+                        Start Time : <span style={{color:"black",fontWeight:550}}>{booking?.slot_start_time && booking?.slot_start_time}</span>
                       </p>
                       <p style={{ fontWeight: "600" }}>
                         {booking?.slot_start_date && new Date(booking?.slot_start_date).toLocaleDateString(
@@ -593,7 +628,7 @@ export default function BookingView() {
                             )}
                       </p>
                     </div>
-                    <div className="d-flex flex-column justify-content-center align-items-center">
+                   {booking?.slot_details!==null&&    <div className="d-flex flex-column justify-content-center align-items-center">
                       <p>
                         <svg
                           width={28}
@@ -611,10 +646,10 @@ export default function BookingView() {
                       <p style={{ color: "#006875" }}>
                         {booking?.slot_details}
                       </p>
-                    </div>
+                    </div>}
                     <div>
-                      <p style={{ fontWeight: "600" }}>
-                        {booking?.slot_end_time && booking?.slot_end_time}
+                      <p style={{ color: "#68727D" }}>
+                        End Time : <span style={{color:"black",fontWeight:550}}>{booking?.slot_end_time && booking?.slot_end_time}</span>
                       </p>
                       <p style={{ fontWeight: "600" }}>
                         {booking?.slot_end_date && new Date(booking?.slot_end_date).toLocaleDateString(
@@ -628,7 +663,7 @@ export default function BookingView() {
                       </p>
                     </div>
                   </div>
-                  <div className="d-flex justify-content-center align-items-center">
+                  {booking?.destination!==""  && <div className="d-flex justify-content-center align-items-center">
                     <p>
                       <svg
                         width={18}
@@ -649,7 +684,7 @@ export default function BookingView() {
                     <p style={{ textTransform: "capitalize" }}>
                       {booking?.destination}
                     </p>
-                  </div>
+                  </div>}
                 </div>
 
                 <div
@@ -659,66 +694,14 @@ export default function BookingView() {
                   style={{ borderRadius: "8px" }}
                 >
                   <div className="d-flex justify-content-between align-items-center px-2">
-                    <p style={{ fontWeight: "600" }} className="p-3">
+                    <p style={{ fontWeight: "600" }} className="mt-3 mx-2">
                       Payment Details
                     </p>
-                    {/* <button
-                                className="btn btn-sm btn-info"
-                                style={{
-                                  padding: "7px 10px 5px 10px",
-                                  borderRadius: "4px",
-                                  borderRadius:
-                                    "var(--roundness-round-inside, 6px)",
-                                  background: "#187AF7",
-                                  boxSShadow:
-                                    "0px 1px 2px 0px rgba(16, 24, 40, 0.04)",
-                                }}
-                                onClick={()=>setOpen(true)}
-                              >
-                                Initiate Refund &nbsp;
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  width="16"
-                                  height="16"
-                                  viewBox="0 0 16 16"
-                                  fill="none"
-                                >
-                                  <path
-                                    d="M4 12L12 4M12 4H6M12 4V10"
-                                    stroke="white"
-                                    strokeWidth="1.5"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                  />
-                                </svg>
-                              </button> */}
                   </div>
                   <div
-                    className="p-3 m-2 rounded"
+                    className="p-3 mx-3 rounded"
                     style={{ backgroundColor: "#EAEBF0" }}
                   >
-                    <div className="d-flex justify-content-between align-items-center py-1">
-                      <span style={{ color: "#68727D" }}>
-                        {booking?.service?.name}
-                      </span>
-                      <span>
-                        {booking?.payment === null
-                          ? 0
-                          : booking?.payment?.amount}{" "}
-                        KWD
-                      </span>
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center py-1">
-                      <span style={{ color: "#68727D" }}>Service Fee</span>
-                      <span>0.50 KWD</span>
-                    </div>
-                    <div className="d-flex justify-content-between align-items-center py-1">
-                      <span style={{ color: "#68727D" }}>
-                        Collection & Delivery
-                      </span>
-                      <span>1.50 KWD</span>
-                    </div>
-                    <div style={{ borderBottom: "2px solid #e1e3ea" }}></div>
                     <div className="d-flex justify-content-between align-items-center py-1">
                       <span style={{ fontWeight: "500" }}>Total</span>
                       <span style={{ color: "#006875", fontWeight: "500" }}>
@@ -729,7 +712,7 @@ export default function BookingView() {
                       </span>
                     </div>
                   </div>
-                  <div className="d-flex p-4">
+                  <div className="d-flex mx-3 px-1 my-3">
                     <div style={{ width: "33%" }}>
                       <div>
                         <p>Payment Status</p>
@@ -749,7 +732,7 @@ export default function BookingView() {
                             </defs>
                           </svg>
                         )
-                        : booking?.status === "Failed" ? (
+                        : booking?.payment?.status === "Failed" ? (
                             <svg width={100} height={26} viewBox="0 0 100 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <rect x="0.5" y="0.5" width={99} height={25} rx="12.5" fill="#DD5D35" fillOpacity="0.2" />
                               <rect x="0.5" y="0.5" width={99} height={25} rx="12.5" stroke="#DD5D35" />
@@ -765,7 +748,7 @@ export default function BookingView() {
                               </defs>
                             </svg>
                         )
-                        :booking.status ==="INITIATED" ? (
+                        :booking?.payment?.status ==="Initialized" ? (
                             <svg width={100} height={26} viewBox="0 0 100 26" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <rect x="0.5" y="0.5" width={99} height={25} rx="12.5" fill="#DFA715" fillOpacity="0.2" />
                               <rect x="0.5" y="0.5" width={99} height={25} rx="12.5" stroke="#DFA715" />
@@ -793,7 +776,7 @@ export default function BookingView() {
                       <div>
                         <p style={{ color: "#68727D" }}>Payment Method</p>
                         <p style={{ fontWeight: "500" }}>
-                          {booking?.payment?.payment_method}
+                          {booking?.payment?.payment_method ? booking?.payment?.payment_method :"None"}
                         </p>
                       </div>
                       <div>
@@ -871,14 +854,14 @@ export default function BookingView() {
                         <p>
                           {booking?.cancelled_date !== null
                             ? new Date(
-                                booking?.cancelled_date
-                              ).toLocaleDateString("en-US", {
-                                day: "2-digit",
-                                month: "short",
-                                year: "numeric",
-                                hour: "2-digit",
-                                minute: "2-digit",
-                              })
+                              booking?.cancelled_date
+                            ).toLocaleDateString("en-US", {
+                              day: "2-digit",
+                              month: "short",
+                              year: "numeric",
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
                             : "None"}
                         </p>
                       </div>

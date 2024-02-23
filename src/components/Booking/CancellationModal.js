@@ -5,6 +5,7 @@ import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import { updateCancellation } from "../../services/booking";
+import { useNavigate } from "react-router-dom";
 
 const offcanvasStyle = {
   width: "365px",
@@ -17,7 +18,7 @@ const offcanvasStyle = {
 
 export default function CancellationModal({ open, setOpen, bookingId }) {
   const [isLoading, setIsLoading] = useState(false);
-
+  const navigate=useNavigate() 
   const validationSchema = Yup.object({
     refund_details: Yup.string().required("Reason is required"),
   });
@@ -27,7 +28,7 @@ export default function CancellationModal({ open, setOpen, bookingId }) {
       refund_details: "",
     },
     validationSchema,
-    onSubmit: async (values) => {
+    onSubmit: async (values,{resetForm}) => {
       setIsLoading(true);
       if (!isLoading) {
         try {
@@ -35,16 +36,13 @@ export default function CancellationModal({ open, setOpen, bookingId }) {
             cancellation_reason: values.refund_details,
           };
 
-          const resetData = await updateCancellation(bookingId);
+          const resetData = await updateCancellation(bookingId,data);
           if (resetData) {
             toast.success("Initiated successfully!");
             setOpen(false);
             setIsLoading(false);
-            formik.setValues(() => {
-              return {
-                refund_details: "",
-              };
-            });
+            resetForm();
+            navigate("/refunds-request")
           } else {
             console.error("Error while creating Admin:", resetData.error);
             setIsLoading(false);
@@ -67,12 +65,13 @@ export default function CancellationModal({ open, setOpen, bookingId }) {
   const handleCloseOffcanvas = () => {
     setOpen(false);
     setIsLoading(false);
-    formik.setValues(() => {
-      return {
-        refund_details: "",
-      };
+    formik.resetForm({
+        values: {
+            refund_details: "",
+        },
     });
-  };
+};
+
   return (
     <Offcanvas
       show={open}

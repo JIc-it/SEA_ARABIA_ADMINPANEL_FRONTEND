@@ -15,8 +15,9 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
+import { a } from 'react-spring';
 
-export default function RefundHistoryFilter({ open,checkfilterslength, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
+export default function RefundHistoryFilter({ open,checkfilterslength, handleClose, setFilters, filters, setTotalPages,itemsPerPage, setBookingList, setIsLoading, isLoading }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
@@ -180,7 +181,7 @@ export default function RefundHistoryFilter({ open,checkfilterslength, handleClo
                 setIsLoading(false);
                 handleClose()
                 setBookingList(adminData.results);
-                firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
+                setTotalPages(Math.ceil(adminData?.count/itemsPerPage))
             } else {
                 setIsLoading(false);
                 toast.error(adminData.error.response.data)

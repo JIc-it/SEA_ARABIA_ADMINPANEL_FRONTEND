@@ -6,6 +6,7 @@ import * as Yup from "yup";
 import CircularProgress from "@mui/material/CircularProgress";
 import { toast } from "react-toastify";
 import { Radio, Paper, Typography, Box } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 
 const offcanvasStyle = {
@@ -23,22 +24,25 @@ export default function RefundModal({
     bookingId
 }) {
     const [isLoading, setIsLoading] = useState(false);
-
+    const navigate=useNavigate()    
     const validationSchema = Yup.object({
             refund_amount: Yup.number()
-            .min(1, 'Value must be greater than or equal to 1'),
-            refund_details: Yup.string()
+            .required('Amount Required')
+            .min(1, 'Value must be greater than or equal to 1')
+            .max(100000,"Maximum 1 Lakh")
+            ,
+            refund_details: Yup.string().trim()
             .required("Details is required"),
     });
 
     const formik = useFormik({
         initialValues: {
             refund_type: "Partial Amount",
-            refund_amount:0,
+            refund_amount:"",
             refund_details:"",
         },
         validationSchema,
-        onSubmit: async (values) => {
+        onSubmit: async (values,{resetForm}) => {
           setIsLoading(true);
           if (!isLoading) {
             try {
@@ -53,15 +57,8 @@ export default function RefundModal({
                 toast.success("Initiated successfully!");
                 setOpen(false);
                 setIsLoading(false);
-                formik.setValues(()=>{
-
-                   return {
-                    refund_type: "Partial Amount",
-                    refund_amount:0,
-                    refund_details:"",
-                   }
-
-                })
+                resetForm();
+                navigate("/refunds-history")
               } else {
                 console.error("Error while creating Admin:", resetData.error);
                 setIsLoading(false);
@@ -79,16 +76,15 @@ export default function RefundModal({
     const handleCloseOffcanvas = () => {
         setOpen(false);
         setIsLoading(false);
-        formik.setValues(()=>{
-
-            return {
-             refund_type: "Partial Amount",
-             refund_amount:0,
-             refund_details:"",
-            }
-
-         })
+        formik.resetForm({
+            values: {
+                refund_type: "Partial Amount",
+                refund_amount: "",
+                refund_details: "",
+            },
+        });
     };
+    
     return (
         <Offcanvas
             show={open}
@@ -158,21 +154,6 @@ export default function RefundModal({
                             <div className="error">{formik.errors.refund_amount}</div>
                         ) : null}
                     </div>
-                    {/* <div style={{ marginTop: 7 }}>
-                    <h5 style={{ marginTop: 10 }}>Refunded On</h5>
-                        <input
-                            type="date"
-                            // placeholder="New Password"
-                            name="refund_on"
-                            className="form-control"
-                            value={formik.values.refund_on}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        {formik.touched.refund_on && formik.errors.refund_on ? (
-                            <div className="error">{formik.errors.refund_on}</div>
-                        ) : null}
-                    </div> */}
                     <div style={{ marginTop: 7 }}>
                     <h5 style={{ marginTop: 10 }}>Refund Details</h5>
                         <textarea

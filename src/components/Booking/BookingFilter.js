@@ -16,7 +16,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PassingformatDate } from '../../helpers';
 
-export default function BookingFilter({ open,checkfilterslength, handleClose, setFilters, filters, firstsetListPageUrl, setBookingList, setIsLoading, isLoading }) {
+export default function BookingFilter({ open,checkfilterslength, handleClose, setFilters, filters, setTotalPages, setBookingList, setIsLoading, isLoading,itemsPerPage }) {
     const [active, setActive] = useState("Category")
     const [categorylist, setCategoryList] = useState([])
     const [vendorlist, setVendorList] = useState([]);
@@ -180,7 +180,7 @@ export default function BookingFilter({ open,checkfilterslength, handleClose, se
                 setIsLoading(false);
                 handleClose()
                 setBookingList(adminData.results);
-                firstsetListPageUrl({ next: adminData.next, previous: adminData.previous });
+                setTotalPages(Math.ceil(adminData?.count/itemsPerPage))
             } else {
                 setIsLoading(false);
                 toast.error(adminData.error.response.data)

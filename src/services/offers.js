@@ -60,7 +60,7 @@ export const getDiscountOfferList = (search,data) => {
   };
 export const UpdateStatus = (id,data) => {
     return axiosInstance
-      .put(`${UpdateOffers}/${id}/update/`,data)
+      .put(`${UpdateOfferNew}/${id}/`,data)
       .then((response) => response.data)
       .catch((error) => {
         console.error("Error while fetching lead request:", error);

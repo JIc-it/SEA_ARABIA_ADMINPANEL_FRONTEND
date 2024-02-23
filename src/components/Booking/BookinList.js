@@ -25,9 +25,9 @@ import { API_BASE_URL } from "../../services/authHandle";
 const BookinList = () => {
   const navigate = useNavigate();
   const { userPermissionList } = useContext(MainPageContext);
-  const itemsPerPage=10;
-  const [totalPages,setTotalPages] = useState(0);
-  const [currentPage,setCurrentPage]=useState(0)
+  const itemsPerPage = 10;
+  const [totalPages, setTotalPages] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0)
 
   const getPermission = userPermissionList
     ?.filter((data) => data.id === "7")[0]
@@ -56,11 +56,6 @@ const BookinList = () => {
     },
   });
 
-  const [listPageUrl, setListPageUrl] = useState({
-    next: null,
-    previous: null,
-  });
-
   const [isLoading, setIsLoading] = useState(false);
 
   const [bookingList, setBookingList] = useState([]);
@@ -75,8 +70,7 @@ const BookinList = () => {
     getBookingList(Pass)
       .then((data) => {
         setIsLoading(false);
-        setTotalPages(Math.ceil(data?.count/itemsPerPage))
-        setListPageUrl({ next: data.next, previous: data.previous });
+        setTotalPages(Math.ceil(data?.count / itemsPerPage))
         setBookingList(data?.results);
       })
       .catch((error) => {
@@ -115,26 +109,6 @@ const BookinList = () => {
     }
   }, [getPermission]);
 
-  const handlePagination = async (type) => {
-    setIsLoading(true);
-    let convertedUrl =
-      type === "next"
-        ? listPageUrl.next && removeBaseUrlFromPath(listPageUrl.next)
-        : type === "prev"
-        ? listPageUrl.previous && removeBaseUrlFromPath(listPageUrl.previous)
-        : null;
-    convertedUrl &&
-      getListDataInPagination(convertedUrl)
-        .then((data) => {
-          setIsLoading(false);
-          setListPageUrl({ next: data.next, previous: data.previous });
-          setBookingList(data?.results);
-        })
-        .catch((error) => {
-          setIsLoading(false);
-          console.error("Error fetching  data:", error);
-        });
-  };
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected)
@@ -361,21 +335,21 @@ const BookinList = () => {
                             filters.customer_type.length +
                             filters.status.length +
                             (filters.creation_date.from !== "" &&
-                            filters.creation_date.to !== ""
+                              filters.creation_date.to !== ""
                               ? 2
                               : filters.creation_date.from !== ""
-                              ? 1
-                              : filters.creation_date.to !== ""
-                              ? 1
-                              : 0) +
+                                ? 1
+                                : filters.creation_date.to !== ""
+                                  ? 1
+                                  : 0) +
                             (filters.commencement_date.from !== "" &&
-                            filters.commencement_date.to !== ""
+                              filters.commencement_date.to !== ""
                               ? 2
                               : filters.commencement_date.from !== ""
-                              ? 1
-                              : filters.commencement_date.to !== ""
-                              ? 1
-                              : 0)}
+                                ? 1
+                                : filters.commencement_date.to !== ""
+                                  ? 1
+                                  : 0)}
                         </span>
                       </button>
                       {checkfilterslength && (
@@ -393,7 +367,7 @@ const BookinList = () => {
                       )}
                     </div>
                   </div>
-                  
+
                 </div>
 
                 <div className="action_buttons col-4">
@@ -535,27 +509,28 @@ const BookinList = () => {
                                       borderRadius: "4px",
                                       background:
                                         data?.status === "Completed" ||
-                                        data?.status === "Confirmed"
+                                          data?.status === "Confirmed"
                                           ? "#13B370"
                                           : data?.status === "Unsuccessful" ||
                                             data?.status === "Failed"
-                                          ? "#DC7932"
-                                          : data?.status === "Cancelled"
-                                          ? "#DE4E21"
-                                          : data?.status === "Upcoming" &&
-                                            "#2684FC",
+                                            ? "#DC7932"
+                                            : data?.status === "Cancelled"
+                                              ? "#DE4E21"
+                                              : data?.status === "Upcoming" || data?.status === "Opened" &&
+                                              "#2684FC",
                                     }}
                                   >
                                     {data?.status === "Completed" ||
-                                    data?.status === "Confirmed"
+                                      data?.status === "Confirmed"
                                       ? "Completed"
                                       : data?.status === "Unsuccessful" ||
                                         data?.status === "Failed"
-                                      ? "Unsuccessful"
-                                      : data?.status === "Cancelled"
-                                      ? "Cancelled"
-                                      : data?.status === "Upcoming" &&
-                                        "Upcoming"}
+                                        ? "Unsuccessful"
+                                        : data?.status === "Cancelled"
+                                          ? "Cancelled"
+                                          : data?.status === "Upcoming" ? "Upcoming"
+                                          : data?.status === "Opened" &&
+                                          "Opened"}
                                   </span>
                                 </td>
                                 <td
@@ -606,29 +581,36 @@ const BookinList = () => {
                           </td>
                         </tr>
                       )}
+                      {bookingList.length === 0 && (
+                        <tr>
+                          <td colSpan={"8"} align="center" style={{fontWeight:550}}>
+                            No Data
+                          </td>
+                        </tr>
+                      )}
                     </tbody>
                   </table>
                 </div>
                 {totalPages > 0 && <div className="d-flex justify-content-center align-items-center mt-5">
-          <ReactPaginate
-            breakLabel="..."
-            nextLabel="Next >"
-            onPageChange={handlePageClick}
-            forcePage={currentPage} 
-            pageRangeDisplayed={5}
-            pageCount={totalPages}
-            previousLabel="< Prev"
-            marginPagesDisplayed={1}
-            containerClassName="pagination"
-            activeClassName="active"
-            previousClassName="page-item previous"
-            nextClassName="page-item next"
-            pageClassName="page-item"
-            pageLinkClassName="page-link"
-            previousLinkClassName="page-link"
-            nextLinkClassName="page-link"
-          />
-          </div>}
+                  <ReactPaginate
+                    breakLabel="..."
+                    nextLabel="Next >"
+                    onPageChange={handlePageClick}
+                    forcePage={currentPage}
+                    pageRangeDisplayed={5}
+                    pageCount={totalPages}
+                    previousLabel="< Prev"
+                    marginPagesDisplayed={1}
+                    containerClassName="pagination"
+                    activeClassName="active"
+                    previousClassName="page-item previous"
+                    nextClassName="page-item next"
+                    pageClassName="page-item"
+                    pageLinkClassName="page-link"
+                    previousLinkClassName="page-link"
+                    nextLinkClassName="page-link"
+                  />
+                </div>}
               </div>
             </div>
             {open && (
@@ -640,7 +622,8 @@ const BookinList = () => {
                 setFilters={setFilters}
                 filters={filters}
                 setBookingList={setBookingList}
-                firstsetListPageUrl={setListPageUrl}
+                itemsPerPage={itemsPerPage}
+                setTotalPages={setTotalPages}
                 checkfilterslength={checkfilterslength}
               />
             )}

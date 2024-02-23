@@ -68,6 +68,7 @@ function ServiceList() {
     }
     getServiceListing(search)
       .then((data) => {
+        setTotalPages(Math.ceil(data?.count / itemsPerPage))
         setServiceList(data?.results);
         setIsLoading(false);
       })
@@ -122,7 +123,6 @@ function ServiceList() {
           inactive_machine_count: data?.inactive_machine_count,
           total_vendor_count: data?.total_vendor_count,
         });
-        setTotalPages(Math.ceil(data?.total_machines / itemsPerPage))
       })
       .catch((error) => {
         {
