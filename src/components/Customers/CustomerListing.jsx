@@ -26,6 +26,7 @@ import UserFilterPopup from "./UserFilterPopup";
 import Modal from "@mui/material/Modal";
 import { Search } from "@mui/icons-material";
 import { API_BASE_URL } from "../../services/authHandle";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -310,7 +311,7 @@ export default function CustomerListing() {
                         window.location.reload();
                       }}
                     >
-                      Clear Search
+                      <CloseIcon style={{ fontSize: "14.5px" }} />
                     </button>
                   )}
                 </div>

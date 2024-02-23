@@ -34,6 +34,7 @@ const AddVendorInfo = ({ formik, locationList }) => {
         locationList.find(
           (country) => country.code === data.profileextra.location.country_code
         );
+      console.log("loc==", data.profileextra?.location?.country_code);
       console.log(selectedCountryObject, "selectedCountryObject");
       selectedCountryObject &&
         formik.setFieldValue("location", selectedCountryObject);

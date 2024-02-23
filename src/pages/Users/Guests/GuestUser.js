@@ -5,6 +5,7 @@ import {
   getTotalGuestUser,
   guestExport,
 } from "../../../services/CustomerHandle.jsx";
+import CloseIcon from "@mui/icons-material/Close";
 import { getMenuPermissions, removeBaseUrlFromPath } from "../../../helpers.js";
 import { getListDataInPagination } from "../../../services/commonServices.js";
 import { MainPageContext } from "../../../Context/MainPageContext.js";
@@ -33,7 +34,7 @@ const GuestUser = () => {
   const [search, setSearch] = useState();
   const [selectedValue, setSelectedValue] = useState("");
   useEffect(() => {
-    getGuestUserRequest(search,"")
+    getGuestUserRequest(search, "")
       .then((data) => {
         console.log("Fetched data:", data.results?.id);
         setGuestUsertData(data.results);
@@ -215,7 +216,7 @@ const GuestUser = () => {
                           window.location.reload();
                         }}
                       >
-                        Clear Search
+                        <CloseIcon style={{ fontSize: "14.5px" }} />
                       </button>
                     )}
                     {/* <button

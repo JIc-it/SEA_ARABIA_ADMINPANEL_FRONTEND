@@ -22,6 +22,7 @@ import {
 } from "../../../components/Permissions/PermissionConstants";
 import { CircularProgress } from "@mui/material";
 import { API_BASE_URL } from "../../../services/authHandle";
+import CloseIcon from "@mui/icons-material/Close";
 
 function Admin({ isRefetch, setIsRefetch }) {
   const { userPermissionList } = useContext(MainPageContext);
@@ -316,7 +317,7 @@ function Admin({ isRefetch, setIsRefetch }) {
                           window.location.reload();
                         }}
                       >
-                        Clear Search
+                        <CloseIcon style={{ fontSize: "14.5px" }} />
                       </button>
                     )}
                   </div>
