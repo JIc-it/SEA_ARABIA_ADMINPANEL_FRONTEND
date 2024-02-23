@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-
+import CloseIcon from "@mui/icons-material/Close";
 import Footer from "../Common/Footer";
 
 import ListCards from "../ListCards";
@@ -449,7 +449,7 @@ const CustomerBookingList = () => {
                             }
                           }}
                         >
-                          Clear Filter
+                          <CloseIcon style={{ fontSize: "14.5px" }} />
                         </button>
                       )}
                     </div>

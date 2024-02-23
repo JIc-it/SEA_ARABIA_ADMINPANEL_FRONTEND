@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import CreateSalesRep from "./CreateSalesRep";
 import * as XLSX from "xlsx";
-
+import CloseIcon from "@mui/icons-material/Close";
 import {
   getCustomerlist,
   getCustomerSearch,
@@ -308,6 +308,18 @@ const SalesRepresentatives = () => {
                     >
                       Search
                     </button> */}
+                    {search && (
+                      <button
+                        className="btn search_button"
+                        style={{ color: "#ffff", backgroundColor: "#2176FF" }}
+                        onClick={() => {
+                          setSearch(""); // Clear the search state
+                          window.location.reload();
+                        }}
+                      >
+                        <CloseIcon style={{ fontSize: "14.5px" }} />
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

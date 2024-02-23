@@ -230,17 +230,8 @@ function CustomerCardDetails() {
               </div>
             </div>
 
-            <div className="d-flex justify-content-start align-items-center my-2">
-              {/* <img src={customerImg} /> */}
-              <div className="mx-2">
-                <p style={{ fontWeight: "600" }}>Profile Picture</p>
-                <p>Recommended Size is 256 x 256 Pixels</p>
-                <div style={{ marginTop: "5px" }}>
-                  <UploadFiles />
-                </div>
-              </div>
-            </div>
-
+            <br />
+            <br />
             <div className="card_personal_details">
               <h5 className="personal_details_header">Details</h5>
               <div className="col-12">
@@ -254,7 +245,9 @@ function CustomerCardDetails() {
                 </div>
               </div>
             </div>
-
+            <br />
+            <br />
+            {/* <br /> */}
             <div className="bottom_button">
               {userPermissionList &&
                 getMenuPermissions(
@@ -386,7 +379,6 @@ function CustomerCardDetails() {
                 <CustomerEditModal
                   show={showOffcanvas}
                   close={handleCloseOffcanvas}
-               
                 />
                 <ChangePasword open={open} setOpen={setOpen} />
                 <EditCustomerWithPermission />
@@ -630,8 +622,8 @@ function CustomerCardDetails() {
 
             </div>} */}
           </div>
-          <br />
-          <br />
+          {/* <br /> */}
+          {/* <br /> */}
         </div>
       </div>
     </div>
